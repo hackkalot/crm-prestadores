@@ -1,0 +1,80 @@
+'use client'
+
+import { useActionState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { login, type AuthState } from '@/lib/auth/actions'
+import { AlertCircle } from 'lucide-react'
+import Link from 'next/link'
+
+const initialState: AuthState = {}
+
+export default function LoginPage() {
+  const [state, formAction, isPending] = useActionState(login, initialState)
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto h-12 w-12 rounded-xl bg-primary flex items-center justify-center mb-4">
+            <span className="text-primary-foreground font-bold text-xl">F</span>
+          </div>
+          <CardTitle className="text-2xl">FIXO CRM</CardTitle>
+          <CardDescription>
+            Faca login para aceder ao CRM de Prestadores
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={formAction} className="space-y-4">
+            {state.error && (
+              <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 rounded-lg">
+                <AlertCircle className="h-4 w-4" />
+                {state.error}
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium">
+                Email
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="email@exemplo.com"
+                required
+                disabled={isPending}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-sm font-medium">
+                Password
+              </label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                required
+                disabled={isPending}
+              />
+            </div>
+
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? 'A entrar...' : 'Entrar'}
+            </Button>
+          </form>
+
+          <div className="mt-4 text-center text-sm text-muted-foreground">
+            Nao tens conta?{' '}
+            <Link href="/registar" className="text-primary hover:underline">
+              Registar
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}

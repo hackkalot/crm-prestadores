@@ -1,0 +1,63 @@
+// Lista de todos os distritos de Portugal
+export const PORTUGAL_DISTRICTS = [
+  'Aveiro',
+  'Beja',
+  'Braga',
+  'Bragança',
+  'Castelo Branco',
+  'Coimbra',
+  'Évora',
+  'Faro',
+  'Guarda',
+  'Leiria',
+  'Lisboa',
+  'Portalegre',
+  'Porto',
+  'Santarém',
+  'Setúbal',
+  'Viana do Castelo',
+  'Vila Real',
+  'Viseu',
+  'Açores',
+  'Madeira',
+]
+
+// Tipos de serviços base
+export const BASE_SERVICES = [
+  'Eletricidade',
+  'Canalizacao',
+  'AVAC',
+  'Pintura',
+  'Carpintaria',
+  'Serralharia',
+  'Vidracaria',
+  'Limpezas',
+  'Mudancas',
+  'Jardinagem',
+  'Impermeabilizacao',
+  'Remodelacoes',
+]
+
+// Mapa de adjacência dos distritos
+export const DISTRICT_ADJACENCY: Record<string, string[]> = {
+  'Aveiro': ['Porto', 'Viseu', 'Coimbra'],
+  'Beja': ['Évora', 'Setúbal', 'Faro'],
+  'Braga': ['Viana do Castelo', 'Porto', 'Vila Real'],
+  'Bragança': ['Vila Real', 'Guarda', 'Viseu'],
+  'Castelo Branco': ['Guarda', 'Coimbra', 'Leiria', 'Santarém', 'Portalegre'],
+  'Coimbra': ['Aveiro', 'Viseu', 'Guarda', 'Castelo Branco', 'Leiria'],
+  'Évora': ['Portalegre', 'Santarém', 'Setúbal', 'Beja'],
+  'Faro': ['Beja', 'Setúbal'],
+  'Guarda': ['Bragança', 'Viseu', 'Coimbra', 'Castelo Branco'],
+  'Leiria': ['Coimbra', 'Castelo Branco', 'Santarém', 'Lisboa'],
+  'Lisboa': ['Leiria', 'Santarém', 'Setúbal'],
+  'Portalegre': ['Castelo Branco', 'Santarém', 'Évora'],
+  'Porto': ['Braga', 'Viana do Castelo', 'Vila Real', 'Viseu', 'Aveiro'],
+  'Santarém': ['Leiria', 'Castelo Branco', 'Portalegre', 'Évora', 'Setúbal', 'Lisboa'],
+  'Setúbal': ['Lisboa', 'Santarém', 'Évora', 'Beja', 'Faro'],
+  'Viana do Castelo': ['Braga', 'Porto'],
+  'Vila Real': ['Bragança', 'Braga', 'Porto', 'Viseu'],
+  'Viseu': ['Vila Real', 'Bragança', 'Guarda', 'Coimbra', 'Aveiro', 'Porto'],
+  'Açores': [],
+  'Madeira': [],
+}
