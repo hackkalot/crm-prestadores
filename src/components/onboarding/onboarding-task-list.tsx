@@ -130,17 +130,20 @@ export function OnboardingTaskList({ tasks, cardId, currentStageId }: Onboarding
     return { total, completed, hasOverdue, isComplete: completed === total }
   }
 
-  // Determinar quais etapas abrir por defeito (etapa atual e anteriores incompletas)
+  // Determinar quais etapas abrir por defeito (apenas a etapa atual)
   const defaultOpenStages = useMemo(() => {
-    const open: string[] = []
+    // Apenas expandir a etapa atual
+    if (currentStageId) {
+      return [currentStageId]
+    }
+    // Se não há etapa atual, expandir a primeira não concluída
     for (const group of tasksByStage) {
       const stats = getStageStats(group.tasks)
-      // Abrir etapa atual ou etapas com tarefas pendentes
-      if (group.stage.id === currentStageId || !stats.isComplete) {
-        open.push(group.stage.id)
+      if (!stats.isComplete) {
+        return [group.stage.id]
       }
     }
-    return open
+    return []
   }, [tasksByStage, currentStageId])
 
   const handleStatusChange = (taskId: string, newStatus: string, taskName?: string) => {

@@ -1,16 +1,8 @@
 'use server'
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-
-function getSupabaseAdmin() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
-}
 
 // Tipos
 export type TaskDefinitionWithStage = {
@@ -54,7 +46,7 @@ export type SettingsLog = {
 
 // Obter todas as definicoes de tarefas com etapas
 export async function getTaskDefinitions(): Promise<TaskDefinitionWithStage[]> {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { data, error } = await supabaseAdmin
     .from('task_definitions')
     .select(`
@@ -87,7 +79,7 @@ export async function getTaskDefinitions(): Promise<TaskDefinitionWithStage[]> {
 
 // Obter etapas
 export async function getStageDefinitions() {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { data, error } = await supabaseAdmin
     .from('stage_definitions')
     .select('id, stage_number, name, display_order, is_active')
@@ -103,7 +95,7 @@ export async function getStageDefinitions() {
 
 // Obter utilizadores para selecao de owners
 export async function getUsers() {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { data, error } = await supabaseAdmin
     .from('users')
     .select('id, name, email')
@@ -119,7 +111,7 @@ export async function getUsers() {
 
 // Obter configuracoes globais
 export async function getSettings(): Promise<Setting[]> {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { data, error } = await supabaseAdmin
     .from('settings')
     .select('id, key, value, description, updated_at')
@@ -135,7 +127,7 @@ export async function getSettings(): Promise<Setting[]> {
 
 // Obter log de alteracoes de configuracoes
 export async function getSettingsLog(): Promise<SettingsLog[]> {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { data, error } = await supabaseAdmin
     .from('settings_log')
     .select(`
@@ -174,7 +166,7 @@ export async function updateTaskDefinition(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { error } = await supabaseAdmin
     .from('task_definitions')
     .update({
@@ -198,7 +190,7 @@ export async function updateSetting(key: string, value: unknown) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
 
   // Obter valor anterior
   const { data: currentSetting } = await supabaseAdmin
@@ -246,7 +238,7 @@ export async function getAlertConfig(): Promise<{
   hoursBeforeDeadline: number
   stalledDays: number
 }> {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { data, error } = await supabaseAdmin
     .from('settings')
     .select('key, value')
@@ -266,7 +258,7 @@ export async function getAlertConfig(): Promise<{
 
 // Obter ou criar configuracoes padrao
 export async function ensureDefaultSettings() {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const defaultSettings = [
     { key: 'alert_hours_before_deadline', value: 24, description: 'Horas antes do prazo para gerar alerta' },
     { key: 'stalled_task_days', value: 3, description: 'Dias sem alterações para considerar tarefa parada' },

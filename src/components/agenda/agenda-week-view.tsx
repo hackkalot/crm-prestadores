@@ -105,7 +105,7 @@ export function AgendaWeekView({ weekTasks }: AgendaWeekViewProps) {
 function AgendaTaskMini({ task }: { task: AgendaTask }) {
   return (
     <a
-      href={`/onboarding/${task.cardId}`}
+      href={`/providers/${task.providerId}?tab=onboarding`}
       className={cn(
         'block p-2 rounded border text-xs hover:bg-accent transition-colors',
         task.isOverdue && 'border-red-500 bg-red-50 dark:bg-red-900/20',

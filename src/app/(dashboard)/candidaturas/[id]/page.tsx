@@ -180,7 +180,7 @@ export default async function CandidaturaDetailPage({ params }: CandidaturaDetai
                 <div>
                   <div className="flex items-center gap-2 text-sm font-medium mb-2">
                     <FileText className="h-4 w-4 text-muted-foreground" />
-                    Servicos
+                    Serviços
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {provider.services.map((service: string, i: number) => (
@@ -216,7 +216,7 @@ export default async function CandidaturaDetailPage({ params }: CandidaturaDetai
                   <div className="flex items-center justify-between py-2 border-t">
                     <div className="flex items-center gap-2 text-sm">
                       <Truck className="h-4 w-4 text-muted-foreground" />
-                      Transporte proprio
+                      Transporte próprio
                     </div>
                     <Badge variant={provider.has_own_transport ? 'success' : 'secondary'}>
                       {provider.has_own_transport ? 'Sim' : 'Nao'}
@@ -230,7 +230,7 @@ export default async function CandidaturaDetailPage({ params }: CandidaturaDetai
                 <div className="flex items-center justify-between py-2 border-t">
                   <div className="flex items-center gap-2 text-sm">
                     <Clock className="h-4 w-4 text-muted-foreground" />
-                    Horario laboral
+                    Horário laboral
                   </div>
                   <span className="text-sm">{provider.working_hours}</span>
                 </div>

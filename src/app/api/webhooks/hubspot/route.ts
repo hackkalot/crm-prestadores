@@ -1,14 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-// Criar cliente apenas quando necessário (não no nível do módulo)
-function getSupabaseAdmin() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
-}
+import { createAdminClient } from '@/lib/supabase/admin'
 
 type EntityType = 'tecnico' | 'eni' | 'empresa'
 
@@ -89,7 +80,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nome e email sao obrigatorios' }, { status: 400 })
     }
 
-    const supabaseAdmin = getSupabaseAdmin()
+    const supabaseAdmin = createAdminClient()
 
     // Verificar se já existe por email
     const { data: existingProviders } = await supabaseAdmin

@@ -1,42 +1,49 @@
-import { Suspense } from 'react'
 import { Header } from '@/components/layout/header'
 import { KpiFilters } from '@/components/kpis/kpi-filters'
-import { KpiCards, TimeComparisonCard } from '@/components/kpis/kpi-cards'
+import { KpiCards } from '@/components/kpis/kpi-cards'
 import { StagesChart } from '@/components/kpis/stages-chart'
 import { FunnelChart } from '@/components/kpis/funnel-chart'
 import { StageTimeChart } from '@/components/kpis/stage-time-chart'
 import { OwnerPerformanceTable } from '@/components/kpis/owner-performance-table'
+import { PipelineDistributionChart } from '@/components/kpis/pipeline-distribution-chart'
+import { OwnerTimeChart } from '@/components/kpis/owner-time-chart'
+import { HealthIndicators } from '@/components/kpis/health-indicators'
+import { AbandonmentReasonsChart } from '@/components/kpis/abandonment-reasons-chart'
+import { TrendsChart } from '@/components/kpis/trends-chart'
+import { AbandonmentByStageChart } from '@/components/kpis/abandonment-by-stage-chart'
 import {
   getProvidersPerStage,
   getAverageOnboardingTime,
   getOnboardingTotals,
   getCandidaturasPending,
   getConversionFunnel,
-  getAverageTimePerStage,
+  getAverageTimePerStageByType,
   getPerformanceByOwner,
   getDistrictsForKpis,
+  getPipelineDistribution,
+  getAverageTimeByOwner,
+  getHealthIndicators,
+  getAbandonmentReasons,
+  getAbandonmentByStage,
+  getTrends,
   type KpiFilters as KpiFiltersType,
 } from '@/lib/kpis/actions'
 import type { OnboardingType } from '@/types/database'
 
-interface KpisPageProps {
-  searchParams: Promise<{
-    dateFrom?: string
-    dateTo?: string
-    entityType?: string
-    district?: string
-    onboardingType?: string
-  }>
-}
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
-export default async function KpisPage({ searchParams }: KpisPageProps) {
+export default async function KpisPage({
+  searchParams,
+}: {
+  searchParams: SearchParams
+}) {
   const params = await searchParams
 
   const filters: KpiFiltersType = {
-    dateFrom: params.dateFrom,
-    dateTo: params.dateTo,
-    entityType: params.entityType,
-    district: params.district,
+    dateFrom: params.dateFrom as string | undefined,
+    dateTo: params.dateTo as string | undefined,
+    entityType: params.entityType as string | undefined,
+    district: params.district as string | undefined,
     onboardingType: params.onboardingType as OnboardingType | undefined,
   }
 
@@ -46,33 +53,43 @@ export default async function KpisPage({ searchParams }: KpisPageProps) {
     onboardingTotals,
     candidaturasPending,
     conversionFunnel,
-    stageTime,
+    stageTimeByType,
     ownerPerformance,
     districts,
+    pipelineDistribution,
+    ownerTime,
+    healthIndicators,
+    abandonmentReasons,
+    abandonmentByStage,
+    trends,
   ] = await Promise.all([
     getProvidersPerStage(filters),
     getAverageOnboardingTime(filters),
     getOnboardingTotals(filters),
     getCandidaturasPending(filters),
     getConversionFunnel(filters),
-    getAverageTimePerStage(filters),
+    getAverageTimePerStageByType(filters),
     getPerformanceByOwner(filters),
     getDistrictsForKpis(),
+    getPipelineDistribution(filters),
+    getAverageTimeByOwner(filters),
+    getHealthIndicators(filters),
+    getAbandonmentReasons(filters),
+    getAbandonmentByStage(filters),
+    getTrends(filters),
   ])
 
   return (
     <div className="flex flex-col h-full">
       <Header
         title="KPIs"
-        description="Metricas e indicadores de onboarding"
+        description="Métricas e indicadores de desempenho"
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
-        {/* Filters */}
-        <Suspense fallback={<div className="h-20 bg-muted animate-pulse rounded-lg" />}>
-          <KpiFilters districts={districts} />
-        </Suspense>
+        {/* Filtros */}
+        <KpiFilters districts={districts} />
 
-        {/* Main KPI Cards */}
+        {/* Cards de Resumo */}
         <KpiCards
           onboardingTotals={onboardingTotals}
           candidaturasPending={candidaturasPending}
@@ -80,25 +97,41 @@ export default async function KpisPage({ searchParams }: KpisPageProps) {
           conversionFunnel={conversionFunnel}
         />
 
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Stages Chart */}
-          <StagesChart stages={stages} />
-
-          {/* Funnel Chart */}
-          <FunnelChart data={conversionFunnel} />
+        {/* Saúde e Tendências */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <HealthIndicators data={healthIndicators} />
+          <div className="lg:col-span-2">
+            <TrendsChart aggregationType={trends.aggregationType} data={trends.data} />
+          </div>
         </div>
 
-        {/* Stage Time Analysis */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Time per Stage */}
-          <StageTimeChart data={stageTime} />
-
-          {/* Time Comparison */}
-          <TimeComparisonCard averageTime={averageTime} />
+        {/* Pipeline */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <PipelineDistributionChart
+            candidaturas={pipelineDistribution.candidaturas}
+            onboarding={pipelineDistribution.onboarding}
+          />
+          <div className="lg:col-span-2">
+            <StagesChart stages={stages} />
+          </div>
         </div>
 
-        {/* Owner Performance */}
+        {/* Conversão */}
+        <FunnelChart data={conversionFunnel} />
+
+        {/* Tempos */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <StageTimeChart data={stageTimeByType} />
+          <OwnerTimeChart data={ownerTime} />
+        </div>
+
+        {/* Abandonos */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AbandonmentByStageChart data={abandonmentByStage} />
+          <AbandonmentReasonsChart data={abandonmentReasons} />
+        </div>
+
+        {/* Performance da Equipa */}
         <OwnerPerformanceTable data={ownerPerformance} />
       </div>
     </div>

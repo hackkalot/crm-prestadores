@@ -37,7 +37,7 @@ export function AgendaTaskCard({ task }: AgendaTaskCardProps) {
   const EntityIcon = entityTypeIcons[task.providerType] || User
 
   return (
-    <Link href={`/onboarding/${task.cardId}`}>
+    <Link href={`/providers/${task.providerId}?tab=onboarding`}>
       <Card className={cn(
         'hover:shadow-md transition-shadow cursor-pointer',
         task.isOverdue && 'border-red-500 dark:border-red-700',

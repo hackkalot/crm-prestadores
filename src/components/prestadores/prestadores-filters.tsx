@@ -156,7 +156,7 @@ export function PrestadoresFilters({ districts, services }: PrestadoresFiltersPr
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
           {/* District Filter */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Zona de atuacao</label>
+            <label className="text-sm font-medium">Zona de atuação</label>
             <Select
               value={currentDistrict || '_all'}
               onValueChange={(value) => updateFilter('district', value)}
@@ -177,16 +177,16 @@ export function PrestadoresFilters({ districts, services }: PrestadoresFiltersPr
 
           {/* Service Filter */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Tipo de servico</label>
+            <label className="text-sm font-medium">Tipo de serviço</label>
             <Select
               value={currentService || '_all'}
               onValueChange={(value) => updateFilter('service', value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Todos os servicos" />
+                <SelectValue placeholder="Todos os serviços" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="_all">Todos os servicos</SelectItem>
+                <SelectItem value="_all">Todos os serviços</SelectItem>
                 {services.map((service) => (
                   <SelectItem key={service} value={service}>
                     {service}

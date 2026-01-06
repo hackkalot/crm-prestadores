@@ -145,7 +145,7 @@ export function KanbanCard({ card, alertConfig }: KanbanCardProps) {
       e.preventDefault()
       return
     }
-    window.location.href = `/onboarding/${card.id}`
+    window.location.href = `/providers/${card.provider?.id}?tab=onboarding`
   }
 
   return (

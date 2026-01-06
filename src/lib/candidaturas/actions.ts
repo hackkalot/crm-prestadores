@@ -1,18 +1,9 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import type { ProviderStatus, AbandonmentParty, OnboardingType, TaskStatus } from '@/types/database'
-
-// Cliente admin para operacoes que requerem bypass de RLS
-function getSupabaseAdmin() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
-}
 
 export type CandidaturaFilters = {
   status?: ProviderStatus | 'all'
@@ -25,7 +16,7 @@ export type CandidaturaFilters = {
 }
 
 export async function getCandidaturas(filters: CandidaturaFilters = {}) {
-  let query = getSupabaseAdmin()
+  let query = createAdminClient()
     .from('providers')
     .select('*')
     .in('status', ['novo', 'em_onboarding', 'abandonado'])
@@ -73,7 +64,7 @@ export async function getCandidaturas(filters: CandidaturaFilters = {}) {
 }
 
 export async function getCandidaturaById(id: string) {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('providers')
     .select('*')
     .eq('id', id)
@@ -88,7 +79,7 @@ export async function getCandidaturaById(id: string) {
 }
 
 export async function getApplicationHistory(providerId: string) {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('application_history')
     .select('*')
     .eq('provider_id', providerId)
@@ -127,7 +118,7 @@ export async function sendToOnboarding(
   }
 
   // Obter primeira etapa usando admin client
-  const { data: firstStage } = await getSupabaseAdmin()
+  const { data: firstStage } = await createAdminClient()
     .from('stage_definitions')
     .select('id')
     .eq('stage_number', '1')
@@ -138,7 +129,7 @@ export async function sendToOnboarding(
   }
 
   // Criar card de onboarding usando admin client
-  const { data: card, error: cardError } = await getSupabaseAdmin()
+  const { data: card, error: cardError } = await createAdminClient()
     .from('onboarding_cards')
     .insert({
       provider_id: providerId,
@@ -155,7 +146,7 @@ export async function sendToOnboarding(
   }
 
   // Obter todas as tarefas e criar instancias
-  const { data: taskDefs } = await getSupabaseAdmin()
+  const { data: taskDefs } = await createAdminClient()
     .from('task_definitions')
     .select('*')
     .eq('is_active', true)
@@ -187,11 +178,11 @@ export async function sendToOnboarding(
       }
     })
 
-    await getSupabaseAdmin().from('onboarding_tasks').insert(tasks)
+    await createAdminClient().from('onboarding_tasks').insert(tasks)
   }
 
   // Atualizar estado do prestador
-  const { error: updateError } = await getSupabaseAdmin()
+  const { error: updateError } = await createAdminClient()
     .from('providers')
     .update({
       status: 'em_onboarding' as ProviderStatus,
@@ -204,8 +195,19 @@ export async function sendToOnboarding(
     return { error: 'Erro ao atualizar estado do prestador' }
   }
 
+  // Registar no histórico
+  await createAdminClient()
+    .from('history_log')
+    .insert({
+      provider_id: providerId,
+      event_type: 'sent_to_onboarding',
+      description: `Enviado para onboarding (${onboardingType})`,
+      created_by: user.id,
+    })
+
   revalidatePath('/candidaturas')
   revalidatePath('/onboarding')
+  revalidatePath(`/providers/${providerId}`)
 
   return { success: true }
 }
@@ -236,7 +238,7 @@ export async function abandonCandidatura(
     return { error: 'Nao autenticado' }
   }
 
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('providers')
     .update({
       status: 'abandonado' as ProviderStatus,
@@ -253,14 +255,26 @@ export async function abandonCandidatura(
     return { error: 'Erro ao abandonar candidatura' }
   }
 
+  // Registar no histórico
+  const partyLabel = party === 'prestador' ? 'pelo prestador' : 'pela FIXO'
+  await createAdminClient()
+    .from('history_log')
+    .insert({
+      provider_id: providerId,
+      event_type: 'abandoned',
+      description: `Candidatura abandonada ${partyLabel}: ${reason}${notes ? ` - ${notes}` : ''}`,
+      created_by: user.id,
+    })
+
   revalidatePath('/candidaturas')
+  revalidatePath(`/providers/${providerId}`)
 
   return { success: true }
 }
 
 // Obter lista de distritos unicos
 export async function getDistinctDistricts() {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('providers')
     .select('districts')
     .not('districts', 'is', null)
@@ -281,7 +295,7 @@ export async function getDistinctDistricts() {
 
 // Obter lista de servicos unicos
 export async function getDistinctServices() {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('providers')
     .select('services')
     .not('services', 'is', null)
@@ -302,7 +316,7 @@ export async function getDistinctServices() {
 
 // Estatisticas rapidas
 export async function getCandidaturasStats() {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('providers')
     .select('status')
     .in('status', ['novo', 'em_onboarding', 'abandonado'])
@@ -319,4 +333,162 @@ export async function getCandidaturasStats() {
   }
 
   return result
+}
+
+// Recuperar candidatura abandonada
+export type RecoverState = {
+  error?: string
+  success?: boolean
+}
+
+export async function recoverCandidatura(
+  prevState: RecoverState,
+  formData: FormData
+): Promise<RecoverState> {
+  const supabase = await createClient()
+
+  const providerId = formData.get('providerId') as string
+  const notes = formData.get('notes') as string
+
+  if (!providerId) {
+    return { error: 'Dados incompletos' }
+  }
+
+  // Obter utilizador atual
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Nao autenticado' }
+  }
+
+  // Verificar se o provider está abandonado
+  const { data: provider } = await createAdminClient()
+    .from('providers')
+    .select('status')
+    .eq('id', providerId)
+    .single()
+
+  if (!provider || provider.status !== 'abandonado') {
+    return { error: 'Esta candidatura nao pode ser recuperada' }
+  }
+
+  // Atualizar estado do prestador para novo
+  const { error } = await createAdminClient()
+    .from('providers')
+    .update({
+      status: 'novo' as ProviderStatus,
+      abandonment_party: null,
+      abandonment_reason: null,
+      abandonment_notes: null,
+      abandoned_at: null,
+      abandoned_by: null,
+    })
+    .eq('id', providerId)
+
+  if (error) {
+    console.error('Erro ao recuperar:', error)
+    return { error: 'Erro ao recuperar candidatura' }
+  }
+
+  // Registar no histórico
+  await createAdminClient()
+    .from('history_log')
+    .insert({
+      provider_id: providerId,
+      event_type: 'recovered',
+      description: notes ? `Candidatura recuperada: ${notes}` : 'Candidatura recuperada',
+      created_by: user.id,
+    })
+
+  revalidatePath('/candidaturas')
+  revalidatePath(`/providers/${providerId}`)
+
+  return { success: true }
+}
+
+// Remover prestador do onboarding
+export type RemoveFromOnboardingState = {
+  error?: string
+  success?: boolean
+}
+
+export async function removeFromOnboarding(
+  prevState: RemoveFromOnboardingState,
+  formData: FormData
+): Promise<RemoveFromOnboardingState> {
+  const supabase = await createClient()
+
+  const providerId = formData.get('providerId') as string
+  const reason = formData.get('reason') as string
+
+  if (!providerId) {
+    return { error: 'Dados incompletos' }
+  }
+
+  // Obter utilizador atual
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Nao autenticado' }
+  }
+
+  // Verificar se o provider está em onboarding
+  const { data: provider } = await createAdminClient()
+    .from('providers')
+    .select('status')
+    .eq('id', providerId)
+    .single()
+
+  if (!provider || provider.status !== 'em_onboarding') {
+    return { error: 'Este prestador nao esta em onboarding' }
+  }
+
+  // Obter o onboarding card
+  const { data: card } = await createAdminClient()
+    .from('onboarding_cards')
+    .select('id')
+    .eq('provider_id', providerId)
+    .single()
+
+  if (card) {
+    // Apagar todas as tarefas do onboarding
+    await createAdminClient()
+      .from('onboarding_tasks')
+      .delete()
+      .eq('card_id', card.id)
+
+    // Apagar o card de onboarding
+    await createAdminClient()
+      .from('onboarding_cards')
+      .delete()
+      .eq('id', card.id)
+  }
+
+  // Atualizar estado do prestador para novo
+  const { error } = await createAdminClient()
+    .from('providers')
+    .update({
+      status: 'novo' as ProviderStatus,
+      onboarding_started_at: null,
+    })
+    .eq('id', providerId)
+
+  if (error) {
+    console.error('Erro ao remover do onboarding:', error)
+    return { error: 'Erro ao remover do onboarding' }
+  }
+
+  // Registar no histórico
+  await createAdminClient()
+    .from('history_log')
+    .insert({
+      provider_id: providerId,
+      event_type: 'removed_from_onboarding',
+      description: reason ? `Removido do onboarding: ${reason}` : 'Removido do onboarding',
+      created_by: user.id,
+    })
+
+  revalidatePath('/candidaturas')
+  revalidatePath('/onboarding')
+  revalidatePath(`/providers/${providerId}`)
+
+  return { success: true }
 }

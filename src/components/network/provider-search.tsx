@@ -196,7 +196,7 @@ export function ProviderSearch() {
                              provider.entityType === 'eni' ? 'ENI' : 'Empresa'}
                           </p>
                         </div>
-                        <Link href={`/prestadores/${provider.id}`}>
+                        <Link href={`/providers/${provider.id}?tab=perfil`}>
                           <Button variant="outline" size="sm">
                             <ExternalLink className="h-4 w-4" />
                           </Button>

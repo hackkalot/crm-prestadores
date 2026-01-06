@@ -121,9 +121,9 @@ export function AlertsDropdown({ alerts, unreadCount }: AlertsDropdownProps) {
                             locale: pt,
                           })}
                         </span>
-                        {alert.task?.card_id && (
+                        {alert.provider_id && (
                           <Link
-                            href={`/onboarding/${alert.task.card_id}`}
+                            href={`/providers/${alert.provider_id}?tab=onboarding`}
                             className="text-xs text-primary hover:underline inline-flex items-center gap-1"
                             onClick={(e) => e.stopPropagation()}
                           >

@@ -1,18 +1,9 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import type { TaskStatus, OnboardingType } from '@/types/database'
-
-// Cliente admin para operacoes que requerem bypass de RLS
-function getSupabaseAdmin() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
-}
 
 export type OnboardingFilters = {
   stageId?: string
@@ -24,7 +15,7 @@ export type OnboardingFilters = {
 // Obter todas as etapas com cards
 export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
   // Obter etapas
-  const { data: stages, error: stagesError } = await getSupabaseAdmin()
+  const { data: stages, error: stagesError } = await createAdminClient()
     .from('stage_definitions')
     .select('*')
     .eq('is_active', true)
@@ -36,7 +27,7 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
   }
 
   // Obter cards com providers e tarefas
-  let cardsQuery = getSupabaseAdmin()
+  let cardsQuery = createAdminClient()
     .from('onboarding_cards')
     .select(`
       *,
@@ -80,7 +71,7 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
 
 // Obter detalhes de um card
 export async function getOnboardingCard(cardId: string) {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('onboarding_cards')
     .select(`
       *,
@@ -132,7 +123,7 @@ export async function moveCardToStage(
   }
 
   // Obter card atual para log
-  const { data: currentCard } = await getSupabaseAdmin()
+  const { data: currentCard } = await createAdminClient()
     .from('onboarding_cards')
     .select('current_stage_id, provider_id')
     .eq('id', cardId)
@@ -143,7 +134,7 @@ export async function moveCardToStage(
   }
 
   // Atualizar etapa
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('onboarding_cards')
     .update({ current_stage_id: newStageId })
     .eq('id', cardId)
@@ -154,7 +145,7 @@ export async function moveCardToStage(
   }
 
   // Registar no historico
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: currentCard.provider_id,
     card_id: cardId,
     event_type: 'stage_change',
@@ -195,7 +186,7 @@ export async function updateTaskStatus(
   }
 
   // Obter tarefa atual com task_definition para saber a etapa
-  const { data: currentTask } = await getSupabaseAdmin()
+  const { data: currentTask } = await createAdminClient()
     .from('onboarding_tasks')
     .select(`
       status,
@@ -221,7 +212,7 @@ export async function updateTaskStatus(
     updateData.completed_by = user.id
   }
 
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('onboarding_tasks')
     .update(updateData)
     .eq('id', taskId)
@@ -232,14 +223,14 @@ export async function updateTaskStatus(
   }
 
   // Obter card para log e verificacao de etapa
-  const { data: card } = await getSupabaseAdmin()
+  const { data: card } = await createAdminClient()
     .from('onboarding_cards')
     .select('id, provider_id, current_stage_id')
     .eq('id', currentTask.card_id)
     .single()
 
   if (card) {
-    await getSupabaseAdmin().from('history_log').insert({
+    await createAdminClient().from('history_log').insert({
       provider_id: card.provider_id,
       card_id: currentTask.card_id,
       task_id: taskId,
@@ -284,7 +275,7 @@ async function checkAndMoveToNextStage(
   userId: string
 ): Promise<boolean> {
   // Obter todas as tarefas do card que pertencem a etapa atual
-  const { data: allTasks } = await getSupabaseAdmin()
+  const { data: allTasks } = await createAdminClient()
     .from('onboarding_tasks')
     .select(`
       id,
@@ -317,7 +308,7 @@ async function checkAndMoveToNextStage(
   if (!allCompleted) return false
 
   // Obter proxima etapa
-  const { data: currentStage } = await getSupabaseAdmin()
+  const { data: currentStage } = await createAdminClient()
     .from('stage_definitions')
     .select('display_order')
     .eq('id', currentStageId)
@@ -325,7 +316,7 @@ async function checkAndMoveToNextStage(
 
   if (!currentStage) return false
 
-  const { data: nextStage } = await getSupabaseAdmin()
+  const { data: nextStage } = await createAdminClient()
     .from('stage_definitions')
     .select('id, stage_number, name')
     .eq('is_active', true)
@@ -337,7 +328,7 @@ async function checkAndMoveToNextStage(
   if (!nextStage) return false // Nao ha proxima etapa (ultima etapa)
 
   // Mover card para proxima etapa
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('onboarding_cards')
     .update({ current_stage_id: nextStage.id })
     .eq('id', cardId)
@@ -348,7 +339,7 @@ async function checkAndMoveToNextStage(
   }
 
   // Registar no historico
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     card_id: cardId,
     event_type: 'stage_change',
@@ -380,7 +371,7 @@ export async function changeCardOwner(
     return { error: 'Nao autenticado' }
   }
 
-  const { data: currentCard } = await getSupabaseAdmin()
+  const { data: currentCard } = await createAdminClient()
     .from('onboarding_cards')
     .select('owner_id, provider_id')
     .eq('id', cardId)
@@ -390,7 +381,7 @@ export async function changeCardOwner(
     return { error: 'Card nao encontrado' }
   }
 
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('onboarding_cards')
     .update({ owner_id: newOwnerId })
     .eq('id', cardId)
@@ -400,7 +391,7 @@ export async function changeCardOwner(
     return { error: 'Erro ao alterar responsavel' }
   }
 
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: currentCard.provider_id,
     card_id: cardId,
     event_type: 'owner_change',
@@ -434,7 +425,7 @@ export async function completeOnboarding(
   }
 
   // Obter card
-  const { data: card } = await getSupabaseAdmin()
+  const { data: card } = await createAdminClient()
     .from('onboarding_cards')
     .select('provider_id')
     .eq('id', cardId)
@@ -445,7 +436,7 @@ export async function completeOnboarding(
   }
 
   // Marcar card como concluido
-  const { error: cardError } = await getSupabaseAdmin()
+  const { error: cardError } = await createAdminClient()
     .from('onboarding_cards')
     .update({ completed_at: new Date().toISOString() })
     .eq('id', cardId)
@@ -456,7 +447,7 @@ export async function completeOnboarding(
   }
 
   // Ativar prestador
-  const { error: providerError } = await getSupabaseAdmin()
+  const { error: providerError } = await createAdminClient()
     .from('providers')
     .update({
       status: 'ativo',
@@ -469,7 +460,7 @@ export async function completeOnboarding(
     return { error: 'Erro ao ativar prestador' }
   }
 
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: card.provider_id,
     card_id: cardId,
     event_type: 'status_change',
@@ -487,7 +478,7 @@ export async function completeOnboarding(
 
 // Obter utilizadores para selects
 export async function getUsers() {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('users')
     .select('id, name, email')
     .order('name')
@@ -502,7 +493,7 @@ export async function getUsers() {
 
 // Obter notas de um provider
 export async function getProviderNotes(providerId: string) {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('notes')
     .select(`
       *,
@@ -545,7 +536,7 @@ export async function addNote(
     return { error: 'Nao autenticado' }
   }
 
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('notes')
     .insert({
       provider_id: providerId,
@@ -561,7 +552,7 @@ export async function addNote(
   }
 
   // Registar no historico
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'note_added',
     description: 'Nota adicionada',
@@ -570,13 +561,14 @@ export async function addNote(
   })
 
   revalidatePath(`/onboarding`)
+  revalidatePath(`/providers/${providerId}`)
 
   return { success: true }
 }
 
 // Obter historico de um provider
 export async function getProviderHistory(providerId: string) {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('history_log')
     .select(`
       *,
@@ -620,7 +612,7 @@ export async function rescheduleTaskDeadline(
   }
 
   // Obter tarefa atual
-  const { data: currentTask } = await getSupabaseAdmin()
+  const { data: currentTask } = await createAdminClient()
     .from('onboarding_tasks')
     .select(`
       deadline_at,
@@ -637,7 +629,7 @@ export async function rescheduleTaskDeadline(
   const oldDeadline = currentTask.deadline_at
 
   // Atualizar prazo
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('onboarding_tasks')
     .update({ deadline_at: new Date(newDeadline).toISOString() })
     .eq('id', taskId)
@@ -648,7 +640,7 @@ export async function rescheduleTaskDeadline(
   }
 
   // Obter card para log
-  const { data: card } = await getSupabaseAdmin()
+  const { data: card } = await createAdminClient()
     .from('onboarding_cards')
     .select('provider_id')
     .eq('id', currentTask.card_id)
@@ -661,7 +653,7 @@ export async function rescheduleTaskDeadline(
       : currentTask.task_definition
     const taskName = taskDef?.name || 'Tarefa'
 
-    await getSupabaseAdmin().from('history_log').insert({
+    await createAdminClient().from('history_log').insert({
       provider_id: card.provider_id,
       card_id: currentTask.card_id,
       task_id: taskId,
@@ -681,7 +673,7 @@ export async function rescheduleTaskDeadline(
 
 // Estatisticas do Kanban
 export async function getOnboardingStats() {
-  const { data: cards, error } = await getSupabaseAdmin()
+  const { data: cards, error } = await createAdminClient()
     .from('onboarding_cards')
     .select(`
       id,

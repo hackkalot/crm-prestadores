@@ -1,17 +1,8 @@
 'use server'
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { startOfWeek, endOfWeek, startOfDay, endOfDay, addDays, format } from 'date-fns'
-
-// Criar cliente admin apenas quando necessário (não no nível do módulo para evitar erros de build)
-function getSupabaseAdmin() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
-}
 
 export type AgendaView = 'week' | 'day'
 
@@ -40,7 +31,7 @@ export type AgendaTask = {
 
 // Funcao auxiliar para obter o ID do utilizador na tabela users
 async function getUserId(authUser: { id: string; email?: string }): Promise<string | null> {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
 
   // Primeiro tentar por ID direto
   const { data: userById } = await supabaseAdmin
@@ -94,7 +85,7 @@ export async function getAgendaTasks(filters: AgendaFilters): Promise<AgendaTask
   }
 
   // Buscar tarefas do utilizador
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   let query = supabaseAdmin
     .from('onboarding_tasks')
     .select(`
@@ -215,7 +206,7 @@ export async function getAgendaStats() {
   const todayEnd = endOfDay(now)
 
   // Buscar todas as tarefas do utilizador
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { data: tasks } = await supabaseAdmin
     .from('onboarding_tasks')
     .select('id, status, deadline_at, completed_at')

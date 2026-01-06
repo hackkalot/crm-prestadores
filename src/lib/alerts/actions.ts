@@ -1,21 +1,12 @@
 'use server'
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-// Criar cliente admin apenas quando necessário (não no nível do módulo para evitar erros de build)
-function getSupabaseAdmin() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
-}
-
 // Funcao auxiliar para obter o ID do utilizador na tabela users
 async function getUserId(authUser: { id: string; email?: string }): Promise<string | null> {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
 
   // Primeiro tentar por ID direto
   const { data: userById } = await supabaseAdmin
@@ -69,7 +60,7 @@ export async function getUserAlerts(unreadOnly = false): Promise<Alert[]> {
   const userId = await getUserId(user)
   if (!userId) return []
 
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   let query = supabaseAdmin
     .from('alerts')
     .select(`
@@ -114,7 +105,7 @@ export async function getUnreadAlertCount(): Promise<number> {
   const userId = await getUserId(user)
   if (!userId) return 0
 
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { count, error } = await supabaseAdmin
     .from('alerts')
     .select('id', { count: 'exact', head: true })
@@ -140,7 +131,7 @@ export async function markAlertAsRead(alertId: string): Promise<boolean> {
   const userId = await getUserId(user)
   if (!userId) return false
 
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { error } = await supabaseAdmin
     .from('alerts')
     .update({
@@ -169,7 +160,7 @@ export async function markAllAlertsAsRead(): Promise<boolean> {
   const userId = await getUserId(user)
   if (!userId) return false
 
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const { error } = await supabaseAdmin
     .from('alerts')
     .update({
@@ -191,7 +182,7 @@ export async function markAllAlertsAsRead(): Promise<boolean> {
 // Gerar alertas de prazo a expirar
 // Esta funcao deve ser chamada periodicamente (cron job ou similar)
 export async function generateDeadlineAlerts(): Promise<number> {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
 
   // Obter configuracao de horas antes do prazo
   const { data: setting } = await supabaseAdmin
@@ -276,7 +267,7 @@ export async function generateDeadlineAlerts(): Promise<number> {
 
 // Gerar alertas de tarefa parada
 export async function generateStalledTaskAlerts(): Promise<number> {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
 
   // Obter configuracao de dias sem alteracoes
   const { data: setting } = await supabaseAdmin
@@ -365,7 +356,7 @@ export async function checkCardRiskStatus(cardId: string): Promise<{
   hasApproachingDeadline: boolean
   hasStalled: boolean
 }> {
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = createAdminClient()
   const now = new Date()
 
   // Obter configuracoes

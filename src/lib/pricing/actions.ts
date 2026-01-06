@@ -1,16 +1,8 @@
 'use server'
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-
-function getSupabaseAdmin() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
-}
 
 // Tipos
 export type ServiceCategory = {
@@ -60,7 +52,7 @@ export type ServiceWithPrices = Service & {
 
 // Obter categorias de servicos
 export async function getServiceCategories(): Promise<ServiceCategory[]> {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('service_categories')
     .select('*')
     .eq('is_active', true)
@@ -77,7 +69,7 @@ export async function getServiceCategories(): Promise<ServiceCategory[]> {
 // Obter servicos com precos de referencia
 export async function getServicesWithReferencePrices(): Promise<ServiceWithPrices[]> {
   // Obter servicos com categorias
-  const { data: services, error: servicesError } = await getSupabaseAdmin()
+  const { data: services, error: servicesError } = await createAdminClient()
     .from('services')
     .select(`
       id,
@@ -96,7 +88,7 @@ export async function getServicesWithReferencePrices(): Promise<ServiceWithPrice
   }
 
   // Obter precos de referencia ativos
-  const { data: refPrices, error: refPricesError } = await getSupabaseAdmin()
+  const { data: refPrices, error: refPricesError } = await createAdminClient()
     .from('reference_prices')
     .select('*')
     .eq('is_active', true)
@@ -116,7 +108,7 @@ export async function getServicesWithReferencePrices(): Promise<ServiceWithPrice
 
 // Obter precos de um prestador
 export async function getProviderPrices(providerId: string): Promise<ProviderPrice[]> {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('provider_prices')
     .select(`
       *,
@@ -194,7 +186,7 @@ export async function setProviderPrice(
   if (!user) throw new Error('Not authenticated')
 
   // Desativar preco anterior para o mesmo servico/variante
-  await getSupabaseAdmin()
+  await createAdminClient()
     .from('provider_prices')
     .update({
       is_active: false,
@@ -206,7 +198,7 @@ export async function setProviderPrice(
     .eq('variant_name', variantName || null)
 
   // Criar novo preco
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('provider_prices')
     .insert({
       provider_id: providerId,
@@ -225,7 +217,7 @@ export async function setProviderPrice(
   }
 
   // Registar no historico
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'price_change',
     description: `Preco atualizado para servico`,
@@ -253,7 +245,7 @@ export async function setProviderPricesBatch(
 
   // Desativar precos anteriores
   const serviceIds = prices.map((p) => p.serviceId)
-  await getSupabaseAdmin()
+  await createAdminClient()
     .from('provider_prices')
     .update({
       is_active: false,
@@ -273,7 +265,7 @@ export async function setProviderPricesBatch(
     is_active: true,
   }))
 
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('provider_prices')
     .insert(newPrices)
 
@@ -283,7 +275,7 @@ export async function setProviderPricesBatch(
   }
 
   // Registar no historico
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'price_change',
     description: `${prices.length} precos atualizados`,
@@ -304,7 +296,7 @@ export async function createPriceSnapshot(providerId: string, snapshotName?: str
   // Obter precos atuais
   const providerPrices = await getProviderPrices(providerId)
 
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('provider_price_snapshots')
     .insert({
       provider_id: providerId,
@@ -326,7 +318,7 @@ export async function createPriceSnapshot(providerId: string, snapshotName?: str
 
 // Obter snapshots de precos
 export async function getPriceSnapshots(providerId: string) {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('provider_price_snapshots')
     .select(`
       *,
@@ -359,7 +351,7 @@ export async function generateInitialPriceProposal(providerId: string): Promise<
   if (!user) return { success: false, pricesCreated: 0, error: 'Nao autenticado' }
 
   // Verificar se prestador ja tem precos
-  const { data: existingPrices } = await getSupabaseAdmin()
+  const { data: existingPrices } = await createAdminClient()
     .from('provider_prices')
     .select('id')
     .eq('provider_id', providerId)
@@ -375,7 +367,7 @@ export async function generateInitialPriceProposal(providerId: string): Promise<
   }
 
   // Obter precos de referencia ativos
-  const { data: refPrices, error: refError } = await getSupabaseAdmin()
+  const { data: refPrices, error: refError } = await createAdminClient()
     .from('reference_prices')
     .select(`
       id,
@@ -404,7 +396,7 @@ export async function generateInitialPriceProposal(providerId: string): Promise<
     is_active: true,
   }))
 
-  const { error: insertError } = await getSupabaseAdmin()
+  const { error: insertError } = await createAdminClient()
     .from('provider_prices')
     .insert(newPrices)
 
@@ -418,7 +410,7 @@ export async function generateInitialPriceProposal(providerId: string): Promise<
   }
 
   // Registar no historico
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'price_change',
     description: `Proposta inicial de precos gerada (${newPrices.length} precos)`,
@@ -432,7 +424,7 @@ export async function generateInitialPriceProposal(providerId: string): Promise<
 
 // Verificar se prestador tem precos definidos
 export async function hasProviderPrices(providerId: string): Promise<boolean> {
-  const { data } = await getSupabaseAdmin()
+  const { data } = await createAdminClient()
     .from('provider_prices')
     .select('id')
     .eq('provider_id', providerId)
@@ -445,7 +437,7 @@ export async function hasProviderPrices(providerId: string): Promise<boolean> {
 // Obter dados para exportacao de precario
 export async function getPricingExportData(providerId: string) {
   // Obter dados do prestador
-  const { data: provider, error: providerError } = await getSupabaseAdmin()
+  const { data: provider, error: providerError } = await createAdminClient()
     .from('providers')
     .select('id, name, nif, email, phone, entity_type')
     .eq('id', providerId)
@@ -507,7 +499,7 @@ export async function calculatePriceDeviations(providerId: string) {
   const providerPrices = await getProviderPrices(providerId)
 
   // Obter precos de referencia
-  const { data: refPrices } = await getSupabaseAdmin()
+  const { data: refPrices } = await createAdminClient()
     .from('reference_prices')
     .select('*')
     .eq('is_active', true)

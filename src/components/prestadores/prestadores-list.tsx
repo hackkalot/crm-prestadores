@@ -83,7 +83,7 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
               <TableRow key={prestador.id} className="group">
                 <TableCell>
                   <Link
-                    href={`/prestadores/${prestador.id}`}
+                    href={`/providers/${prestador.id}?tab=perfil`}
                     className="flex items-center gap-3 hover:text-primary transition-colors"
                   >
                     <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center shrink-0">
@@ -136,7 +136,7 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <Link href={`/prestadores/${prestador.id}`}>
+                  <Link href={`/providers/${prestador.id}?tab=perfil`}>
                     <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                   </Link>
                 </TableCell>

@@ -60,7 +60,7 @@ export function CandidaturaCard({ provider, onSendToOnboarding, onAbandon }: Can
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <Link
-            href={`/candidaturas/${provider.id}`}
+            href={`/providers/${provider.id}?tab=candidatura`}
             className="flex items-center gap-3 hover:text-primary"
           >
             <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">

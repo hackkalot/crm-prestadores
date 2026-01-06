@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { Header } from '@/components/layout/header'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   getOnboardingCard,
   getUsers,
@@ -23,11 +24,13 @@ import {
   Mail,
   Phone,
   MapPin,
-  Calendar,
-  Clock,
   CheckCircle2,
+  Clock,
   Circle,
   AlertTriangle,
+  ListTodo,
+  MessageSquare,
+  History,
 } from 'lucide-react'
 
 interface OnboardingDetailPageProps {
@@ -58,7 +61,6 @@ export default async function OnboardingDetailPage({ params }: OnboardingDetailP
     notFound()
   }
 
-  // Fetch notes and history in parallel
   const [notes, history] = await Promise.all([
     getProviderNotes(card.provider?.id || ''),
     getProviderHistory(card.provider?.id || ''),
@@ -94,7 +96,7 @@ export default async function OnboardingDetailPage({ params }: OnboardingDetailP
           <Link href="/onboarding">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
+              Voltar ao Kanban
             </Button>
           </Link>
 
@@ -107,167 +109,187 @@ export default async function OnboardingDetailPage({ params }: OnboardingDetailP
           />
         </div>
 
-        {/* Main Info Card */}
+        {/* Provider Info Header */}
         <Card>
           <CardContent className="p-6">
-            <div className="flex items-start gap-6">
-              {/* Avatar */}
-              <div className="h-20 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                <EntityIcon className="h-10 w-10 text-muted-foreground" />
-              </div>
-
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-2">
-                  <h2 className="text-2xl font-bold">{card.provider?.name}</h2>
-                  <Badge variant={card.onboarding_type === 'urgente' ? 'warning' : 'secondary'}>
-                    {card.onboarding_type === 'urgente' ? 'Urgente' : 'Normal'}
-                  </Badge>
-                  {overdueTasks.length > 0 && (
-                    <Badge variant="destructive">
-                      <AlertTriangle className="h-3 w-3 mr-1" />
-                      {overdueTasks.length} atrasada{overdueTasks.length > 1 ? 's' : ''}
-                    </Badge>
-                  )}
+            <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+              {/* Left: Provider Info */}
+              <div className="flex items-start gap-4 flex-1 min-w-0">
+                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
+                  <EntityIcon className="h-8 w-8 text-primary" />
                 </div>
 
-                <p className="text-muted-foreground mb-4">
-                  {entityTypeLabels[card.provider?.entity_type || 'tecnico']}
-                  {card.provider?.nif && ` • NIF: ${card.provider.nif}`}
-                </p>
-
-                {/* Contact Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                    <a href={`mailto:${card.provider?.email}`} className="text-primary hover:underline">
-                      {card.provider?.email}
-                    </a>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <h2 className="text-xl font-bold truncate">{card.provider?.name}</h2>
+                    <Badge variant={card.onboarding_type === 'urgente' ? 'warning' : 'secondary'}>
+                      {card.onboarding_type === 'urgente' ? 'Urgente' : 'Normal'}
+                    </Badge>
+                    {overdueTasks.length > 0 && (
+                      <Badge variant="destructive">
+                        <AlertTriangle className="h-3 w-3 mr-1" />
+                        {overdueTasks.length} atrasada{overdueTasks.length > 1 ? 's' : ''}
+                      </Badge>
+                    )}
                   </div>
 
-                  {card.provider?.phone && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Phone className="h-4 w-4 text-muted-foreground" />
-                      <a href={`tel:${card.provider.phone}`} className="hover:underline">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {entityTypeLabels[card.provider?.entity_type || 'tecnico']}
+                    {card.provider?.nif && ` • NIF: ${card.provider.nif}`}
+                  </p>
+
+                  {/* Contact Info */}
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                    <a href={`mailto:${card.provider?.email}`} className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
+                      <Mail className="h-4 w-4" />
+                      {card.provider?.email}
+                    </a>
+                    {card.provider?.phone && (
+                      <a href={`tel:${card.provider.phone}`} className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors">
+                        <Phone className="h-4 w-4" />
                         {card.provider.phone}
                       </a>
-                    </div>
-                  )}
-
-                  {card.provider?.districts && card.provider.districts.length > 0 && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>{card.provider.districts.join(', ')}</span>
-                    </div>
-                  )}
+                    )}
+                    {card.provider?.districts && card.provider.districts.length > 0 && (
+                      <span className="flex items-center gap-1.5 text-muted-foreground">
+                        <MapPin className="h-4 w-4" />
+                        {card.provider.districts.slice(0, 3).join(', ')}
+                        {card.provider.districts.length > 3 && ` +${card.provider.districts.length - 3}`}
+                      </span>
+                    )}
+                  </div>
                 </div>
+              </div>
+
+              {/* Right: Progress Stats */}
+              <div className="flex items-center gap-6 lg:border-l lg:pl-6">
+                {/* Progress Ring */}
+                <div className="relative h-20 w-20 shrink-0">
+                  <svg className="h-20 w-20 -rotate-90" viewBox="0 0 36 36">
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      className="text-muted"
+                    />
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeDasharray={`${progress}, 100`}
+                      className={overdueTasks.length > 0 ? 'text-red-500' : 'text-primary'}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-lg font-bold">{progress}%</span>
+                  </div>
+                </div>
+
+                {/* Task Counts */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-green-100 dark:bg-green-950 mx-auto mb-1">
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    </div>
+                    <p className="text-lg font-bold">{completedTasks}</p>
+                    <p className="text-[10px] text-muted-foreground">Feitas</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-950 mx-auto mb-1">
+                      <Clock className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <p className="text-lg font-bold">{inProgressTasks}</p>
+                    <p className="text-[10px] text-muted-foreground">Em curso</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-muted mx-auto mb-1">
+                      <Circle className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <p className="text-lg font-bold">{pendingTasks}</p>
+                    <p className="text-[10px] text-muted-foreground">Pendentes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Meta Info Bar */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 pt-4 border-t text-sm">
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">Etapa:</span>
+                <Badge variant="outline">
+                  {card.current_stage?.stage_number} - {card.current_stage?.name}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">Responsável:</span>
+                <span className="font-medium">{card.owner?.name || 'Não atribuído'}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">Início:</span>
+                <span>{formatDateTime(card.started_at)}</span>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Progress Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Progresso</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Progress bar */}
-              <div>
-                <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Conclusão</span>
-                  <span className="font-bold text-lg">{progress}%</span>
-                </div>
-                <div className="h-3 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className={`h-full transition-all ${
-                      overdueTasks.length > 0 ? 'bg-red-500' : 'bg-primary'
-                    }`}
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              </div>
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="tarefas" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
+            <TabsTrigger value="tarefas" className="gap-2">
+              <ListTodo className="h-4 w-4" />
+              <span className="hidden sm:inline">Tarefas</span>
+              <Badge variant="secondary" className="ml-1 h-5 px-1.5">
+                {completedTasks}/{totalTasks}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="notas" className="gap-2">
+              <MessageSquare className="h-4 w-4" />
+              <span className="hidden sm:inline">Notas</span>
+              {notes.length > 0 && (
+                <Badge variant="secondary" className="ml-1 h-5 px-1.5">
+                  {notes.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="historico" className="gap-2">
+              <History className="h-4 w-4" />
+              <span className="hidden sm:inline">Histórico</span>
+            </TabsTrigger>
+          </TabsList>
 
-              {/* Task counts */}
-              <div className="grid grid-cols-3 gap-2 pt-2">
-                <div className="text-center p-3 bg-green-50 dark:bg-green-950 rounded-lg">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto mb-1" />
-                  <p className="text-lg font-bold">{completedTasks}</p>
-                  <p className="text-xs text-muted-foreground">Concluídas</p>
-                </div>
-                <div className="text-center p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                  <Clock className="h-5 w-5 text-blue-500 mx-auto mb-1" />
-                  <p className="text-lg font-bold">{inProgressTasks}</p>
-                  <p className="text-xs text-muted-foreground">Em curso</p>
-                </div>
-                <div className="text-center p-3 bg-muted rounded-lg">
-                  <Circle className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
-                  <p className="text-lg font-bold">{pendingTasks}</p>
-                  <p className="text-xs text-muted-foreground">Pendentes</p>
-                </div>
-              </div>
+          <TabsContent value="tarefas" className="mt-4">
+            <Card>
+              <CardContent className="p-4">
+                <OnboardingTaskList
+                  tasks={tasks}
+                  cardId={card.id}
+                  currentStageId={card.current_stage?.id}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-              {/* Dates */}
-              <div className="pt-4 border-t space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Etapa atual</span>
-                  <Badge variant="outline">
-                    {card.current_stage?.stage_number} - {card.current_stage?.name}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Responsável</span>
-                  <span className="font-medium">{card.owner?.name || 'Não atribuído'}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Início</span>
-                  <span>{formatDateTime(card.started_at)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <TabsContent value="notas" className="mt-4">
+            <Card>
+              <CardContent className="p-4">
+                <NotesSection
+                  providerId={card.provider?.id || ''}
+                  notes={notes}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          {/* Tasks Card */}
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-lg">Tarefas</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <OnboardingTaskList
-                tasks={tasks}
-                cardId={card.id}
-                currentStageId={card.current_stage?.id}
-              />
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Notes and History Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Notes */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Notas</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <NotesSection
-                providerId={card.provider?.id || ''}
-                notes={notes}
-              />
-            </CardContent>
-          </Card>
-
-          {/* History */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Histórico</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <HistorySection history={history} />
-            </CardContent>
-          </Card>
-        </div>
+          <TabsContent value="historico" className="mt-4">
+            <Card>
+              <CardContent className="p-4">
+                <HistorySection history={history} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   )

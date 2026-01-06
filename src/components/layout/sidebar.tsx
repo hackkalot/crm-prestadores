@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { logout } from '@/lib/auth/actions'
 import {
@@ -16,9 +16,9 @@ import {
 } from 'lucide-react'
 
 const navigation = [
-  { name: 'Candidaturas', href: '/candidaturas', icon: Users },
-  { name: 'Onboarding', href: '/onboarding', icon: Kanban },
-  { name: 'Prestadores', href: '/prestadores', icon: UserCheck },
+  { name: 'Candidaturas', href: '/candidaturas', icon: Users, contextTab: 'candidatura' },
+  { name: 'Onboarding', href: '/onboarding', icon: Kanban, contextTab: 'onboarding' },
+  { name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil' },
   { name: 'Rede', href: '/rede', icon: Network },
   { name: 'Agenda', href: '/agenda', icon: Calendar },
   { name: 'KPIs', href: '/kpis', icon: BarChart3 },
@@ -34,6 +34,8 @@ interface SidebarProps {
 
 export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const currentTab = searchParams.get('tab')
 
   return (
     <div className="flex h-full w-64 flex-col bg-card border-r">
@@ -50,7 +52,11 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Navigation */}
       <nav className="flex-1 px-4 py-4 space-y-1">
         {navigation.map((item) => {
-          const isActive = pathname.startsWith(item.href)
+          // Verificar se está ativo por pathname direto ou por contexto em /providers/[id]
+          const isProviderPage = pathname.startsWith('/providers/')
+          const isActiveByTab = isProviderPage && item.contextTab && currentTab === item.contextTab
+          const isActiveByPath = pathname.startsWith(item.href)
+          const isActive = isActiveByTab || isActiveByPath
           return (
             <Link
               key={item.name}

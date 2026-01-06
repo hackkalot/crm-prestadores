@@ -58,7 +58,7 @@ export function CandidaturaRow({ provider, onSendToOnboarding, onAbandon }: Cand
 
       {/* Name & Email - Clickable */}
       <Link
-        href={`/candidaturas/${provider.id}`}
+        href={`/providers/${provider.id}?tab=candidatura`}
         className="min-w-40 flex-1 hover:text-primary"
       >
         <div className="min-w-0">
@@ -132,7 +132,7 @@ export function CandidaturaRow({ provider, onSendToOnboarding, onAbandon }: Cand
             </Button>
           </>
         )}
-        <Link href={`/candidaturas/${provider.id}`}>
+        <Link href={`/providers/${provider.id}?tab=candidatura`}>
           <Button size="sm" variant="ghost">
             <ChevronRight className="h-4 w-4" />
           </Button>

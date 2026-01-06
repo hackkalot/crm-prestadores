@@ -1,7 +1,5 @@
-import { Suspense } from 'react'
-import { Search, Bell } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AlertsBell } from '@/components/alerts/alerts-bell'
 
@@ -10,7 +8,7 @@ interface HeaderProps {
   description?: string
 }
 
-export function Header({ title, description }: HeaderProps) {
+export async function Header({ title, description }: HeaderProps) {
   return (
     <header className="flex h-16 items-center justify-between border-b bg-card px-6">
       <div>
@@ -34,13 +32,7 @@ export function Header({ title, description }: HeaderProps) {
         <ThemeToggle />
 
         {/* Alerts */}
-        <Suspense fallback={
-          <Button variant="ghost" size="icon">
-            <Bell className="h-5 w-5" />
-          </Button>
-        }>
-          <AlertsBell />
-        </Suspense>
+        <AlertsBell />
 
         {/* User Avatar */}
         <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">

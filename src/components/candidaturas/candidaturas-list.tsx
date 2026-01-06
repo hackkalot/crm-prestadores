@@ -133,7 +133,7 @@ export function CandidaturasList({ providers }: CandidaturasListProps) {
                   <TableRow key={provider.id} className="group">
                     <TableCell>
                       <Link
-                        href={`/candidaturas/${provider.id}`}
+                        href={`/providers/${provider.id}?tab=candidatura`}
                         className="flex items-center gap-3 hover:text-primary transition-colors"
                       >
                         <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center shrink-0">
@@ -202,7 +202,7 @@ export function CandidaturasList({ providers }: CandidaturasListProps) {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Link href={`/candidaturas/${provider.id}`}>
+                      <Link href={`/providers/${provider.id}?tab=candidatura`}>
                         <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                       </Link>
                     </TableCell>

@@ -1,18 +1,9 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import type { ProviderStatus } from '@/types/database'
-
-// Cliente admin para operacoes que requerem bypass de RLS
-function getSupabaseAdmin() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
-}
 
 export type PrestadorFilters = {
   status?: ProviderStatus | 'all'
@@ -24,7 +15,7 @@ export type PrestadorFilters = {
 
 // Obter prestadores ativos (que ja passaram pelo onboarding)
 export async function getPrestadores(filters: PrestadorFilters = {}) {
-  let query = getSupabaseAdmin()
+  let query = createAdminClient()
     .from('providers')
     .select(`
       *,
@@ -65,7 +56,7 @@ export async function getPrestadores(filters: PrestadorFilters = {}) {
 
 // Obter detalhes de um prestador
 export async function getPrestadorById(id: string) {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('providers')
     .select(`
       *,
@@ -84,7 +75,7 @@ export async function getPrestadorById(id: string) {
 
 // Obter notas de um prestador
 export async function getPrestadorNotes(providerId: string) {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('notes')
     .select(`
       *,
@@ -103,7 +94,7 @@ export async function getPrestadorNotes(providerId: string) {
 
 // Obter historico de um prestador
 export async function getPrestadorHistory(providerId: string) {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('history_log')
     .select(`
       *,
@@ -146,7 +137,7 @@ export async function addPrestadorNote(
     return { error: 'Nao autenticado' }
   }
 
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('notes')
     .insert({
       provider_id: providerId,
@@ -161,7 +152,7 @@ export async function addPrestadorNote(
   }
 
   // Registar no historico
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'note_added',
     description: 'Nota adicionada',
@@ -200,7 +191,7 @@ export async function updatePrestadorStatus(
   }
 
   // Obter estado atual
-  const { data: currentProvider } = await getSupabaseAdmin()
+  const { data: currentProvider } = await createAdminClient()
     .from('providers')
     .select('status')
     .eq('id', providerId)
@@ -218,7 +209,7 @@ export async function updatePrestadorStatus(
     updateData.suspended_at = null
   }
 
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('providers')
     .update(updateData)
     .eq('id', providerId)
@@ -229,7 +220,7 @@ export async function updatePrestadorStatus(
   }
 
   // Registar no historico
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'status_change',
     description: `Estado alterado para ${newStatus}${reason ? `: ${reason}` : ''}`,
@@ -265,13 +256,13 @@ export async function updateRelationshipOwner(
   }
 
   // Obter owner atual
-  const { data: currentProvider } = await getSupabaseAdmin()
+  const { data: currentProvider } = await createAdminClient()
     .from('providers')
     .select('relationship_owner_id')
     .eq('id', providerId)
     .single()
 
-  const { error } = await getSupabaseAdmin()
+  const { error } = await createAdminClient()
     .from('providers')
     .update({ relationship_owner_id: newOwnerId })
     .eq('id', providerId)
@@ -282,7 +273,7 @@ export async function updateRelationshipOwner(
   }
 
   // Registar no historico
-  await getSupabaseAdmin().from('history_log').insert({
+  await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'owner_change',
     description: 'Responsavel da relacao alterado',
@@ -298,7 +289,7 @@ export async function updateRelationshipOwner(
 
 // Estatisticas
 export async function getPrestadoresStats() {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('providers')
     .select('status')
     .in('status', ['ativo', 'suspenso'])
@@ -317,7 +308,7 @@ export async function getPrestadoresStats() {
 
 // Obter distritos unicos
 export async function getDistinctPrestadorDistricts() {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('providers')
     .select('districts')
     .in('status', ['ativo', 'suspenso'])
@@ -339,7 +330,7 @@ export async function getDistinctPrestadorDistricts() {
 
 // Obter servicos unicos
 export async function getDistinctPrestadorServices() {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('providers')
     .select('services')
     .in('status', ['ativo', 'suspenso'])
@@ -361,7 +352,7 @@ export async function getDistinctPrestadorServices() {
 
 // Obter usuarios para select
 export async function getUsers() {
-  const { data, error } = await getSupabaseAdmin()
+  const { data, error } = await createAdminClient()
     .from('users')
     .select('id, name, email')
     .order('name')

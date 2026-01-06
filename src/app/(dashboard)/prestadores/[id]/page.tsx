@@ -189,7 +189,7 @@ export default async function PrestadorDetailPage({ params }: PrestadorDetailPag
                       <p className="font-medium">{prestador.nif || '-'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Nr de Tecnicos</p>
+                      <p className="text-sm text-muted-foreground">Nr de técnicos</p>
                       <p className="font-medium flex items-center gap-1">
                         <Users className="h-4 w-4 text-muted-foreground" />
                         {prestador.num_technicians || '-'}
@@ -198,18 +198,18 @@ export default async function PrestadorDetailPage({ params }: PrestadorDetailPag
                     <div>
                       <p className="text-sm text-muted-foreground">Equipa Administrativa</p>
                       <p className="font-medium">
-                        {prestador.has_admin_team ? 'Sim' : 'Nao'}
+                        {prestador.has_admin_team ? 'Sim' : 'Não'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Transporte Proprio</p>
+                      <p className="text-sm text-muted-foreground">Transporte Próprio</p>
                       <p className="font-medium flex items-center gap-1">
                         <Truck className="h-4 w-4 text-muted-foreground" />
-                        {prestador.has_own_transport ? 'Sim' : 'Nao'}
+                        {prestador.has_own_transport ? 'Sim' : 'Não'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Horario Laboral</p>
+                      <p className="text-sm text-muted-foreground">Horário Laboral</p>
                       <p className="font-medium flex items-center gap-1">
                         <Clock className="h-4 w-4 text-muted-foreground" />
                         {prestador.working_hours || '-'}
@@ -256,7 +256,7 @@ export default async function PrestadorDetailPage({ params }: PrestadorDetailPag
               {/* Zonas de Atuacao */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Zonas de Atuacao</CardTitle>
+                  <CardTitle className="text-lg">Zonas de Atuação</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {prestador.districts && prestador.districts.length > 0 ? (
@@ -294,7 +294,7 @@ export default async function PrestadorDetailPage({ params }: PrestadorDetailPag
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
-                      Inicio Onboarding
+                      Início Onboarding
                     </span>
                     <span className="font-medium">
                       {prestador.onboarding_started_at
@@ -326,10 +326,10 @@ export default async function PrestadorDetailPage({ params }: PrestadorDetailPag
                   )}
                   <div className="flex items-center justify-between pt-2 border-t">
                     <span className="text-sm text-muted-foreground">
-                      Responsavel da Relacao
+                      Responsável da Relação
                     </span>
                     <span className="font-medium">
-                      {prestador.relationship_owner?.name || 'Nao atribuido'}
+                      {prestador.relationship_owner?.name || 'não atribuído'}
                     </span>
                   </div>
                 </CardContent>
@@ -343,7 +343,7 @@ export default async function PrestadorDetailPage({ params }: PrestadorDetailPag
             {prestador.services && prestador.services.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Servicos Gerais</CardTitle>
+                  <CardTitle className="text-lg">Serviços Gerais</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
@@ -360,7 +360,7 @@ export default async function PrestadorDetailPage({ params }: PrestadorDetailPag
             {/* Tabela de Precos */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Tabela de Precos</CardTitle>
+                <CardTitle className="text-lg">Tabela de Preços</CardTitle>
               </CardHeader>
               <CardContent>
                 <PricingTable

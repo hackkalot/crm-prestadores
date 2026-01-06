@@ -25,15 +25,15 @@ const initialState: AbandonState = {}
 
 const reasonsByParty = {
   prestador: [
-    'Nao aceita preco',
-    'Nao e oportuno',
+    'Não aceita preço',
+    'Não é oportuno',
     'Outro',
   ],
   fixo: [
-    'Parceiro nao responde',
-    'Nao se enquadra no perfil',
-    'Nao tem IBAN PT',
-    'Nao tem atividade aberta',
+    'Parceiro não responde',
+    'Não se enquadra no perfil',
+    'Não tem IBAN PT',
+    'Não tem atividade aberta',
     'Outro',
   ],
 }
