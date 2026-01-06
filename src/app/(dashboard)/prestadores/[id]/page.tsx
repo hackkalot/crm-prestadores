@@ -389,10 +389,10 @@ export default async function PrestadorDetailPage({ params }: PrestadorDetailPag
           </TabsContent>
 
           {/* Tab: Historico */}
-          <TabsContent value="historico">
+          <TabsContent value="histórico">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Historico</CardTitle>
+                <CardTitle className="text-lg">Histórico</CardTitle>
               </CardHeader>
               <CardContent>
                 <PrestadorHistorySection history={history} />

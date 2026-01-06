@@ -22,7 +22,7 @@ const navigation = [
   { name: 'Rede', href: '/rede', icon: Network },
   { name: 'Agenda', href: '/agenda', icon: Calendar },
   { name: 'KPIs', href: '/kpis', icon: BarChart3 },
-  { name: 'Configuracoes', href: '/configuracoes', icon: Settings },
+  { name: 'Configurações', href: '/configuracoes', icon: Settings },
 ]
 
 interface SidebarProps {

@@ -218,7 +218,7 @@ export function NetworkCoverageMap({ coverage }: NetworkCoverageMapProps) {
                         </div>
                         <Link href={`/rede?tab=lacunas&district=${selectedDistrict.district}`}>
                           <Button size="sm">
-                            Ver solucoes
+                            Ver soluções
                             <ChevronRight className="h-4 w-4 ml-1" />
                           </Button>
                         </Link>

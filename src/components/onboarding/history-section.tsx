@@ -49,7 +49,7 @@ export function HistorySection({ history }: HistorySectionProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <History className="h-5 w-5 text-muted-foreground" />
-          <h3 className="font-medium">Historico</h3>
+          <h3 className="font-medium">Histórico</h3>
         </div>
         <p className="text-center text-sm text-muted-foreground py-8">
           Nenhum evento registado.
@@ -62,7 +62,7 @@ export function HistorySection({ history }: HistorySectionProps) {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <History className="h-5 w-5 text-muted-foreground" />
-        <h3 className="font-medium">Historico ({history.length})</h3>
+        <h3 className="font-medium">Histórico ({history.length})</h3>
       </div>
 
       <div className="relative">

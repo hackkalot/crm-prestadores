@@ -257,8 +257,8 @@ export async function getAlertConfig(): Promise<{
 export async function ensureDefaultSettings() {
   const defaultSettings = [
     { key: 'alert_hours_before_deadline', value: 24, description: 'Horas antes do prazo para gerar alerta' },
-    { key: 'stalled_task_days', value: 3, description: 'Dias sem alteracoes para considerar tarefa parada' },
-    { key: 'price_deviation_threshold', value: 0.20, description: 'Threshold de desvio de precos (20%)' },
+    { key: 'stalled_task_days', value: 3, description: 'Dias sem alterações para considerar tarefa parada' },
+    { key: 'price_deviation_threshold', value: 0.20, description: 'Threshold de desvio de preços (20%)' },
   ]
 
   for (const setting of defaultSettings) {

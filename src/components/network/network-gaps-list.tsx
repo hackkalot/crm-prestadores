@@ -207,7 +207,7 @@ export function NetworkGapsList({ gaps }: NetworkGapsListProps) {
                     </div>
                   </div>
                   <Button variant="outline" size="sm">
-                    Ver solucoes
+                    Ver soluções
                   </Button>
                 </div>
               </CardContent>
@@ -220,7 +220,7 @@ export function NetworkGapsList({ gaps }: NetworkGapsListProps) {
       <Dialog open={!!selectedGap} onOpenChange={() => setSelectedGap(null)}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Solucoes para lacuna</DialogTitle>
+            <DialogTitle>Soluções para lacuna</DialogTitle>
             <DialogDescription className="flex items-center gap-2">
               <Badge variant="outline" className="gap-1">
                 <MapPin className="h-3 w-3" />
@@ -241,7 +241,7 @@ export function NetworkGapsList({ gaps }: NetworkGapsListProps) {
           ) : matchingProviders.length === 0 ? (
             <div className="py-8 text-center text-muted-foreground">
               <Users className="h-12 w-12 mx-auto mb-4" />
-              <p>Nenhum prestador encontrado para expandir para esta area.</p>
+              <p>Nenhum prestador encontrado para expandir para esta área.</p>
               <p className="text-sm">Considere recrutar novos prestadores para {selectedGap?.district}.</p>
             </div>
           ) : (
@@ -279,18 +279,18 @@ export function NetworkGapsList({ gaps }: NetworkGapsListProps) {
                         <div className="flex flex-wrap gap-1">
                           {provider.matchingServices.length > 0 && (
                             <Badge variant="outline" className="text-xs bg-green-50 dark:bg-green-950">
-                              Ja oferece: {provider.matchingServices.join(', ')}
+                              Já oferece: {provider.matchingServices.join(', ')}
                             </Badge>
                           )}
                           {provider.matchingDistricts.length > 0 && (
                             <Badge variant="outline" className="text-xs bg-blue-50 dark:bg-blue-950">
-                              Zonas proximas: {provider.matchingDistricts.join(', ')}
+                              Zonas próximas: {provider.matchingDistricts.join(', ')}
                             </Badge>
                           )}
                         </div>
 
                         <div className="text-xs text-muted-foreground">
-                          <span>Servicos atuais: {provider.services.slice(0, 3).join(', ')}</span>
+                          <span>Serviços atuais: {provider.services.slice(0, 3).join(', ')}</span>
                           {provider.services.length > 3 && <span> +{provider.services.length - 3}</span>}
                           <span className="mx-2">|</span>
                           <span>Zonas: {provider.districts.slice(0, 3).join(', ')}</span>

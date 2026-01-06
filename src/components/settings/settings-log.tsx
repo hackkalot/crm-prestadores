@@ -22,9 +22,9 @@ export function SettingsLogList({ logs }: SettingsLogListProps) {
         <CardContent className="py-8">
           <div className="flex flex-col items-center justify-center text-center">
             <History className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">Sem alteracoes registadas</h3>
+            <h3 className="text-lg font-medium mb-2">Sem alterações registadas</h3>
             <p className="text-muted-foreground">
-              O historico de alteracoes as configuracoes aparecera aqui.
+              O histórico de alterações às configurações aparecerá aqui.
             </p>
           </div>
         </CardContent>
@@ -45,7 +45,7 @@ export function SettingsLogList({ logs }: SettingsLogListProps) {
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <History className="h-4 w-4" />
-          Historico de Alteracoes
+          Historico de Alterações
         </CardTitle>
       </CardHeader>
       <CardContent>

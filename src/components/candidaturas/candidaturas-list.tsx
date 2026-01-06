@@ -121,7 +121,7 @@ export function CandidaturasList({ providers }: CandidaturasListProps) {
                 <TableHead>Zonas</TableHead>
                 <TableHead>Data</TableHead>
                 <TableHead>Estado</TableHead>
-                <TableHead>Acoes</TableHead>
+                <TableHead>Ações</TableHead>
                 <TableHead className="w-10"></TableHead>
               </TableRow>
             </TableHeader>

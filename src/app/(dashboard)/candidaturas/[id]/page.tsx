@@ -157,7 +157,7 @@ export default async function CandidaturaDetailPage({ params }: CandidaturaDetai
           {/* Details Card */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Informacoes</CardTitle>
+              <CardTitle className="text-lg">Informações</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Districts */}
@@ -252,7 +252,7 @@ export default async function CandidaturaDetailPage({ params }: CandidaturaDetai
           {/* Timeline Card */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Historico</CardTitle>
+              <CardTitle className="text-lg">Histórico</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

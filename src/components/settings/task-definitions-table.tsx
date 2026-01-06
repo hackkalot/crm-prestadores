@@ -129,7 +129,7 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
                     Owner
                   </div>
                 </TableHead>
-                <TableHead className="w-[100px]">Acoes</TableHead>
+                <TableHead className="w-[100px]">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

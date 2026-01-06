@@ -35,7 +35,7 @@ export const BASE_SERVICES = [
   'Mudancas',
   'Jardinagem',
   'Impermeabilizacao',
-  'Remodelacoes',
+  'Remodelações',
 ]
 
 // Mapa de adjacência dos distritos

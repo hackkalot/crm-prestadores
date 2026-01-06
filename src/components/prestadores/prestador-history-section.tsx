@@ -84,7 +84,7 @@ export function PrestadorHistorySection({ history }: PrestadorHistorySectionProp
   if (history.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
-        Nenhum historico registado.
+        Nenhum histórico registado.
       </div>
     )
   }

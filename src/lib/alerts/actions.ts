@@ -334,7 +334,7 @@ export async function generateStalledTaskAlerts(): Promise<number> {
         user_id: task.owner_id,
         alert_type: 'task_stalled',
         title: 'Tarefa parada',
-        message: `A tarefa "${taskDef?.name || 'Tarefa'}" do prestador "${provider?.name || 'Desconhecido'}" nao tem alteracoes ha ${stalledDays} dias.`,
+        message: `A tarefa "${taskDef?.name || 'Tarefa'}" do prestador "${provider?.name || 'Desconhecido'}" nao tem alterações ha ${stalledDays} dias.`,
         trigger_at: new Date().toISOString(),
       })
 

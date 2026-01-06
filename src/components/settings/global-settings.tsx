@@ -27,13 +27,13 @@ const settingsConfig: Record<string, {
   },
   stalled_task_days: {
     label: 'Tarefa Parada',
-    description: 'Dias sem alteracoes para considerar uma tarefa como parada',
+    description: 'Dias sem alterações para considerar uma tarefa como parada',
     icon: Clock,
     unit: 'dias',
   },
   price_deviation_threshold: {
-    label: 'Desvio de Preco',
-    description: 'Threshold de desvio de precos para gerar alerta (0.20 = 20%)',
+    label: 'Desvio de Preço',
+    description: 'Threshold de desvio de preços para gerar alerta (0.20 = 20%)',
     icon: AlertTriangle,
     unit: '%',
   },

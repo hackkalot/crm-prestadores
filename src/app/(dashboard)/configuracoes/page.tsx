@@ -27,8 +27,8 @@ export default async function ConfiguracoesPage() {
   return (
     <div className="flex flex-col h-full">
       <Header
-        title="Configuracoes"
-        description="Definicoes globais de onboarding, prazos e alertas"
+        title="Configurações"
+        description="Definições globais de onboarding, prazos e alertas"
       />
       <div className="flex-1 p-6 overflow-auto">
         <Tabs defaultValue="tasks" className="space-y-6">
@@ -43,16 +43,16 @@ export default async function ConfiguracoesPage() {
             </TabsTrigger>
             <TabsTrigger value="history" className="gap-2">
               <History className="h-4 w-4" />
-              Historico
+              Histórico
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="tasks" className="space-y-4">
             <div className="rounded-lg border bg-card p-4">
-              <h2 className="text-lg font-medium mb-2">Definicoes de Tarefas</h2>
+              <h2 className="text-lg font-medium mb-2">Definições de Tarefas</h2>
               <p className="text-muted-foreground text-sm mb-4">
-                Configure os prazos padrao para cada tarefa do processo de onboarding.
-                Os prazos sao definidos em horas e podem variar entre onboarding Normal e Urgente.
+                Configure os prazos padrão para cada tarefa do processo de onboarding.
+                Os prazos são definidos em horas e podem variar entre onboarding Normal e Urgente.
               </p>
             </div>
             <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
@@ -62,9 +62,9 @@ export default async function ConfiguracoesPage() {
 
           <TabsContent value="settings" className="space-y-4">
             <div className="rounded-lg border bg-card p-4">
-              <h2 className="text-lg font-medium mb-2">Parametros de Alertas</h2>
+              <h2 className="text-lg font-medium mb-2">Parâmetros de Alertas</h2>
               <p className="text-muted-foreground text-sm mb-4">
-                Configure os parametros globais que afetam o sistema de alertas e notificacoes.
+                Configure os parâmetros globais que afetam o sistema de alertas e notificações.
               </p>
             </div>
             <Suspense fallback={<div className="h-48 bg-muted animate-pulse rounded-lg" />}>
