@@ -28,7 +28,7 @@ export function StageTimeChart({ data }: StageTimeChartProps) {
       <CardHeader>
         <div className="flex items-center gap-2">
           <Clock className="h-5 w-5 text-muted-foreground" />
-          <CardTitle className="text-lg">Tempo Medio por Etapa</CardTitle>
+          <CardTitle className="text-lg">Tempo Médio por Etapa</CardTitle>
         </div>
         <CardDescription>
           Quanto tempo os cards passam em cada etapa

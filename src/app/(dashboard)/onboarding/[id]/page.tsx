@@ -176,7 +176,7 @@ export default async function OnboardingDetailPage({ params }: OnboardingDetailP
               {/* Progress bar */}
               <div>
                 <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Conclusao</span>
+                  <span className="text-muted-foreground">Conclusão</span>
                   <span className="font-bold text-lg">{progress}%</span>
                 </div>
                 <div className="h-3 bg-muted rounded-full overflow-hidden">
@@ -194,7 +194,7 @@ export default async function OnboardingDetailPage({ params }: OnboardingDetailP
                 <div className="text-center p-3 bg-green-50 dark:bg-green-950 rounded-lg">
                   <CheckCircle2 className="h-5 w-5 text-green-500 mx-auto mb-1" />
                   <p className="text-lg font-bold">{completedTasks}</p>
-                  <p className="text-xs text-muted-foreground">Concluidas</p>
+                  <p className="text-xs text-muted-foreground">Concluídas</p>
                 </div>
                 <div className="text-center p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
                   <Clock className="h-5 w-5 text-blue-500 mx-auto mb-1" />
@@ -217,11 +217,11 @@ export default async function OnboardingDetailPage({ params }: OnboardingDetailP
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Responsavel</span>
-                  <span className="font-medium">{card.owner?.name || 'Nao atribuido'}</span>
+                  <span className="text-muted-foreground">Responsável</span>
+                  <span className="font-medium">{card.owner?.name || 'Não atribuído'}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Inicio</span>
+                  <span className="text-muted-foreground">Início</span>
                   <span>{formatDateTime(card.started_at)}</span>
                 </div>
               </div>
@@ -261,7 +261,7 @@ export default async function OnboardingDetailPage({ params }: OnboardingDetailP
           {/* History */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Historico</CardTitle>
+              <CardTitle className="text-lg">Histórico</CardTitle>
             </CardHeader>
             <CardContent>
               <HistorySection history={history} />

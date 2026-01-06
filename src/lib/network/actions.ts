@@ -3,11 +3,13 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { PORTUGAL_DISTRICTS, BASE_SERVICES, DISTRICT_ADJACENCY } from './constants'
 
-const supabaseAdmin = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-)
+function getSupabaseAdmin() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
 
 // Tipos
 export type CoverageData = {
@@ -51,7 +53,7 @@ export type ProviderMatch = {
 
 // Obter análise de cobertura por distrito
 export async function getNetworkCoverage(): Promise<CoverageData[]> {
-  const { data: providers, error } = await supabaseAdmin
+  const { data: providers, error } = await getSupabaseAdmin()
     .from('providers')
     .select('id, name, status, districts, services')
     .in('status', ['ativo', 'suspenso'])
@@ -170,7 +172,7 @@ export async function findProvidersForGap(
 ): Promise<ProviderMatch[]> {
   // Buscar prestadores que já oferecem o serviço mas não cobrem o distrito
   // OU que cobrem o distrito mas não oferecem o serviço
-  const { data: providers, error } = await supabaseAdmin
+  const { data: providers, error } = await getSupabaseAdmin()
     .from('providers')
     .select('id, name, email, phone, entity_type, districts, services, status')
     .in('status', ['ativo', 'suspenso'])
@@ -287,7 +289,7 @@ export async function searchAvailableProviders(filters: {
   service?: string
   status?: string
 }): Promise<ProviderMatch[]> {
-  let query = supabaseAdmin
+  let query = getSupabaseAdmin()
     .from('providers')
     .select('id, name, email, phone, entity_type, districts, services, status')
     .in('status', ['ativo', 'suspenso'])

@@ -85,7 +85,7 @@ export function OwnerPerformanceTable({ data }: OwnerPerformanceTableProps) {
                       {owner.averageDays > 0 ? `${owner.averageDays}d` : '-'}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      tempo medio
+                      tempo médio
                     </div>
                   </div>
 

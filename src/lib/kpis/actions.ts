@@ -4,11 +4,13 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import type { OnboardingType } from '@/types/database'
 
 // Cliente admin para operacoes que requerem bypass de RLS
-const supabaseAdmin = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-)
+function getSupabaseAdmin() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
 
 export type KpiFilters = {
   dateFrom?: string
@@ -21,7 +23,7 @@ export type KpiFilters = {
 // KPI: Prestadores por etapa do Kanban
 export async function getProvidersPerStage(filters: KpiFilters = {}) {
   // Obter etapas
-  const { data: stages } = await supabaseAdmin
+  const { data: stages } = await getSupabaseAdmin()
     .from('stage_definitions')
     .select('id, stage_number, name')
     .eq('is_active', true)
@@ -30,7 +32,7 @@ export async function getProvidersPerStage(filters: KpiFilters = {}) {
   if (!stages) return []
 
   // Obter cards em onboarding com providers
-  let cardsQuery = supabaseAdmin
+  let cardsQuery = getSupabaseAdmin()
     .from('onboarding_cards')
     .select(`
       id,
@@ -102,7 +104,7 @@ export async function getProvidersPerStage(filters: KpiFilters = {}) {
 // KPI: Tempo medio de onboarding
 export async function getAverageOnboardingTime(filters: KpiFilters = {}) {
   // Obter cards concluidos
-  let query = supabaseAdmin
+  let query = getSupabaseAdmin()
     .from('onboarding_cards')
     .select(`
       id,
@@ -224,7 +226,7 @@ export async function getAverageOnboardingTime(filters: KpiFilters = {}) {
 
 // KPI: Total em onboarding
 export async function getOnboardingTotals(filters: KpiFilters = {}) {
-  let query = supabaseAdmin
+  let query = getSupabaseAdmin()
     .from('onboarding_cards')
     .select(`
       id,
@@ -287,7 +289,7 @@ export async function getOnboardingTotals(filters: KpiFilters = {}) {
 
 // KPI: Candidaturas por tratar
 export async function getCandidaturasPending(filters: KpiFilters = {}) {
-  let query = supabaseAdmin
+  let query = getSupabaseAdmin()
     .from('providers')
     .select('id, entity_type, districts, first_application_at')
     .eq('status', 'novo')
@@ -318,7 +320,7 @@ export async function getCandidaturasPending(filters: KpiFilters = {}) {
 // KPI: Funil de conversao
 export async function getConversionFunnel(filters: KpiFilters = {}) {
   // Total candidaturas (todos os status exceto abandonado)
-  let candidaturasQuery = supabaseAdmin
+  let candidaturasQuery = getSupabaseAdmin()
     .from('providers')
     .select('id, status, entity_type, districts, first_application_at')
 
@@ -374,7 +376,7 @@ export async function getConversionFunnel(filters: KpiFilters = {}) {
 // KPI: Tempo medio por etapa
 export async function getAverageTimePerStage(filters: KpiFilters = {}) {
   // Obter etapas
-  const { data: stages } = await supabaseAdmin
+  const { data: stages } = await getSupabaseAdmin()
     .from('stage_definitions')
     .select('id, stage_number, name')
     .eq('is_active', true)
@@ -383,7 +385,7 @@ export async function getAverageTimePerStage(filters: KpiFilters = {}) {
   if (!stages) return []
 
   // Obter log de movimentacoes de etapas
-  let query = supabaseAdmin
+  let query = getSupabaseAdmin()
     .from('history_log')
     .select(`
       card_id,
@@ -539,7 +541,7 @@ export async function getAverageTimePerStage(filters: KpiFilters = {}) {
 // KPI: Performance por owner
 export async function getPerformanceByOwner(filters: KpiFilters = {}) {
   // Obter todos os owners com cards
-  let query = supabaseAdmin
+  let query = getSupabaseAdmin()
     .from('onboarding_cards')
     .select(`
       id,
@@ -658,7 +660,7 @@ export async function getPerformanceByOwner(filters: KpiFilters = {}) {
 
 // Obter distritos para filtro
 export async function getDistrictsForKpis() {
-  const { data } = await supabaseAdmin
+  const { data } = await getSupabaseAdmin()
     .from('providers')
     .select('districts')
     .not('districts', 'is', null)

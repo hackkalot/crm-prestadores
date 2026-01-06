@@ -39,10 +39,10 @@ const onboardingTypeOptions = [
 
 // Presets de periodo
 const periodPresets = [
-  { label: 'Ultimos 7 dias', getValue: () => ({ from: subDays(new Date(), 7), to: new Date() }) },
-  { label: 'Ultimos 30 dias', getValue: () => ({ from: subDays(new Date(), 30), to: new Date() }) },
-  { label: 'Este mes', getValue: () => ({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) }) },
-  { label: 'Mes anterior', getValue: () => ({ from: startOfMonth(subMonths(new Date(), 1)), to: endOfMonth(subMonths(new Date(), 1)) }) },
+  { label: 'Últimos 7 dias', getValue: () => ({ from: subDays(new Date(), 7), to: new Date() }) },
+  { label: 'Últimos 30 dias', getValue: () => ({ from: subDays(new Date(), 30), to: new Date() }) },
+  { label: 'Este mês', getValue: () => ({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) }) },
+  { label: 'Mês anterior', getValue: () => ({ from: startOfMonth(subMonths(new Date(), 1)), to: endOfMonth(subMonths(new Date(), 1)) }) },
   { label: 'Este ano', getValue: () => ({ from: startOfYear(new Date()), to: new Date() }) },
 ]
 

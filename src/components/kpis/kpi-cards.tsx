@@ -86,7 +86,7 @@ export function KpiCards({
             <div>
               <p className="text-3xl font-bold">{candidaturasPending}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Aguardam decisao
+                Aguardam decisão
               </p>
             </div>
             <div className="h-12 w-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
@@ -100,7 +100,7 @@ export function KpiCards({
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
-            Tempo Medio Onboarding
+            Tempo Médio Onboarding
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -124,7 +124,7 @@ export function KpiCards({
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
-            Taxa de Conversao
+            Taxa de Conversão
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -154,7 +154,7 @@ export function TimeComparisonCard({ averageTime }: { averageTime: AverageTime }
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Comparacao Normal vs Urgente</CardTitle>
+        <CardTitle className="text-lg">Comparação Normal vs Urgente</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-6">
@@ -187,7 +187,7 @@ export function TimeComparisonCard({ averageTime }: { averageTime: AverageTime }
               ) : averageTime.urgenteAverage > averageTime.normalAverage ? (
                 <span className="text-orange-600 flex items-center gap-1">
                   <AlertTriangle className="h-4 w-4" />
-                  Urgente esta mais lento que normal
+                  Urgente está mais lento que normal
                 </span>
               ) : (
                 <span>Tempos iguais</span>

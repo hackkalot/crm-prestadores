@@ -77,7 +77,7 @@ export default async function PrestadorDetailPage({ params }: PrestadorDetailPag
   ])
 
   // Get deviation threshold from settings
-  const deviationThreshold = (settings.find(s => s.key === 'price_deviation_threshold')?.value as number) || 0.20
+  const deviationThreshold = (settings.find((s: { key: string; value: unknown }) => s.key === 'price_deviation_threshold')?.value as number) || 0.20
 
   const EntityIcon = entityTypeIcons[prestador.entity_type || 'tecnico'] || User
 

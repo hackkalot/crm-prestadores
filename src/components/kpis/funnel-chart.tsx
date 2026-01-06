@@ -48,7 +48,7 @@ export function FunnelChart({ data }: FunnelChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Funil de Conversao</CardTitle>
+        <CardTitle className="text-lg">Funil de Conversão</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
@@ -101,7 +101,7 @@ export function FunnelChart({ data }: FunnelChartProps) {
         {/* Taxa de Conversao */}
         <div className="mt-4 pt-4 border-t">
           <div className="text-center">
-            <p className="text-sm text-muted-foreground mb-1">Taxa de Conversao</p>
+            <p className="text-sm text-muted-foreground mb-1">Taxa de Conversão</p>
             <p className="text-3xl font-bold text-green-600">{data.taxaConversao}%</p>
             <p className="text-xs text-muted-foreground mt-1">
               Candidaturas convertidas em ativos

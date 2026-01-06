@@ -6,11 +6,13 @@ import { revalidatePath } from 'next/cache'
 import type { ProviderStatus, AbandonmentParty, OnboardingType, TaskStatus } from '@/types/database'
 
 // Cliente admin para operacoes que requerem bypass de RLS
-const supabaseAdmin = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-)
+function getSupabaseAdmin() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
 
 export type CandidaturaFilters = {
   status?: ProviderStatus | 'all'
@@ -23,7 +25,7 @@ export type CandidaturaFilters = {
 }
 
 export async function getCandidaturas(filters: CandidaturaFilters = {}) {
-  let query = supabaseAdmin
+  let query = getSupabaseAdmin()
     .from('providers')
     .select('*')
     .in('status', ['novo', 'em_onboarding', 'abandonado'])
@@ -71,7 +73,7 @@ export async function getCandidaturas(filters: CandidaturaFilters = {}) {
 }
 
 export async function getCandidaturaById(id: string) {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('providers')
     .select('*')
     .eq('id', id)
@@ -86,7 +88,7 @@ export async function getCandidaturaById(id: string) {
 }
 
 export async function getApplicationHistory(providerId: string) {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('application_history')
     .select('*')
     .eq('provider_id', providerId)
@@ -125,7 +127,7 @@ export async function sendToOnboarding(
   }
 
   // Obter primeira etapa usando admin client
-  const { data: firstStage } = await supabaseAdmin
+  const { data: firstStage } = await getSupabaseAdmin()
     .from('stage_definitions')
     .select('id')
     .eq('stage_number', '1')
@@ -136,7 +138,7 @@ export async function sendToOnboarding(
   }
 
   // Criar card de onboarding usando admin client
-  const { data: card, error: cardError } = await supabaseAdmin
+  const { data: card, error: cardError } = await getSupabaseAdmin()
     .from('onboarding_cards')
     .insert({
       provider_id: providerId,
@@ -153,7 +155,7 @@ export async function sendToOnboarding(
   }
 
   // Obter todas as tarefas e criar instancias
-  const { data: taskDefs } = await supabaseAdmin
+  const { data: taskDefs } = await getSupabaseAdmin()
     .from('task_definitions')
     .select('*')
     .eq('is_active', true)
@@ -185,11 +187,11 @@ export async function sendToOnboarding(
       }
     })
 
-    await supabaseAdmin.from('onboarding_tasks').insert(tasks)
+    await getSupabaseAdmin().from('onboarding_tasks').insert(tasks)
   }
 
   // Atualizar estado do prestador
-  const { error: updateError } = await supabaseAdmin
+  const { error: updateError } = await getSupabaseAdmin()
     .from('providers')
     .update({
       status: 'em_onboarding' as ProviderStatus,
@@ -234,7 +236,7 @@ export async function abandonCandidatura(
     return { error: 'Nao autenticado' }
   }
 
-  const { error } = await supabaseAdmin
+  const { error } = await getSupabaseAdmin()
     .from('providers')
     .update({
       status: 'abandonado' as ProviderStatus,
@@ -258,7 +260,7 @@ export async function abandonCandidatura(
 
 // Obter lista de distritos unicos
 export async function getDistinctDistricts() {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('providers')
     .select('districts')
     .not('districts', 'is', null)
@@ -279,7 +281,7 @@ export async function getDistinctDistricts() {
 
 // Obter lista de servicos unicos
 export async function getDistinctServices() {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('providers')
     .select('services')
     .not('services', 'is', null)
@@ -300,7 +302,7 @@ export async function getDistinctServices() {
 
 // Estatisticas rapidas
 export async function getCandidaturasStats() {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('providers')
     .select('status')
     .in('status', ['novo', 'em_onboarding', 'abandonado'])
