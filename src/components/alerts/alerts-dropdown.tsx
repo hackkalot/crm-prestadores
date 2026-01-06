@@ -121,9 +121,9 @@ export function AlertsDropdown({ alerts, unreadCount }: AlertsDropdownProps) {
                             locale: pt,
                           })}
                         </span>
-                        {alert.task && (
+                        {alert.task?.onboarding_card_id && (
                           <Link
-                            href={`/onboarding/${alert.task_id}`}
+                            href={`/onboarding/${alert.task.onboarding_card_id}`}
                             className="text-xs text-primary hover:underline inline-flex items-center gap-1"
                             onClick={(e) => e.stopPropagation()}
                           >
@@ -140,18 +140,6 @@ export function AlertsDropdown({ alerts, unreadCount }: AlertsDropdownProps) {
           )}
         </div>
 
-        {alerts.length > 0 && (
-          <>
-            <DropdownMenuSeparator />
-            <div className="p-2">
-              <Link href="/alertas" onClick={() => setOpen(false)}>
-                <Button variant="ghost" size="sm" className="w-full">
-                  Ver todos os alertas
-                </Button>
-              </Link>
-            </div>
-          </>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -49,6 +49,7 @@ export type Alert = {
   created_at: string
   provider?: { name: string } | null
   task?: {
+    onboarding_card_id: string
     task_definition: { name: string } | null
   } | null
 }
@@ -69,6 +70,7 @@ export async function getUserAlerts(unreadOnly = false): Promise<Alert[]> {
       *,
       provider:providers(name),
       task:onboarding_tasks(
+        onboarding_card_id,
         task_definition:task_definitions(name)
       )
     `)
