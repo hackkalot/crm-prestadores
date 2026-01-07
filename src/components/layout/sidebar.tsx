@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { logout } from '@/lib/auth/actions'
+import { Badge } from '@/components/ui/badge'
 import {
   Users,
   Kanban,
@@ -13,6 +14,7 @@ import {
   Settings,
   LogOut,
   Network,
+  Shield,
 } from 'lucide-react'
 
 const navigation = [
@@ -25,17 +27,24 @@ const navigation = [
   { name: 'Configurações', href: '/configuracoes', icon: Settings },
 ]
 
+const adminNavigation = [
+  { name: 'Utilizadores', href: '/admin/utilizadores', icon: Shield },
+]
+
 interface SidebarProps {
   user?: {
     name: string
     email: string
+    role?: 'admin' | 'user'
   } | null
+  pendingUsersCount?: number
 }
 
-export function Sidebar({ user }: SidebarProps) {
+export function Sidebar({ user, pendingUsersCount = 0 }: SidebarProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const currentTab = searchParams.get('tab')
+  const isAdmin = user?.role === 'admin'
 
   return (
     <div className="flex h-full w-64 flex-col bg-card border-r">
@@ -73,6 +82,40 @@ export function Sidebar({ user }: SidebarProps) {
             </Link>
           )
         })}
+
+        {/* Admin Navigation */}
+        {isAdmin && (
+          <>
+            <div className="pt-4 pb-2">
+              <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Admin
+              </p>
+            </div>
+            {adminNavigation.map((item) => {
+              const isActive = pathname.startsWith(item.href)
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                    isActive
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  {item.name}
+                  {pendingUsersCount > 0 && (
+                    <Badge variant="secondary" className="ml-auto bg-amber-100 text-amber-700">
+                      {pendingUsersCount}
+                    </Badge>
+                  )}
+                </Link>
+              )
+            })}
+          </>
+        )}
       </nav>
 
       {/* User section */}

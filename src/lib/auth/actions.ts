@@ -20,6 +20,9 @@ export type AuthState = {
   success?: boolean
 }
 
+export type UserRole = 'admin' | 'user'
+export type UserApprovalStatus = 'pending' | 'approved' | 'rejected'
+
 export async function login(prevState: AuthState, formData: FormData): Promise<AuthState> {
   const supabase = await createClient()
 
@@ -34,7 +37,7 @@ export async function login(prevState: AuthState, formData: FormData): Promise<A
     return { error: issues[0]?.message || 'Dados invalidos' }
   }
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: authData, error } = await supabase.auth.signInWithPassword({
     email: result.data.email,
     password: result.data.password,
   })
@@ -44,6 +47,27 @@ export async function login(prevState: AuthState, formData: FormData): Promise<A
       return { error: 'Email ou password incorretos' }
     }
     return { error: error.message }
+  }
+
+  // Verificar status de aprovação
+  if (authData.user) {
+    const { data: userProfile } = await supabase
+      .from('users')
+      .select('approval_status')
+      .eq('id', authData.user.id)
+      .single()
+
+    const typedProfile = userProfile as { approval_status: UserApprovalStatus } | null
+
+    if (typedProfile?.approval_status === 'pending') {
+      await supabase.auth.signOut()
+      return { error: 'A tua conta está pendente de aprovação. Por favor aguarda.' }
+    }
+
+    if (typedProfile?.approval_status === 'rejected') {
+      await supabase.auth.signOut()
+      return { error: 'O teu registo foi rejeitado. Contacta o administrador.' }
+    }
   }
 
   redirect('/candidaturas')
@@ -88,6 +112,53 @@ export async function logout() {
   const supabase = await createClient()
   await supabase.auth.signOut()
   redirect('/login')
+}
+
+export async function forgotPassword(prevState: AuthState, formData: FormData): Promise<AuthState> {
+  const supabase = await createClient()
+
+  const email = formData.get('email') as string
+
+  if (!email || !z.string().email().safeParse(email).success) {
+    return { error: 'Email inválido' }
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
+  })
+
+  if (error) {
+    console.error('Reset password error:', error)
+    return { error: 'Erro ao enviar email. Tenta novamente.' }
+  }
+
+  return { success: true }
+}
+
+export async function resetPassword(prevState: AuthState, formData: FormData): Promise<AuthState> {
+  const supabase = await createClient()
+
+  const password = formData.get('password') as string
+  const confirmPassword = formData.get('confirmPassword') as string
+
+  if (!password || password.length < 6) {
+    return { error: 'Password deve ter pelo menos 6 caracteres' }
+  }
+
+  if (password !== confirmPassword) {
+    return { error: 'As passwords não coincidem' }
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: password,
+  })
+
+  if (error) {
+    console.error('Update password error:', error)
+    return { error: 'Erro ao atualizar password. O link pode ter expirado.' }
+  }
+
+  return { success: true }
 }
 
 export async function getUser() {

@@ -49,9 +49,17 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </label>
+                <Link
+                  href="/esqueci-password"
+                  className="text-xs text-muted-foreground hover:text-primary"
+                >
+                  Esqueci a password
+                </Link>
+              </div>
               <Input
                 id="password"
                 name="password"

@@ -4,14 +4,14 @@ import { useActionState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { register, type AuthState } from '@/lib/auth/actions'
-import { AlertCircle, CheckCircle2 } from 'lucide-react'
+import { forgotPassword, type AuthState } from '@/lib/auth/actions'
+import { AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 const initialState: AuthState = {}
 
-export default function RegistarPage() {
-  const [state, formAction, isPending] = useActionState(register, initialState)
+export default function EsqueciPasswordPage() {
+  const [state, formAction, isPending] = useActionState(forgotPassword, initialState)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -20,26 +20,26 @@ export default function RegistarPage() {
           <div className="mx-auto h-12 w-12 rounded-xl bg-primary flex items-center justify-center mb-4">
             <span className="text-primary-foreground font-bold text-xl">F</span>
           </div>
-          <CardTitle className="text-2xl">Criar Conta</CardTitle>
+          <CardTitle className="text-2xl">Recuperar Password</CardTitle>
           <CardDescription>
-            Regista-te para aceder ao CRM de Prestadores
+            Introduz o teu email para receber um link de recuperação
           </CardDescription>
         </CardHeader>
         <CardContent>
           {state.success ? (
             <div className="space-y-4">
-              <div className="flex items-start gap-3 p-4 text-sm text-amber-700 bg-amber-50 rounded-lg">
+              <div className="flex items-start gap-3 p-4 text-sm text-green-700 bg-green-50 rounded-lg">
                 <CheckCircle2 className="h-5 w-5 mt-0.5 shrink-0" />
                 <div>
-                  <p className="font-medium">Conta criada com sucesso!</p>
-                  <p className="text-amber-600 mt-1">
-                    A tua conta está pendente de aprovação por um administrador.
-                    Receberás acesso assim que for aprovada.
+                  <p className="font-medium">Email enviado!</p>
+                  <p className="text-green-600 mt-1">
+                    Verifica a tua caixa de entrada e clica no link para redefinir a password.
                   </p>
                 </div>
               </div>
               <Link href="/login">
                 <Button variant="outline" className="w-full">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
                   Voltar ao Login
                 </Button>
               </Link>
@@ -52,20 +52,6 @@ export default function RegistarPage() {
                   {state.error}
                 </div>
               )}
-
-              <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium">
-                  Nome
-                </label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder="O teu nome"
-                  required
-                  disabled={isPending}
-                />
-              </div>
 
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium">
@@ -81,35 +67,20 @@ export default function RegistarPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="••••••••"
-                  required
-                  minLength={6}
-                  disabled={isPending}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Minimo 6 caracteres
-                </p>
-              </div>
-
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? 'A criar conta...' : 'Criar Conta'}
+                {isPending ? 'A enviar...' : 'Enviar link de recuperação'}
               </Button>
             </form>
           )}
 
           {!state.success && (
-            <div className="mt-4 text-center text-sm text-muted-foreground">
-              Ja tens conta?{' '}
-              <Link href="/login" className="text-primary hover:underline">
-                Entrar
+            <div className="mt-4 text-center">
+              <Link
+                href="/login"
+                className="text-sm text-muted-foreground hover:text-primary inline-flex items-center gap-1"
+              >
+                <ArrowLeft className="h-3 w-3" />
+                Voltar ao Login
               </Link>
             </div>
           )}

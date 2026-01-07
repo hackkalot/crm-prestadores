@@ -10,7 +10,7 @@ export async function updateSession(request: NextRequest) {
     if (!supabaseUrl || !supabaseAnonKey) {
       console.error('Missing Supabase environment variables in proxy')
       // Permitir acesso a rotas públicas mesmo sem config
-      const publicRoutes = ['/login', '/registar', '/verificar-email', '/api/webhooks', '/api/alerts']
+      const publicRoutes = ['/login', '/registar', '/verificar-email', '/esqueci-password', '/reset-password', '/api/webhooks', '/api/alerts']
       const isPublicRoute = publicRoutes.some(route => request.nextUrl.pathname.startsWith(route))
       if (isPublicRoute) {
         return NextResponse.next({ request })
@@ -51,7 +51,7 @@ export async function updateSession(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     // Rotas públicas
-    const publicRoutes = ['/login', '/registar', '/verificar-email', '/api/webhooks', '/api/alerts']
+    const publicRoutes = ['/login', '/registar', '/verificar-email', '/esqueci-password', '/reset-password', '/api/webhooks', '/api/alerts']
     const isPublicRoute = publicRoutes.some(route => request.nextUrl.pathname.startsWith(route))
 
     if (!user && !isPublicRoute) {
