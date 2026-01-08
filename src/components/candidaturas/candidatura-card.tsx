@@ -75,10 +75,10 @@ export function CandidaturaCard({ provider, onSendToOnboarding, onAbandon }: Can
             </div>
           </Link>
           <div className="flex items-center gap-2">
-            <Badge variant={statusVariants[provider.status]}>
-              {statusLabels[provider.status]}
+            <Badge variant={provider.status ? statusVariants[provider.status] : 'default'}>
+              {provider.status ? statusLabels[provider.status] : 'Desconhecido'}
             </Badge>
-            {provider.application_count > 1 && (
+            {provider.application_count && provider.application_count > 1 && (
               <Badge variant="outline" className="text-xs">
                 {provider.application_count}x
               </Badge>
@@ -106,7 +106,7 @@ export function CandidaturaCard({ provider, onSendToOnboarding, onAbandon }: Can
           )}
           <div className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="h-4 w-4" />
-            <span>Candidatura: {formatDate(provider.first_application_at || provider.created_at)}</span>
+            <span>Candidatura: {formatDate(provider.first_application_at || provider.created_at || new Date().toISOString())}</span>
           </div>
         </div>
 

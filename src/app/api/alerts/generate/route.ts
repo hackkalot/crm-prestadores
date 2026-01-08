@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server'
-import { generateDeadlineAlerts, generateStalledTaskAlerts } from '@/lib/alerts/actions'
+import {
+  generateDeadlineAlerts,
+  generateStalledTaskAlerts,
+} from '@/lib/alerts/actions'
+import { generatePriorityDeadlineAlerts } from '@/lib/priorities/actions'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60 // Allow up to 60 seconds for alert generation
@@ -24,13 +28,17 @@ export async function GET(request: Request) {
     // Gerar alertas de tarefas paradas
     const stalledResult = await generateStalledTaskAlerts()
 
+    // Gerar alertas de prioridades
+    await generatePriorityDeadlineAlerts()
+
     return NextResponse.json({
       success: true,
       timestamp: new Date().toISOString(),
       results: {
         deadline: deadlineResult,
-        stalled: stalledResult
-      }
+        stalled: stalledResult,
+        priorities: 'generated',
+      },
     })
   } catch (error) {
     console.error('Error generating alerts:', error)

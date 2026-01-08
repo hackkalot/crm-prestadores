@@ -46,8 +46,19 @@ const entityTypeIcons: Record<string, typeof User> = {
 }
 
 const statusLabels: Record<string, string> = {
+  novo: 'Nova Candidatura',
+  em_onboarding: 'Em Onboarding',
   ativo: 'Ativo',
   suspenso: 'Suspenso',
+  abandonado: 'Abandonado',
+}
+
+const statusVariants: Record<string, 'info' | 'warning' | 'success' | 'destructive' | 'secondary'> = {
+  novo: 'info',
+  em_onboarding: 'warning',
+  ativo: 'success',
+  suspenso: 'destructive',
+  abandonado: 'secondary',
 }
 
 export function PrestadoresList({ prestadores }: PrestadoresListProps) {
@@ -125,7 +136,7 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
                 </TableCell>
                 <TableCell>
                   <Badge
-                    variant={prestador.status === 'ativo' ? 'success' : 'warning'}
+                    variant={statusVariants[prestador.status] || 'secondary'}
                   >
                     {statusLabels[prestador.status] || prestador.status}
                   </Badge>

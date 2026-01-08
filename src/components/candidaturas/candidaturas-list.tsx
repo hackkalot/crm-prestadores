@@ -142,7 +142,7 @@ export function CandidaturasList({ providers }: CandidaturasListProps) {
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="font-medium truncate">{provider.name}</p>
-                            {provider.application_count > 1 && (
+                            {provider.application_count && provider.application_count > 1 && (
                               <Badge variant="outline" className="text-xs shrink-0">
                                 {provider.application_count}x
                               </Badge>
@@ -173,12 +173,12 @@ export function CandidaturasList({ providers }: CandidaturasListProps) {
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-muted-foreground">
-                        {formatDate(provider.first_application_at || provider.created_at)}
+                        {formatDate(provider.first_application_at || provider.created_at || new Date().toISOString())}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={statusVariants[provider.status]}>
-                        {statusLabels[provider.status]}
+                      <Badge variant={provider.status ? statusVariants[provider.status] : 'default'}>
+                        {provider.status ? statusLabels[provider.status] : 'Desconhecido'}
                       </Badge>
                     </TableCell>
                     <TableCell>

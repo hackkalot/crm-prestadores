@@ -220,13 +220,13 @@ export async function setProviderPrice(
   await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'price_change',
-    description: `Preco atualizado para servico`,
+    description: `Preço atualizado para serviço`,
     old_value: null,
     new_value: { price: priceWithoutVat, service_id: serviceId, variant: variantName },
     created_by: user.id,
   })
 
-  revalidatePath(`/prestadores/${providerId}`)
+  revalidatePath(`/providers/${providerId}`)
   return data
 }
 
@@ -278,22 +278,22 @@ export async function setProviderPricesBatch(
   await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'price_change',
-    description: `${prices.length} precos atualizados`,
+    description: `${prices.length} preços atualizados`,
     new_value: { count: prices.length },
     created_by: user.id,
   })
 
-  revalidatePath(`/prestadores/${providerId}`)
+  revalidatePath(`/providers/${providerId}`)
   return { success: true }
 }
 
-// Criar snapshot da tabela de precos
+// Criar snapshot da tabela de preços
 export async function createPriceSnapshot(providerId: string, snapshotName?: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  // Obter precos atuais
+  // Obter preços atuais
   const providerPrices = await getProviderPrices(providerId)
 
   const { data, error } = await createAdminClient()
@@ -312,7 +312,7 @@ export async function createPriceSnapshot(providerId: string, snapshotName?: str
     throw new Error('Failed to create snapshot')
   }
 
-  revalidatePath(`/prestadores/${providerId}`)
+  revalidatePath(`/providers/${providerId}`)
   return data
 }
 
@@ -418,7 +418,7 @@ export async function generateInitialPriceProposal(providerId: string): Promise<
     created_by: user.id,
   })
 
-  revalidatePath(`/prestadores/${providerId}`)
+  revalidatePath(`/providers/${providerId}`)
   return { success: true, pricesCreated: newPrices.length }
 }
 

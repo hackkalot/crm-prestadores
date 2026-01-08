@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useMemo } from 'react'
+import { useState, useTransition, useMemo, useOptimistic, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -32,6 +32,7 @@ import {
   Play,
   RotateCcw,
   CalendarClock,
+  Loader2,
 } from 'lucide-react'
 
 interface Stage {
@@ -57,7 +58,7 @@ interface Task {
 
 interface OnboardingTaskListProps {
   tasks: Task[]
-  cardId: string
+  cardId?: string // Mantido para compatibilidade, mas nao usado
   currentStageId?: string
 }
 
@@ -79,21 +80,38 @@ function getStage(stage: Stage | Stage[] | undefined): Stage | undefined {
   return Array.isArray(stage) ? stage[0] : stage
 }
 
-export function OnboardingTaskList({ tasks, cardId, currentStageId }: OnboardingTaskListProps) {
+export function OnboardingTaskList({ tasks, currentStageId }: OnboardingTaskListProps) {
   const [isPending, startTransition] = useTransition()
   const [rescheduleOpen, setRescheduleOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [newDeadline, setNewDeadline] = useState('')
   const [rescheduleReason, setRescheduleReason] = useState('')
+  const [pendingTaskIds, setPendingTaskIds] = useState<Set<string>>(new Set())
   const router = useRouter()
+
+  // Optimistic state for tasks
+  const [optimisticTasks, setOptimisticTasks] = useOptimistic(
+    tasks,
+    (currentTasks, { taskId, newStatus }: { taskId: string; newStatus: string }) =>
+      currentTasks.map(task =>
+        task.id === taskId
+          ? {
+              ...task,
+              status: newStatus,
+              completed_at: newStatus === 'concluida' ? new Date().toISOString() : task.completed_at,
+              started_at: newStatus === 'em_curso' && !task.started_at ? new Date().toISOString() : task.started_at,
+            }
+          : task
+      )
+  )
 
   const now = new Date()
 
-  // Agrupar tarefas por etapa
+  // Agrupar tarefas por etapa (usa optimisticTasks para feedback instantaneo)
   const tasksByStage = useMemo(() => {
     const grouped = new Map<string, { stage: Stage; tasks: Task[] }>()
 
-    for (const task of tasks) {
+    for (const task of optimisticTasks) {
       const stage = getStage(task.task_definition?.stage)
       if (!stage) continue
 
@@ -118,7 +136,7 @@ export function OnboardingTaskList({ tasks, cardId, currentStageId }: Onboarding
     }
 
     return sortedGroups
-  }, [tasks])
+  }, [optimisticTasks])
 
   // Calcular estatisticas por etapa
   const getStageStats = (stageTasks: Task[]) => {
@@ -146,15 +164,29 @@ export function OnboardingTaskList({ tasks, cardId, currentStageId }: Onboarding
     return []
   }, [tasksByStage, currentStageId])
 
-  const handleStatusChange = (taskId: string, newStatus: string, taskName?: string) => {
+  const handleStatusChange = useCallback((taskId: string, newStatus: string, taskName?: string) => {
+    // Marcar tarefa como pendente (para mostrar loading no botao)
+    setPendingTaskIds(prev => new Set(prev).add(taskId))
+
     startTransition(async () => {
+      // Aplicar update otimista imediatamente
+      setOptimisticTasks({ taskId, newStatus })
+
       const formData = new FormData()
       formData.append('taskId', taskId)
       formData.append('status', newStatus)
       const result = await updateTaskStatus({}, formData)
 
+      // Remover do estado pendente
+      setPendingTaskIds(prev => {
+        const next = new Set(prev)
+        next.delete(taskId)
+        return next
+      })
+
       if (result.error) {
         toast.error(result.error)
+        router.refresh() // Reverter ao estado real em caso de erro
         return
       }
 
@@ -171,7 +203,7 @@ export function OnboardingTaskList({ tasks, cardId, currentStageId }: Onboarding
         }
       }
     })
-  }
+  }, [router, setOptimisticTasks])
 
   const openRescheduleDialog = (task: Task) => {
     setSelectedTask(task)
@@ -359,10 +391,14 @@ export function OnboardingTaskList({ tasks, cardId, currentStageId }: Onboarding
                               size="sm"
                               variant="ghost"
                               onClick={() => handleStatusChange(task.id, 'em_curso', task.task_definition?.name)}
-                              disabled={isPending}
+                              disabled={pendingTaskIds.has(task.id)}
                               title="Iniciar tarefa"
                             >
-                              <Play className="h-4 w-4" />
+                              {pendingTaskIds.has(task.id) ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Play className="h-4 w-4" />
+                              )}
                             </Button>
                           )}
                           {task.status === 'em_curso' && (
@@ -370,11 +406,15 @@ export function OnboardingTaskList({ tasks, cardId, currentStageId }: Onboarding
                               size="sm"
                               variant="ghost"
                               onClick={() => handleStatusChange(task.id, 'concluida', task.task_definition?.name)}
-                              disabled={isPending}
+                              disabled={pendingTaskIds.has(task.id)}
                               title="Marcar como concluida"
                               className="text-green-600 hover:text-green-700"
                             >
-                              <CheckCircle2 className="h-4 w-4" />
+                              {pendingTaskIds.has(task.id) ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <CheckCircle2 className="h-4 w-4" />
+                              )}
                             </Button>
                           )}
                           {task.status === 'concluida' && (
@@ -382,10 +422,14 @@ export function OnboardingTaskList({ tasks, cardId, currentStageId }: Onboarding
                               size="sm"
                               variant="ghost"
                               onClick={() => handleStatusChange(task.id, 'em_curso', task.task_definition?.name)}
-                              disabled={isPending}
+                              disabled={pendingTaskIds.has(task.id)}
                               title="Reabrir tarefa"
                             >
-                              <RotateCcw className="h-4 w-4" />
+                              {pendingTaskIds.has(task.id) ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <RotateCcw className="h-4 w-4" />
+                              )}
                             </Button>
                           )}
                         </div>

@@ -1,7 +1,16 @@
 'use client'
 
+import { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   History,
   User as UserIcon,
@@ -22,6 +31,9 @@ import {
   ArrowRight,
   FileUp,
   Trash2,
+  Filter,
+  X as XIcon,
+  Clock,
   type LucideIcon,
 } from 'lucide-react'
 import { formatDateTime } from '@/lib/utils'
@@ -159,6 +171,62 @@ const eventConfig: Record<string, EventConfig> = {
     iconColor: 'text-gray-600',
     badgeVariant: 'secondary',
   },
+  field_change: {
+    label: 'Campo Alterado',
+    icon: Pencil,
+    bgColor: 'bg-blue-100 dark:bg-blue-950',
+    iconColor: 'text-blue-600',
+    badgeVariant: 'info',
+  },
+  status_change: {
+    label: 'Estado Alterado',
+    icon: RefreshCw,
+    bgColor: 'bg-purple-100 dark:bg-purple-950',
+    iconColor: 'text-purple-600',
+    badgeVariant: 'default',
+  },
+  owner_change: {
+    label: 'Responsável Alterado',
+    icon: UserCheck,
+    bgColor: 'bg-orange-100 dark:bg-orange-950',
+    iconColor: 'text-orange-600',
+    badgeVariant: 'warning',
+  },
+  task_reopened: {
+    label: 'Tarefa Reaberta',
+    icon: RotateCcw,
+    bgColor: 'bg-yellow-100 dark:bg-yellow-950',
+    iconColor: 'text-yellow-600',
+    badgeVariant: 'warning',
+  },
+  task_owner_change: {
+    label: 'Responsável da Tarefa Alterado',
+    icon: UserCheck,
+    bgColor: 'bg-orange-100 dark:bg-orange-950',
+    iconColor: 'text-orange-600',
+    badgeVariant: 'warning',
+  },
+  deadline_change: {
+    label: 'Prazo Alterado',
+    icon: Clock,
+    bgColor: 'bg-amber-100 dark:bg-amber-950',
+    iconColor: 'text-amber-600',
+    badgeVariant: 'warning',
+  },
+  price_change: {
+    label: 'Preço Alterado',
+    icon: RefreshCw,
+    bgColor: 'bg-emerald-100 dark:bg-emerald-950',
+    iconColor: 'text-emerald-600',
+    badgeVariant: 'success',
+  },
+  stage_change: {
+    label: 'Etapa Alterada',
+    icon: Layers,
+    bgColor: 'bg-indigo-100 dark:bg-indigo-950',
+    iconColor: 'text-indigo-600',
+    badgeVariant: 'default',
+  },
 }
 
 const defaultConfig: EventConfig = {
@@ -218,23 +286,120 @@ function ValueChange({ oldValue, newValue }: { oldValue?: Record<string, unknown
 }
 
 export function HistoricoTab({ history }: HistoricoTabProps) {
+  const [eventTypeFilter, setEventTypeFilter] = useState<string>('all')
+  const [userFilter, setUserFilter] = useState<string>('all')
+
+  // Get unique event types and users
+  const eventTypes = useMemo(() => {
+    const types = new Set(history.map(item => item.event_type))
+    return Array.from(types).sort()
+  }, [history])
+
+  const users = useMemo(() => {
+    const uniqueUsers = new Map<string, { id: string; name: string }>()
+    history.forEach(item => {
+      if (item.user && !uniqueUsers.has(item.user.id)) {
+        uniqueUsers.set(item.user.id, item.user)
+      }
+    })
+    return Array.from(uniqueUsers.values())
+  }, [history])
+
+  // Filter history
+  const filteredHistory = useMemo(() => {
+    return history.filter(item => {
+      if (eventTypeFilter !== 'all' && item.event_type !== eventTypeFilter) {
+        return false
+      }
+      if (userFilter !== 'all' && item.user?.id !== userFilter) {
+        return false
+      }
+      return true
+    })
+  }, [history, eventTypeFilter, userFilter])
+
+  const hasFilters = eventTypeFilter !== 'all' || userFilter !== 'all'
+
+  const clearFilters = () => {
+    setEventTypeFilter('all')
+    setUserFilter('all')
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <History className="h-5 w-5" />
-          Histórico ({history.length})
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <History className="h-5 w-5" />
+            Histórico ({filteredHistory.length}{history.length !== filteredHistory.length && ` de ${history.length}`})
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            {hasFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearFilters}
+                className="h-8 gap-1"
+              >
+                <XIcon className="h-3.5 w-3.5" />
+                Limpar
+              </Button>
+            )}
+            <Filter className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </div>
+        {(eventTypes.length > 0 || users.length > 0) && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            <Select value={eventTypeFilter} onValueChange={setEventTypeFilter}>
+              <SelectTrigger className="w-[200px] h-8">
+                <SelectValue placeholder="Tipo de evento" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os tipos</SelectItem>
+                {eventTypes.map(type => (
+                  <SelectItem key={type} value={type}>
+                    {eventConfig[type]?.label || type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {users.length > 0 && (
+              <Select value={userFilter} onValueChange={setUserFilter}>
+                <SelectTrigger className="w-[200px] h-8">
+                  <SelectValue placeholder="Utilizador" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os utilizadores</SelectItem>
+                  {users.map(user => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+        )}
       </CardHeader>
       <CardContent>
-        {history.length === 0 ? (
+        {filteredHistory.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
               <History className="h-6 w-6 text-muted-foreground" />
             </div>
             <p className="text-muted-foreground text-sm">
-              Sem histórico registado.
+              {hasFilters ? 'Nenhum evento encontrado com os filtros selecionados.' : 'Sem histórico registado.'}
             </p>
+            {hasFilters && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearFilters}
+                className="mt-4"
+              >
+                Limpar filtros
+              </Button>
+            )}
           </div>
         ) : (
           <div className="relative">
@@ -242,7 +407,7 @@ export function HistoricoTab({ history }: HistoricoTabProps) {
             <div className="absolute left-5 top-0 bottom-0 w-px bg-border" />
 
             <div className="space-y-6">
-              {history.map((item) => {
+              {filteredHistory.map((item) => {
                 const config = eventConfig[item.event_type] || defaultConfig
                 const Icon = config.icon
 

@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mapa Freguesias Lisboa</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <style>
+    /* Scope all styles to this embed */
+    #mapApp { position:relative; width:100%; height:100%; min-height:540px; font-family: "Inter", system-ui, -apple-system, sans-serif; }
+    #mapWrapper { position:relative; inset:0; width:100%; height:100%; min-height:540px; }
+    #map { position:absolute; inset:0; width:100%; height:100%; }
+
+    #mapApp #header {
+      position:absolute;
+      top:12px;
+      left:12px;
+      z-index:12;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    #mapApp .pill-toggle {
+      background:#f1f5f9;
+      border-radius:999px;
+      padding:4px;
+      display:inline-flex;
+      gap:4px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+    #mapApp .pill {
+      border:none;
+      background:transparent;
+      padding:8px 16px;
+      border-radius:999px;
+      font-weight:600;
+      font-size:14px;
+      color:#6b7280;
+      cursor:pointer;
+      transition:all 0.2s ease;
+    }
+    #mapApp .pill.active {
+      background:#fff;
+      color:#111827;
+      box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    #controls {
+      position:absolute;
+      top:10px;
+      right:10px;
+      z-index:10;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    #mapApp .cupertino-btn {
+      padding:8px 14px;
+      font-size:14px;
+      border-radius:12px;
+      border:none;
+      background:rgba(255,255,255,0.6);
+      backdrop-filter:blur(10px);
+      color:#000;
+      cursor:pointer;
+    }
+
+    #mapApp .cupertino-btn-primary {
+      background:rgba(0,122,255,0.85);
+      color:#fff;
+    }
+
+    #mapApp .cupertino-btn-danger {
+      background:rgba(255,59,48,0.85);
+      color:#fff;
+    }
+
+    #mapApp .cupertino-btn-warning {
+      background:rgba(255,204,0,0.85);
+      color:#000;
+    }
+
+    #mapApp .cupertino-btn:hover {
+      opacity:0.9;
+    }
+
+    /* Analytics */
+    #analytics {
+      position:absolute;
+      inset:0;
+      overflow:auto;
+      background:linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+      padding:24px;
+      box-sizing:border-box;
+    }
+    #mapApp .analytics-card {
+      background:#fff;
+      border-radius:16px;
+      padding:20px;
+      margin-top: 60px;
+      box-shadow:0 12px 30px rgba(0,0,0,0.08);
+    }
+    #mapApp .analytics-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    #mapApp .eyebrow {
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      font-size:12px;
+      color:#64748b;
+      font-weight:700;
+    }
+    #mapApp .title {
+      font-size:18px;
+      font-weight:700;
+      color:#0f172a;
+    }
+    #mapApp .chip {
+      background:#e0f2fe;
+      color:#075985;
+      padding:8px 12px;
+      border-radius:10px;
+      font-weight:600;
+      font-size:13px;
+    }
+    #mapApp .analytics-body {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    #mapApp .row {
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:12px;
+      padding:10px 12px;
+    }
+    #mapApp .row-header {
+      display:flex;
+      justify-content:space-between;
+      font-weight:600;
+      color:#0f172a;
+      margin-bottom:6px;
+    }
+    #mapApp .progress {
+      position:relative;
+      height:10px;
+      border-radius:999px;
+      background:#e2e8f0;
+      overflow:hidden;
+    }
+    #mapApp .progress-bar {
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      border-radius:999px;
+      background:linear-gradient(90deg, #4f46e5, #06b6d4);
+      width:0%;
+      transition:width 0.3s ease;
+    }
+    #mapApp .progress-bar-duvida {
+      position:absolute;
+      top:0;
+      bottom:0;
+      border-radius:999px;
+      background:linear-gradient(90deg, #cbd5e1, #94a3b8);
+      width:0%;
+      transition:width 0.3s ease;
+    }
+    #mapApp .row-sub {
+      font-size:12px;
+      color:#475569;
+      margin-top:6px;
+    }
+    #mapApp .accordion {
+      border:1px solid #e2e8f0;
+      border-radius:12px;
+      background:#fff;
+      overflow:hidden;
+    }
+    #mapApp .accordion-header {
+      padding:10px 12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      cursor:pointer;
+      background:#f8fafc;
+    }
+    #mapApp .accordion-title {
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    #mapApp .accordion-arrow {
+      transition:transform 0.2s ease;
+    }
+    #mapApp .accordion.open .accordion-arrow {
+      transform:rotate(90deg);
+    }
+    #mapApp .accordion-body {
+      max-height:0;
+      transition:max-height 0.3s ease;
+      overflow:hidden;
+      padding:0 12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    #mapApp .accordion.open .accordion-body {
+      padding:12px;
+    }
+    @media (max-width: 640px) {
+      #mapApp #header { left:50%; transform:translateX(-50%); }
+      #mapApp #controls { top:auto; bottom:10px; right:10px; flex-direction:row; }
+      #mapApp .analytics-card { padding:16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="mapApp">
+  <div id="header">
+    <div id="tabToggle" class="pill-toggle">
+      <button id="tabMapa" class="pill active">Mapa</button>
+      <button id="tabAnalytics" class="pill">Analytics</button>
+    </div>
+  </div>
+
+  <div id="mapWrapper">
+    <div id="map"></div>
+    <div id="controls">
+      <button id="btnEditar" class="cupertino-btn">Editar zonas</button>
+      <button id="btnGuardar" class="cupertino-btn cupertino-btn-primary" style="display:none;">Guardar</button>
+      <button id="btnCancelar" class="cupertino-btn cupertino-btn-danger" style="display:none;">Cancelar</button>
+    </div>
+  </div>
+
+  <div id="analytics" style="display:none;">
+    <div class="analytics-card">
+      <div class="analytics-header">
+        <div>
+          <div class="eyebrow">Resumo</div>
+          <div id="analytics-title" class="title">Progresso Portugal</div>
+        </div>
+        <div id="analytics-summary" class="chip">0% completo</div>
+      </div>
+      <div id="analytics-body" class="analytics-body">
+        <!-- dynamic -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  // State for accordion openness across renders
+  let openAccordions = new Set();
+
+  // Ensure Mapbox is loaded even if Bubble blocks external scripts until later.
+  const ensureMapbox = () => new Promise((resolve, reject) => {
+    if (typeof mapboxgl !== "undefined") return resolve();
+    const existing = document.querySelector('script[src*="mapbox-gl-js"]');
+    if (existing) {
+      existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", reject);
+      return;
+    }
+    const s = document.createElement("script");
+    s.src = "https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js";
+    s.onload = () => resolve();
+    s.onerror = (e) => reject(e);
+    document.head.appendChild(s);
+  });
+
+  const start = () => {
+    console.log("[bubble] init start");
+    try {
+      if (typeof mapboxgl === "undefined") {
+        console.error("[bubble] mapboxgl still undefined even after loader");
+        return;
+      }
+      mapboxgl.accessToken = 'pk.eyJ1IjoiZGlvZ29zb2ZpYXB0IiwiYSI6ImNtaGtpMGlkdTFtd3kybXM3OHN2bTN1NXoifQ.CkFgPEETpLIsdIt22WO6_g';
+
+      let editMode = false;
+      let selectedFreguesias = new Set();
+      let initialSelected = new Set();
+      let selectedDuvidosas = new Set();
+      let initialDuvidosas = new Set();
+      let districtTotals = {};
+      let concelhoTotals = {};
+      let mapReady = false;
+      let freguesiaIndex = {};
+      let codeToName = {};
+      // Bubble helpers: find functions whether running inside or outside an iframe.
+      const getBubbleFn = (name) => {
+        const scopes = [];
+        if (typeof window !== 'undefined') scopes.push(window);
+        if (window.parent && window.parent !== window) scopes.push(window.parent);
+        if (window.top && window.top !== window && window.top !== window.parent) scopes.push(window.top);
+
+        for (const scope of scopes) {
+          if (scope && typeof scope[name] === 'function') {
+            console.log(`[bubble] found function '${name}' on`, scope === window ? 'window' : (scope === window.parent ? 'parent' : 'top'));
+            return scope[name];
+          }
+        }
+        console.warn(`[bubble] function '${name}' not found in scopes`);
+        return null;
+      };
+
+      // Queue payloads until Bubble exposes the function; retry for ~15s.
+      const pendingPayloads = [];
+      let retryTimer = null;
+      const flushPending = () => {
+        const fn = getBubbleFn("bubble_fn_freguesias");
+        if (!fn) return false;
+        while (pendingPayloads.length) {
+          const payload = pendingPayloads.shift();
+          try { 
+            console.log("[bubble] flushing payload", payload);
+            fn(payload); 
+          } catch (e) { 
+            console.error("Erro ao enviar para Bubble", e, payload); 
+          }
+        }
+        console.log("[bubble] flush complete");
+        return true;
+      };
+      const scheduleRetry = () => {
+        if (retryTimer) return;
+        let attempts = 200; // 200 * 75ms ≈ 15s
+        retryTimer = setInterval(() => {
+          if (flushPending() || --attempts <= 0) {
+            clearInterval(retryTimer);
+            retryTimer = null;
+          }
+        }, 75);
+      };
+
+      const callBubbleFn = (name, payload) => {
+        console.log(`[bubble] calling '${name}'`, payload);
+        const fn = getBubbleFn(name);
+        if (fn) {
+          try { fn(payload); } catch (e) { console.error("Erro ao enviar para Bubble", e, payload); }
+          return true;
+        }
+        pendingPayloads.push(payload);
+        scheduleRetry();
+
+        // Fallback: postMessage for workflows that listen to messages.
+        try {
+          console.log("[bubble] postMessage fallback", payload);
+          window.postMessage({ type: name, payload }, "*");
+        } catch(e) {
+          console.error(`Bubble function '${name}' not found to receive payload`, payload, e);
+        }
+        return false;
+      };
+  
+  function recolorMap() {
+    if (!window._features) return;
+
+    window._features.forEach(f => {
+      const code = f.properties.Dicofre || f.properties.Freguesia;
+      const certa = selectedFreguesias.has(code);
+      const duvida = selectedDuvidosas.has(code);
+
+      map.setFeatureState(
+        { source: 'freguesias-lisboa', id: f.id },
+        { certa: certa, duvida: duvida }
+      );
+    });
+    if (mapReady) updateAnalyticsUI();
+  }
+  
+window.bubble_fn_loadZonas = function(jsonStringCerto, jsonStringDuvida) {
+  const toArray = (input) => {
+    if (Array.isArray(input)) return input;
+    if (typeof input === 'string') {
+      try { return JSON.parse(input); } catch (e) { console.error("Erro a parsear lista", input, e); return []; }
+    }
+    return [];
+  };
+
+  const listaC = toArray(jsonStringCerto).map(String);
+  const listaD = toArray(jsonStringDuvida).map(String);
+
+  console.log("[bubble] loadZonas recebido", { listaC, listaD });
+
+  selectedFreguesias = new Set(listaC);
+  selectedDuvidosas = new Set(listaD);
+
+  initialSelected = new Set(listaC);
+  initialDuvidosas = new Set(listaD);
+
+  recolorMap();
+};
+  
+      function persistir() {
+        const listaC = Array.from(selectedFreguesias).map(String);
+        const listaD = Array.from(selectedDuvidosas).map(String);
+        const nomesC = listaC.map(code => String(codeToName[code] || code));
+        const nomesD = listaD.map(code => String(codeToName[code] || code));
+
+        // Send as arrays only (Toolbox espera array, não string).
+        callBubbleFn("bubble_fn_freguesias", { 
+          outputlist1: listaC, 
+          outputlist2: listaD,
+          outputlist3: nomesC,
+          outputlist4: nomesD
+        });
+        flushPending(); // Attempt immediate flush in case Bubble attached meanwhile.
+
+        console.log("[bubble] persistir disparado", { listaC, listaD, nomesC, nomesD });
+      }
+
+  function computeTotals(features) {
+    districtTotals = {};
+    concelhoTotals = {};
+    freguesiaIndex = {};
+    codeToName = {};
+    const seenCodes = new Set();
+    features.forEach(f => {
+      const d = f.properties.Distrito || 'Desconhecido';
+      const c = f.properties.Concelho || 'Desconhecido';
+      const code = f.properties.Dicofre || f.properties.Freguesia;
+      const name = f.properties.Freguesia;
+      if (!code || seenCodes.has(code)) return;
+      seenCodes.add(code);
+      districtTotals[d] = (districtTotals[d] || 0) + 1;
+      const key = `${d}__${c}`;
+      concelhoTotals[key] = (concelhoTotals[key] || { d, c, total:0 });
+      concelhoTotals[key].total += 1;
+      if (code) {
+        freguesiaIndex[code] = { d, c };
+        codeToName[code] = name || code;
+      }
+    });
+  }
+
+  function computeCompletion() {
+    const countsDistrict = {};
+    const countsConcelho = {};
+
+    const accumulate = (code, bucket) => {
+      const info = freguesiaIndex[code];
+      if (!info) return;
+      const d = info.d;
+      const c = info.c;
+      countsDistrict[d] = countsDistrict[d] || { certo:0, duvida:0 };
+      countsConcelho[`${d}__${c}`] = countsConcelho[`${d}__${c}`] || { certo:0, duvida:0, d, c };
+      countsDistrict[d][bucket] += 1;
+      countsConcelho[`${d}__${c}`][bucket] += 1;
+    };
+
+    selectedFreguesias.forEach(code => accumulate(code, 'certo'));
+    selectedDuvidosas.forEach(code => accumulate(code, 'duvida'));
+
+    const districtData = Object.entries(districtTotals).map(([d, total]) => {
+      const doneCerto = countsDistrict[d]?.certo || 0;
+      const doneDuvida = countsDistrict[d]?.duvida || 0;
+      const done = doneCerto; // percent only from certezas
+      const pct = total ? Math.round((doneCerto/total)*100) : 0;
+      return { name: d, doneCerto, doneDuvida, done, total, pct };
+    }).filter(x => x.doneCerto > 0 || x.doneDuvida > 0);
+
+    const concelhoData = Object.values(concelhoTotals).map(obj => {
+      const key = `${obj.d}__${obj.c}`;
+      const doneCerto = countsConcelho[key]?.certo || 0;
+      const doneDuvida = countsConcelho[key]?.duvida || 0;
+      const done = doneCerto; // percent only from certezas
+      const pct = obj.total ? Math.round((doneCerto/obj.total)*100) : 0;
+      return { distrito: obj.d, concelho: obj.c, doneCerto, doneDuvida, done, total: obj.total, pct };
+    }).filter(x => x.doneCerto > 0 || x.doneDuvida > 0);
+
+    // Sort by pct desc then name
+    districtData.sort((a,b) => b.pct - a.pct || b.done - a.done);
+    concelhoData.sort((a,b) => b.pct - a.pct || b.done - a.done);
+
+    return { districtData, concelhoData };
+  }
+
+  function renderRow(label, subtitle, pct, doneCerto, doneDuvida, total) {
+    const clamped = Math.min(100, Math.max(0, pct));
+    const widthCerto = total ? Math.min(100, Math.max(0, Math.round((doneCerto/total)*100))) : 0;
+    const widthDuvida = total ? Math.min(100, Math.max(0, Math.round((doneDuvida/total)*100))) : 0;
+    return `
+      <div class="row">
+        <div class="row-header">
+          <span>${label}</span>
+          <span>${clamped}%</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" style="width:${widthCerto}%"></div>
+          <div class="progress-bar-duvida" style="width:${widthDuvida}%; left:${widthCerto}%"></div>
+        </div>
+        <div class="row-sub">${subtitle}</div>
+      </div>
+    `;
+  }
+
+  function updateAnalyticsUI() {
+    const { districtData, concelhoData } = computeCompletion();
+    const analyticsBody = document.getElementById('analytics-body');
+    if (!analyticsBody) return;
+
+    if (!districtData.length) {
+      analyticsBody.innerHTML = `<div class="row">Sem dados ainda. Seleciona algumas freguesias.</div>`;
+    } else {
+      const concelhosByDistrict = concelhoData.reduce((acc, c) => {
+        acc[c.distrito] = acc[c.distrito] || [];
+        acc[c.distrito].push(c);
+        return acc;
+      }, {});
+
+      analyticsBody.innerHTML = districtData.map(d => {
+        const concelhos = concelhosByDistrict[d.name] || [];
+        const body = concelhos.length
+          ? concelhos.map(c => renderRow(
+              `${c.concelho}`,
+              `${c.doneCerto} certo + ${c.doneDuvida} dúvida / ${c.total} freguesias`,
+              c.pct,
+              c.doneCerto,
+              c.doneDuvida,
+              c.total
+            )).join('')
+          : `<div class="row">Sem concelhos selecionados</div>`;
+        const isOpen = openAccordions.has(d.name);
+        const bodyStyle = isOpen ? 'style="max-height:none;"' : 'style="max-height:0;"';
+        const accClass = isOpen ? 'accordion open' : 'accordion';
+        return `
+          <div class="${accClass}" data-distrito="${d.name}">
+            <div class="accordion-header">
+              <div class="accordion-title">
+                <strong>${d.name}</strong>
+                <span class="row-sub">${d.doneCerto} certo + ${d.doneDuvida} dúvida / ${d.total} freguesias</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span>${d.pct}%</span>
+                <span class="accordion-arrow">▶</span>
+              </div>
+            </div>
+            <div class="accordion-body" ${bodyStyle}>
+              ${body}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Totais globais: só distritos que têm alguma seleção (certo ou dúvida).
+    const totalAll = districtData.reduce((sum, d) => sum + d.total, 0);
+    const totalDone = districtData.reduce((sum, d) => sum + d.doneCerto, 0); // apenas certezas
+    const pctTotal = totalAll ? Math.round((totalDone/totalAll)*100) : 0;
+    const summary = document.getElementById('analytics-summary');
+    const title = document.getElementById('analytics-title');
+    if (summary) summary.textContent = `${pctTotal}% completo`;
+    if (title) title.textContent = `Progresso (${totalDone}/${totalAll} freguesias)`;
+  }
+
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-9.13549, 38.71812],
+    zoom: 8
+  });
+  // Disable double-click zoom to avoid acidental zooms.
+  map.doubleClickZoom.disable();
+
+  map.on('load', () => {
+    map.addSource('freguesias-lisboa', {
+      type: 'geojson',
+      generateId: true,
+      data: 'https://raw.githubusercontent.com/cft-org/portugal_freguesias_geojson/main/freguesias.json'
+    });
+
+    map.addLayer({
+      id: 'freguesias-fill',
+      type: 'fill',
+      source: 'freguesias-lisboa',
+      layout: {},
+      paint: {
+        'fill-color': [
+          'case',
+          ['boolean', ['feature-state', 'certa'], false], '#4CAF50',
+          ['boolean', ['feature-state', 'duvida'], false], '#FFCC00',
+          '#000000'
+        ],
+        'fill-opacity': [
+          'case',
+          ['boolean', ['feature-state', 'certa'], false], 0.55,
+          ['boolean', ['feature-state', 'duvida'], false], 0.45,
+          0
+        ]
+      }
+    });
+
+    map.addLayer({
+      id: 'freguesias-outline',
+      type: 'line',
+      source: 'freguesias-lisboa',
+      layout: {},
+      paint: {
+        'line-color': '#000',
+        'line-width': 1
+      }
+    });
+
+    // Simple load: extract IDs from rendered features
+    map.on("idle", () => {
+      const feats = map.querySourceFeatures("freguesias-lisboa");
+      if (!feats || feats.length === 0) return;
+
+      // Deduplicate by Dicofre (or fallback to Freguesia) to avoid multi-part polygons counting multiple times
+      const byCode = new Map();
+      feats.forEach(f => {
+        const code = f.properties?.Dicofre || f.properties?.Freguesia || f.id;
+        if (!byCode.has(code)) {
+          byCode.set(code, { id: f.id, properties: f.properties });
+        }
+      });
+
+      window._features = Array.from(byCode.values());
+      computeTotals(window._features);
+      mapReady = true;
+      recolorMap();
+      updateAnalyticsUI();
+    });
+
+    map.on('click', 'freguesias-fill', (e) => {
+      const props = e.features[0].properties;
+      const code = props.Dicofre || props.Freguesia;
+      const name = props.Freguesia;
+      
+      if (editMode) {
+        if (!selectedFreguesias.has(code) && !selectedDuvidosas.has(code)) {
+          selectedDuvidosas.add(code);
+        } else if (selectedDuvidosas.has(code)) {
+          selectedDuvidosas.delete(code);
+          selectedFreguesias.add(code);
+        } else if (selectedFreguesias.has(code)) {
+          selectedFreguesias.delete(code);
+        }
+        recolorMap();
+        return;
+      }
+      
+      const concelho = props.Concelho || '';
+      const distrito = props.Distrito || '';
+      new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(`<strong>${name}</strong><br>${concelho}<br>${distrito}`)
+        .addTo(map);
+    });
+
+    map.on('mouseenter', 'freguesias-fill', () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', 'freguesias-fill', () => {
+      map.getCanvas().style.cursor = '';
+    });
+  });
+
+  document.getElementById('btnEditar').onclick = () => {
+    editMode = true;
+    document.getElementById('btnEditar').style.display = 'none';
+    document.getElementById('btnGuardar').style.display = 'inline-block';
+    document.getElementById('btnCancelar').style.display = 'inline-block';
+  };
+  
+  document.getElementById('btnGuardar').onclick = () => {
+    persistir();
+    editMode = false;
+    initialSelected = new Set(selectedFreguesias);
+    initialDuvidosas = new Set(selectedDuvidosas);
+    document.getElementById('btnEditar').style.display = 'inline-block';
+    document.getElementById('btnGuardar').style.display = 'none';
+    document.getElementById('btnCancelar').style.display = 'none';
+  };
+  
+  document.getElementById('btnCancelar').onclick = () => {
+    editMode = false;
+    selectedFreguesias = new Set(initialSelected);
+    selectedDuvidosas = new Set(initialDuvidosas);
+    recolorMap();
+    document.getElementById('btnEditar').style.display = 'inline-block';
+    document.getElementById('btnGuardar').style.display = 'none';
+    document.getElementById('btnCancelar').style.display = 'none';
+  };
+
+  // Bubble renders this hidden; force Mapbox to recompute size when element becomes visible.
+  const mapContainer = document.getElementById('map');
+  // Resize observer removido para simplificar (causava erros); Mapbox lida bem sem forçar resize.
+    console.log("[bubble] init done");
+  } catch (err) {
+    console.error("[bubble] init error", err);
+  }
+
+    // Tabs and accordion handlers (inside try scope to access helpers)
+    const showTab = (tab) => {
+      const mapWrapper = document.getElementById('mapWrapper');
+      const analytics = document.getElementById('analytics');
+      const tabMapa = document.getElementById('tabMapa');
+      const tabAnalytics = document.getElementById('tabAnalytics');
+      if (!mapWrapper || !analytics || !tabMapa || !tabAnalytics) return;
+
+      if (tab === 'analytics') {
+        mapWrapper.style.display = 'none';
+        analytics.style.display = 'block';
+        tabMapa.classList.remove('active');
+        tabAnalytics.classList.add('active');
+        updateAnalyticsUI();
+      } else {
+        mapWrapper.style.display = 'block';
+        analytics.style.display = 'none';
+        tabMapa.classList.add('active');
+        tabAnalytics.classList.remove('active');
+      }
+    };
+
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'tabMapa') showTab('map');
+      if (e.target.id === 'tabAnalytics') showTab('analytics');
+      const accordionHeader = e.target.closest && e.target.closest('.accordion-header');
+      if (accordionHeader) {
+        const acc = accordionHeader.parentElement;
+        const body = acc.querySelector('.accordion-body');
+        if (!body) return;
+        const isOpen = acc.classList.contains('open');
+        if (isOpen) {
+          body.style.maxHeight = body.scrollHeight + 'px';
+          requestAnimationFrame(() => {
+            body.style.maxHeight = '0px';
+            acc.classList.remove('open');
+            openAccordions.delete(acc.dataset.distrito);
+          });
+        } else {
+          body.style.maxHeight = body.scrollHeight + 'px';
+          acc.classList.add('open');
+          openAccordions.add(acc.dataset.distrito);
+          body.addEventListener('transitionend', function handler() {
+            body.style.maxHeight = 'none';
+            body.removeEventListener('transitionend', handler);
+          });
+        }
+      }
+    });
+  };
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    ensureMapbox().then(start).catch(err => console.error("[bubble] failed to load mapbox script", err));
+  } else {
+    const run = () => ensureMapbox().then(start).catch(err => console.error("[bubble] failed to load mapbox script", err));
+    document.addEventListener("DOMContentLoaded", run, { once: true });
+    window.addEventListener("load", run, { once: true });
+  }
+})();
+</script>
+
+</body>
+</html>

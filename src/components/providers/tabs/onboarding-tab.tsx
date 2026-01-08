@@ -12,12 +12,12 @@ interface OnboardingTabProps {
     id: string
     name: string
     status: string
+    relationship_owner?: { id: string; name: string; email: string } | null
   }
   onboardingCard: {
     id: string
     onboarding_type: string
     started_at: string
-    owner?: { id: string; name: string; email: string } | null
     current_stage?: { id: string; name: string; stage_number: number } | null
     tasks: Array<{
       id: string
@@ -27,7 +27,7 @@ interface OnboardingTabProps {
       completed_at: string | null
       task_definition: { id: string; name: string; task_number?: number; description?: string; stage?: { id: string; name: string; stage_number: number } } | null
       stage: { id: string; name: string; stage_number: number } | null
-      owner?: { id: string; name: string; email: string } | null
+      task_owner?: { id: string; name: string; email: string } | null
     }>
   }
   users: Array<{ id: string; name: string; email: string }>
@@ -56,10 +56,10 @@ export function OnboardingTab({ provider, onboardingCard, users }: OnboardingTab
             </div>
           )}
 
-          {onboardingCard.owner && (
+          {provider.relationship_owner && (
             <div className="flex items-center gap-2 text-sm">
               <UserIcon className="h-4 w-4 text-muted-foreground" />
-              <span>{onboardingCard.owner.name}</span>
+              <span>{provider.relationship_owner.name}</span>
             </div>
           )}
 
@@ -71,8 +71,8 @@ export function OnboardingTab({ provider, onboardingCard, users }: OnboardingTab
 
         <OnboardingActions
           cardId={onboardingCard.id}
-          ownerId={onboardingCard.owner?.id}
-          ownerName={onboardingCard.owner?.name || onboardingCard.owner?.email}
+          ownerId={provider.relationship_owner?.id}
+          ownerName={provider.relationship_owner?.name || provider.relationship_owner?.email}
           users={users}
           canComplete={completedTasks === totalTasks && totalTasks > 0}
         />

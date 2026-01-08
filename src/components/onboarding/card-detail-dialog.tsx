@@ -82,8 +82,10 @@ export function CardDetailDialog({
       setLoading(true)
       getOnboardingCard(cardId).then(data => {
         setCard(data)
-        if (data?.owner_id) {
-          setSelectedOwnerId(data.owner_id)
+        // Usar relationship_owner_id do provider
+        const ownerId = (data?.provider as { relationship_owner_id?: string })?.relationship_owner_id
+        if (ownerId) {
+          setSelectedOwnerId(ownerId)
         }
         setLoading(false)
       })
@@ -98,9 +100,9 @@ export function CardDetailDialog({
     const user = users.find(u => u.id === selectedOwnerId)
     if (user) return user.name || user.email || 'Utilizador'
 
-    // If not in users list, check card owner data
-    if (card?.owner) {
-      const owner = card.owner as { name?: string; email?: string }
+    // If not in users list, check provider relationship_owner data
+    if (card?.provider?.relationship_owner) {
+      const owner = card.provider.relationship_owner as { name?: string; email?: string }
       return owner.name || owner.email || 'Utilizador'
     }
 
@@ -197,9 +199,9 @@ export function CardDetailDialog({
                     </SelectTrigger>
                     <SelectContent>
                       {/* Se o owner atual nao esta na lista, adiciona-lo */}
-                      {selectedOwnerId && !users.find(u => u.id === selectedOwnerId) && card.owner && (
+                      {selectedOwnerId && !users.find(u => u.id === selectedOwnerId) && card.provider?.relationship_owner && (
                         <SelectItem key={selectedOwnerId} value={selectedOwnerId}>
-                          {(card.owner as { name?: string; email?: string }).name || (card.owner as { name?: string; email?: string }).email || 'Utilizador'}
+                          {(card.provider.relationship_owner as { name?: string; email?: string }).name || (card.provider.relationship_owner as { name?: string; email?: string }).email || 'Utilizador'}
                         </SelectItem>
                       )}
                       {users.map(user => (

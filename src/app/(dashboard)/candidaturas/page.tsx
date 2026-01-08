@@ -9,8 +9,9 @@ import {
   getDistinctServices,
   type CandidaturaFilters,
 } from '@/lib/candidaturas/actions'
-import type { ProviderStatus } from '@/types/database'
+import type { Database } from '@/types/database'
 
+type ProviderStatus = Database['public']['Enums']['provider_status']
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
 export default async function CandidaturasPage({

@@ -64,7 +64,7 @@ export function CandidaturaRow({ provider, onSendToOnboarding, onAbandon }: Cand
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="font-medium truncate group-hover:text-primary">{provider.name}</h3>
-            {provider.application_count > 1 && (
+            {provider.application_count && provider.application_count > 1 && (
               <Badge variant="outline" className="text-xs flex-shrink-0">
                 {provider.application_count}x
               </Badge>
@@ -95,14 +95,14 @@ export function CandidaturaRow({ provider, onSendToOnboarding, onAbandon }: Cand
       {/* Date */}
       <div className="w-28 shrink-0 hidden xl:block text-center">
         <span className="text-sm text-muted-foreground">
-          {formatDate(provider.first_application_at || provider.created_at)}
+          {formatDate(provider.first_application_at || provider.created_at || new Date().toISOString())}
         </span>
       </div>
 
       {/* Status */}
       <div className="w-32 shrink-0 text-center">
-        <Badge variant={statusVariants[provider.status]}>
-          {statusLabels[provider.status]}
+        <Badge variant={provider.status ? statusVariants[provider.status] : 'default'}>
+          {provider.status ? statusLabels[provider.status] : 'Desconhecido'}
         </Badge>
       </div>
 

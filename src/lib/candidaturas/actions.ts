@@ -3,7 +3,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
-import type { ProviderStatus, AbandonmentParty, OnboardingType, TaskStatus } from '@/types/database'
+import type { Database } from '@/types/database'
+
+type ProviderStatus = Database['public']['Enums']['provider_status']
+type AbandonmentParty = Database['public']['Enums']['abandonment_party']
+type OnboardingType = Database['public']['Enums']['onboarding_type']
+type TaskStatus = Database['public']['Enums']['task_status']
 
 export type CandidaturaFilters = {
   status?: ProviderStatus | 'all'
@@ -117,8 +122,42 @@ export async function sendToOnboarding(
     return { error: 'Nao autenticado' }
   }
 
+  const adminClient = createAdminClient()
+
+  // Verificar se provider tem relationship_owner_id, senão atribuir RM padrão das configurações
+  const { data: provider } = await adminClient
+    .from('providers')
+    .select('relationship_owner_id')
+    .eq('id', providerId)
+    .single()
+
+  if (!provider?.relationship_owner_id) {
+    // Buscar RM padrão das configurações
+    const { data: defaultOwnerSetting } = await adminClient
+      .from('settings')
+      .select('value')
+      .eq('key', 'default_onboarding_owner_id')
+      .single()
+
+    let defaultOwnerId = user.id // Fallback para user atual
+
+    if (defaultOwnerSetting?.value && defaultOwnerSetting.value !== 'null') {
+      let settingValue = defaultOwnerSetting.value as string
+      // Se for string JSON com aspas, remover
+      if (typeof settingValue === 'string' && settingValue.startsWith('"') && settingValue.endsWith('"')) {
+        settingValue = settingValue.slice(1, -1)
+      }
+      defaultOwnerId = settingValue
+    }
+
+    await adminClient
+      .from('providers')
+      .update({ relationship_owner_id: defaultOwnerId })
+      .eq('id', providerId)
+  }
+
   // Obter primeira etapa usando admin client
-  const { data: firstStage } = await createAdminClient()
+  const { data: firstStage } = await adminClient
     .from('stage_definitions')
     .select('id')
     .eq('stage_number', '1')
@@ -129,13 +168,12 @@ export async function sendToOnboarding(
   }
 
   // Criar card de onboarding usando admin client
-  const { data: card, error: cardError } = await createAdminClient()
+  const { data: card, error: cardError } = await adminClient
     .from('onboarding_cards')
     .insert({
       provider_id: providerId,
       onboarding_type: onboardingType,
       current_stage_id: firstStage.id,
-      owner_id: user.id,
     })
     .select('id')
     .single()
@@ -145,28 +183,56 @@ export async function sendToOnboarding(
     return { error: 'Erro ao criar processo de onboarding' }
   }
 
-  // Obter todas as tarefas e criar instancias
-  const { data: taskDefs } = await createAdminClient()
+  // Obter todas as tarefas com informação da etapa
+  const { data: taskDefs } = await adminClient
     .from('task_definitions')
-    .select('*')
+    .select('*, stage:stage_definitions(id, stage_number)')
     .eq('is_active', true)
     .order('display_order')
 
   if (taskDefs && taskDefs.length > 0) {
-    const tasks = taskDefs.map((def: {
+    // Separar tarefas da primeira etapa das restantes
+    type TaskDef = {
       id: string
+      stage_id: string
+      display_order: number
       default_deadline_hours_urgent: number | null
       default_deadline_hours_normal: number | null
       default_owner_id: string | null
-    }) => {
-      // Calcular prazo baseado no tipo de onboarding
+      stage: { id: string; stage_number: string } | { id: string; stage_number: string }[] | null
+    }
+
+    const getStageNumber = (stage: TaskDef['stage']): string => {
+      if (!stage) return '0'
+      if (Array.isArray(stage)) return stage[0]?.stage_number || '0'
+      return stage.stage_number
+    }
+
+    // Filtrar e ordenar tarefas da primeira etapa
+    const firstStageTasks = (taskDefs as TaskDef[])
+      .filter(def => getStageNumber(def.stage) === '1')
+      .sort((a, b) => a.display_order - b.display_order)
+
+    // Calcular deadlines em cascata para a primeira etapa
+    const now = Date.now()
+    let cumulativeMs = 0
+    const firstStageDeadlines = new Map<string, string>()
+
+    for (const def of firstStageTasks) {
       const deadlineHours = onboardingType === 'urgente'
         ? def.default_deadline_hours_urgent
         : def.default_deadline_hours_normal
 
-      const deadlineAt = deadlineHours
-        ? new Date(Date.now() + deadlineHours * 60 * 60 * 1000).toISOString()
-        : null
+      if (deadlineHours) {
+        cumulativeMs += deadlineHours * 60 * 60 * 1000
+        firstStageDeadlines.set(def.id, new Date(now + cumulativeMs).toISOString())
+      }
+    }
+
+    // Criar todas as tarefas - apenas primeira etapa tem deadlines
+    const tasks = (taskDefs as TaskDef[]).map(def => {
+      const isFirstStage = getStageNumber(def.stage) === '1'
+      const deadlineAt = isFirstStage ? (firstStageDeadlines.get(def.id) || null) : null
 
       return {
         card_id: card.id,
@@ -178,11 +244,11 @@ export async function sendToOnboarding(
       }
     })
 
-    await createAdminClient().from('onboarding_tasks').insert(tasks)
+    await adminClient.from('onboarding_tasks').insert(tasks)
   }
 
   // Atualizar estado do prestador
-  const { error: updateError } = await createAdminClient()
+  const { error: updateError } = await adminClient
     .from('providers')
     .update({
       status: 'em_onboarding' as ProviderStatus,
@@ -196,7 +262,7 @@ export async function sendToOnboarding(
   }
 
   // Registar no histórico
-  await createAdminClient()
+  await adminClient
     .from('history_log')
     .insert({
       provider_id: providerId,

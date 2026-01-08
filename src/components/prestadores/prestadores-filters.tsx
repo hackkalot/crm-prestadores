@@ -14,14 +14,17 @@ import { Search, X, Filter, ChevronDown, ChevronUp } from 'lucide-react'
 import { useCallback, useState, useTransition } from 'react'
 
 const statusOptions = [
-  { value: 'all', label: 'Todos' },
+  { value: 'all', label: 'Rede Ativa (Ativo + Suspenso)' },
+  { value: 'novo', label: 'Novos' },
+  { value: 'em_onboarding', label: 'Em Onboarding' },
   { value: 'ativo', label: 'Ativos' },
   { value: 'suspenso', label: 'Suspensos' },
+  { value: 'abandonado', label: 'Abandonados' },
 ]
 
 const entityOptions = [
   { value: '', label: 'Todos os tipos' },
-  { value: 'tecnico', label: 'Tecnico' },
+  { value: 'tecnico', label: 'Técnico' },
   { value: 'eni', label: 'ENI' },
   { value: 'empresa', label: 'Empresa' },
 ]
@@ -29,9 +32,10 @@ const entityOptions = [
 interface PrestadoresFiltersProps {
   districts: string[]
   services: string[]
+  users: Array<{ id: string; name: string; email: string }>
 }
 
-export function PrestadoresFilters({ districts, services }: PrestadoresFiltersProps) {
+export function PrestadoresFilters({ districts, services, users }: PrestadoresFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
@@ -43,6 +47,7 @@ export function PrestadoresFilters({ districts, services }: PrestadoresFiltersPr
   const currentEntity = searchParams.get('entityType') || ''
   const currentDistrict = searchParams.get('district') || ''
   const currentService = searchParams.get('service') || ''
+  const currentOwnerId = searchParams.get('ownerId') || ''
 
   const updateFilter = useCallback((key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -68,9 +73,9 @@ export function PrestadoresFilters({ districts, services }: PrestadoresFiltersPr
   }
 
   const hasFilters = currentStatus !== 'all' || currentEntity || currentDistrict ||
-    currentService || searchParams.get('search')
+    currentService || currentOwnerId || searchParams.get('search')
 
-  const hasAdvancedFilters = currentDistrict || currentService
+  const hasAdvancedFilters = currentDistrict || currentService || currentOwnerId
 
   return (
     <div className="space-y-4">
@@ -139,7 +144,7 @@ export function PrestadoresFilters({ districts, services }: PrestadoresFiltersPr
           className={hasAdvancedFilters ? 'border-primary text-primary' : ''}
         >
           <Filter className="h-4 w-4 mr-1" />
-          Filtros avancados
+          Filtros avançados
           {showAdvanced ? (
             <ChevronUp className="h-4 w-4 ml-1" />
           ) : (
@@ -153,7 +158,7 @@ export function PrestadoresFilters({ districts, services }: PrestadoresFiltersPr
 
       {/* Advanced Filters */}
       {showAdvanced && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
           {/* District Filter */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Zona de atuação</label>
@@ -190,6 +195,33 @@ export function PrestadoresFilters({ districts, services }: PrestadoresFiltersPr
                 {services.map((service) => (
                   <SelectItem key={service} value={service}>
                     {service}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Owner Filter */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">Responsável</label>
+            <Select
+              value={currentOwnerId || '_all'}
+              onValueChange={(value) => updateFilter('ownerId', value)}
+            >
+              <SelectTrigger>
+                <span className="truncate">
+                  {(() => {
+                    if (!currentOwnerId) return 'Todos'
+                    const owner = users.find(u => u.id === currentOwnerId)
+                    return owner ? (owner.name || owner.email) : 'Todos'
+                  })()}
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="_all">Todos</SelectItem>
+                {users.map((user) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.name || user.email || 'Utilizador'}
                   </SelectItem>
                 ))}
               </SelectContent>

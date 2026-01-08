@@ -176,10 +176,10 @@ export function PricingTable({ providerId, providerName, data, deviationThreshol
     startTransition(async () => {
       try {
         await setProviderPrice(providerId, serviceId, newPrice, variantName)
-        toast.success('Preco atualizado')
+        toast.success('Preço atualizado')
         setEditingPrice(null)
       } catch (error) {
-        toast.error('Erro ao atualizar preco')
+        toast.error('Erro ao atualizar preço')
       }
     })
   }

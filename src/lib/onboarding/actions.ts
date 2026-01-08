@@ -3,12 +3,17 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
-import type { TaskStatus, OnboardingType } from '@/types/database'
+import type { Database } from '@/types/database'
+
+export type TaskStatus = Database['public']['Enums']['task_status']
+export type OnboardingType = Database['public']['Enums']['onboarding_type']
 
 export type OnboardingFilters = {
   stageId?: string
   ownerId?: string
   onboardingType?: OnboardingType
+  entityType?: string
+  district?: string
   search?: string
 }
 
@@ -31,8 +36,7 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
     .from('onboarding_cards')
     .select(`
       *,
-      provider:providers(*),
-      owner:users!onboarding_cards_owner_id_fkey(id, name, email),
+      provider:providers(*, relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email)),
       tasks:onboarding_tasks(
         *,
         task_definition:task_definitions(*)
@@ -40,10 +44,6 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
     `)
     .is('completed_at', null)
     .order('created_at', { ascending: false })
-
-  if (filters.ownerId) {
-    cardsQuery = cardsQuery.eq('owner_id', filters.ownerId)
-  }
 
   if (filters.onboardingType) {
     cardsQuery = cardsQuery.eq('onboarding_type', filters.onboardingType)
@@ -56,13 +56,32 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
     return { stages, cards: [] }
   }
 
-  // Filtrar por pesquisa se necessario
+  // Filtrar cards em memória (pesquisa, ownerId, entityType, district)
   let filteredCards = cards || []
+
   if (filters.search) {
     const searchLower = filters.search.toLowerCase()
     filteredCards = filteredCards.filter((card: { provider?: { name?: string; email?: string } }) =>
       card.provider?.name?.toLowerCase().includes(searchLower) ||
       card.provider?.email?.toLowerCase().includes(searchLower)
+    )
+  }
+
+  if (filters.ownerId) {
+    filteredCards = filteredCards.filter((card: { provider?: { relationship_owner_id?: string } }) =>
+      card.provider?.relationship_owner_id === filters.ownerId
+    )
+  }
+
+  if (filters.entityType) {
+    filteredCards = filteredCards.filter((card: { provider?: { entity_type?: string } }) =>
+      card.provider?.entity_type === filters.entityType
+    )
+  }
+
+  if (filters.district) {
+    filteredCards = filteredCards.filter((card: { provider?: { districts?: string[] } }) =>
+      card.provider?.districts?.includes(filters.district!)
     )
   }
 
@@ -75,8 +94,7 @@ export async function getOnboardingCard(cardId: string) {
     .from('onboarding_cards')
     .select(`
       *,
-      provider:providers(*),
-      owner:users!onboarding_cards_owner_id_fkey(id, name, email),
+      provider:providers(*, relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email)),
       tasks:onboarding_tasks(
         *,
         task_definition:task_definitions(
@@ -267,6 +285,100 @@ interface TaskWithDefinition {
   task_definition: { stage_id: string } | { stage_id: string }[] | null
 }
 
+// Funcao auxiliar para calcular deadlines da proxima etapa em cascata
+async function calculateNextStageDeadlines(
+  cardId: string,
+  nextStageId: string,
+  onboardingType: OnboardingType
+): Promise<void> {
+  // Obter todas as tarefas da proxima etapa com as suas definicoes
+  const { data: tasks } = await createAdminClient()
+    .from('onboarding_tasks')
+    .select(`
+      id,
+      deadline_at,
+      task_definition:task_definitions(
+        id,
+        display_order,
+        default_deadline_hours_normal,
+        default_deadline_hours_urgent,
+        stage_id
+      )
+    `)
+    .eq('card_id', cardId)
+
+  if (!tasks) return
+
+  // Helper para extrair task_definition
+  type TaskWithDef = {
+    id: string
+    deadline_at: string | null
+    task_definition: {
+      id: string
+      display_order: number
+      default_deadline_hours_normal: number | null
+      default_deadline_hours_urgent: number | null
+      stage_id: string
+    } | {
+      id: string
+      display_order: number
+      default_deadline_hours_normal: number | null
+      default_deadline_hours_urgent: number | null
+      stage_id: string
+    }[] | null
+  }
+
+  const getTaskDef = (task: TaskWithDef) => {
+    if (!task.task_definition) return null
+    if (Array.isArray(task.task_definition)) return task.task_definition[0]
+    return task.task_definition
+  }
+
+  // Filtrar tarefas da proxima etapa
+  const nextStageTasks = (tasks as TaskWithDef[])
+    .filter(task => {
+      const def = getTaskDef(task)
+      return def?.stage_id === nextStageId
+    })
+    .sort((a, b) => {
+      const defA = getTaskDef(a)
+      const defB = getTaskDef(b)
+      return (defA?.display_order || 0) - (defB?.display_order || 0)
+    })
+
+  if (nextStageTasks.length === 0) return
+
+  // Calcular deadlines em cascata
+  const now = Date.now()
+  let cumulativeMs = 0
+
+  for (const task of nextStageTasks) {
+    // Se já tem deadline definido (manual), não sobrescrever
+    if (task.deadline_at) continue
+
+    const def = getTaskDef(task)
+    if (!def) continue
+
+    const deadlineHours = onboardingType === 'urgente'
+      ? def.default_deadline_hours_urgent
+      : def.default_deadline_hours_normal
+
+    if (deadlineHours) {
+      cumulativeMs += deadlineHours * 60 * 60 * 1000
+      const newDeadline = new Date(now + cumulativeMs).toISOString()
+
+      // Atualizar deadline da tarefa
+      await createAdminClient()
+        .from('onboarding_tasks')
+        .update({
+          deadline_at: newDeadline,
+          original_deadline_at: newDeadline,
+        })
+        .eq('id', task.id)
+    }
+  }
+}
+
 // Funcao auxiliar para verificar e mover para proxima etapa
 async function checkAndMoveToNextStage(
   cardId: string,
@@ -327,6 +439,18 @@ async function checkAndMoveToNextStage(
 
   if (!nextStage) return false // Nao ha proxima etapa (ultima etapa)
 
+  // Obter tipo de onboarding do card para calcular deadlines corretos
+  const { data: card } = await createAdminClient()
+    .from('onboarding_cards')
+    .select('onboarding_type')
+    .eq('id', cardId)
+    .single()
+
+  // Calcular deadlines para as tarefas da proxima etapa
+  if (card) {
+    await calculateNextStageDeadlines(cardId, nextStage.id, card.onboarding_type as OnboardingType)
+  }
+
   // Mover card para proxima etapa
   const { error } = await createAdminClient()
     .from('onboarding_cards')
@@ -352,7 +476,7 @@ async function checkAndMoveToNextStage(
   return true
 }
 
-// Alterar owner de um card
+// Alterar responsável de um provider (usado no contexto do onboarding)
 export async function changeCardOwner(
   prevState: UpdateTaskState,
   formData: FormData
@@ -371,9 +495,12 @@ export async function changeCardOwner(
     return { error: 'Nao autenticado' }
   }
 
-  const { data: currentCard } = await createAdminClient()
+  const adminClient = createAdminClient()
+
+  // Obter provider_id do card
+  const { data: currentCard } = await adminClient
     .from('onboarding_cards')
-    .select('owner_id, provider_id')
+    .select('provider_id')
     .eq('id', cardId)
     .single()
 
@@ -381,27 +508,35 @@ export async function changeCardOwner(
     return { error: 'Card nao encontrado' }
   }
 
-  const { error } = await createAdminClient()
-    .from('onboarding_cards')
-    .update({ owner_id: newOwnerId })
-    .eq('id', cardId)
+  // Obter owner atual do provider
+  const { data: currentProvider } = await adminClient
+    .from('providers')
+    .select('relationship_owner_id')
+    .eq('id', currentCard.provider_id)
+    .single()
+
+  // Atualizar relationship_owner_id no provider
+  const { error } = await adminClient
+    .from('providers')
+    .update({ relationship_owner_id: newOwnerId })
+    .eq('id', currentCard.provider_id)
 
   if (error) {
-    console.error('Erro ao alterar owner:', error)
+    console.error('Erro ao alterar responsavel:', error)
     return { error: 'Erro ao alterar responsavel' }
   }
 
-  await createAdminClient().from('history_log').insert({
+  await adminClient.from('history_log').insert({
     provider_id: currentCard.provider_id,
-    card_id: cardId,
     event_type: 'owner_change',
-    description: 'Responsavel do card alterado',
-    old_value: { owner_id: currentCard.owner_id },
+    description: 'Responsável alterado',
+    old_value: { owner_id: currentProvider?.relationship_owner_id },
     new_value: { owner_id: newOwnerId },
     created_by: user.id,
   })
 
   revalidatePath('/onboarding')
+  revalidatePath(`/providers/${currentCard.provider_id}`)
 
   return { success: true }
 }
@@ -470,17 +605,32 @@ export async function completeOnboarding(
     created_by: user.id,
   })
 
+  // Recalculate priorities (both types affected by activation)
+  try {
+    const { recalculateActivePriorities } = await import('@/lib/priorities/actions')
+    // Run in background to avoid blocking the response
+    Promise.all([
+      recalculateActivePriorities('ativar_prestadores'),
+      recalculateActivePriorities('concluir_onboardings'),
+    ]).catch((err) => console.error('Error recalculating priorities:', err))
+  } catch (err) {
+    console.error('Error importing priorities actions:', err)
+  }
+
   revalidatePath('/onboarding')
   revalidatePath('/prestadores')
+  revalidatePath('/prioridades')
 
   return { success: true }
 }
 
-// Obter utilizadores para selects
+// Obter utilizadores para selects (apenas Relationship Managers)
 export async function getUsers() {
   const { data, error } = await createAdminClient()
     .from('users')
     .select('id, name, email')
+    .eq('role', 'relationship_manager')
+    .eq('approval_status', 'approved')
     .order('name')
 
   if (error) {

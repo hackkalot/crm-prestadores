@@ -1,7 +1,9 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
-import type { OnboardingType } from '@/types/database'
+import type { Database } from '@/types/database'
+
+type OnboardingType = Database['public']['Enums']['onboarding_type']
 
 export type KpiFilters = {
   dateFrom?: string
@@ -531,17 +533,15 @@ export async function getAverageTimePerStage(filters: KpiFilters = {}) {
 
 // KPI: Performance por owner
 export async function getPerformanceByOwner(filters: KpiFilters = {}) {
-  // Obter todos os owners com cards
+  // Obter todos os cards com relationship_owner do provider
   let query = createAdminClient()
     .from('onboarding_cards')
     .select(`
       id,
-      owner_id,
       onboarding_type,
       started_at,
       completed_at,
-      owner:users!onboarding_cards_owner_id_fkey(id, name, email),
-      provider:providers(entity_type, districts)
+      provider:providers(entity_type, districts, relationship_owner_id, relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email))
     `)
 
   if (filters.onboardingType) {
@@ -563,7 +563,17 @@ export async function getPerformanceByOwner(filters: KpiFilters = {}) {
   if (!cards || cards.length === 0) return []
 
   // Helper para obter relacoes
-  type ProviderRelation = { entity_type: string; districts: string[] } | { entity_type: string; districts: string[] }[] | null
+  type ProviderRelation = {
+    entity_type: string
+    districts: string[]
+    relationship_owner_id: string | null
+    relationship_owner: { id: string; name: string; email: string } | { id: string; name: string; email: string }[] | null
+  } | {
+    entity_type: string
+    districts: string[]
+    relationship_owner_id: string | null
+    relationship_owner: { id: string; name: string; email: string } | { id: string; name: string; email: string }[] | null
+  }[] | null
   type OwnerRelation = { id: string; name: string; email: string } | { id: string; name: string; email: string }[] | null
 
   const getProvider = (rel: ProviderRelation) => {
@@ -592,7 +602,7 @@ export async function getPerformanceByOwner(filters: KpiFilters = {}) {
     })
   }
 
-  // Agrupar por owner
+  // Agrupar por owner (do provider)
   const ownerStats = new Map<string, {
     id: string
     name: string
@@ -604,7 +614,8 @@ export async function getPerformanceByOwner(filters: KpiFilters = {}) {
   }>()
 
   for (const card of filteredCards) {
-    const owner = getOwner(card.owner as OwnerRelation)
+    const provider = getProvider(card.provider as ProviderRelation)
+    const owner = provider ? getOwner(provider.relationship_owner) : null
     if (!owner) continue
 
     if (!ownerStats.has(owner.id)) {
@@ -934,17 +945,15 @@ export async function getAverageTimePerStageByType(filters: KpiFilters = {}) {
 
 // KPI: Tempo medio por owner
 export async function getAverageTimeByOwner(filters: KpiFilters = {}) {
-  // Obter todos os cards completados com owner
+  // Obter todos os cards completados com relationship_owner do provider
   let query = createAdminClient()
     .from('onboarding_cards')
     .select(`
       id,
-      owner_id,
       onboarding_type,
       started_at,
       completed_at,
-      owner:users!onboarding_cards_owner_id_fkey(id, name, email),
-      provider:providers(entity_type, districts)
+      provider:providers(entity_type, districts, relationship_owner_id, relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email))
     `)
     .not('completed_at', 'is', null)
 
@@ -967,7 +976,17 @@ export async function getAverageTimeByOwner(filters: KpiFilters = {}) {
   if (!cards || cards.length === 0) return []
 
   // Helper para obter relacoes
-  type ProviderRelation = { entity_type: string; districts: string[] } | { entity_type: string; districts: string[] }[] | null
+  type ProviderRelation = {
+    entity_type: string
+    districts: string[]
+    relationship_owner_id: string | null
+    relationship_owner: { id: string; name: string; email: string } | { id: string; name: string; email: string }[] | null
+  } | {
+    entity_type: string
+    districts: string[]
+    relationship_owner_id: string | null
+    relationship_owner: { id: string; name: string; email: string } | { id: string; name: string; email: string }[] | null
+  }[] | null
   type OwnerRelation = { id: string; name: string; email: string } | { id: string; name: string; email: string }[] | null
 
   const getProvider = (rel: ProviderRelation) => {
@@ -996,7 +1015,7 @@ export async function getAverageTimeByOwner(filters: KpiFilters = {}) {
     })
   }
 
-  // Agrupar por owner
+  // Agrupar por owner (do provider)
   const ownerTimes = new Map<string, {
     id: string
     name: string
@@ -1004,7 +1023,8 @@ export async function getAverageTimeByOwner(filters: KpiFilters = {}) {
   }>()
 
   for (const card of filteredCards) {
-    const owner = getOwner(card.owner as OwnerRelation)
+    const provider = getProvider(card.provider as ProviderRelation)
+    const owner = provider ? getOwner(provider.relationship_owner) : null
     if (!owner || !card.completed_at) continue
 
     if (!ownerTimes.has(owner.id)) {

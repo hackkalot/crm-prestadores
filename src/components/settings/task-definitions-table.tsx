@@ -17,7 +17,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from '@/components/ui/select'
 import { Pencil, Check, X, Clock, Bell, User } from 'lucide-react'
 import { updateTaskDefinition, type TaskDefinitionWithStage } from '@/lib/settings/actions'
@@ -194,7 +193,9 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
                         onValueChange={(value) => setEditValues({ ...editValues, owner: value })}
                       >
                         <SelectTrigger className="w-[130px] h-8">
-                          <SelectValue placeholder="Selecionar" />
+                          <span className="truncate">
+                            {editValues.owner ? users.find(u => u.id === editValues.owner)?.name : 'Nenhum'}
+                          </span>
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="">Nenhum</SelectItem>

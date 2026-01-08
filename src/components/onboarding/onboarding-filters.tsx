@@ -12,11 +12,19 @@ import {
 } from '@/components/ui/select'
 import { Search, X } from 'lucide-react'
 
+const entityOptions = [
+  { value: 'all', label: 'Todos os tipos' },
+  { value: 'tecnico', label: 'Técnico' },
+  { value: 'eni', label: 'ENI' },
+  { value: 'empresa', label: 'Empresa' },
+]
+
 interface OnboardingFiltersProps {
   users: Array<{ id: string; name: string | null; email?: string }>
+  districts: string[]
 }
 
-export function OnboardingFilters({ users }: OnboardingFiltersProps) {
+export function OnboardingFilters({ users, districts }: OnboardingFiltersProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -57,7 +65,9 @@ export function OnboardingFilters({ users }: OnboardingFiltersProps) {
   const hasFilters =
     searchParams.has('search') ||
     searchParams.has('ownerId') ||
-    searchParams.has('onboardingType')
+    searchParams.has('onboardingType') ||
+    searchParams.has('entityType') ||
+    searchParams.has('district')
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -86,9 +96,9 @@ export function OnboardingFilters({ users }: OnboardingFiltersProps) {
           <span className="truncate">
             {(() => {
               const ownerId = searchParams.get('ownerId')
-              if (!ownerId || ownerId === 'all') return 'Todos'
+              if (!ownerId || ownerId === 'all') return 'Responsável'
               const owner = users.find(u => u.id === ownerId)
-              return owner ? (owner.name || owner.email || 'Utilizador') : 'Todos'
+              return owner ? (owner.name || owner.email || 'Utilizador') : 'Responsável'
             })()}
           </span>
         </SelectTrigger>
@@ -102,16 +112,16 @@ export function OnboardingFilters({ users }: OnboardingFiltersProps) {
         </SelectContent>
       </Select>
 
-      {/* Type Filter */}
+      {/* Onboarding Type Filter */}
       <Select
         value={searchParams.get('onboardingType') || 'all'}
         onValueChange={(value) => handleFilterChange('onboardingType', value)}
       >
-        <SelectTrigger className="w-[140px]">
+        <SelectTrigger className="w-[120px]">
           <span className="truncate">
             {(() => {
               const type = searchParams.get('onboardingType')
-              if (!type || type === 'all') return 'Todos'
+              if (!type || type === 'all') return 'Tipo'
               return type === 'urgente' ? 'Urgente' : 'Normal'
             })()}
           </span>
@@ -120,6 +130,49 @@ export function OnboardingFilters({ users }: OnboardingFiltersProps) {
           <SelectItem value="all">Todos</SelectItem>
           <SelectItem value="normal">Normal</SelectItem>
           <SelectItem value="urgente">Urgente</SelectItem>
+        </SelectContent>
+      </Select>
+
+      {/* Entity Type Filter */}
+      <Select
+        value={searchParams.get('entityType') || 'all'}
+        onValueChange={(value) => handleFilterChange('entityType', value)}
+      >
+        <SelectTrigger className="w-[140px]">
+          <span className="truncate">
+            {(() => {
+              const type = searchParams.get('entityType')
+              const option = entityOptions.find(o => o.value === type)
+              return option?.label || 'Entidade'
+            })()}
+          </span>
+        </SelectTrigger>
+        <SelectContent>
+          {entityOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* District Filter */}
+      <Select
+        value={searchParams.get('district') || 'all'}
+        onValueChange={(value) => handleFilterChange('district', value)}
+      >
+        <SelectTrigger className="w-[140px]">
+          <span className="truncate">
+            {searchParams.get('district') || 'Distrito'}
+          </span>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Todos</SelectItem>
+          {districts.map((district) => (
+            <SelectItem key={district} value={district}>
+              {district}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 

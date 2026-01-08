@@ -7,10 +7,12 @@ import {
   getPrestadoresStats,
   getDistinctPrestadorDistricts,
   getDistinctPrestadorServices,
+  getUsers,
   type PrestadorFilters,
 } from '@/lib/prestadores/actions'
-import type { ProviderStatus } from '@/types/database'
+import type { Database } from '@/types/database'
 
+type ProviderStatus = Database['public']['Enums']['provider_status']
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
 export default async function PrestadoresPage({
@@ -25,14 +27,16 @@ export default async function PrestadoresPage({
     entityType: params.entityType as string | undefined,
     district: params.district as string | undefined,
     service: params.service as string | undefined,
+    ownerId: params.ownerId as string | undefined,
     search: params.search as string | undefined,
   }
 
-  const [prestadores, stats, districts, services] = await Promise.all([
+  const [prestadores, stats, districts, services, users] = await Promise.all([
     getPrestadores(filters),
     getPrestadoresStats(),
     getDistinctPrestadorDistricts(),
     getDistinctPrestadorServices(),
+    getUsers(),
   ])
 
   return (
@@ -43,7 +47,7 @@ export default async function PrestadoresPage({
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         <PrestadoresStats stats={stats} />
-        <PrestadoresFilters districts={districts} services={services} />
+        <PrestadoresFilters districts={districts} services={services} users={users} />
         <PrestadoresList prestadores={prestadores} />
       </div>
     </div>

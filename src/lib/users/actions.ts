@@ -213,6 +213,25 @@ export async function updateUserRole(
   return { success: true }
 }
 
+// Obter apenas Relationship Managers (para dropdowns de owner)
+export async function getRelationshipManagers(): Promise<Array<{ id: string; name: string; email: string }>> {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from('users')
+    .select('id, name, email')
+    .eq('role', 'relationship_manager')
+    .eq('approval_status', 'approved')
+    .order('name', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching relationship managers:', error)
+    return []
+  }
+
+  return data || []
+}
+
 // Contar utilizadores pendentes (para badge no menu)
 export async function getPendingUsersCount(): Promise<number> {
   const isAdmin = await isCurrentUserAdmin()

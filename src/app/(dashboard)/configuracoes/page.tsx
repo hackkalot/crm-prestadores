@@ -68,7 +68,7 @@ export default async function ConfiguracoesPage() {
               </p>
             </div>
             <Suspense fallback={<div className="h-48 bg-muted animate-pulse rounded-lg" />}>
-              <GlobalSettings settings={settings} />
+              <GlobalSettings settings={settings} users={users} />
             </Suspense>
           </TabsContent>
 

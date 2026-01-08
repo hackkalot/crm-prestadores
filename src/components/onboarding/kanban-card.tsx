@@ -39,10 +39,10 @@ interface KanbanCardProps {
       phone?: string | null
       districts?: string[] | null
       services?: string[] | null
-    }
-    owner?: {
-      id: string
-      name: string
+      relationship_owner?: {
+        id: string
+        name: string
+      }
     }
     tasks?: Array<{
       id: string
@@ -361,9 +361,9 @@ export function KanbanCard({ card, alertConfig }: KanbanCardProps) {
               <span className="text-muted-foreground">Sem prazos</span>
             )}
 
-            {card.owner && (
+            {card.provider?.relationship_owner && (
               <span className="text-muted-foreground truncate max-w-[80px]">
-                {card.owner.name.split(' ')[0]}
+                {card.provider.relationship_owner.name.split(' ')[0]}
               </span>
             )}
           </div>

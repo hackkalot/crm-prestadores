@@ -67,6 +67,11 @@ export function KanbanBoard({ stages, cards: initialCards, alertConfig }: Kanban
   const [activeCard, setActiveCard] = useState<OnboardingCard | null>(null)
   const [mounted, setMounted] = useState(false)
 
+  // Sync cards when initialCards changes (e.g., from filters)
+  useEffect(() => {
+    setCards(initialCards)
+  }, [initialCards])
+
   // Prevent hydration mismatch with dnd-kit
   useEffect(() => {
     setMounted(true)

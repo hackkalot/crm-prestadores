@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getProviderComplete, getUsers } from '@/lib/providers/actions'
+import { getDistinctDistricts, getDistinctServices } from '@/lib/candidaturas/actions'
 import { formatDateTime } from '@/lib/utils'
 import {
   ArrowLeft,
@@ -70,9 +71,11 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
   const { id } = await params
   const { tab } = await searchParams
 
-  const [data, users] = await Promise.all([
+  const [data, users, districts, services] = await Promise.all([
     getProviderComplete(id),
     getUsers(),
+    getDistinctDistricts(),
+    getDistinctServices(),
   ])
 
   if (!data) {
@@ -117,19 +120,16 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
       <Header
         title={provider.name}
         description={entityTypeLabels[provider.entity_type]}
+        backButton={
+          <Link href={backUrl}>
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+        }
       />
 
       <div className="flex-1 p-6 space-y-6 overflow-auto">
-        {/* Back button */}
-        <div className="flex items-center justify-between">
-          <Link href={backUrl}>
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
-            </Button>
-          </Link>
-        </div>
-
         {/* Banner Card */}
         <Card>
           <CardContent className="p-6">
@@ -286,14 +286,12 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
                   </Badge>
                 </div>
               )}
-              {(onboardingCard?.owner || provider.relationship_owner) && (
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">Responsável:</span>
-                  <span className="font-medium">
-                    {onboardingCard?.owner?.name || provider.relationship_owner?.name || 'Não atribuído'}
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">Responsável:</span>
+                <span className="font-medium">
+                  {provider.relationship_owner?.name || 'Não atribuído'}
+                </span>
+              </div>
               {provider.first_application_at && (
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">1ª Candidatura:</span>
@@ -335,7 +333,7 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
           </TabsList>
 
           <TabsContent value="perfil">
-            <PerfilTab provider={provider} users={users} />
+            <PerfilTab provider={provider} users={users} districts={districts} services={services} />
           </TabsContent>
 
           <TabsContent value="candidatura">

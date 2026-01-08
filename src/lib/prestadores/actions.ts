@@ -3,13 +3,16 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
-import type { ProviderStatus } from '@/types/database'
+import type { Database } from '@/types/database'
+
+type ProviderStatus = Database['public']['Enums']['provider_status']
 
 export type PrestadorFilters = {
   status?: ProviderStatus | 'all'
   entityType?: string
   district?: string
   service?: string
+  ownerId?: string
   search?: string
 }
 
@@ -21,12 +24,17 @@ export async function getPrestadores(filters: PrestadorFilters = {}) {
       *,
       relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email)
     `)
-    .in('status', ['ativo', 'suspenso'])
-    .order('name')
 
-  if (filters.status && filters.status !== 'all') {
+  // Handle status filtering - backward compatible
+  if (!filters.status || filters.status === 'all') {
+    // Default: show active network (ativo + suspenso)
+    query = query.in('status', ['ativo', 'suspenso'])
+  } else {
+    // Specific status selected
     query = query.eq('status', filters.status)
   }
+
+  query = query.order('name')
 
   if (filters.entityType) {
     query = query.eq('entity_type', filters.entityType)
@@ -38,6 +46,10 @@ export async function getPrestadores(filters: PrestadorFilters = {}) {
 
   if (filters.service) {
     query = query.contains('services', [filters.service])
+  }
+
+  if (filters.ownerId) {
+    query = query.eq('relationship_owner_id', filters.ownerId)
   }
 
   if (filters.search) {
@@ -105,7 +117,7 @@ export async function getPrestadorHistory(providerId: string) {
     .limit(100)
 
   if (error) {
-    console.error('Erro ao buscar historico:', error)
+    console.error('Erro ao buscar histórico:', error)
     return []
   }
 
@@ -134,7 +146,7 @@ export async function addPrestadorNote(
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const { error } = await createAdminClient()
@@ -198,7 +210,7 @@ export async function updatePrestadorStatus(
     .single()
 
   if (!currentProvider) {
-    return { error: 'Prestador nao encontrado' }
+    return { error: 'Prestador não encontrado' }
   }
 
   const updateData: Record<string, unknown> = { status: newStatus }
@@ -231,7 +243,7 @@ export async function updatePrestadorStatus(
   })
 
   revalidatePath('/prestadores')
-  revalidatePath(`/prestadores/${providerId}`)
+  revalidatePath(`/providers/${providerId}`)
 
   return { success: true }
 }
@@ -252,7 +264,7 @@ export async function updateRelationshipOwner(
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Obter owner atual
@@ -276,13 +288,13 @@ export async function updateRelationshipOwner(
   await createAdminClient().from('history_log').insert({
     provider_id: providerId,
     event_type: 'owner_change',
-    description: 'Responsavel da relacao alterado',
+    description: 'Responsável da relação alterado',
     old_value: { owner_id: currentProvider?.relationship_owner_id },
     new_value: { owner_id: newOwnerId },
     created_by: user.id,
   })
 
-  revalidatePath(`/prestadores/${providerId}`)
+  revalidatePath(`/providers/${providerId}`)
 
   return { success: true }
 }
@@ -292,15 +304,33 @@ export async function getPrestadoresStats() {
   const { data, error } = await createAdminClient()
     .from('providers')
     .select('status')
-    .in('status', ['ativo', 'suspenso'])
 
-  if (error || !data) return { ativo: 0, suspenso: 0, total: 0 }
+  if (error || !data) {
+    return {
+      novo: 0,
+      em_onboarding: 0,
+      ativo: 0,
+      suspenso: 0,
+      abandonado: 0,
+      total: 0,
+    }
+  }
 
-  const result = { ativo: 0, suspenso: 0, total: data.length }
+  const result = {
+    novo: 0,
+    em_onboarding: 0,
+    ativo: 0,
+    suspenso: 0,
+    abandonado: 0,
+    total: data.length,
+  }
 
   for (const p of data) {
-    if (p.status === 'ativo') result.ativo++
-    if (p.status === 'suspenso') result.suspenso++
+    if (p.status === 'novo') result.novo++
+    else if (p.status === 'em_onboarding') result.em_onboarding++
+    else if (p.status === 'ativo') result.ativo++
+    else if (p.status === 'suspenso') result.suspenso++
+    else if (p.status === 'abandonado') result.abandonado++
   }
 
   return result
@@ -350,11 +380,13 @@ export async function getDistinctPrestadorServices() {
   return Array.from(services).sort()
 }
 
-// Obter usuarios para select
+// Obter usuarios para select (apenas Relationship Managers)
 export async function getUsers() {
   const { data, error } = await createAdminClient()
     .from('users')
     .select('id, name, email')
+    .eq('role', 'relationship_manager')
+    .eq('approval_status', 'approved')
     .order('name')
 
   if (error) {

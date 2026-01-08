@@ -93,12 +93,14 @@ export async function getStageDefinitions() {
   return data || []
 }
 
-// Obter utilizadores para selecao de owners
+// Obter utilizadores para selecao de owners (apenas Relationship Managers)
 export async function getUsers() {
   const supabaseAdmin = createAdminClient()
   const { data, error } = await supabaseAdmin
     .from('users')
     .select('id, name, email')
+    .eq('role', 'relationship_manager')
+    .eq('approval_status', 'approved')
     .order('name')
 
   if (error) {

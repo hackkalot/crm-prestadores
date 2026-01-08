@@ -28,7 +28,9 @@ import {
   getTrends,
   type KpiFilters as KpiFiltersType,
 } from '@/lib/kpis/actions'
-import type { OnboardingType } from '@/types/database'
+import type { Database } from '@/types/database'
+
+type OnboardingType = Database['public']['Enums']['onboarding_type']
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
