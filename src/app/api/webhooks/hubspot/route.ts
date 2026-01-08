@@ -74,73 +74,27 @@ function parseHubSpotSubmission(data: Record<string, unknown>) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const providerData = parseHubSpotSubmission(body)
 
-    if (!providerData.name || !providerData.email) {
-      return NextResponse.json({ error: 'Nome e email sao obrigatorios' }, { status: 400 })
-    }
+    // Log completo do payload para debug
+    console.log('=== HUBSPOT WEBHOOK RECEIVED ===')
+    console.log('Timestamp:', new Date().toISOString())
+    console.log('Headers:', JSON.stringify(Object.fromEntries(request.headers), null, 2))
+    console.log('Body:', JSON.stringify(body, null, 2))
+    console.log('Body keys:', Object.keys(body))
+    console.log('================================')
 
-    const supabaseAdmin = createAdminClient()
-
-    // Verificar se já existe por email
-    const { data: existingProviders } = await supabaseAdmin
-      .from('providers')
-      .select('id, application_count')
-      .eq('email', providerData.email)
-      .limit(1)
-
-    let providerId: string
-    let isDuplicate = false
-
-    if (existingProviders && existingProviders.length > 0) {
-      const existing = existingProviders[0]
-      providerId = existing.id
-      isDuplicate = true
-
-      await supabaseAdmin
-        .from('providers')
-        .update({
-          application_count: (existing.application_count || 0) + 1,
-          phone: providerData.phone,
-          website: providerData.website,
-          services: providerData.services,
-          districts: providerData.districts,
-          num_technicians: providerData.num_technicians,
-          has_admin_team: providerData.has_admin_team,
-          has_own_transport: providerData.has_own_transport,
-          working_hours: providerData.working_hours,
-        })
-        .eq('id', providerId)
-    } else {
-      const { data: newProvider, error: insertError } = await supabaseAdmin
-        .from('providers')
-        .insert({ ...providerData, status: 'novo', application_count: 1 })
-        .select('id')
-        .single()
-
-      if (insertError || !newProvider) {
-        console.error('Erro ao criar provider:', insertError)
-        return NextResponse.json({ error: 'Erro ao criar candidatura' }, { status: 500 })
-      }
-
-      providerId = newProvider.id
-    }
-
-    // Guardar historico
-    await supabaseAdmin
-      .from('application_history')
-      .insert({
-        provider_id: providerId,
-        raw_data: body,
-        source: 'hubspot',
-        hubspot_submission_id: providerData.hubspot_contact_id,
-        applied_at: providerData.first_application_at,
-      })
-
-    return NextResponse.json({ success: true, provider_id: providerId, is_duplicate: isDuplicate })
+    return NextResponse.json({
+      success: true,
+      message: 'Webhook recebido com sucesso',
+      received_keys: Object.keys(body),
+      timestamp: new Date().toISOString()
+    })
   } catch (error) {
-    console.error('Erro no webhook HubSpot:', error)
-    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
+    console.error('Erro ao processar webhook:', error)
+    return NextResponse.json({
+      error: 'Erro ao processar webhook',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 }
 
