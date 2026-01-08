@@ -1,0 +1,6432 @@
+2026-01-08 16:55:59.792 [info] === HUBSPOT WEBHOOK RECEIVED ===
+2026-01-08 16:55:59.793 [info] Timestamp: 2026-01-08T16:55:59.791Z
+2026-01-08 16:55:59.794 [info] Headers: {
+  "accept": "application/json",
+  "accept-encoding": "gzip",
+  "connection": "close",
+  "content-length": "113718",
+  "content-type": "application/json",
+  "date": "Thu, 08 Jan 2026 16:55:59 GMT",
+  "forwarded": "for=143.244.87.70;host=fixocrm-prestadores.vercel.app;proto=https;sig=0QmVhcmVyIDdiOGFlNmEzYjY1ZTZhNWFlN2ZiNjVmYmQ0MzY1MTIxZWQ4ZjBkNWUyN2Q1ZTcxNjcwNDI2YWNiM2U4ZjcyOWE=;exp=1767891658",
+  "host": "fixocrm-prestadores.vercel.app",
+  "user-agent": "HubSpot Connect 2.0 (http://dev.hubspot.com/) (namespace: WebhooksPlatformExecution) - AutomationActionsExecutionService-userweb",
+  "x-forwarded-for": "143.244.87.70",
+  "x-forwarded-host": "fixocrm-prestadores.vercel.app",
+  "x-forwarded-port": "443",
+  "x-forwarded-proto": "https",
+  "x-hs-internal-request": "0",
+  "x-hs-internal-user-request": "0",
+  "x-hs-user-request": "1",
+  "x-hubspot-correlation-id": "d413e02c-bd5c-40fe-9ead-e2bd26dd8983",
+  "x-hubspot-timeout-millis": "29947",
+  "x-matched-path": "/api/webhooks/hubspot",
+  "x-real-ip": "143.244.87.70",
+  "x-vercel-deployment-url": "fixocrm-prestadores-7gf8otz9l-diogo-pitas-projects.vercel.app",
+  "x-vercel-forwarded-for": "143.244.87.70",
+  "x-vercel-function-path": "api/webhooks/hubspot",
+  "x-vercel-id": "fra1::8hgtp-1767891358848-8a44842ff4de",
+  "x-vercel-internal-bot-check": "skip",
+  "x-vercel-internal-empty-unused-qs-v2": "1",
+  "x-vercel-internal-ingress-bucket": "bucket018",
+  "x-vercel-internal-ingress-port": "18446",
+  "x-vercel-ip-as-number": "16509",
+  "x-vercel-ip-continent": "NA",
+  "x-vercel-ip-country": "US",
+  "x-vercel-ip-latitude": "37.751",
+  "x-vercel-ip-longitude": "-97.822",
+  "x-vercel-ip-timezone": "America/Chicago",
+  "x-vercel-ja4-digest": "t13d081400_b8c177e1861e_53a89c02159a",
+  "x-vercel-oidc-token": "eyJhbGciOiJSUzI1NiIsImtpZCI6Im1yay00MzAyZWMxYjY3MGY0OGE5OGFkNjFkYWRlNGEyM2JlNyIsInR5cCI6IkpXVCJ9.eyJvd25lcl9pZCI6InRlYW1fZno3SUZCRWdhYnY5V2FkZlR5Ym84anVKIiwicHJvamVjdCI6ImZpeG9jcm0tcHJlc3RhZG9yZXMiLCJwcm9qZWN0X2lkIjoicHJqX1pod0NaekJHQUJxNXhDUGp4VVVYOXVXWkFmbEkiLCJvd25lciI6ImRpb2dvLXBpdGFzLXByb2plY3RzIiwiaXNzIjoiaHR0cHM6XC9cL29pZGMudmVyY2VsLmNvbVwvZGlvZ28tcGl0YXMtcHJvamVjdHMiLCJuYmYiOjE3Njc4OTA1OTUsInBsYW4iOiJob2JieSIsInN1YiI6Im93bmVyOmRpb2dvLXBpdGFzLXByb2plY3RzOnByb2plY3Q6Zml4b2NybS1wcmVzdGFkb3JlczplbnZpcm9ubWVudDpwcm9kdWN0aW9uIiwiYXVkIjoiaHR0cHM6XC9cL3ZlcmNlbC5jb21cL2Rpb2dvLXBpdGFzLXByb2plY3RzIiwiZXhwIjoxNzY3ODk0MTk1LCJlbnZpcm9ubWVudCI6InByb2R1Y3Rpb24iLCJzY29wZSI6Im93bmVyOmRpb2dvLXBpdGFzLXByb2plY3RzOnByb2plY3Q6Zml4b2NybS1wcmVzdGFkb3JlczplbnZpcm9ubWVudDpwcm9kdWN0aW9uIiwiaWF0IjoxNzY3ODkwNTk1fQ.kxfgmRkIK4eFi2SnA61bwRSUvEkcYfWTXCxh6sngDNx2TUuE-Mp8PSv_Poa0fn8OU4wvA6tpMuz0uMJy2k6y4a69-yPzWhzeO_jQ16gZ5lJlpmv_obzmw-9vOFXg7GnHbyYoqn9YOQijJsd4KCN3CRleXea7TTslyf4x0cBBevvoc8qDLcEdA_61n-bsU8wCVFyPFjGYUoQVlrlJ2H3zioXd_yRs_p4CWxICKXgZHus1ozz2ZH92UdyI_XwsB29OR6v59K4pzzse_jyuKmRZQDNkqR6ooZvfizg5AnCkqKAJi43A89uWOsXuT4rktmOxELG9Yl3gvTJVcaA4TME4YA",
+  "x-vercel-proxied-for": "143.244.87.70",
+  "x-vercel-proxy-signature": "Bearer 7b8ae6a3b65e6a5ae7fb65fbd4365121ed8f0d5e27d5e71670426acb3e8f729a",
+  "x-vercel-proxy-signature-ts": "1767891658",
+  "x-vercel-sc-basepath": "",
+  "x-vercel-sc-headers": "{\"x-vercel-function-platform\":\"vercel\\/proxy+serverless\",\"Authorization\":\"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3Njc4OTIyNzksImJsb2NrIjpmYWxzZSwib3duZXJJZCI6InRlYW1fZno3SUZCRWdhYnY5V2FkZlR5Ym84anVKIiwibmV4dFZlcnNpb24iOiIxNi4xLjEiLCJpc3MiOiJzZXJ2ZXJsZXNzIiwiZG9tYWluIjoiZml4b2NybS1wcmVzdGFkb3Jlcy52ZXJjZWwuYXBwIiwidW5saW1pdGVkIjpmYWxzZSwiZW52IjoicHJvZHVjdGlvbiIsImlhdCI6MTc2Nzg5MTM1OSwiZGVwbG95bWVudElkIjoiZHBsX0RTZ1hmMnZ1bjRyZFlvdVM4TUM4THJQb3ByOHkiLCJyZXF1ZXN0SWQiOiI4aGd0cC0xNzY3ODkxMzU4ODQ4LThhNDQ4NDJmZjRkZSIsInBsYW4iOiJob2JieSIsInByb2plY3RJZCI6InByal9aaHdDWnpCR0FCcTV4Q1BqeFVVWDl1V1pBZmxJIn0.ebjixG9S32PX4GU4Aef3_5xB-LGCU05ALmmnsKYOj78\",\"x-vercel-ept\":\"0\"}",
+  "x-vercel-sc-host": "iad1.suspense-cache.vercel-infra.com"
+}
+2026-01-08 16:55:59.873 [info] Body: {
+  "vid": 7206485,
+  "canonical-vid": 7206485,
+  "merged-vids": [],
+  "portal-id": 26786402,
+  "is-contact": true,
+  "properties": {
+    "hs_legal_basis": {
+      "value": "Legitimate interest – existing customer",
+      "versions": [
+        {
+          "value": "Legitimate interest – existing customer",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "num_unique_conversion_events": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173674626,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "createdate": {
+      "value": "1689173671845",
+      "versions": [
+        {
+          "value": "1689173671845",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_dt_deal_last_success": {
+      "value": "1716768000000",
+      "versions": [
+        {
+          "value": "1716768000000",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:288863799535;actionExecutionIndex:0",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834942080,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_calculated_phone_number_country_code": {
+      "value": "PT",
+      "versions": [
+        {
+          "value": "PT",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": 60556925,
+          "timestamp": 1699873893754,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_v2_cumulative_time_in_opportunity": {
+      "value": "627605478",
+      "versions": [
+        {
+          "value": "627605478",
+          "source-type": "CALCULATED",
+          "source-id": "",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834879725,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_v2_latest_time_in_opportunity": {
+      "value": "627605478",
+      "versions": [
+        {
+          "value": "627605478",
+          "source-type": "CALCULATED",
+          "source-id": "",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834879725,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_created_by_user_id": {
+      "value": "46203537",
+      "versions": [
+        {
+          "value": "46203537",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "num_associated_deals": {
+      "value": "5",
+      "versions": [
+        {
+          "value": "5",
+          "source-type": "CALCULATED",
+          "source-id": "RollupProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716413605450,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "4",
+          "source-type": "CALCULATED",
+          "source-id": "RollupProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716318464716,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "3",
+          "source-type": "CALCULATED",
+          "source-id": "RollupProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716318428195,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "2",
+          "source-type": "CALCULATED",
+          "source-id": "RollupProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207341063,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1",
+          "source-type": "CALCULATED",
+          "source-id": "RollupProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207272333,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_analytics_num_page_views": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_optimal_send_day_of_week": {
+      "value": "TUESDAY",
+      "versions": [
+        {
+          "value": "TUESDAY",
+          "source-type": "EMAIL",
+          "source-id": "SendTimeOptimization",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765800549193,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_consent": {
+      "value": "true",
+      "versions": [
+        {
+          "value": "true",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_marketable_reason_type": {
+      "value": "CONTACT_IMPORT",
+      "versions": [
+        {
+          "value": "CONTACT_IMPORT",
+          "source-type": "IMPORT",
+          "source-id": "173891347",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758722068196,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "WORKFLOW",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:283726943225;actionExecutionIndex:0",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207329446,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "CONTACT_IMPORT",
+          "source-type": "IMPORT",
+          "source-id": "119376952",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1699873898602,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "WORKFLOW",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:128814241239;actionExecutionIndex:0",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173983649,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "CONTACT_IMPORT",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173721551,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "recent_deal_close_date": {
+      "value": "1716834877169",
+      "versions": [
+        {
+          "value": "1716834877169",
+          "source-type": "CALCULATED",
+          "source-id": "RollupProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716838659183,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_time_between_contact_creation_and_deal_close": {
+      "value": "27661205718",
+      "versions": [
+        {
+          "value": "27661205718",
+          "source-type": "CALCULATED",
+          "source-id": "CalculatedPropertyComputer",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834877564,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "business_unit": {
+      "value": "fixo",
+      "versions": [
+        {
+          "value": "fixo",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_remove_contact": {
+      "value": "false",
+      "versions": [
+        {
+          "value": "false",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_all_contact_vids": {
+      "value": "7206485",
+      "versions": [
+        {
+          "value": "7206485",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "lastname": {
+      "value": "Serra",
+      "versions": [
+        {
+          "value": "Serra",
+          "source-type": "IMPORT",
+          "source-id": "120566800",
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709717291102,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Santos",
+          "source-type": "IMPORT",
+          "source-id": "120566320",
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709715390046,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Serra",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_v2_date_exited_lead": {
+      "value": "1716207272085",
+      "versions": [
+        {
+          "value": "1716207272085",
+          "source-type": "CALCULATED",
+          "source-id": "",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207274896,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_predictivecontactscore_v2": {
+      "value": "",
+      "versions": [
+        {
+          "value": "",
+          "source-type": "AI_GROUP",
+          "source-id": "DataPrediction",
+          "source-label": "Not Inferred",
+          "updated-by-user-id": null,
+          "timestamp": 1716834890626,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.18",
+          "source-type": "AI_GROUP",
+          "source-id": null,
+          "source-label": "HubSpot Predictive Contact Scoring Model",
+          "updated-by-user-id": null,
+          "timestamp": 1695272527394,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.22",
+          "source-type": "AI_GROUP",
+          "source-id": null,
+          "source-label": "HubSpot Predictive Contact Scoring Model",
+          "updated-by-user-id": null,
+          "timestamp": 1693137525295,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.82",
+          "source-type": "AI_GROUP",
+          "source-id": null,
+          "source-label": "HubSpot Predictive Contact Scoring Model",
+          "updated-by-user-id": null,
+          "timestamp": 1689173994923,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.85",
+          "source-type": "AI_GROUP",
+          "source-id": null,
+          "source-label": "HubSpot Predictive Contact Scoring Model",
+          "updated-by-user-id": null,
+          "timestamp": 1689173690623,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "phone": {
+      "value": "'+351915024090",
+      "versions": [
+        {
+          "value": "'+351915024090",
+          "source-type": "IMPORT",
+          "source-id": "173891347",
+          "source-label": null,
+          "updated-by-user-id": 77295439,
+          "timestamp": 1758722056653,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "'+351 915024090",
+          "source-type": "IMPORT",
+          "source-id": "121752708",
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1718193168497,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "+351915024090",
+          "source-type": "INTEGRATION",
+          "source-id": "1274044",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207200196,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "'+351 915024090",
+          "source-type": "IMPORT",
+          "source-id": "120566800",
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709717291102,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "'+351 916227167",
+          "source-type": "IMPORT",
+          "source-id": "120566320",
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709715390046,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "'+351 915024090",
+          "source-type": "IMPORT",
+          "source-id": "119376952",
+          "source-label": null,
+          "updated-by-user-id": 60556925,
+          "timestamp": 1699873893754,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "915024090",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "currentlyinworkflow": {
+      "value": "true",
+      "versions": [
+        {
+          "value": "true",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:316391320016",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1719919551889,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "false",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:299634254556",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1719270118248,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "true",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:299634254556",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1718060510960,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "false",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:290210623162",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716981349121,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "true",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:290210623162",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716981306469,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "false",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:178309487321",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1700060572289,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "true",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:178309487321",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1700044845601,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "false",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "871943101",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173984666,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "true",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "871943101",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173741868,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_analytics_num_event_completions": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_lifecyclestage_customer_date": {
+      "value": "1716834877563",
+      "versions": [
+        {
+          "value": "1716834877563",
+          "source-type": "DEALS",
+          "source-id": "deals-lifecycle-sync",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834877563,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_lifecyclestage_lead_date": {
+      "value": "1689173671845",
+      "versions": [
+        {
+          "value": "1689173671845",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_v2_date_entered_lead": {
+      "value": "1689173671845",
+      "versions": [
+        {
+          "value": "1689173671845",
+          "source-type": "MIGRATION",
+          "source-id": "CrmScpBackfillBatchProcessor",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_time_to_move_from_lead_to_customer": {
+      "value": "27661205718",
+      "versions": [
+        {
+          "value": "27661205718",
+          "source-type": "CALCULATED",
+          "source-id": "CalculatedPropertyComputer",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834877564,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_updated_by_user_id": {
+      "value": "77295439",
+      "versions": [
+        {
+          "value": "77295439",
+          "source-type": "IMPORT",
+          "source-id": "173891347",
+          "source-label": null,
+          "updated-by-user-id": 77295439,
+          "timestamp": 1758722056620,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "60706269",
+          "source-type": "IMPORT",
+          "source-id": "120566320",
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709715390046,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "60556925",
+          "source-type": "IMPORT",
+          "source-id": "119376952",
+          "source-label": null,
+          "updated-by-user-id": 60556925,
+          "timestamp": 1699873893754,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "46203537",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_latest_source_data_2": {
+      "value": "118149017",
+      "versions": [
+        {
+          "value": "118149017",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_latest_source_data_1": {
+      "value": "IMPORT",
+      "versions": [
+        {
+          "value": "IMPORT",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_optimal_send_time_of_day": {
+      "value": "11:20",
+      "versions": [
+        {
+          "value": "11:20",
+          "source-type": "EMAIL",
+          "source-id": "SendTimeOptimization",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765800549193,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "11:02",
+          "source-type": "EMAIL",
+          "source-id": "SendTimeOptimization",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763206633173,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_pipeline": {
+      "value": "contacts-lifecycle-pipeline",
+      "versions": [
+        {
+          "value": "contacts-lifecycle-pipeline",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_social_num_broadcast_clicks": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_lifecyclestage_opportunity_date": {
+      "value": "1716207272085",
+      "versions": [
+        {
+          "value": "1716207272085",
+          "source-type": "DEALS",
+          "source-id": "deals-lifecycle-sync",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207272085,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_object_source_label": {
+      "value": "IMPORT",
+      "versions": [
+        {
+          "value": "IMPORT",
+          "source-type": "MIGRATION",
+          "source-id": "BackfillObjectSourceProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1703613826699,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_analytics_source": {
+      "value": "OFFLINE",
+      "versions": [
+        {
+          "value": "OFFLINE",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_first_open_date": {
+      "value": "1699927664933",
+      "versions": [
+        {
+          "value": "1699927664933",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1699927664933,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_lastname": {
+      "value": "Serra",
+      "versions": [
+        {
+          "value": "Serra",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_searchable_calculated_mobile_number": {
+      "value": "915024090",
+      "versions": [
+        {
+          "value": "915024090",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173984384,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_domain": {
+      "value": "gmail.com",
+      "versions": [
+        {
+          "value": "gmail.com",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_marketable_reason_id": {
+      "value": "173891347",
+      "versions": [
+        {
+          "value": "173891347",
+          "source-type": "IMPORT",
+          "source-id": "173891347",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758722068196,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1057828320",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:283726943225;actionExecutionIndex:0",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207329446,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "119421501",
+          "source-type": "IMPORT",
+          "source-id": "119421501",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1700213472020,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "119399908",
+          "source-type": "IMPORT",
+          "source-id": "119399908",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1700044700493,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "119376952",
+          "source-type": "IMPORT",
+          "source-id": "119376952",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1699873898602,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "871943101",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:128814241239;actionExecutionIndex:0",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173983649,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "118149017",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173721551,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_calculated_phone_number": {
+      "value": "+351915024090",
+      "versions": [
+        {
+          "value": "+351915024090",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709717291102,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "+351916227167",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709715390046,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "+351915024090",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": 60556925,
+          "timestamp": 1699873893754,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "email": {
+      "value": "renatamrserra@gmail.com",
+      "versions": [
+        {
+          "value": "renatamrserra@gmail.com",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_v2_date_entered_opportunity": {
+      "value": "1716207272085",
+      "versions": [
+        {
+          "value": "1716207272085",
+          "source-type": "CALCULATED",
+          "source-id": "",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207274895,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_analytics_first_timestamp": {
+      "value": "1689173671845",
+      "versions": [
+        {
+          "value": "1689173671845",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_calculated_mobile_number": {
+      "value": "+351915024090",
+      "versions": [
+        {
+          "value": "+351915024090",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173984384,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_v2_cumulative_time_in_lead": {
+      "value": "27033600240",
+      "versions": [
+        {
+          "value": "27033600240",
+          "source-type": "CALCULATED",
+          "source-id": "",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207274887,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_social_twitter_clicks": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_object_source_user_id": {
+      "value": "46203537",
+      "versions": [
+        {
+          "value": "46203537",
+          "source-type": "MIGRATION",
+          "source-id": "BackfillObjectSourceProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1703613826699,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_sends_since_last_engagement": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767086592872,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767002769222,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490461313,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "8",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490441552,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "7",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765884476504,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "6",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765447511312,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "5",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765272626216,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "4",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764151145965,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "3",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763984077146,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "2",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763642976637,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763033666453,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762860274208,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "10",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762855382372,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "9",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762251454325,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "8",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761833672591,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "7",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761575559385,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "6",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1760438232759,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "5",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759751688186,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "4",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759334404434,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "3",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758538887234,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "2",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758195043711,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757925112175,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757587679724,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "41",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757584300004,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "40",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757325654923,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "39",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756283496778,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "38",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756113440272,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "37",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755506792899,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "36",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755077082986,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "35",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754902935995,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "34",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754295466666,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "33",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753692472118,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "32",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753264739470,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "31",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753086795097,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "30",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752666227877,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "29",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752479864784,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "28",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751887245248,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "27",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751529599568,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "26",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751358912881,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750242682327,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "24",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750063363722,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "23",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749632197302,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "22",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749458199577,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "21",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749113550964,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "20",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1748422810858,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_last_open_date": {
+      "value": "1767086592872",
+      "versions": [
+        {
+          "value": "1767086592872",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767086592872,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1766490461313",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490461313,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762860274208",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762860274208,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1757587679724",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757587679724,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1741556212334",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1741556212334,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1738748159574",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1738748159574,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1736029397882",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1736029397882,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1732012204168",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1732012204168,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1731326806748",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1731326806748,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1730108166439",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1730108166439,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1729593247095",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1729593247095,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1729585986622",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1729585986622,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1729069953423",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1729069953423,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1728576743594",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1728576743594,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1728055673240",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1728055673240,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1727084204180",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1727084204180,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1723645307055",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1723645307055,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1722341150545",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1722341150545,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1720111940167",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1720111940167,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1720102884720",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1720102884720,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1718885488483",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1718885488483,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1717405896657",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1717405896657,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1700480290690",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1700480290690,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1700336774127",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1700336774127,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1700226933946",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1700226933946,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1700131676301",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1700131676301,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1699927664933",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1699927664933,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_email": {
+      "value": "renatamrserra@gmail.com",
+      "versions": [
+        {
+          "value": "renatamrserra@gmail.com",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_latest_source": {
+      "value": "OFFLINE",
+      "versions": [
+        {
+          "value": "OFFLINE",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_analytics_revenue": {
+      "value": "0.0",
+      "versions": [
+        {
+          "value": "0.0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "days_to_close": {
+      "value": "321",
+      "versions": [
+        {
+          "value": "321",
+          "source-type": "CALCULATED",
+          "source-id": "CalculatedPropertyComputer",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834877564,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_registered_member": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "MIGRATION",
+          "source-id": "RecalculateCalculatedPropertiesHelper",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1720558490899,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_deviceid_ios": {
+      "value": " F3EC710A-8B7A-4862-8398-820226435635",
+      "versions": [
+        {
+          "value": " F3EC710A-8B7A-4862-8398-820226435635",
+          "source-type": "INTEGRATION",
+          "source-id": "1274044",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207200196,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_last_send_date": {
+      "value": "1767002779879",
+      "versions": [
+        {
+          "value": "1767002779879",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767002779879,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1766490456642",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490456642,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765884488442",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765884488442,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765447523445",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765447523445,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765272635578",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765272635578,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1764151150717",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764151150717,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763984085411",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763984085411,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763642977829",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763642977829,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763033710660",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763033710660,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762855391780",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762855391780,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762251461194",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762251461194,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1761833685074",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761833685074,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1761575562140",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761575562140,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1760438240417",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1760438240417,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1759751700613",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759751700613,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1759334408728",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759334408728,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1758538913986",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758538913986,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1758195072787",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758195072787,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1757925118702",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757925118702,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1757584303889",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757584303889,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1757325658853",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757325658853,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1756283553670",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756283553670,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1756113551543",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756113551543,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1755506808085",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755506808085,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1755077146851",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755077146851,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1754902949462",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754902949462,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1754295470497",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754295470497,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1753692491926",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753692491926,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1753264749965",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753264749965,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1753086809630",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753086809630,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1752666233511",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752666233511,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1752479881926",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752479881926,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1751887260103",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751887260103,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1751529617491",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751529617491,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1751358930087",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751358930087,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1750242696344",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750242696344,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1750063372811",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750063372811,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1749632200352",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749632200352,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1749458212502",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749458212502,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1749113568176",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749113568176,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1748422820158",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1748422820158,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1747988950027",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747988950027,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1747384638656",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747384638656,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1747327368297",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747327368297,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1747230695753",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747230695753,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "first_deal_created_date": {
+      "value": "1716207271531",
+      "versions": [
+        {
+          "value": "1716207271531",
+          "source-type": "CALCULATED",
+          "source-id": "RollupProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207272333,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_object_source_id": {
+      "value": "118149017",
+      "versions": [
+        {
+          "value": "118149017",
+          "source-type": "MIGRATION",
+          "source-id": "BackfillObjectSourceProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1703613826699,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "mobilephone": {
+      "value": "'+351915024090",
+      "versions": [
+        {
+          "value": "'+351915024090",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:128814241239;actionExecutionIndex:1",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173984384,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_userid": {
+      "value": "461224",
+      "versions": [
+        {
+          "value": "461224",
+          "source-type": "IMPORT",
+          "source-id": "120566800",
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709717291102,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1454547",
+          "source-type": "IMPORT",
+          "source-id": "120566320",
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709715390046,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "461224",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_was_imported": {
+      "value": "true",
+      "versions": [
+        {
+          "value": "true",
+          "source-type": "MIGRATION",
+          "source-id": "BackfillImportPropertyFromLists",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689798729877,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_time_between_contact_creation_and_deal_creation": {
+      "value": "27033599686",
+      "versions": [
+        {
+          "value": "27033599686",
+          "source-type": "CALCULATED",
+          "source-id": "CalculatedPropertyComputer",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207272348,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_latest_source_timestamp": {
+      "value": "1689173674418",
+      "versions": [
+        {
+          "value": "1689173674418",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_last_email_name": {
+      "value": "Newsletter Ano Novo - DEZ'25",
+      "versions": [
+        {
+          "value": "Newsletter Ano Novo - DEZ'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767002769222,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Natal Last Call - DEZ'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490441552,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Natal Reminder - DEZ'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765884476504,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Natal - DEZ'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765447511312,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Limpeza de Sofás - DEZ'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765272626216,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter BLACK30 Last Call - NOV'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764151145965,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter BLACK30 Reminder - NOV'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763984077146,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter BLACK30 - NOV'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763642976637,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Singles Day Reminder - NOV'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763033666453,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Singles Day - NOV'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762855382372,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter No Shave November - NOV'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762251454325,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Halloween Reminder - OUT'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761833672591,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Halloween - OUT'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761575559385,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Black Friday Reminder II FIXO30 - OUT'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1760438232759,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Black Friday Reminder I FIXO30 - OUT'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759751688186,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Black Friday FIXO30 I - OUT'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759334404434,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter MOVEISPRONTOS - SET'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758538887234,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter ROUPAIMPECAVEL Reminder - SET'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758195043711,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter ROUPAIMPECAVEL - SET'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757925112175,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Aviso Clientes",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757584300004,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter SETEMBRO30 - SET'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757325654923,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Regresso à Rotina Reminder - AGO'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756283496778,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Regresso à Rotina - AGO'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756113440272,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Reparação de Eletrodomésticos - AGO'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755506792899,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Feriado Reminder - AGO'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755077082986,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Feriado - AGO'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754902935995,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia do Gato - AGO'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754295466666,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Limpeza de Vidros e Janelas - JUL'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753692472118,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia dos Avós Reminder - JUL'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753264739470,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia dos Avós - JUL'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753086795097,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia do Amigo Reminder - JUL'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752666227877,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia do Amigo - JUL'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752479864784,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia do Chocolate - JUL'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751887245248,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Verão em Julho Reminder - JUL'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751529599568,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Verão em Julho - JUL'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751358912881,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Início Verão Reminder - JUN'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750242682327,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Início Verão - JUN'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750063363722,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Santos Populares Reminder - JUN'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749632197302,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Santos Populares - JUN'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749458199577,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia do Ambiente - JUN'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749113550964,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia da Criança - JUN'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1748422810858,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia da Tartaruga - MAI'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747988936205,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia da Luz - MAI'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747384626028,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia da Família Reminder 3 - MAI'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747327354708,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "Newsletter Dia da Família Reminder 2 - MAI'25",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747230672461,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_first_send_date": {
+      "value": "1699885509484",
+      "versions": [
+        {
+          "value": "1699885509484",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1699885509484,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_analytics_average_page_views": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_last_deal": {
+      "value": "1716336000000",
+      "versions": [
+        {
+          "value": "1716336000000",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:285441562605;actionExecutionIndex:1",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716417205393,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1716249600000",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:284539439809;actionExecutionIndex:1",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716322029415,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1716163200000",
+          "source-type": "AUTOMATION_PLATFORM",
+          "source-id": "enrollmentId:283732136384;actionExecutionIndex:1",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716210874151,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_is_contact": {
+      "value": "true",
+      "versions": [
+        {
+          "value": "true",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "num_conversion_events": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173674626,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_v2_latest_time_in_lead": {
+      "value": "27033600240",
+      "versions": [
+        {
+          "value": "27033600240",
+          "source-type": "CALCULATED",
+          "source-id": "",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207274890,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_object_id": {
+      "value": "7206485",
+      "versions": [
+        {
+          "value": "7206485",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_v2_date_entered_customer": {
+      "value": "1716834877563",
+      "versions": [
+        {
+          "value": "1716834877563",
+          "source-type": "CALCULATED",
+          "source-id": "",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834879724,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_open": {
+      "value": "21",
+      "versions": [
+        {
+          "value": "21",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767086639771,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "20",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762860324449,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "19",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757587729649,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "18",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1741556262393,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "17",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1738748203128,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "16",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1736029448096,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "15",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1732012254325,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "14",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1731326856972,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "13",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1730108215874,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "12",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1729586034250,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "11",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1729070003464,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "10",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1728576794119,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "9",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1728055720116,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "8",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1727084254779,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "7",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1723645359160,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "6",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1722341200621,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "5",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1720102934791,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "4",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1718885538498,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "3",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1717405950455,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "2",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1700226986735,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1699927715547,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_is_unworked": {
+      "value": "true",
+      "versions": [
+        {
+          "value": "true",
+          "source-type": "CALCULATED",
+          "source-id": "CalculatedPropertyComputer",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "firstname": {
+      "value": "Renata",
+      "versions": [
+        {
+          "value": "Renata",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_phone": {
+      "value": "+351915024090",
+      "versions": [
+        {
+          "value": "+351915024090",
+          "source-type": "INTEGRATION",
+          "source-id": "1274044",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207200196,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "'+351915024090",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_messaging_engagement_score": {
+      "value": "0.73794293",
+      "versions": [
+        {
+          "value": "0.73794293",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767113487145,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.6945255",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767029533809,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.7323042",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766519021405,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.39634368",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765910823200,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.4220653",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765473547367,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.4499845",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765301094146,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.4977781",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764177658835,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.5425413",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764014632630,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.6077348",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763670724814,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.7267303",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763061315431,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.74150074",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762885270254,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.35613686",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762277888643,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.37495828",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761860955590,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.39545923",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761606280368,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.42570773",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1760469160674,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.45906425",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759782562499,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.49710202",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759361278922,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.5533657",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758567284999,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.6203018",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758222451906,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.71858394",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757951302846,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.7471563",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757613035732,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.18069719",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757356456944,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.18488984",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756310814451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.18836936",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756139906117,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.19245815",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755536603329,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.19652694",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755084410859,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.20045371",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754910291209,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.2050862",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754302706975,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.20994157",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753700851071,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.21478486",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753266605690,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.21946308",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753088798057,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.22475347",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752668187632,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.2298753",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752481768127,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.23597838",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751889113647,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.2419367",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751531541217,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.24786606",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751360954954,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.25608003",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750244561879,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.26270258",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750065201824,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.2703044",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749634100791,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.27768624",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749460191861,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "0.28594998",
+          "source-type": "EMAIL",
+          "source-id": "MessagingContactEngagementScoreEvaluator",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749115510590,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_analytics_num_visits": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_sequences_actively_enrolled_count": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "CALCULATED",
+          "source-id": "RollupProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173675566,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_marketable_until_renewal": {
+      "value": "false",
+      "versions": [
+        {
+          "value": "false",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_social_linkedin_clicks": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_marketable_status": {
+      "value": "true",
+      "versions": [
+        {
+          "value": "true",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173721551,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "false",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_searchable_calculated_phone_number": {
+      "value": "915024090",
+      "versions": [
+        {
+          "value": "915024090",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709717291102,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "916227167",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": 60706269,
+          "timestamp": 1709715390046,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "915024090",
+          "source-type": "CALCULATED",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_v2_date_exited_opportunity": {
+      "value": "1716834877563",
+      "versions": [
+        {
+          "value": "1716834877563",
+          "source-type": "CALCULATED",
+          "source-id": "",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834879728,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "closedate": {
+      "value": "1716834877563",
+      "versions": [
+        {
+          "value": "1716834877563",
+          "source-type": "DEALS",
+          "source-id": "deals-lifecycle-sync",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834877563,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "lastmodifieddate": {
+      "value": "1767113487152",
+      "versions": [
+        {
+          "value": "1767113487152",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767113487152,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1767086642193",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767086642193,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1767086640992",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767086640992,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1767029533815",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767029533815,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1767002776355",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767002776355,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1767002776074",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767002776074,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1766519021412",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766519021412,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1766490514999",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490514999,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1766490514628",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490514628,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1766490449372",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490449372,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1766490448702",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490448702,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765910823211",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765910823211,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765884484028",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765884484028,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765884483863",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765884483863,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765800625674",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765800625674,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765473547375",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765473547375,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765447520598",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765447520598,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765447518524",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765447518524,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765301094151",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765301094151,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765272640125",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765272640125,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1765272636374",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765272636374,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1764177658843",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764177658843,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1764151148783",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764151148783,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1764151148148",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764151148148,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1764014632638",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764014632638,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763984081501",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763984081501,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763984079585",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763984079585,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763670724823",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763670724823,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763642978426",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763642978426,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763642977717",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763642977717,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763206768356",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763206768356,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763061315441",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763061315441,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763033671882",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763033671882,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1763033671703",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763033671703,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762885270265",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762885270265,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762860326128",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762860326128,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762860325574",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762860325574,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762855386008",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762855386008,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762855385981",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762855385981,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762277888649",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762277888649,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762251456627",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762251456627,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1762251455695",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762251455695,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1761860955597",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761860955597,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1761833674202",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761833674202,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "1761833673748",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761833673748,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_full_name_or_email": {
+      "value": "Renata Serra",
+      "versions": [
+        {
+          "value": "Renata Serra",
+          "source-type": "MIGRATION",
+          "source-id": "RecalculateCalculatedPropertiesHelper",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1739863860000,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_social_google_plus_clicks": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_time_to_move_from_opportunity_to_customer": {
+      "value": "627605478",
+      "versions": [
+        {
+          "value": "627605478",
+          "source-type": "CALCULATED",
+          "source-id": "CalculatedPropertyComputer",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834877564,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_email_delivered": {
+      "value": "108",
+      "versions": [
+        {
+          "value": "108",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1767002780613,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "107",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1766490457259,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "106",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765884488972,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "105",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765447524071,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "104",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1765272636338,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "103",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1764151151561,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "102",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763984085980,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "101",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763642978298,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "100",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1763033711276,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "99",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762855393152,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "98",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1762251462118,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "97",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761833685689,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "96",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1761575562568,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "95",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1760438240906,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "94",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759751700898,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "93",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1759334409868,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "92",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758538915194,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "91",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1758195073252,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "90",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757925119211,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "89",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757584304673,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "88",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1757325659530,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "87",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756283554386,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "86",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1756113551838,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "85",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755506809038,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "84",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1755077147647,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "83",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754902950264,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "82",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1754295471751,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "81",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753692492571,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "80",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753264750580,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "79",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1753086811014,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "78",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752666234046,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "77",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1752479884120,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "76",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751887260799,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "75",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751529618509,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "74",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1751358930563,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "73",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750242696849,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "72",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1750063373292,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "71",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749632200973,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "70",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749458212969,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "69",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1749113568794,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "68",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1748422821064,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "67",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747988950939,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "66",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747384639596,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "65",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747327368964,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "64",
+          "source-type": "EMAIL",
+          "source-id": null,
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1747230696106,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "fixo_firstname": {
+      "value": "Renata",
+      "versions": [
+        {
+          "value": "Renata",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_predictivescoringtier": {
+      "value": "closed_won",
+      "versions": [
+        {
+          "value": "closed_won",
+          "source-type": "AI_GROUP",
+          "source-id": "DataPrediction",
+          "source-label": "Not Inferred",
+          "updated-by-user-id": null,
+          "timestamp": 1716834890626,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "tier_3",
+          "source-type": "AI_GROUP",
+          "source-id": "DataPrediction",
+          "source-label": "HubSpot Predictive Contact Scoring Model",
+          "updated-by-user-id": null,
+          "timestamp": 1704564515527,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "tier_2",
+          "source-type": "AI_GROUP",
+          "source-id": null,
+          "source-label": "HubSpot Predictive Contact Scoring Model",
+          "updated-by-user-id": null,
+          "timestamp": 1696561383937,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "tier_4",
+          "source-type": "AI_GROUP",
+          "source-id": null,
+          "source-label": "HubSpot Predictive Contact Scoring Model",
+          "updated-by-user-id": null,
+          "timestamp": 1689173690623,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_social_facebook_clicks": {
+      "value": "0",
+      "versions": [
+        {
+          "value": "0",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_object_source": {
+      "value": "IMPORT",
+      "versions": [
+        {
+          "value": "IMPORT",
+          "source-type": "MIGRATION",
+          "source-id": "BackfillObjectSourceProperties",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1703613826699,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_analytics_source_data_2": {
+      "value": "118149017",
+      "versions": [
+        {
+          "value": "118149017",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "hs_analytics_source_data_1": {
+      "value": "IMPORT",
+      "versions": [
+        {
+          "value": "IMPORT",
+          "source-type": "ANALYTICS",
+          "source-id": "ContactAnalyticsDetailsUpdateWorker",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1689173689451,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    },
+    "lifecyclestage": {
+      "value": "customer",
+      "versions": [
+        {
+          "value": "customer",
+          "source-type": "DEALS",
+          "source-id": "deals-lifecycle-sync",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716834877563,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "opportunity",
+          "source-type": "DEALS",
+          "source-id": "deals-lifecycle-sync",
+          "source-label": null,
+          "updated-by-user-id": null,
+          "timestamp": 1716207272085,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        },
+        {
+          "value": "lead",
+          "source-type": "IMPORT",
+          "source-id": "118149017",
+          "source-label": null,
+          "updated-by-user-id": 46203537,
+          "timestamp": 1689173671845,
+          "selected": false,
+          "data-sensitivity": null,
+          "is-encrypted": null
+        }
+      ]
+    }
+  },
+  "form-submissions": [],
+  "list-memberships": [
+    {
+      "static-list-id": 15,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716834941954,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 17,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716834947251,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 23,
+      "internal-list-id": 2147483643,
+      "timestamp": 1718060515793,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 25,
+      "internal-list-id": 2147483643,
+      "timestamp": 1719270126211,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 45,
+      "internal-list-id": 2147483643,
+      "timestamp": 1691657451410,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 47,
+      "internal-list-id": 2147483643,
+      "timestamp": 1691657459250,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 55,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716207339165,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 57,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716207339174,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 108,
+      "internal-list-id": 2147483643,
+      "timestamp": 1702484957031,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 109,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716318746174,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 110,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716318746174,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 144,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716207291555,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 145,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716318746174,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 147,
+      "internal-list-id": 2147483643,
+      "timestamp": 1699927738463,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 148,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716207291555,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 150,
+      "internal-list-id": 2147483643,
+      "timestamp": 1700060635084,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 151,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716207291555,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 157,
+      "internal-list-id": 2147483643,
+      "timestamp": 1699873897293,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 162,
+      "internal-list-id": 2147483643,
+      "timestamp": 1700044853341,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 164,
+      "internal-list-id": 2147483643,
+      "timestamp": 1700060580376,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 168,
+      "internal-list-id": 2147483643,
+      "timestamp": 1700044697977,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 169,
+      "internal-list-id": 2147483643,
+      "timestamp": 1700213470442,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 181,
+      "internal-list-id": 2147483643,
+      "timestamp": 1701193932656,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 203,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716318746174,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 204,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716210890737,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 242,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716210890737,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 331,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716981310281,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 333,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716981352847,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 335,
+      "internal-list-id": 2147483643,
+      "timestamp": 1716979272910,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 349,
+      "internal-list-id": 2147483643,
+      "timestamp": 1718193669148,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 363,
+      "internal-list-id": 2147483643,
+      "timestamp": 1719419927797,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 365,
+      "internal-list-id": 2147483643,
+      "timestamp": 1719419927947,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 367,
+      "internal-list-id": 2147483643,
+      "timestamp": 1719592188689,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 369,
+      "internal-list-id": 2147483643,
+      "timestamp": 1719592229770,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 372,
+      "internal-list-id": 2147483643,
+      "timestamp": 1719592053779,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 373,
+      "internal-list-id": 2147483643,
+      "timestamp": 1719919557023,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 374,
+      "internal-list-id": 2147483643,
+      "timestamp": 1719919556965,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 377,
+      "internal-list-id": 2147483643,
+      "timestamp": 1720173410114,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 379,
+      "internal-list-id": 2147483643,
+      "timestamp": 1720173459890,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 381,
+      "internal-list-id": 2147483643,
+      "timestamp": 1720164943765,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 411,
+      "internal-list-id": 2147483643,
+      "timestamp": 1725018534145,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 413,
+      "internal-list-id": 2147483643,
+      "timestamp": 1725018583446,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 438,
+      "internal-list-id": 2147483643,
+      "timestamp": 1730297396614,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 440,
+      "internal-list-id": 2147483643,
+      "timestamp": 1730297570288,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 456,
+      "internal-list-id": 2147483643,
+      "timestamp": 1732187503755,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 461,
+      "internal-list-id": 2147483643,
+      "timestamp": 1732272682000,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 463,
+      "internal-list-id": 2147483643,
+      "timestamp": 1732272687885,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 470,
+      "internal-list-id": 2147483643,
+      "timestamp": 1732549067111,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 472,
+      "internal-list-id": 2147483643,
+      "timestamp": 1732549097727,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 474,
+      "internal-list-id": 2147483643,
+      "timestamp": 1732547543149,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 480,
+      "internal-list-id": 2147483643,
+      "timestamp": 1734604990138,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 482,
+      "internal-list-id": 2147483643,
+      "timestamp": 1734605197856,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 493,
+      "internal-list-id": 2147483643,
+      "timestamp": 1736251452242,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 494,
+      "internal-list-id": 2147483643,
+      "timestamp": 1736281026401,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 502,
+      "internal-list-id": 2147483643,
+      "timestamp": 1736859678582,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 503,
+      "internal-list-id": 2147483643,
+      "timestamp": 1737651382862,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 509,
+      "internal-list-id": 2147483643,
+      "timestamp": 1737720040329,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 511,
+      "internal-list-id": 2147483643,
+      "timestamp": 1737720105834,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 518,
+      "internal-list-id": 2147483643,
+      "timestamp": 1738839127873,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 520,
+      "internal-list-id": 2147483643,
+      "timestamp": 1738839133268,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 528,
+      "internal-list-id": 2147483643,
+      "timestamp": 1740666615342,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 530,
+      "internal-list-id": 2147483643,
+      "timestamp": 1740666620828,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 555,
+      "internal-list-id": 2147483643,
+      "timestamp": 1742385639567,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 557,
+      "internal-list-id": 2147483643,
+      "timestamp": 1742385639532,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 560,
+      "internal-list-id": 2147483643,
+      "timestamp": 1742381742612,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 561,
+      "internal-list-id": 2147483643,
+      "timestamp": 1742821218970,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 563,
+      "internal-list-id": 2147483643,
+      "timestamp": 1742821224429,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 588,
+      "internal-list-id": 2147483643,
+      "timestamp": 1757587911796,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 596,
+      "internal-list-id": 2147483643,
+      "timestamp": 1744731891026,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 601,
+      "internal-list-id": 2147483643,
+      "timestamp": 1744886528348,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 603,
+      "internal-list-id": 2147483643,
+      "timestamp": 1744886528408,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 610,
+      "internal-list-id": 2147483643,
+      "timestamp": 1745486150709,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 612,
+      "internal-list-id": 2147483643,
+      "timestamp": 1745486154257,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 625,
+      "internal-list-id": 2147483643,
+      "timestamp": 1746716405526,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 627,
+      "internal-list-id": 2147483643,
+      "timestamp": 1746716409586,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 634,
+      "internal-list-id": 2147483643,
+      "timestamp": 1748008557055,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 636,
+      "internal-list-id": 2147483643,
+      "timestamp": 1748008561042,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 647,
+      "internal-list-id": 2147483643,
+      "timestamp": 1749722104356,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 649,
+      "internal-list-id": 2147483643,
+      "timestamp": 1749722108979,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 652,
+      "internal-list-id": 2147483643,
+      "timestamp": 1749716939517,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 661,
+      "internal-list-id": 2147483643,
+      "timestamp": 1751619833620,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 663,
+      "internal-list-id": 2147483643,
+      "timestamp": 1751619839139,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 665,
+      "internal-list-id": 2147483643,
+      "timestamp": 1751284858056,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 668,
+      "internal-list-id": 2147483643,
+      "timestamp": 1751619546320,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 678,
+      "internal-list-id": 2147483643,
+      "timestamp": 1753437625731,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 680,
+      "internal-list-id": 2147483643,
+      "timestamp": 1753437631844,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 689,
+      "internal-list-id": 2147483643,
+      "timestamp": 1753437264215,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 694,
+      "internal-list-id": 2147483643,
+      "timestamp": 1754038822610,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 696,
+      "internal-list-id": 2147483643,
+      "timestamp": 1754038834993,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 706,
+      "internal-list-id": 2147483643,
+      "timestamp": 1757498433775,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 708,
+      "internal-list-id": 2147483643,
+      "timestamp": 1757498443721,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 711,
+      "internal-list-id": 2147483643,
+      "timestamp": 1758031697607,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 712,
+      "internal-list-id": 2147483643,
+      "timestamp": 1758032205703,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 719,
+      "internal-list-id": 2147483643,
+      "timestamp": 1758722438424,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 721,
+      "internal-list-id": 2147483643,
+      "timestamp": 1758722438454,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 725,
+      "internal-list-id": 2147483643,
+      "timestamp": 1758722064831,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 730,
+      "internal-list-id": 2147483643,
+      "timestamp": 1759151104302,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 732,
+      "internal-list-id": 2147483643,
+      "timestamp": 1759151111782,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 750,
+      "internal-list-id": 2147483643,
+      "timestamp": 1760090408033,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 752,
+      "internal-list-id": 2147483643,
+      "timestamp": 1760090418101,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 754,
+      "internal-list-id": 2147483643,
+      "timestamp": 1760089320746,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 787,
+      "internal-list-id": 2147483643,
+      "timestamp": 1761574736113,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 828,
+      "internal-list-id": 2147483643,
+      "timestamp": 1762778466700,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 841,
+      "internal-list-id": 2147483643,
+      "timestamp": 1763983274656,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 855,
+      "internal-list-id": 2147483643,
+      "timestamp": 1765361898123,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 868,
+      "internal-list-id": 2147483643,
+      "timestamp": 1765803176896,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 874,
+      "internal-list-id": 2147483643,
+      "timestamp": 1766073186144,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 876,
+      "internal-list-id": 2147483643,
+      "timestamp": 1766073186158,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 880,
+      "internal-list-id": 2147483643,
+      "timestamp": 1766420364387,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 886,
+      "internal-list-id": 2147483643,
+      "timestamp": 1767088846770,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 888,
+      "internal-list-id": 2147483643,
+      "timestamp": 1767088846844,
+      "vid": 7206485,
+      "is-member": true
+    },
+    {
+      "static-list-id": 890,
+      "internal-list-id": 2147483643,
+      "timestamp": 1767010889444,
+      "vid": 7206485,
+      "is-member": true
+    }
+  ],
+  "identity-profiles": [
+    {
+      "vid": 7206485,
+      "is-deleted": false,
+      "is-contact": false,
+      "pointer-vid": 0,
+      "previous-vid": 0,
+      "linked-vids": [],
+      "saved-at-timestamp": 0,
+      "deleted-changed-timestamp": 0,
+      "identities": [
+        {
+          "type": "EMAIL",
+          "value": "renatamrserra@gmail.com",
+          "timestamp": 1689173671845,
+          "is-primary": true,
+          "source": "UNSPECIFIED"
+        },
+        {
+          "type": "LEAD_GUID",
+          "value": "aa8f0780-7559-4976-83dd-ad44d6893931",
+          "timestamp": 1689173674414,
+          "source": "UNSPECIFIED"
+        }
+      ]
+    }
+  ],
+  "merge-audits": []
+}
+2026-01-08 16:55:59.874 [info] Body keys: [
+  'vid',
+  'canonical-vid',
+  'merged-vids',
+  'portal-id',
+  'is-contact',
+  'properties',
+  'form-submissions',
+  'list-memberships',
+  'identity-profiles',
+  'merge-audits'
+]
+2026-01-08 16:55:59.874 [info] ================================

@@ -1,93 +1,95 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-type EntityType = 'tecnico' | 'eni' | 'empresa'
-
-// Mapeamento dos campos do HubSpot para os nossos campos
-function parseHubSpotSubmission(data: Record<string, unknown>) {
-  const entityTypeField = data['Escolha a opção que mais se adequa a si*'] as string || ''
-  let entityType: EntityType = 'tecnico'
-
-  if (entityTypeField.toLowerCase().includes('empresa')) {
-    entityType = 'empresa'
-  } else if (entityTypeField.toLowerCase().includes('eni')) {
-    entityType = 'eni'
-  }
-
-  let name: string
-  let email: string
-  let phone: string
-  let nif: string | null = null
-  let website: string | null = null
-  let services: string | null = null
-  let districts: string | null = null
-
-  if (entityType === 'empresa') {
-    name = (data['Nome da Empresa*'] as string) || ''
-    email = (data['E-mail*'] as string) || ''
-    phone = (data['Contacto telefónico*'] as string) || ''
-    nif = (data['Qual o NIF associado à sua actividade?*'] as string) || null
-    website = (data['Introduza o site da Empresa e/ou links das redes sociais da Empresa (opcional)'] as string) || null
-    services = (data['Liste os serviços que realiza*'] as string) || null
-    districts = (data['Indique em que distrito presta os seus serviços (Portugal Continental)*'] as string) || null
-  } else if (entityType === 'eni') {
-    name = (data['Nome do ENI ou Empresa*'] as string) || ''
-    email = (data['E-mail do ENI*'] as string) || ''
-    phone = (data['Contacto telefónico do ENI*'] as string) || ''
-    nif = (data['Qual o NIF associado à sua actividade?*.1'] as string) || null
-    website = (data['Introduza o site da Empresa e/ou links das redes sociais da Empresa (opcional).1'] as string) || null
-    services = (data['Liste os serviços que realiza*.1'] as string) || null
-    districts = (data['Indique em que distrito presta os seus serviços (Portugal Continental)*.1'] as string) || null
-  } else {
-    name = (data['Nome do Técnico*'] as string) || ''
-    email = (data['E-mail do Técnico*'] as string) || ''
-    phone = (data['Contacto telefónico do Técnico*'] as string) || ''
-    services = (data['Liste os serviços que está habituado a realizar*'] as string) || null
-    districts = (data['Indique em que distrito presta os seus serviços (Portugal Continental)'] as string) || null
-  }
-
-  const numTechnicians = data['Quantos técnicos constituem a sua equipa?'] as number | null
-  const hasAdminTeam = (data['Tem equipa administrativa?*'] as string)?.toLowerCase() === 'sim'
-  const hasOwnTransport = (data['Tem meios de transporte próprios para deslocação para a prestação de serviços?*'] as string)?.toLowerCase() === 'sim'
-  const workingHours = data['Qual o seu horário laboral?'] as string | null
-  const hubspotContactId = data['Contact ID'] as string | null
-  const conversionDate = data['Conversion Date'] as string | null
-
-  return {
-    name: name.trim(),
-    email: email.trim().toLowerCase(),
-    phone: phone?.trim() || null,
-    entity_type: entityType,
-    nif: nif?.trim() || null,
-    website: website?.trim() || null,
-    services: services ? services.split(',').map(s => s.trim()) : null,
-    districts: districts ? districts.split(',').map(d => d.trim()) : null,
-    num_technicians: numTechnicians || null,
-    has_admin_team: hasAdminTeam,
-    has_own_transport: hasOwnTransport,
-    working_hours: workingHours?.trim() || null,
-    hubspot_contact_id: hubspotContactId?.toString() || null,
-    first_application_at: conversionDate ? new Date(conversionDate).toISOString() : new Date().toISOString(),
-  }
-}
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    const props = body.properties || {}
 
-    // Log completo do payload para debug
-    console.log('=== HUBSPOT WEBHOOK RECEIVED ===')
-    console.log('Timestamp:', new Date().toISOString())
-    console.log('Headers:', JSON.stringify(Object.fromEntries(request.headers), null, 2))
-    console.log('Body:', JSON.stringify(body, null, 2))
-    console.log('Body keys:', Object.keys(body))
+    // Extract values from HubSpot property structure
+    const getValue = (prop: any) => prop?.value || null
+
+    const contactData = {
+      name: `${getValue(props.firstname) || ''} ${getValue(props.lastname) || ''}`.trim(),
+      email: getValue(props.email),
+      phone: getValue(props.phone) || getValue(props.mobilephone),
+      hubspot_contact_id: body.vid || getValue(props.hs_object_id),
+      // Add any custom properties you need
+      business_unit: getValue(props.business_unit),
+      company: getValue(props.company),
+    }
+
+    console.log('=== HUBSPOT CONTACT RECEIVED ===')
+    console.log('Contact ID:', contactData.hubspot_contact_id)
+    console.log('Name:', contactData.name)
+    console.log('Email:', contactData.email)
+    console.log('Phone:', contactData.phone)
     console.log('================================')
+
+    if (!contactData.email || !contactData.name) {
+      return NextResponse.json({
+        error: 'Email e nome são obrigatórios',
+        received: contactData
+      }, { status: 400 })
+    }
+
+    const supabaseAdmin = createAdminClient()
+
+    // Check if provider already exists
+    const { data: existingProviders } = await supabaseAdmin
+      .from('providers')
+      .select('id, application_count')
+      .eq('email', contactData.email)
+      .limit(1)
+
+    let providerId: string
+
+    if (existingProviders && existingProviders.length > 0) {
+      // Update existing
+      const existing = existingProviders[0]
+      providerId = existing.id
+
+      await supabaseAdmin
+        .from('providers')
+        .update({
+          name: contactData.name,
+          phone: contactData.phone,
+          application_count: (existing.application_count || 0) + 1,
+          hubspot_contact_id: contactData.hubspot_contact_id?.toString(),
+        })
+        .eq('id', providerId)
+
+      console.log('Updated existing provider:', providerId)
+    } else {
+      // Create new
+      const { data: newProvider, error: insertError } = await supabaseAdmin
+        .from('providers')
+        .insert({
+          name: contactData.name,
+          email: contactData.email,
+          phone: contactData.phone,
+          entity_type: 'tecnico', // Default
+          status: 'novo',
+          application_count: 1,
+          hubspot_contact_id: contactData.hubspot_contact_id?.toString(),
+          first_application_at: new Date().toISOString(),
+        })
+        .select('id')
+        .single()
+
+      if (insertError || !newProvider) {
+        console.error('Error creating provider:', insertError)
+        return NextResponse.json({ error: 'Erro ao criar candidatura' }, { status: 500 })
+      }
+
+      providerId = newProvider.id
+      console.log('Created new provider:', providerId)
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'Webhook recebido com sucesso',
-      received_keys: Object.keys(body),
-      timestamp: new Date().toISOString()
+      provider_id: providerId,
+      is_duplicate: !!existingProviders?.length
     })
   } catch (error) {
     console.error('Erro ao processar webhook:', error)

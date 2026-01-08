@@ -86,9 +86,9 @@ export function AbandonDialog({ open, onOpenChange, providerId }: AbandonDialogP
             </div>
           )}
 
-          {/* Step 1: Quem nao quer avancar */}
+          {/* Step 1: Quem não quer avançar */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Quem nao quer avancar?</label>
+            <label className="text-sm font-medium">Quem não quer avançar?</label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
