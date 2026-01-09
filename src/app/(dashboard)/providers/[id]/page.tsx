@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Header } from '@/components/layout/header'
@@ -5,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { getProviderComplete, getUsers } from '@/lib/providers/actions'
+import { getProviderBasicInfo, getUsers } from '@/lib/providers/actions'
 import { getDistinctDistricts, getDistinctServices } from '@/lib/candidaturas/actions'
 import { formatDateTime } from '@/lib/utils'
 import {
@@ -26,11 +27,13 @@ import {
 
 // Tab components
 import { PerfilTab } from '@/components/providers/tabs/perfil-tab'
-import { CandidaturaTab } from '@/components/providers/tabs/candidatura-tab'
-import { OnboardingTab } from '@/components/providers/tabs/onboarding-tab'
-import { PrecosTab } from '@/components/providers/tabs/precos-tab'
-import { NotasTab } from '@/components/providers/tabs/notas-tab'
-import { HistoricoTab } from '@/components/providers/tabs/historico-tab'
+import {
+  CandidaturaTabAsync,
+  OnboardingTabAsync,
+  PrecosTabAsync,
+  NotasTabAsync,
+  HistoricoTabAsync,
+} from '@/components/providers/tabs/async-tab-wrappers'
 import { CandidaturaActions } from '@/components/providers/candidatura-actions'
 import { OnboardingActions } from '@/components/providers/onboarding-actions'
 
@@ -67,22 +70,28 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
   abandonado: 'secondary',
 }
 
-export default async function ProviderPage({ params, searchParams }: ProviderPageProps) {
-  const { id } = await params
-  const { tab } = await searchParams
-
-  const [data, users, districts, services] = await Promise.all([
-    getProviderComplete(id),
+// Async wrapper for Perfil tab (loads cached data for filters)
+async function PerfilTabAsync({ provider }: { provider: any }) {
+  const [users, districts, services] = await Promise.all([
     getUsers(),
     getDistinctDistricts(),
     getDistinctServices(),
   ])
+  return <PerfilTab provider={provider} users={users} districts={districts} services={services} />
+}
 
-  if (!data) {
+export default async function ProviderPage({ params, searchParams }: ProviderPageProps) {
+  const { id } = await params
+  const { tab } = await searchParams
+
+  // Load only provider basic info (essential for header)
+  const basicInfo = await getProviderBasicInfo(id)
+
+  if (!basicInfo) {
     notFound()
   }
 
-  const { provider, applicationHistory, onboardingCard, notes, history, pricingTable, documents } = data
+  const { provider, onboardingCard } = basicInfo
 
   const EntityIcon = entityTypeIcons[provider.entity_type] || User
 
@@ -323,33 +332,27 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
             </TabsTrigger>
             <TabsTrigger value="notas">
               Notas
-              {notes.length > 0 && (
-                <Badge variant="secondary" className="ml-2">
-                  {notes.length}
-                </Badge>
-              )}
             </TabsTrigger>
             <TabsTrigger value="historico">Histórico</TabsTrigger>
           </TabsList>
 
           <TabsContent value="perfil">
-            <PerfilTab provider={provider} users={users} districts={districts} services={services} />
+            <Suspense fallback={<div className="h-48" />}>
+              <PerfilTabAsync provider={provider} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="candidatura">
-            <CandidaturaTab
-              provider={provider}
-              applicationHistory={applicationHistory}
-            />
+            <Suspense fallback={<div className="h-48" />}>
+              <CandidaturaTabAsync providerId={id} provider={provider} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="onboarding">
-            {hasOnboarding && onboardingCard ? (
-              <OnboardingTab
-                provider={provider}
-                onboardingCard={onboardingCard}
-                users={users}
-              />
+            {hasOnboarding ? (
+              <Suspense fallback={<div className="h-48" />}>
+                <OnboardingTabAsync providerId={id} provider={provider} users={null as any} />
+              </Suspense>
             ) : (
               <Card>
                 <CardContent className="p-8 text-center text-muted-foreground">
@@ -361,22 +364,21 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
           </TabsContent>
 
           <TabsContent value="precos">
-            <PrecosTab
-              provider={provider}
-              pricingTable={pricingTable}
-            />
+            <Suspense fallback={<div className="h-48" />}>
+              <PrecosTabAsync providerId={id} provider={provider} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="notas">
-            <NotasTab
-              providerId={provider.id}
-              notes={notes}
-              documents={documents}
-            />
+            <Suspense fallback={<div className="h-48" />}>
+              <NotasTabAsync providerId={id} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="historico">
-            <HistoricoTab history={history} />
+            <Suspense fallback={<div className="h-48" />}>
+              <HistoricoTabAsync providerId={id} />
+            </Suspense>
           </TabsContent>
         </Tabs>
       </div>

@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
+import { unstable_cache } from 'next/cache'
 import type { Database } from '@/types/database'
 
 type ProviderStatus = Database['public']['Enums']['provider_status']
@@ -340,44 +341,56 @@ export async function abandonCandidatura(
 
 // Obter lista de distritos unicos
 export async function getDistinctDistricts() {
-  const { data, error } = await createAdminClient()
-    .from('providers')
-    .select('districts')
-    .not('districts', 'is', null)
+  return unstable_cache(
+    async () => {
+      const { data, error } = await createAdminClient()
+        .from('providers')
+        .select('districts')
+        .not('districts', 'is', null)
 
-  if (error || !data) return []
+      if (error || !data) return []
 
-  const districts = new Set<string>()
-  for (const p of data) {
-    if (p.districts && Array.isArray(p.districts)) {
-      for (const d of p.districts) {
-        districts.add(d)
+      const districts = new Set<string>()
+      for (const p of data) {
+        if (p.districts && Array.isArray(p.districts)) {
+          for (const d of p.districts) {
+            districts.add(d)
+          }
+        }
       }
-    }
-  }
 
-  return Array.from(districts).sort()
+      return Array.from(districts).sort()
+    },
+    ['all-districts'],
+    { revalidate: 3600, tags: ['all-districts'] }
+  )()
 }
 
 // Obter lista de servicos unicos
 export async function getDistinctServices() {
-  const { data, error } = await createAdminClient()
-    .from('providers')
-    .select('services')
-    .not('services', 'is', null)
+  return unstable_cache(
+    async () => {
+      const { data, error } = await createAdminClient()
+        .from('providers')
+        .select('services')
+        .not('services', 'is', null)
 
-  if (error || !data) return []
+      if (error || !data) return []
 
-  const services = new Set<string>()
-  for (const p of data) {
-    if (p.services && Array.isArray(p.services)) {
-      for (const s of p.services) {
-        services.add(s)
+      const services = new Set<string>()
+      for (const p of data) {
+        if (p.services && Array.isArray(p.services)) {
+          for (const s of p.services) {
+            services.add(s)
+          }
+        }
       }
-    }
-  }
 
-  return Array.from(services).sort()
+      return Array.from(services).sort()
+    },
+    ['all-services'],
+    { revalidate: 3600, tags: ['all-services'] }
+  )()
 }
 
 // Estatisticas rapidas

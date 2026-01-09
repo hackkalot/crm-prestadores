@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useFormState } from 'react-dom'
+import { useState, useTransition, useActionState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -55,7 +54,7 @@ export function CreatePriorityDialog({
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [urgency, setUrgency] = useState<PriorityUrgency>('media')
 
-  const [state, formAction] = useFormState(createPriority, null)
+  const [state, formAction] = useActionState(createPriority, null)
 
   // Filter users to show only RMs
   const relationshipManagers = users.filter(

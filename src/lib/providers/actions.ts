@@ -5,11 +5,12 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { getProviderPricingTable } from '@/lib/pricing/actions'
 import { getProviderDocuments } from '@/lib/documents/actions'
 import { revalidatePath } from 'next/cache'
+import { unstable_cache } from 'next/cache'
 
-export async function getProviderComplete(id: string) {
+// Get provider basic info + onboarding card (for header display)
+export async function getProviderBasicInfo(id: string) {
   const supabaseAdmin = createAdminClient()
 
-  // Get provider with relationship owner
   const { data: provider, error } = await supabaseAdmin
     .from('providers')
     .select(`
@@ -23,15 +24,41 @@ export async function getProviderComplete(id: string) {
     return null
   }
 
-  // Get application history
-  const { data: applicationHistory } = await supabaseAdmin
+  // Get onboarding card with tasks (needed for header stats)
+  const { data: onboardingCard } = await supabaseAdmin
+    .from('onboarding_cards')
+    .select(`
+      *,
+      current_stage:stage_definitions!onboarding_cards_current_stage_id_fkey(id, name, stage_number, display_order),
+      tasks:onboarding_tasks(
+        id,
+        status,
+        deadline_at
+      )
+    `)
+    .eq('provider_id', id)
+    .single()
+
+  return {
+    provider,
+    onboardingCard,
+  }
+}
+
+// Get application history
+export async function getProviderApplicationHistory(id: string) {
+  const { data } = await createAdminClient()
     .from('provider_applications')
     .select('*')
     .eq('provider_id', id)
     .order('applied_at', { ascending: false })
 
-  // Get onboarding card with tasks if exists
-  const { data: onboardingCard } = await supabaseAdmin
+  return data || []
+}
+
+// Get onboarding card with full details
+export async function getProviderOnboarding(id: string) {
+  const { data } = await createAdminClient()
     .from('onboarding_cards')
     .select(`
       *,
@@ -48,8 +75,12 @@ export async function getProviderComplete(id: string) {
     .eq('provider_id', id)
     .single()
 
-  // Get notes
-  const { data: notes } = await supabaseAdmin
+  return data
+}
+
+// Get notes
+export async function getProviderNotes(id: string) {
+  const { data } = await createAdminClient()
     .from('notes')
     .select(`
       *,
@@ -58,8 +89,12 @@ export async function getProviderComplete(id: string) {
     .eq('provider_id', id)
     .order('created_at', { ascending: false })
 
-  // Get history
-  const { data: history } = await supabaseAdmin
+  return data || []
+}
+
+// Get history
+export async function getProviderHistory(id: string) {
+  const { data } = await createAdminClient()
     .from('history_log')
     .select(`
       *,
@@ -69,42 +104,61 @@ export async function getProviderComplete(id: string) {
     .order('created_at', { ascending: false })
     .limit(100)
 
-  // Get pricing table if provider is ativo/suspenso
+  return data || []
+}
+
+// DEPRECATED: Use individual functions above for better performance
+export async function getProviderComplete(id: string) {
+  const basicInfo = await getProviderBasicInfo(id)
+  if (!basicInfo) return null
+
+  const [applicationHistory, onboardingCard, notes, history] = await Promise.all([
+    getProviderApplicationHistory(id),
+    getProviderOnboarding(id),
+    getProviderNotes(id),
+    getProviderHistory(id),
+  ])
+
   let pricingTable = null
-  if (['ativo', 'suspenso'].includes(provider.status)) {
+  if (['ativo', 'suspenso'].includes(basicInfo.provider.status)) {
     pricingTable = await getProviderPricingTable(id)
   }
 
-  // Get documents
   const documents = await getProviderDocuments(id)
 
   return {
-    provider,
-    applicationHistory: applicationHistory || [],
+    provider: basicInfo.provider,
+    applicationHistory,
     onboardingCard,
-    notes: notes || [],
-    history: history || [],
+    notes,
+    history,
     pricingTable,
     documents,
   }
 }
 
 export async function getUsers() {
-  const supabaseAdmin = createAdminClient()
+  return unstable_cache(
+    async () => {
+      const supabaseAdmin = createAdminClient()
 
-  const { data, error } = await supabaseAdmin
-    .from('users')
-    .select('id, name, email, role')
-    .eq('role', 'relationship_manager')
-    .eq('approval_status', 'approved')
-    .order('name')
+      const { data, error } = await supabaseAdmin
+        .from('users')
+        .select('id, name, email, role')
+        .eq('role', 'relationship_manager')
+        .eq('approval_status', 'approved')
+        .order('name')
 
-  if (error) {
-    console.error('Error fetching users:', error)
-    return []
-  }
+      if (error) {
+        console.error('Error fetching users:', error)
+        return []
+      }
 
-  return data || []
+      return data || []
+    },
+    ['users-all-rm'],
+    { revalidate: 600, tags: ['users-all-rm'] }
+  )()
 }
 
 export type UpdateRelationshipOwnerState = {
