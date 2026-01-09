@@ -80,9 +80,9 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
             <TableHead>Prestador</TableHead>
             <TableHead>Tipo</TableHead>
             <TableHead>Zonas</TableHead>
-            <TableHead>Servicos</TableHead>
+            <TableHead>Serviços</TableHead>
             <TableHead>Estado</TableHead>
-            <TableHead>Responsavel</TableHead>
+            <TableHead>Responsável</TableHead>
             <TableHead className="w-10"></TableHead>
           </TableRow>
         </TableHeader>

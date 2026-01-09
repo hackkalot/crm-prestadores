@@ -8,7 +8,7 @@ import type { Database } from '@/types/database'
 type ProviderStatus = Database['public']['Enums']['provider_status']
 
 export type PrestadorFilters = {
-  status?: ProviderStatus | 'all'
+  status?: ProviderStatus | 'all' | '_all'
   entityType?: string
   district?: string
   service?: string
@@ -26,8 +26,11 @@ export async function getPrestadores(filters: PrestadorFilters = {}) {
     `)
 
   // Handle status filtering - backward compatible
-  if (!filters.status || filters.status === 'all') {
-    // Default: show active network (ativo + suspenso)
+  if (!filters.status || filters.status === '_all') {
+    // Default: show ALL statuses (no filter applied)
+    // Don't add any status filter
+  } else if (filters.status === 'all') {
+    // Show active network (ativo + suspenso)
     query = query.in('status', ['ativo', 'suspenso'])
   } else {
     // Specific status selected

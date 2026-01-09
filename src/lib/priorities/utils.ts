@@ -24,17 +24,9 @@ export function buildPriorityFilterUrl(priority: Priority): string {
     params.set('entityType', criteria.entity_types[0])
   }
 
-  // Add status filter based on priority type
-  if (priority.type === 'ativar_prestadores') {
-    // Show providers that could be activated (novo, em_onboarding)
-    params.set('status', 'novo')
-  } else if (priority.type === 'concluir_onboardings') {
-    // Show providers in onboarding
-    params.set('status', 'em_onboarding')
-  } else if (criteria.provider_status && criteria.provider_status.length > 0) {
-    // Use first status from criteria
-    params.set('status', criteria.provider_status[0])
-  }
+  // Don't set status filter - let it default to '_all' (show all statuses)
+  // Users want to see all prestadores when clicking on a priority
+  // The other filters (service, district, entity_type) will narrow down the results
 
   return `/prestadores?${params.toString()}`
 }

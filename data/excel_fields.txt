@@ -1,0 +1,28 @@
+Escolha a opção que mais se adequa a si*	
+Aceita ser contactado por empresas parceiras do FIXO para receber ofertas de trabalho?*	
+Nome da Empresa*	
+E-mail*	
+Contacto telefónico*	
+Introduza o site da Empresa e/ou links das redes sociais da Empresa (opcional)	
+Qual o NIF associado à sua actividade?*	
+Liste os serviços que realiza*	
+Indique em que distrito presta os seus serviços (Portugal Continental)*	
+Nome do ENI ou Empresa*	
+E-mail do ENI*	
+Contacto telefónico do ENI*	
+Introduza o site da Empresa e/ou links das redes sociais da Empresa (opcional)	
+Qual o NIF associado à sua actividade?*	
+Liste os serviços que realiza*	
+Indique em que distrito presta os seus serviços (Portugal Continental)*	
+Autorizo o FIXO a conservar os meus dados de contacto e informações sobre os meus serviços para avaliação de futuras oportunidades de colaboração.*	
+Nome do Técnico*	
+E-mail do Técnico*	
+Contacto telefónico do Técnico*	
+Liste os serviços que está habituado a realizar*	
+Indique em que distrito presta os seus serviços (Portugal Continental)	
+Autorizo o FIXO a conservar os meus dados de contacto e informações sobre os meus serviços para avaliação de futuras oportunidades de colaboração.*	
+Quantos técnicos constituem a sua equipa?	
+Tem equipa administrativa?*	
+Tem meios de transporte próprios para deslocação para a prestação de serviços?*	
+Qual o seu horário laboral?	
+Conversion Date	

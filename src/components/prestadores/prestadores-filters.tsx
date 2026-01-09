@@ -14,6 +14,7 @@ import { Search, X, Filter, ChevronDown, ChevronUp } from 'lucide-react'
 import { useCallback, useState, useTransition } from 'react'
 
 const statusOptions = [
+  { value: '_all', label: 'Todos' },
   { value: 'all', label: 'Rede Ativa (Ativo + Suspenso)' },
   { value: 'novo', label: 'Novos' },
   { value: 'em_onboarding', label: 'Em Onboarding' },
@@ -43,7 +44,7 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
 
   const [search, setSearch] = useState(searchParams.get('search') || '')
 
-  const currentStatus = searchParams.get('status') || 'all'
+  const currentStatus = searchParams.get('status') || '_all'
   const currentEntity = searchParams.get('entityType') || ''
   const currentDistrict = searchParams.get('district') || ''
   const currentService = searchParams.get('service') || ''
@@ -51,9 +52,11 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
 
   const updateFilter = useCallback((key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
-    if (value && value !== 'all' && value !== '_all') {
+    if (value && value !== '_all') {
+      // Only add to URL if not the default '_all'
       params.set(key, value)
     } else {
+      // Remove from URL if it's the default '_all'
       params.delete(key)
     }
     startTransition(() => {
@@ -72,7 +75,7 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
     })
   }
 
-  const hasFilters = currentStatus !== 'all' || currentEntity || currentDistrict ||
+  const hasFilters = (currentStatus !== 'all' && currentStatus !== '_all') || currentEntity || currentDistrict ||
     currentService || currentOwnerId || searchParams.get('search')
 
   const hasAdvancedFilters = currentDistrict || currentService || currentOwnerId
