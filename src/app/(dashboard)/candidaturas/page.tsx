@@ -3,6 +3,7 @@ import { Header } from '@/components/layout/header'
 import { CandidaturasList } from '@/components/candidaturas/candidaturas-list'
 import { CandidaturasFilters } from '@/components/candidaturas/candidaturas-filters'
 import { StatsCards } from '@/components/candidaturas/stats-cards'
+import { StatsCardsSkeleton, FiltersSkeleton, CandidaturasListSkeleton } from '@/components/skeletons/page-skeletons'
 import {
   getCandidaturas,
   getCandidaturasStats,
@@ -62,17 +63,17 @@ export default async function CandidaturasPage({
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         {/* Stats load independently */}
-        <Suspense fallback={<div className="h-24" />}>
+        <Suspense fallback={<StatsCardsSkeleton />}>
           <StatsSection />
         </Suspense>
 
         {/* Filters stream in with cached data (fast) */}
-        <Suspense fallback={<div className="h-12" />}>
+        <Suspense fallback={<FiltersSkeleton />}>
           <FiltersSection />
         </Suspense>
 
         {/* List loads independently */}
-        <Suspense fallback={<div className="h-96" />}>
+        <Suspense fallback={<CandidaturasListSkeleton rows={6} />}>
           <CandidaturasListSection filters={filters} />
         </Suspense>
       </div>

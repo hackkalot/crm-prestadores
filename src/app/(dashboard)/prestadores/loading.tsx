@@ -1,5 +1,14 @@
-// Disabled loading state for instant page navigation
-// Page uses Suspense boundaries for progressive loading instead
+import { HeaderSkeleton, StatsCardsSkeleton, FiltersSkeleton, PrestadoresTableSkeleton } from '@/components/skeletons/page-skeletons'
+
 export default function PrestadoresLoading() {
-  return null
+  return (
+    <div className="flex flex-col h-full">
+      <HeaderSkeleton />
+      <div className="flex-1 p-6 space-y-6 overflow-auto">
+        <StatsCardsSkeleton />
+        <FiltersSkeleton />
+        <PrestadoresTableSkeleton />
+      </div>
+    </div>
+  )
 }

@@ -5,6 +5,7 @@ import { PrestadoresFilters } from '@/components/prestadores/prestadores-filters
 import { PrestadoresStats } from '@/components/prestadores/prestadores-stats'
 import { ImportProvidersDialog } from '@/components/import/import-providers-dialog'
 import { CreateProviderDialog } from '@/components/providers/create-provider-dialog'
+import { StatsCardsSkeleton, FiltersSkeleton, PrestadoresTableSkeleton } from '@/components/skeletons/page-skeletons'
 import {
   getPrestadores,
   getPrestadoresStats,
@@ -82,17 +83,17 @@ export default async function PrestadoresPage({
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         {/* Stats load independently */}
-        <Suspense fallback={<div className="h-24" />}>
+        <Suspense fallback={<StatsCardsSkeleton />}>
           <StatsSection />
         </Suspense>
 
         {/* Filters stream in with cached data (fast) */}
-        <Suspense fallback={<div className="h-12" />}>
+        <Suspense fallback={<FiltersSkeleton />}>
           <FiltersSection />
         </Suspense>
 
         {/* Table loads independently */}
-        <Suspense fallback={<div className="h-96" />}>
+        <Suspense fallback={<PrestadoresTableSkeleton />}>
           <PrestadoresListSection filters={filters} />
         </Suspense>
       </div>

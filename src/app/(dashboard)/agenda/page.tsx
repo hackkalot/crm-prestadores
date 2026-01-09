@@ -4,6 +4,7 @@ import { AgendaFilters } from '@/components/agenda/agenda-filters'
 import { AgendaStats } from '@/components/agenda/agenda-stats'
 import { AgendaWeekView } from '@/components/agenda/agenda-week-view'
 import { AgendaDayView } from '@/components/agenda/agenda-day-view'
+import { StatsCards4Skeleton, FiltersSkeleton, AgendaSkeleton } from '@/components/skeletons/page-skeletons'
 import {
   getAgendaTasks,
   getAgendaStats,
@@ -45,22 +46,22 @@ export default async function AgendaPage({ searchParams }: AgendaPageProps) {
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         {/* Estatisticas */}
-        <Suspense fallback={<div className="h-24 bg-muted animate-pulse rounded-lg" />}>
+        <Suspense fallback={<StatsCards4Skeleton />}>
           <AgendaStats stats={stats} />
         </Suspense>
 
         {/* Filtros e navegacao */}
-        <Suspense fallback={<div className="h-16 bg-muted animate-pulse rounded-lg" />}>
+        <Suspense fallback={<FiltersSkeleton />}>
           <AgendaFilters currentDate={currentDate} currentView={currentView} />
         </Suspense>
 
         {/* Vista */}
         {currentView === 'week' ? (
-          <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
+          <Suspense fallback={<AgendaSkeleton />}>
             <AgendaWeekView weekTasks={weekTasks} />
           </Suspense>
         ) : (
-          <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
+          <Suspense fallback={<AgendaSkeleton />}>
             <AgendaDayView tasks={dayTasks} />
           </Suspense>
         )}

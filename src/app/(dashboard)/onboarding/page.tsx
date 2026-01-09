@@ -3,6 +3,7 @@ import { Header } from '@/components/layout/header'
 import { KanbanBoard } from '@/components/onboarding/kanban-board'
 import { OnboardingFilters } from '@/components/onboarding/onboarding-filters'
 import { OnboardingStats } from '@/components/onboarding/onboarding-stats'
+import { StatsCards4Skeleton, FiltersSkeleton, KanbanBoardSkeleton } from '@/components/skeletons/page-skeletons'
 import {
   getOnboardingKanban,
   getOnboardingStats,
@@ -71,17 +72,17 @@ export default async function OnboardingPage({
       />
       <div className="flex-1 p-6 space-y-4 overflow-hidden flex flex-col">
         {/* Stats load independently */}
-        <Suspense fallback={<div className="h-24" />}>
+        <Suspense fallback={<StatsCards4Skeleton />}>
           <StatsSection />
         </Suspense>
 
         {/* Filters stream in with cached data (fast) */}
-        <Suspense fallback={<div className="h-12" />}>
+        <Suspense fallback={<FiltersSkeleton />}>
           <FiltersSection />
         </Suspense>
 
         {/* Kanban board loads independently */}
-        <Suspense fallback={<div className="flex-1 h-full" />}>
+        <Suspense fallback={<div className="flex-1 overflow-hidden"><KanbanBoardSkeleton /></div>}>
           <KanbanSection filters={filters} />
         </Suspense>
       </div>
