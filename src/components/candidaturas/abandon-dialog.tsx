@@ -34,6 +34,7 @@ const reasonsByParty = {
     'Não se enquadra no perfil',
     'Não tem IBAN PT',
     'Não tem atividade aberta',
+    'Ainda não estamos presentes na zona indicada',
     'Outro',
   ],
 }

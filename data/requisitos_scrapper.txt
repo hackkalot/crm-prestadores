@@ -1,0 +1,26 @@
+# Requisitos Webscrapper - Exportação de Pedidos Backoffice FIXO
+
+### 1. Objetivo
+Extrair o documento de exportação de dados do Backoffice da Fixo para a pasta local `/data`.
+
+### 2. Acesso e Autenticação
+- **URL Inicial:** https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+- **Utilizador (Login):** sofia.amaral.brites@fidelidade.pt
+- **Password:** 12345678
+- **Nota:** O scrapper deve prever o redirecionamento para a página de login caso a sessão não esteja ativa.
+
+### 3. Workflow de Interação
+1. **Login:** Inserir credenciais e submeter formulário.
+2. **Navegação:** Garantir que está na página "Lista de pedidos".
+3. **Filtros de Data:**
+   - Campo: "Data de submissão do serviço" (Início e Fim).
+   - Valores (exemplo da imagem): 09-01-2026.
+4. **Acção:** Clicar no botão "Exportar Dados" (primeiro botão da esquerda na barra de ações).
+
+### 4. Gestão de Downloads (Requisito Técnico)
+- O scrapper (Puppeteer) deve configurar o comportamento de download do browser para que o ficheiro seja guardado automaticamente no diretório específico sem abrir janelas de diálogo do sistema operativo.
+- **Diretório de Destino:** `/Users/diogopita/Documents/Projetos/crm-prestadores/data/`
+
+### 5. Resiliência
+- Implementar esperas (waits) para garantir que os inputs de data estão clicáveis.
+- Verificar se o botão "Exportar Dados" não está desativado antes de clicar.

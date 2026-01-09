@@ -18,7 +18,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select'
-import { Pencil, Check, X, Clock, Bell, User } from 'lucide-react'
+import { Pencil, Check, X, Clock, Bell } from 'lucide-react'
 import { updateTaskDefinition, type TaskDefinitionWithStage } from '@/lib/settings/actions'
 import { toast } from 'sonner'
 
@@ -33,8 +33,7 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
     normal: string
     urgent: string
     alert: string
-    owner: string
-  }>({ normal: '', urgent: '', alert: '', owner: '' })
+  }>({ normal: '', urgent: '', alert: '' })
 
   const startEditing = (task: TaskDefinitionWithStage) => {
     setEditingId(task.id)
@@ -42,13 +41,12 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
       normal: task.default_deadline_hours_normal?.toString() || '',
       urgent: task.default_deadline_hours_urgent?.toString() || '',
       alert: task.alert_hours_before?.toString() || '24',
-      owner: task.default_owner?.id || '',
     })
   }
 
   const cancelEditing = () => {
     setEditingId(null)
-    setEditValues({ normal: '', urgent: '', alert: '', owner: '' })
+    setEditValues({ normal: '', urgent: '', alert: '' })
   }
 
   const saveEditing = async () => {
@@ -59,7 +57,6 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
         default_deadline_hours_normal: editValues.normal ? parseInt(editValues.normal) : null,
         default_deadline_hours_urgent: editValues.urgent ? parseInt(editValues.urgent) : null,
         alert_hours_before: editValues.alert ? parseInt(editValues.alert) : 24,
-        default_owner_id: editValues.owner || null,
       })
       toast.success('Tarefa atualizada com sucesso')
       cancelEditing()
@@ -122,12 +119,6 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
                     Alerta
                   </div>
                 </TableHead>
-                <TableHead className="w-[150px]">
-                  <div className="flex items-center gap-1">
-                    <User className="h-4 w-4" />
-                    Owner
-                  </div>
-                </TableHead>
                 <TableHead className="w-[100px]">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -184,30 +175,6 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
                       />
                     ) : (
                       formatHours(task.alert_hours_before)
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editingId === task.id ? (
-                      <Select
-                        value={editValues.owner}
-                        onValueChange={(value) => setEditValues({ ...editValues, owner: value })}
-                      >
-                        <SelectTrigger className="w-[130px] h-8">
-                          <span className="truncate">
-                            {editValues.owner ? users.find(u => u.id === editValues.owner)?.name : 'Nenhum'}
-                          </span>
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="">Nenhum</SelectItem>
-                          {users.map((user) => (
-                            <SelectItem key={user.id} value={user.id}>
-                              {user.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      task.default_owner?.name || '-'
                     )}
                   </TableCell>
                   <TableCell>

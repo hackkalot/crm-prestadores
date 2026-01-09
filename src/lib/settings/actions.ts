@@ -262,6 +262,8 @@ export async function getAlertConfig(): Promise<{
 export async function ensureDefaultSettings() {
   const supabaseAdmin = createAdminClient()
   const defaultSettings = [
+    { key: 'default_new_provider_owner_id', value: null, description: 'RM atribuído automaticamente ao criar prestador' },
+    { key: 'default_onboarding_owner_id', value: null, description: 'RM atribuído automaticamente ao enviar para onboarding' },
     { key: 'alert_hours_before_deadline', value: 24, description: 'Horas antes do prazo para gerar alerta' },
     { key: 'stalled_task_days', value: 3, description: 'Dias sem alterações para considerar tarefa parada' },
     { key: 'price_deviation_threshold', value: 0.20, description: 'Threshold de desvio de preços (20%)' },

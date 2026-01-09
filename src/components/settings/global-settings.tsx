@@ -22,18 +22,17 @@ const settingsConfig: Record<string, {
   unit?: string
   type?: 'number' | 'select'
 }> = {
+  default_new_provider_owner_id: {
+    label: 'RM Padrão para Novos Prestadores',
+    description: 'Relationship Manager atribuído automaticamente ao criar prestador',
+    icon: UserCog,
+    type: 'select',
+  },
   default_onboarding_owner_id: {
     label: 'RM Padrão para Onboarding',
     description: 'Relationship Manager atribuído automaticamente ao enviar para onboarding',
     icon: UserCog,
     type: 'select',
-  },
-  alert_hours_before_deadline: {
-    label: 'Alerta de Prazo',
-    description: 'Horas antes do prazo para gerar alerta ao owner da tarefa',
-    icon: Bell,
-    unit: 'horas',
-    type: 'number',
   },
   stalled_task_days: {
     label: 'Tarefa Parada',
@@ -59,7 +58,7 @@ export function GlobalSettings({ settings, users }: GlobalSettingsProps) {
     setEditingKey(key)
     if (key === 'price_deviation_threshold') {
       setEditValue(((currentValue as number) * 100).toString())
-    } else if (key === 'default_onboarding_owner_id') {
+    } else if (key === 'default_onboarding_owner_id' || key === 'default_new_provider_owner_id') {
       // Se for string JSON com aspas, fazer parse
       let val = ''
       if (currentValue && currentValue !== 'null') {
@@ -87,7 +86,7 @@ export function GlobalSettings({ settings, users }: GlobalSettingsProps) {
       let value: number | string | null
       if (editingKey === 'price_deviation_threshold') {
         value = parseFloat(editValue) / 100
-      } else if (editingKey === 'default_onboarding_owner_id') {
+      } else if (editingKey === 'default_onboarding_owner_id' || editingKey === 'default_new_provider_owner_id') {
         value = editValue || null
       } else {
         value = parseInt(editValue)
@@ -104,7 +103,7 @@ export function GlobalSettings({ settings, users }: GlobalSettingsProps) {
   const getValue = (setting: Setting): string => {
     const config = settingsConfig[setting.key]
 
-    if (setting.key === 'default_onboarding_owner_id') {
+    if (setting.key === 'default_onboarding_owner_id' || setting.key === 'default_new_provider_owner_id') {
       let userId = setting.value as string | null
       if (!userId || userId === 'null') {
         return 'Nenhum (manual)'

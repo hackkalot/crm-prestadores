@@ -56,11 +56,29 @@ async function checkDuplicate(email: string) {
 async function createProvider(provider: ParsedProvider): Promise<{ success: boolean; error?: string }> {
   const supabase = createAdminClient()
 
+  // Buscar RM padrão para novos prestadores
+  const { data: defaultOwnerSetting } = await supabase
+    .from('settings')
+    .select('value')
+    .eq('key', 'default_new_provider_owner_id')
+    .single()
+
+  let defaultOwnerId: string | null = null
+  if (defaultOwnerSetting?.value) {
+    const val = String(defaultOwnerSetting.value)
+    // Remover aspas se for string JSON
+    defaultOwnerId = val.startsWith('"') && val.endsWith('"') ? val.slice(1, -1) : val
+    if (defaultOwnerId === 'null' || !defaultOwnerId) {
+      defaultOwnerId = null
+    }
+  }
+
   const insertData: ProviderInsert = {
     name: provider.name,
     email: provider.email,
     entity_type: provider.entity_type,
     status: 'novo',
+    relationship_owner_id: defaultOwnerId,
     phone: provider.phone || null,
     nif: provider.nif || null,
     website: provider.website || null,
