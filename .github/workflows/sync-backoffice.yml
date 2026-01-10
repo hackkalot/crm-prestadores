@@ -84,9 +84,18 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
-          npx tsx scripts/sync-backoffice-github.ts \
-            --from="${{ steps.dates.outputs.date_from }}" \
-            --to="${{ steps.dates.outputs.date_to }}"
+          # Pass sync_log_id if triggered via repository_dispatch (from CRM)
+          SYNC_LOG_ID="${{ github.event.client_payload.sync_log_id }}"
+          if [ -n "$SYNC_LOG_ID" ] && [ "$SYNC_LOG_ID" != "null" ]; then
+            npx tsx scripts/sync-backoffice-github.ts \
+              --from="${{ steps.dates.outputs.date_from }}" \
+              --to="${{ steps.dates.outputs.date_to }}" \
+              --sync-log-id="$SYNC_LOG_ID"
+          else
+            npx tsx scripts/sync-backoffice-github.ts \
+              --from="${{ steps.dates.outputs.date_from }}" \
+              --to="${{ steps.dates.outputs.date_to }}"
+          fi
 
       - name: Upload Excel artifact (on success)
         if: success()

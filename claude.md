@@ -323,11 +323,81 @@ gap-4            - Gap em grids/flex
 
 ## Features Principais
 
-### Sincronizacao com Backoffice
-- Script Puppeteer (`scripts/export-backoffice-data.ts`) para importar dados do backoffice FIXO
-- Parsing automatico de Excel para Supabase
-- Logs detalhados de sincronizacao em `sync_logs`
-- UI de sincronizacao em `/configuracoes/sync-logs`
+### Sincronizacao com Backoffice via GitHub Actions
+
+O sistema de sincronizacao com o backoffice FIXO usa **GitHub Actions** para executar scrappers Puppeteer em producao (Vercel nao suporta Puppeteer).
+
+#### Arquitetura
+
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
+│  CRM (Vercel)   │────>│  GitHub Actions  │────>│  Supabase   │
+│  Botao Sync     │     │  Puppeteer       │     │  Database   │
+└─────────────────┘     └──────────────────┘     └─────────────┘
+        │                        │
+        │ repository_dispatch    │ Atualiza status
+        └────────────────────────┘ via logs tables
+```
+
+#### Workflows Disponiveis
+
+| Workflow | Ficheiro | Schedule | Tabela de Logs |
+|----------|----------|----------|----------------|
+| Pedidos de Servico | `.github/workflows/sync-backoffice.yml` | 6:00 UTC (dia anterior) | `sync_logs` |
+| Prestadores | `.github/workflows/sync-providers.yml` | 5:00 UTC (todos) | `provider_sync_logs` |
+
+#### Scripts
+
+- `scripts/export-backoffice-data.ts` - Scrapper Puppeteer para pedidos de servico
+- `scripts/export-providers-data.ts` - Scrapper Puppeteer para prestadores
+- `scripts/sync-backoffice-github.ts` - Script standalone para GitHub Actions (pedidos)
+- `scripts/sync-providers-github.ts` - Script standalone para GitHub Actions (prestadores)
+
+#### API Routes
+
+- `/api/sync/backoffice` - Sync local (localhost apenas)
+- `/api/sync/providers` - Sync local (localhost apenas)
+- `/api/sync/github-actions` - Dispara workflow de pedidos via `repository_dispatch`
+- `/api/sync/providers-github-actions` - Dispara workflow de prestadores via `repository_dispatch`
+
+#### Detecao Automatica de Ambiente
+
+Os dialogs de sync (`SyncBackofficeDialog`, `SyncProvidersDialog`) detetam automaticamente o ambiente:
+- **Localhost**: Executa Puppeteer localmente
+- **Producao (Vercel)**: Dispara GitHub Actions via API
+
+```typescript
+const isProduction = typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
+const apiEndpoint = isProduction ? '/api/sync/github-actions' : '/api/sync/backoffice'
+```
+
+#### Configuracao de Secrets
+
+**GitHub Repository Secrets:**
+- `BACKOFFICE_USERNAME` - Email de login no backoffice
+- `BACKOFFICE_PASSWORD` - Password do backoffice
+- `SUPABASE_URL` - URL do projeto Supabase
+- `SUPABASE_SERVICE_ROLE_KEY` - Service role key do Supabase
+
+**Vercel Environment Variables:**
+- `GITHUB_ACTIONS_TOKEN` - Fine-grained PAT com permissao Contents (read/write)
+- `GITHUB_REPO` - Nome do repositorio (ex: `hackkalot/crm-prestadores`)
+
+#### Polling de Status
+
+A pagina `/configuracoes/sync-logs` faz polling automatico (5s) quando ha syncs `in_progress`, mostrando o status em tempo real.
+
+#### Puppeteer no GitHub Actions
+
+Para funcionar no GitHub Actions, os scrappers usam:
+```typescript
+const browser = await puppeteer.launch({
+  args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
+  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+});
+```
+
+O workflow instala o Chrome e define `PUPPETEER_EXECUTABLE_PATH` automaticamente.
 
 ### Sistema de Alertas
 - Alertas automaticos para tarefas em atraso

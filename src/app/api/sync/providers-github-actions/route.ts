@@ -32,13 +32,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create sync log entry (pending)
+    // Create sync log entry (pending) - with the actual user who triggered it
     const adminClient = createAdminClient()
 
     const { data: logEntry, error: logError } = await adminClient
       .from('provider_sync_logs')
       .insert({
-        triggered_by: 'github-actions',
+        triggered_by: user.id, // The actual user who clicked the button
+        triggered_by_system: 'github-actions', // Executed via GitHub Actions
         triggered_at: new Date().toISOString(),
         status: 'pending',
         records_processed: 0,

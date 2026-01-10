@@ -47,7 +47,14 @@ jobs:
           BACKOFFICE_PASSWORD: ${{ secrets.BACKOFFICE_PASSWORD }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: npx tsx scripts/sync-providers-github.ts
+        run: |
+          # Pass sync_log_id if triggered via repository_dispatch (from CRM)
+          SYNC_LOG_ID="${{ github.event.client_payload.sync_log_id }}"
+          if [ -n "$SYNC_LOG_ID" ] && [ "$SYNC_LOG_ID" != "null" ]; then
+            npx tsx scripts/sync-providers-github.ts --sync-log-id="$SYNC_LOG_ID"
+          else
+            npx tsx scripts/sync-providers-github.ts
+          fi
 
       - name: Upload Excel artifact (on success)
         if: success()

@@ -111,6 +111,18 @@ function mapBackofficeStatus(backofficeStatus: string): 'novo' | 'em_onboarding'
   }
 }
 
+// Parse command line arguments
+function parseArgs() {
+  const args: Record<string, string> = {}
+  process.argv.slice(2).forEach(arg => {
+    const match = arg.match(/^--([^=]+)=(.*)$/)
+    if (match) {
+      args[match[1]] = match[2]
+    }
+  })
+  return args
+}
+
 /**
  * Main sync function
  */
@@ -118,28 +130,47 @@ async function main() {
   const startTime = Date.now()
   let logId: string | null = null
 
+  // Check if a sync_log_id was passed (from CRM via repository_dispatch)
+  const args = parseArgs()
+  const existingLogId = args['sync-log-id'] || null
+
   console.log('═══════════════════════════════════════════════')
   console.log('🚀 GitHub Actions Providers Sync')
   console.log('═══════════════════════════════════════════════')
 
   try {
-    // Create sync log entry
-    const { data: logEntry, error: logError } = await supabase
-      .from('provider_sync_logs')
-      .insert({
-        triggered_by: 'github-actions',
-        triggered_at: new Date().toISOString(),
-        status: 'in_progress',
-        records_processed: 0,
-        records_inserted: 0,
-        records_updated: 0,
-      })
-      .select('id')
-      .single()
+    // Use existing log if provided (user triggered via CRM), otherwise create new (scheduled/manual)
+    if (existingLogId) {
+      logId = existingLogId
+      console.log(`📝 Using existing sync log: ${logId}`)
 
-    if (!logError && logEntry) {
-      logId = logEntry.id
-      console.log(`📝 Created sync log: ${logId}`)
+      // Update status to in_progress
+      await supabase
+        .from('provider_sync_logs')
+        .update({ status: 'in_progress' })
+        .eq('id', logId)
+    } else {
+      // Create new sync log entry (for scheduled runs)
+      const { data: logEntry, error: logError } = await supabase
+        .from('provider_sync_logs')
+        .insert({
+          triggered_by: null, // No user when triggered by schedule
+          triggered_by_system: 'github-actions-scheduled',
+          triggered_at: new Date().toISOString(),
+          status: 'in_progress',
+          records_processed: 0,
+          records_inserted: 0,
+          records_updated: 0,
+        })
+        .select('id')
+        .single()
+
+      if (logError) {
+        console.error('⚠️ Failed to create sync log:', logError.message)
+      } else if (logEntry) {
+        logId = logEntry.id
+        console.log(`📝 Created sync log: ${logId}`)
+      }
     }
 
     // Step 1: Run scrapper

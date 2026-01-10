@@ -22,6 +22,7 @@ import { createClient } from '@supabase/supabase-js'
 const args = process.argv.slice(2)
 const fromArg = args.find(a => a.startsWith('--from='))?.split('=')[1]
 const toArg = args.find(a => a.startsWith('--to='))?.split('=')[1]
+const syncLogIdArg = args.find(a => a.startsWith('--sync-log-id='))?.split('=')[1]
 
 if (!fromArg || !toArg) {
   console.error('❌ Missing required arguments: --from=dd-mm-yyyy --to=dd-mm-yyyy')
@@ -92,21 +93,35 @@ async function main() {
   console.log('═══════════════════════════════════════════════')
 
   try {
-    // Create sync log entry
-    const { data: logEntry, error: logError } = await supabase
-      .from('sync_logs')
-      .insert({
-        triggered_by: 'github-actions',
-        date_from: convertToISODate(fromArg),
-        date_to: convertToISODate(toArg),
-        status: 'in_progress',
-      })
-      .select('id')
-      .single()
+    // Use existing log if provided (user triggered via CRM), otherwise create new (scheduled/manual)
+    if (syncLogIdArg && syncLogIdArg !== 'null') {
+      logId = syncLogIdArg
+      console.log(`📝 Using existing sync log: ${logId}`)
 
-    if (!logError && logEntry) {
-      logId = logEntry.id
-      console.log(`📝 Created sync log: ${logId}`)
+      // Update status to in_progress
+      await supabase
+        .from('sync_logs')
+        .update({ status: 'in_progress' })
+        .eq('id', logId)
+    } else {
+      // Create new sync log entry (for scheduled runs)
+      const { data: logEntry, error: logError } = await supabase
+        .from('sync_logs')
+        .insert({
+          triggered_by: null, // No user when triggered by schedule
+          date_from: convertToISODate(fromArg),
+          date_to: convertToISODate(toArg),
+          status: 'in_progress',
+        })
+        .select('id')
+        .single()
+
+      if (logError) {
+        console.error('⚠️ Failed to create sync log:', logError.message)
+      } else if (logEntry) {
+        logId = logEntry.id
+        console.log(`📝 Created sync log: ${logId}`)
+      }
     }
 
     // Step 1: Run scrapper

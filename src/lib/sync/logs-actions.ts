@@ -27,9 +27,10 @@ export interface SyncLog {
 
 export interface ProviderSyncLog {
   id: string
-  triggered_by: string
+  triggered_by: string | null
+  triggered_by_system: string | null
   triggered_at: string
-  status: 'success' | 'error' | 'in_progress'
+  status: 'success' | 'error' | 'in_progress' | 'pending'
   duration_seconds: number | null
   records_processed: number
   records_inserted: number
@@ -43,7 +44,7 @@ export interface ProviderSyncLog {
   user: {
     name: string
     email: string
-  }
+  } | null
 }
 
 /**
