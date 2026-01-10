@@ -80,8 +80,12 @@ export async function runProvidersScrapper(options: ProviderScrapperOptions = {}
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
             '--window-size=1920,1080',
-        ]
+        ],
+        // Use Chrome path from env if provided (GitHub Actions sets this)
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     });
 
     const page = await browser.newPage();

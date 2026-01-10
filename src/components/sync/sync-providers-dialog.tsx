@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -13,19 +13,32 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Download, Loader2, History, Users } from 'lucide-react'
+import { Download, Loader2, History, Users, Cloud, Monitor } from 'lucide-react'
 
 export function SyncProvidersDialog() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [isProduction, setIsProduction] = useState(false)
+
+  // Detect environment on client side
+  useEffect(() => {
+    setIsProduction(
+      typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
+    )
+  }, [])
 
   const handleSync = async () => {
     setLoading(true)
     setOpen(false)
 
+    // Use different endpoint based on environment
+    const apiEndpoint = isProduction
+      ? '/api/sync/providers-github-actions'
+      : '/api/sync/providers'
+
     // Start the sync in background (don't await - let it run)
-    fetch('/api/sync/providers', {
+    fetch(apiEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -98,6 +111,19 @@ export function SyncProvidersDialog() {
                 <li>Prestadores existentes serão atualizados</li>
                 <li>Novos prestadores serão criados</li>
               </ul>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              {isProduction ? (
+                <>
+                  <Cloud className="h-3 w-3" />
+                  <span>Execução via GitHub Actions</span>
+                </>
+              ) : (
+                <>
+                  <Monitor className="h-3 w-3" />
+                  <span>Execução local (Puppeteer)</span>
+                </>
+              )}
             </div>
           </div>
           <DialogFooter>

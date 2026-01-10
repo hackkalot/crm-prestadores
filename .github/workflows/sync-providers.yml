@@ -1,0 +1,77 @@
+name: Sync Providers Data
+
+on:
+  # Run daily at 5:00 AM UTC (6:00 AM Portugal time) - before service requests sync
+  schedule:
+    - cron: '0 5 * * *'
+
+  # Allow manual trigger (from UI or API)
+  workflow_dispatch:
+
+  # Allow trigger via repository_dispatch (from CRM API)
+  repository_dispatch:
+    types: [sync-providers]
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for Puppeteer
+        run: |
+          npx puppeteer browsers install chrome
+          echo "PUPPETEER_EXECUTABLE_PATH=$(find $HOME/.cache/puppeteer -name 'chrome' -type f | head -1)" >> $GITHUB_ENV
+
+      - name: Create output directories
+        run: mkdir -p data/providers-outputs
+
+      - name: Run providers scrapper and sync
+        env:
+          BACKOFFICE_USERNAME: ${{ secrets.BACKOFFICE_USERNAME }}
+          BACKOFFICE_PASSWORD: ${{ secrets.BACKOFFICE_PASSWORD }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npx tsx scripts/sync-providers-github.ts
+
+      - name: Upload Excel artifact (on success)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: providers-data-${{ github.run_id }}
+          path: data/providers-outputs/*.xlsx
+          retention-days: 7
+
+      - name: Upload logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: providers-sync-logs-${{ github.run_id }}
+          path: |
+            data/*.log
+            data/providers-outputs/*.png
+          retention-days: 3
+
+      - name: Report status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Providers sync completed successfully"
+          else
+            echo "❌ Providers sync failed - check logs for details"
+          fi
