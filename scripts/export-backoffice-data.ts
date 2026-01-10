@@ -92,8 +92,12 @@ export async function runScrapper(options: ScrapperOptions): Promise<ScrapperRes
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
             '--window-size=1920,1080',
-        ]
+        ],
+        // For GitHub Actions: use the Chrome installed by puppeteer
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     });
 
     const page = await browser.newPage();

@@ -47,7 +47,9 @@ jobs:
         run: npm ci
 
       - name: Install Chromium for Puppeteer
-        run: npx puppeteer browsers install chrome
+        run: |
+          npx puppeteer browsers install chrome
+          echo "PUPPETEER_EXECUTABLE_PATH=$(find $HOME/.cache/puppeteer -name 'chrome' -type f | head -1)" >> $GITHUB_ENV
 
       - name: Calculate date range
         id: dates
