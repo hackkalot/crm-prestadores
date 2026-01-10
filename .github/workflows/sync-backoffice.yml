@@ -1,0 +1,102 @@
+name: Sync Backoffice Data
+
+on:
+  # Run daily at 6:00 AM UTC (7:00 AM Portugal time in winter, 7:00 AM in summer)
+  schedule:
+    - cron: '0 6 * * *'
+
+  # Allow manual trigger with custom date range
+  workflow_dispatch:
+    inputs:
+      date_from:
+        description: 'Start date (dd-mm-yyyy)'
+        required: false
+        default: ''
+      date_to:
+        description: 'End date (dd-mm-yyyy)'
+        required: false
+        default: ''
+      days_back:
+        description: 'Days to sync (ignored if dates provided)'
+        required: false
+        default: '7'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for Puppeteer
+        run: npx puppeteer browsers install chrome
+
+      - name: Calculate date range
+        id: dates
+        run: |
+          if [ -n "${{ github.event.inputs.date_from }}" ] && [ -n "${{ github.event.inputs.date_to }}" ]; then
+            echo "date_from=${{ github.event.inputs.date_from }}" >> $GITHUB_OUTPUT
+            echo "date_to=${{ github.event.inputs.date_to }}" >> $GITHUB_OUTPUT
+          else
+            DAYS_BACK="${{ github.event.inputs.days_back || '7' }}"
+            DATE_FROM=$(date -d "$DAYS_BACK days ago" +%d-%m-%Y)
+            DATE_TO=$(date +%d-%m-%Y)
+            echo "date_from=$DATE_FROM" >> $GITHUB_OUTPUT
+            echo "date_to=$DATE_TO" >> $GITHUB_OUTPUT
+          fi
+          echo "Syncing from ${{ steps.dates.outputs.date_from }} to ${{ steps.dates.outputs.date_to }}"
+
+      - name: Create output directories
+        run: mkdir -p data/scrapper-outputs
+
+      - name: Run scrapper and sync
+        env:
+          BACKOFFICE_USERNAME: ${{ secrets.BACKOFFICE_USERNAME }}
+          BACKOFFICE_PASSWORD: ${{ secrets.BACKOFFICE_PASSWORD }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          npx tsx scripts/sync-backoffice-github.ts \
+            --from="${{ steps.dates.outputs.date_from }}" \
+            --to="${{ steps.dates.outputs.date_to }}"
+
+      - name: Upload Excel artifact (on success)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backoffice-data-${{ steps.dates.outputs.date_from }}-${{ steps.dates.outputs.date_to }}
+          path: data/scrapper-outputs/*.xlsx
+          retention-days: 7
+
+      - name: Upload logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sync-logs-${{ github.run_id }}
+          path: |
+            data/*.log
+            data/scrapper-outputs/*.png
+          retention-days: 3
+
+      - name: Report status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Sync completed successfully"
+          else
+            echo "❌ Sync failed - check logs for details"
+          fi
