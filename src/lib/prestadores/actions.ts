@@ -11,8 +11,10 @@ type ProviderStatus = Database['public']['Enums']['provider_status']
 export type PrestadorFilters = {
   status?: ProviderStatus | 'all' | '_all'
   entityType?: string
-  district?: string
-  service?: string
+  district?: string      // Legacy single filter
+  service?: string       // Legacy single filter
+  districts?: string[]   // Multi-select filter
+  services?: string[]    // Multi-select filter
   ownerId?: string
   search?: string
 }
@@ -44,11 +46,21 @@ export async function getPrestadores(filters: PrestadorFilters = {}) {
     query = query.eq('entity_type', filters.entityType)
   }
 
-  if (filters.district) {
+  // Multi-select district filter (new)
+  if (filters.districts && filters.districts.length > 0) {
+    // Filter providers that have ANY of the selected districts
+    query = query.overlaps('districts', filters.districts)
+  } else if (filters.district) {
+    // Legacy single filter - backward compatible
     query = query.contains('districts', [filters.district])
   }
 
-  if (filters.service) {
+  // Multi-select service filter (new)
+  if (filters.services && filters.services.length > 0) {
+    // Filter providers that have ANY of the selected services
+    query = query.overlaps('services', filters.services)
+  } else if (filters.service) {
+    // Legacy single filter - backward compatible
     query = query.contains('services', [filters.service])
   }
 

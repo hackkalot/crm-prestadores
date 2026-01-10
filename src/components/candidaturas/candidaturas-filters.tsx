@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { DatePicker } from '@/components/ui/date-picker'
-import { Search, X, Filter, ChevronDown, ChevronUp } from 'lucide-react'
+import { Search, X, Filter, ChevronDown, ChevronUp, List, LayoutGrid } from 'lucide-react'
 import { useCallback, useState, useTransition } from 'react'
 import { format, parseISO } from 'date-fns'
 
@@ -48,6 +48,7 @@ export function CandidaturasFilters({ districts, services }: CandidaturasFilters
   const currentService = searchParams.get('service') || ''
   const currentDateFrom = searchParams.get('dateFrom') || ''
   const currentDateTo = searchParams.get('dateTo') || ''
+  const currentView = searchParams.get('view') || 'list'
 
   const updateFilter = useCallback((key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -60,6 +61,18 @@ export function CandidaturasFilters({ districts, services }: CandidaturasFilters
       router.push(`/candidaturas?${params.toString()}`)
     })
   }, [router, searchParams])
+
+  const setView = (view: 'list' | 'grid') => {
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (view === 'list') {
+        params.delete('view')
+      } else {
+        params.set('view', view)
+      }
+      router.push(`/candidaturas?${params.toString()}`)
+    })
+  }
 
   const handleSearch = () => {
     updateFilter('search', search)
@@ -154,6 +167,30 @@ export function CandidaturasFilters({ districts, services }: CandidaturasFilters
             <span className="ml-1 h-2 w-2 rounded-full bg-primary" />
           )}
         </Button>
+
+        {/* View Toggle */}
+        <div className="flex items-center border rounded-lg p-0.5 bg-muted/50 ml-auto">
+          <Button
+            variant={currentView === 'list' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setView('list')}
+            disabled={isPending}
+            className="h-7 px-2.5 gap-1.5"
+          >
+            <List className="h-4 w-4" />
+            <span className="hidden sm:inline">Lista</span>
+          </Button>
+          <Button
+            variant={currentView === 'grid' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setView('grid')}
+            disabled={isPending}
+            className="h-7 px-2.5 gap-1.5"
+          >
+            <LayoutGrid className="h-4 w-4" />
+            <span className="hidden sm:inline">Grelha</span>
+          </Button>
+        </div>
       </div>
 
       {/* Advanced Filters */}

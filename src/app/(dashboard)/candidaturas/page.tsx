@@ -3,6 +3,8 @@ import { Header } from '@/components/layout/header'
 import { CandidaturasList } from '@/components/candidaturas/candidaturas-list'
 import { CandidaturasFilters } from '@/components/candidaturas/candidaturas-filters'
 import { StatsCards } from '@/components/candidaturas/stats-cards'
+import { ImportProvidersDialog } from '@/components/import/import-providers-dialog'
+import { CreateProviderDialog } from '@/components/providers/create-provider-dialog'
 import { StatsCardsSkeleton, FiltersSkeleton, CandidaturasListSkeleton } from '@/components/skeletons/page-skeletons'
 import {
   getCandidaturas,
@@ -23,9 +25,9 @@ async function StatsSection() {
 }
 
 // Async component for candidaturas list
-async function CandidaturasListSection({ filters }: { filters: CandidaturaFilters }) {
+async function CandidaturasListSection({ filters, viewMode }: { filters: CandidaturaFilters; viewMode: 'list' | 'grid' }) {
   const providers = await getCandidaturas(filters)
-  return <CandidaturasList providers={providers} />
+  return <CandidaturasList providers={providers} viewMode={viewMode} />
 }
 
 // Async component for filters (loads cached data)
@@ -37,12 +39,23 @@ async function FiltersSection() {
   return <CandidaturasFilters districts={districts} services={services} />
 }
 
+// Async component for create dialog (loads cached data)
+async function CreateProviderDialogAsync() {
+  const [districts, services] = await Promise.all([
+    getDistinctDistricts(),
+    getDistinctServices(),
+  ])
+  return <CreateProviderDialog districts={districts} services={services} />
+}
+
 export default async function CandidaturasPage({
   searchParams,
 }: {
   searchParams: SearchParams
 }) {
   const params = await searchParams
+
+  const viewMode = (params.view as 'list' | 'grid') || 'list'
 
   const filters: CandidaturaFilters = {
     status: (params.status as ProviderStatus | 'all') || 'all',
@@ -60,6 +73,14 @@ export default async function CandidaturasPage({
       <Header
         title="Candidaturas"
         description="Gestao de candidaturas de prestadores"
+        action={
+          <div className="flex gap-2">
+            <Suspense fallback={null}>
+              <CreateProviderDialogAsync />
+            </Suspense>
+            <ImportProvidersDialog />
+          </div>
+        }
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         {/* Stats load independently */}
@@ -74,7 +95,7 @@ export default async function CandidaturasPage({
 
         {/* List loads independently */}
         <Suspense fallback={<CandidaturasListSkeleton rows={6} />}>
-          <CandidaturasListSection filters={filters} />
+          <CandidaturasListSection filters={filters} viewMode={viewMode} />
         </Suspense>
       </div>
     </div>

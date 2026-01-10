@@ -18,8 +18,6 @@ import { AbandonDialog } from './abandon-dialog'
 import type { Tables } from '@/types/database'
 import { formatDate } from '@/lib/utils'
 import {
-  LayoutGrid,
-  List,
   User,
   Briefcase,
   Building2,
@@ -33,6 +31,7 @@ type Provider = Tables<'providers'>
 
 interface CandidaturasListProps {
   providers: Provider[]
+  viewMode?: 'list' | 'grid'
 }
 
 const entityTypeLabels: Record<string, string> = {
@@ -51,16 +50,17 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
   novo: 'info',
   em_onboarding: 'warning',
   abandonado: 'destructive',
+  arquivado: 'secondary',
 }
 
 const statusLabels: Record<string, string> = {
   novo: 'Novo',
   em_onboarding: 'Em Onboarding',
   abandonado: 'Abandonado',
+  arquivado: 'Arquivado',
 }
 
-export function CandidaturasList({ providers }: CandidaturasListProps) {
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
+export function CandidaturasList({ providers, viewMode = 'list' }: CandidaturasListProps) {
   const [sendDialogOpen, setSendDialogOpen] = useState(false)
   const [abandonDialogOpen, setAbandonDialogOpen] = useState(false)
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null)
@@ -85,30 +85,6 @@ export function CandidaturasList({ providers }: CandidaturasListProps) {
 
   return (
     <>
-      {/* View Mode Toggle */}
-      <div className="flex justify-end mb-4">
-        <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
-          <Button
-            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-            size="sm"
-            onClick={() => setViewMode('list')}
-            className="h-8 px-3"
-          >
-            <List className="h-4 w-4 mr-1" />
-            Lista
-          </Button>
-          <Button
-            variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-            size="sm"
-            onClick={() => setViewMode('grid')}
-            className="h-8 px-3"
-          >
-            <LayoutGrid className="h-4 w-4 mr-1" />
-            Grelha
-          </Button>
-        </div>
-      </div>
-
       {/* List View */}
       {viewMode === 'list' && (
         <div className="rounded-lg border bg-card">
@@ -133,7 +109,7 @@ export function CandidaturasList({ providers }: CandidaturasListProps) {
                   <TableRow key={provider.id} className="group">
                     <TableCell>
                       <Link
-                        href={`/providers/${provider.id}?tab=candidatura`}
+                        href={`/providers/${provider.id}?tab=perfil`}
                         className="flex items-center gap-3 hover:text-primary transition-colors"
                       >
                         <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center shrink-0">
@@ -202,7 +178,7 @@ export function CandidaturasList({ providers }: CandidaturasListProps) {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Link href={`/providers/${provider.id}?tab=candidatura`}>
+                      <Link href={`/providers/${provider.id}?tab=perfil`}>
                         <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                       </Link>
                     </TableCell>

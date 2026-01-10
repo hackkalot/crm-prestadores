@@ -46,6 +46,7 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
   ativo: 'success',
   suspenso: 'secondary',
   abandonado: 'destructive',
+  arquivado: 'secondary',
 }
 
 const statusLabels: Record<string, string> = {
@@ -54,6 +55,7 @@ const statusLabels: Record<string, string> = {
   ativo: 'Ativo',
   suspenso: 'Suspenso',
   abandonado: 'Abandonado',
+  arquivado: 'Arquivado',
 }
 
 export default async function CandidaturaDetailPage({ params }: CandidaturaDetailPageProps) {

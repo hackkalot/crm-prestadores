@@ -3,8 +3,7 @@ import { Header } from '@/components/layout/header'
 import { PrestadoresList } from '@/components/prestadores/prestadores-list'
 import { PrestadoresFilters } from '@/components/prestadores/prestadores-filters'
 import { PrestadoresStats } from '@/components/prestadores/prestadores-stats'
-import { ImportProvidersDialog } from '@/components/import/import-providers-dialog'
-import { CreateProviderDialog } from '@/components/providers/create-provider-dialog'
+import { SyncProvidersDialog } from '@/components/sync/sync-providers-dialog'
 import { StatsCardsSkeleton, FiltersSkeleton, PrestadoresTableSkeleton } from '@/components/skeletons/page-skeletons'
 import {
   getPrestadores,
@@ -41,14 +40,6 @@ async function FiltersSection() {
   return <PrestadoresFilters districts={districts} services={services} users={users} />
 }
 
-// Async component for create dialog (loads cached data)
-async function CreateProviderDialogAsync() {
-  const [districts, services] = await Promise.all([
-    getDistinctPrestadorDistricts(),
-    getDistinctPrestadorServices(),
-  ])
-  return <CreateProviderDialog districts={districts} services={services} />
-}
 
 export default async function PrestadoresPage({
   searchParams,
@@ -57,11 +48,18 @@ export default async function PrestadoresPage({
 }) {
   const params = await searchParams
 
+  // Parse multi-select filters from comma-separated URL params
+  const parseMultiParam = (param: string | string[] | undefined): string[] | undefined => {
+    if (!param) return undefined
+    if (Array.isArray(param)) return param
+    return param.split(',').filter(Boolean)
+  }
+
   const filters: PrestadorFilters = {
     status: (params.status as ProviderStatus | 'all' | '_all') || '_all',
     entityType: params.entityType as string | undefined,
-    district: params.district as string | undefined,
-    service: params.service as string | undefined,
+    districts: parseMultiParam(params.districts),
+    services: parseMultiParam(params.services),
     ownerId: params.ownerId as string | undefined,
     search: params.search as string | undefined,
   }
@@ -72,14 +70,7 @@ export default async function PrestadoresPage({
       <Header
         title="Prestadores"
         description="Gestao de prestadores ativos na rede"
-        action={
-          <div className="flex gap-2">
-            <Suspense fallback={null}>
-              <CreateProviderDialogAsync />
-            </Suspense>
-            <ImportProvidersDialog />
-          </div>
-        }
+        action={<SyncProvidersDialog />}
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         {/* Stats load independently */}

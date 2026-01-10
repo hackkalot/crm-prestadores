@@ -3,15 +3,10 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { SearchableSelect } from '@/components/ui/searchable-select'
+import { SearchableMultiSelect } from '@/components/ui/searchable-multi-select'
 import { Search, X, Filter, ChevronDown, ChevronUp } from 'lucide-react'
-import { useCallback, useState, useTransition } from 'react'
+import { useCallback, useMemo, useState, useTransition } from 'react'
 
 const statusOptions = [
   { value: '_all', label: 'Todos' },
@@ -21,10 +16,11 @@ const statusOptions = [
   { value: 'ativo', label: 'Ativos' },
   { value: 'suspenso', label: 'Suspensos' },
   { value: 'abandonado', label: 'Abandonados' },
+  { value: 'arquivado', label: 'Arquivados' },
 ]
 
 const entityOptions = [
-  { value: '', label: 'Todos os tipos' },
+  { value: '_all', label: 'Todos os tipos' },
   { value: 'tecnico', label: 'Técnico' },
   { value: 'eni', label: 'ENI' },
   { value: 'empresa', label: 'Empresa' },
@@ -45,10 +41,33 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
   const [search, setSearch] = useState(searchParams.get('search') || '')
 
   const currentStatus = searchParams.get('status') || '_all'
-  const currentEntity = searchParams.get('entityType') || ''
-  const currentDistrict = searchParams.get('district') || ''
-  const currentService = searchParams.get('service') || ''
-  const currentOwnerId = searchParams.get('ownerId') || ''
+  const currentEntity = searchParams.get('entityType') || '_all'
+  const currentOwnerId = searchParams.get('ownerId') || '_all'
+
+  // Parse multi-select values from URL (comma-separated)
+  const currentDistricts = useMemo(() => {
+    const param = searchParams.get('districts')
+    return param ? param.split(',') : []
+  }, [searchParams])
+
+  const currentServices = useMemo(() => {
+    const param = searchParams.get('services')
+    return param ? param.split(',') : []
+  }, [searchParams])
+
+  // Memoize options to avoid recalculating on every render
+  const districtOptions = useMemo(() =>
+    districts.map(d => ({ value: d, label: d }))
+  , [districts])
+
+  const serviceOptions = useMemo(() =>
+    services.map(s => ({ value: s, label: s }))
+  , [services])
+
+  const userOptions = useMemo(() => [
+    { value: '_all', label: 'Todos' },
+    ...users.map(u => ({ value: u.id, label: u.name || u.email || 'Utilizador' }))
+  ], [users])
 
   const updateFilter = useCallback((key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -57,6 +76,18 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
       params.set(key, value)
     } else {
       // Remove from URL if it's the default '_all'
+      params.delete(key)
+    }
+    startTransition(() => {
+      router.push(`/prestadores?${params.toString()}`)
+    })
+  }, [router, searchParams])
+
+  const updateMultiFilter = useCallback((key: string, values: string[]) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (values.length > 0) {
+      params.set(key, values.join(','))
+    } else {
       params.delete(key)
     }
     startTransition(() => {
@@ -75,10 +106,16 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
     })
   }
 
-  const hasFilters = (currentStatus !== 'all' && currentStatus !== '_all') || currentEntity || currentDistrict ||
-    currentService || currentOwnerId || searchParams.get('search')
+  const hasFilters = (currentStatus !== 'all' && currentStatus !== '_all') ||
+    (currentEntity && currentEntity !== '_all') ||
+    currentDistricts.length > 0 ||
+    currentServices.length > 0 ||
+    (currentOwnerId && currentOwnerId !== '_all') ||
+    searchParams.get('search')
 
-  const hasAdvancedFilters = currentDistrict || currentService || currentOwnerId
+  const hasAdvancedFilters = currentDistricts.length > 0 ||
+    currentServices.length > 0 ||
+    (currentOwnerId && currentOwnerId !== '_all')
 
   return (
     <div className="space-y-4">
@@ -126,18 +163,15 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
 
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Tipo:</span>
-          <select
+          <SearchableSelect
+            options={entityOptions}
             value={currentEntity}
-            onChange={(e) => updateFilter('entityType', e.target.value)}
-            className="h-8 rounded-md border border-input bg-background px-3 text-sm"
+            onValueChange={(value) => updateFilter('entityType', value)}
+            placeholder="Todos os tipos"
+            searchPlaceholder="Pesquisar tipo..."
             disabled={isPending}
-          >
-            {entityOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            className="w-[160px] h-8"
+          />
         </div>
 
         <Button
@@ -162,73 +196,40 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
       {/* Advanced Filters */}
       {showAdvanced && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
-          {/* District Filter */}
+          {/* District Filter - Multi-select */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Zona de atuação</label>
-            <Select
-              value={currentDistrict || '_all'}
-              onValueChange={(value) => updateFilter('district', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Todos os distritos" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="_all">Todos os distritos</SelectItem>
-                {districts.map((district) => (
-                  <SelectItem key={district} value={district}>
-                    {district}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SearchableMultiSelect
+              options={districtOptions}
+              values={currentDistricts}
+              onValuesChange={(values) => updateMultiFilter('districts', values)}
+              placeholder="Zona de atuação"
+              searchPlaceholder="Pesquisar distrito..."
+              disabled={isPending}
+            />
           </div>
 
-          {/* Service Filter */}
+          {/* Service Filter - Multi-select */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Tipo de serviço</label>
-            <Select
-              value={currentService || '_all'}
-              onValueChange={(value) => updateFilter('service', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Todos os serviços" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="_all">Todos os serviços</SelectItem>
-                {services.map((service) => (
-                  <SelectItem key={service} value={service}>
-                    {service}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SearchableMultiSelect
+              options={serviceOptions}
+              values={currentServices}
+              onValuesChange={(values) => updateMultiFilter('services', values)}
+              placeholder="Tipo de serviço"
+              searchPlaceholder="Pesquisar serviço..."
+              disabled={isPending}
+            />
           </div>
 
           {/* Owner Filter */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Responsável</label>
-            <Select
-              value={currentOwnerId || '_all'}
+            <SearchableSelect
+              options={userOptions}
+              value={currentOwnerId}
               onValueChange={(value) => updateFilter('ownerId', value)}
-            >
-              <SelectTrigger>
-                <span className="truncate">
-                  {(() => {
-                    if (!currentOwnerId) return 'Todos'
-                    const owner = users.find(u => u.id === currentOwnerId)
-                    return owner ? (owner.name || owner.email) : 'Todos'
-                  })()}
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="_all">Todos</SelectItem>
-                {users.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    {user.name || user.email || 'Utilizador'}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              placeholder="Responsável"
+              searchPlaceholder="Pesquisar responsável..."
+              disabled={isPending}
+            />
           </div>
         </div>
       )}

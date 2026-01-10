@@ -23,6 +23,7 @@ import {
   AlertTriangle,
   Lock,
   XCircle,
+  Archive,
 } from 'lucide-react'
 
 // Tab components
@@ -60,6 +61,7 @@ const statusLabels: Record<string, string> = {
   ativo: 'Ativo',
   suspenso: 'Suspenso',
   abandonado: 'Abandonado',
+  arquivado: 'Arquivado',
 }
 
 const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info'> = {
@@ -68,6 +70,7 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
   ativo: 'success',
   suspenso: 'destructive',
   abandonado: 'secondary',
+  arquivado: 'secondary',
 }
 
 // Async wrapper for Perfil tab (loads cached data for filters)
@@ -96,8 +99,8 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
   const EntityIcon = entityTypeIcons[provider.entity_type] || User
 
   // Determinar tabs disponíveis
-  const hasOnboarding = ['em_onboarding', 'ativo', 'suspenso'].includes(provider.status) || onboardingCard
-  const hasPrices = ['ativo', 'suspenso'].includes(provider.status)
+  const hasOnboarding = ['em_onboarding', 'ativo', 'suspenso', 'arquivado'].includes(provider.status) || onboardingCard
+  const hasPrices = ['ativo', 'suspenso', 'arquivado'].includes(provider.status)
 
   // Calcular stats do onboarding (se existir)
   const tasks = onboardingCard?.tasks || []
@@ -258,26 +261,36 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
                 </div>
               )}
 
-              {/* Right: Status info for ativo/suspenso */}
-              {['ativo', 'suspenso'].includes(provider.status) && (
+              {/* Right: Status info for ativo/suspenso/arquivado */}
+              {['ativo', 'suspenso', 'arquivado'].includes(provider.status) && (
                 <div className="flex items-center gap-4 lg:border-l lg:pl-6">
                   <div className={`h-16 w-16 rounded-full flex items-center justify-center ${
                     provider.status === 'ativo'
                       ? 'bg-green-100 dark:bg-green-950'
-                      : 'bg-red-100 dark:bg-red-950'
+                      : provider.status === 'arquivado'
+                        ? 'bg-slate-100 dark:bg-slate-800'
+                        : 'bg-red-100 dark:bg-red-950'
                   }`}>
                     {provider.status === 'ativo' ? (
                       <CheckCircle2 className="h-8 w-8 text-green-600" />
+                    ) : provider.status === 'arquivado' ? (
+                      <Archive className="h-8 w-8 text-slate-500" />
                     ) : (
                       <XCircle className="h-8 w-8 text-red-600" />
                     )}
                   </div>
                   <div>
                     <p className="font-medium">
-                      {provider.status === 'ativo' ? 'Ativo desde' : 'Suspenso desde'}
+                      {provider.status === 'ativo' ? 'Ativo desde' : provider.status === 'arquivado' ? 'Arquivado desde' : 'Suspenso desde'}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {formatDateTime(provider.status === 'ativo' ? provider.activated_at : provider.suspended_at)}
+                      {formatDateTime(
+                        provider.status === 'ativo'
+                          ? provider.activated_at
+                          : provider.status === 'arquivado'
+                            ? provider.archived_at
+                            : provider.suspended_at
+                      )}
                     </p>
                   </div>
                 </div>

@@ -1,10 +1,19 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { logout } from '@/lib/auth/actions'
 import { Badge } from '@/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Users,
   Kanban,
@@ -16,12 +25,15 @@ import {
   Network,
   Shield,
   Target,
+  FileText,
+  ChevronUp,
 } from 'lucide-react'
 
 const navigation = [
   { name: 'Candidaturas', href: '/candidaturas', icon: Users, contextTab: 'candidatura' },
   { name: 'Onboarding', href: '/onboarding', icon: Kanban, contextTab: 'onboarding' },
   { name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil' },
+  { name: 'Pedidos', href: '/pedidos', icon: FileText },
   { name: 'Rede', href: '/rede', icon: Network },
   { name: 'Agenda', href: '/agenda', icon: Calendar },
   { name: 'KPIs', href: '/kpis', icon: BarChart3 },
@@ -51,6 +63,11 @@ export function Sidebar({ user, pendingUsersCount = 0 }: SidebarProps) {
   const currentTab = searchParams.get('tab')
   const isAdmin = user?.role === 'admin'
   const isManager = user?.role === 'manager' || user?.role === 'admin'
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   return (
     <div className="flex h-full w-64 flex-col bg-card border-r">
@@ -154,29 +171,57 @@ export function Sidebar({ user, pendingUsersCount = 0 }: SidebarProps) {
       </nav>
 
       {/* User section */}
-      <div className="border-t p-4 space-y-3">
-        {user && (
-          <div className="flex items-center gap-3 px-3">
-            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-medium text-sm">
-                {user.name?.charAt(0).toUpperCase() || 'U'}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{user.name}</p>
-              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-            </div>
-          </div>
+      <div className="border-t p-2">
+        {user && isMounted && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-accent transition-colors">
+                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                  <span className="text-primary-foreground font-medium text-sm">
+                    {user.name?.charAt(0).toUpperCase() || 'U'}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0 text-left">
+                  <p className="text-sm font-medium truncate">{user.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                </div>
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="top"
+              align="start"
+              className="w-56"
+              sideOffset={8}
+            >
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
+                    <span className="text-primary-foreground font-semibold">
+                      {user.name?.charAt(0).toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-sm font-medium">{user.name}</p>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {user.role === 'relationship_manager' ? 'RM' : user.role || 'User'}
+                    </p>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={async () => {
+                  await logout()
+                }}
+                className="cursor-pointer text-destructive focus:text-destructive"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Terminar Sessão
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
-        <form action={logout}>
-          <button
-            type="submit"
-            className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-          >
-            <LogOut className="h-5 w-5" />
-            Sair
-          </button>
-        </form>
       </div>
     </div>
   )

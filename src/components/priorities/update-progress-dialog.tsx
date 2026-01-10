@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useFormState } from 'react-dom'
+import { useState, useTransition, useActionState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -29,7 +28,7 @@ export function UpdateProgressDialog({ priority }: UpdateProgressDialogProps) {
   const [isPending, startTransition] = useTransition()
   const [newValue, setNewValue] = useState(priority.current_value)
 
-  const [state, formAction] = useFormState(updatePriorityProgress, null)
+  const [state, formAction] = useActionState(updatePriorityProgress, null)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

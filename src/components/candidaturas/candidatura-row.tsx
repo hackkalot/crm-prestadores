@@ -38,12 +38,14 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
   novo: 'info',
   em_onboarding: 'warning',
   abandonado: 'destructive',
+  arquivado: 'secondary',
 }
 
 const statusLabels: Record<string, string> = {
   novo: 'Novo',
   em_onboarding: 'Em Onboarding',
   abandonado: 'Abandonado',
+  arquivado: 'Arquivado',
 }
 
 export function CandidaturaRow({ provider, onSendToOnboarding, onAbandon }: CandidaturaRowProps) {
@@ -58,7 +60,7 @@ export function CandidaturaRow({ provider, onSendToOnboarding, onAbandon }: Cand
 
       {/* Name & Email - Clickable */}
       <Link
-        href={`/providers/${provider.id}?tab=candidatura`}
+        href={`/providers/${provider.id}?tab=perfil`}
         className="min-w-40 flex-1 hover:text-primary"
       >
         <div className="min-w-0">
@@ -132,7 +134,7 @@ export function CandidaturaRow({ provider, onSendToOnboarding, onAbandon }: Cand
             </Button>
           </>
         )}
-        <Link href={`/providers/${provider.id}?tab=candidatura`}>
+        <Link href={`/providers/${provider.id}?tab=perfil`}>
           <Button size="sm" variant="ghost">
             <ChevronRight className="h-4 w-4" />
           </Button>

@@ -43,12 +43,14 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
   novo: 'info',
   em_onboarding: 'warning',
   abandonado: 'destructive',
+  arquivado: 'secondary',
 }
 
 const statusLabels: Record<string, string> = {
   novo: 'Novo',
   em_onboarding: 'Em Onboarding',
   abandonado: 'Abandonado',
+  arquivado: 'Arquivado',
 }
 
 export function CandidaturaCard({ provider, onSendToOnboarding, onAbandon }: CandidaturaCardProps) {
@@ -60,7 +62,7 @@ export function CandidaturaCard({ provider, onSendToOnboarding, onAbandon }: Can
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <Link
-            href={`/providers/${provider.id}?tab=candidatura`}
+            href={`/providers/${provider.id}?tab=perfil`}
             className="flex items-center gap-3 hover:text-primary"
           >
             <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">

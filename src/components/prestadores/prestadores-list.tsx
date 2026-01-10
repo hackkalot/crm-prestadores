@@ -10,6 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { User, Briefcase, Building2, MapPin, ChevronRight } from 'lucide-react'
 
 interface Prestador {
@@ -51,6 +57,7 @@ const statusLabels: Record<string, string> = {
   ativo: 'Ativo',
   suspenso: 'Suspenso',
   abandonado: 'Abandonado',
+  arquivado: 'Arquivado',
 }
 
 const statusVariants: Record<string, 'info' | 'warning' | 'success' | 'destructive' | 'secondary'> = {
@@ -59,6 +66,7 @@ const statusVariants: Record<string, 'info' | 'warning' | 'success' | 'destructi
   ativo: 'success',
   suspenso: 'destructive',
   abandonado: 'secondary',
+  arquivado: 'secondary',
 }
 
 export function PrestadoresList({ prestadores }: PrestadoresListProps) {
@@ -120,17 +128,30 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
                     </span>
                   </div>
                 </TableCell>
-                <TableCell>
-                  <div className="flex flex-wrap gap-1">
-                    {prestador.services?.slice(0, 2).map((service) => (
-                      <Badge key={service} variant="secondary" className="text-xs">
-                        {service}
+                <TableCell className="max-w-[200px]">
+                  <div className="flex items-center gap-1">
+                    {prestador.services && prestador.services.length > 0 && (
+                      <Badge variant="secondary" className="text-xs truncate max-w-[140px]">
+                        {prestador.services[0]}
                       </Badge>
-                    ))}
-                    {prestador.services && prestador.services.length > 2 && (
-                      <Badge variant="secondary" className="text-xs">
-                        +{prestador.services.length - 2}
-                      </Badge>
+                    )}
+                    {prestador.services && prestador.services.length > 1 && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge variant="outline" className="text-xs shrink-0 cursor-default">
+                              +{prestador.services.length - 1}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[250px]">
+                            <div className="flex flex-col gap-1">
+                              {prestador.services.slice(1).map((service, idx) => (
+                                <span key={idx} className="text-xs">{service}</span>
+                              ))}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     )}
                   </div>
                 </TableCell>

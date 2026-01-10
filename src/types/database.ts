@@ -1317,6 +1317,7 @@ export type Database = {
         | "ativo"
         | "suspenso"
         | "abandonado"
+        | "arquivado"
       task_status: "por_fazer" | "em_curso" | "concluida"
       user_approval_status: "pending" | "approved" | "rejected"
       user_role: "admin" | "user" | "manager" | "relationship_manager"
@@ -1474,6 +1475,7 @@ export const Constants = {
         "ativo",
         "suspenso",
         "abandonado",
+        "arquivado",
       ],
       task_status: ["por_fazer", "em_curso", "concluida"],
       user_approval_status: ["pending", "approved", "rejected"],
