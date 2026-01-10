@@ -66,8 +66,16 @@ export function SyncBackofficeDialog() {
     setLoading(true)
     setOpen(false)
 
+    // Determine which API to use based on environment
+    // In production (Vercel), use GitHub Actions
+    // In development (localhost), use local Puppeteer
+    const isProduction = typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
+    const apiEndpoint = isProduction ? '/api/sync/github-actions' : '/api/sync/backoffice'
+
+    console.log(`Using sync endpoint: ${apiEndpoint} (production: ${isProduction})`)
+
     // Start the sync in background (don't await - let it run)
-    fetch('/api/sync/backoffice', {
+    fetch(apiEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -81,10 +89,12 @@ export function SyncBackofficeDialog() {
         const data = await response.json()
         if (!response.ok) {
           console.error('Sync failed:', data.error)
+          alert(`Erro na sincronização: ${data.error}`)
         }
       })
       .catch((error) => {
         console.error('Sync error:', error)
+        alert('Erro ao iniciar sincronização')
       })
       .finally(() => {
         setLoading(false)

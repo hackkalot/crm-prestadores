@@ -18,6 +18,8 @@ O processo:
 
 ## Configuração de Secrets
 
+### GitHub Repository Secrets
+
 Acede ao teu repositório no GitHub e vai a:
 **Settings → Secrets and variables → Actions → New repository secret**
 
@@ -30,7 +32,28 @@ Adiciona os seguintes secrets:
 | `SUPABASE_URL` | URL do projeto Supabase | `https://xxx.supabase.co` |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key do Supabase | `eyJhbGciOi...` |
 
-### Onde encontrar os valores:
+### Vercel Environment Variables (para trigger via CRM)
+
+Para o botão de sync funcionar em produção, adiciona no Vercel:
+**Project Settings → Environment Variables**
+
+| Nome | Descrição | Como obter |
+|------|-----------|------------|
+| `GITHUB_ACTIONS_TOKEN` | Personal Access Token do GitHub | Ver abaixo |
+| `GITHUB_REPO` | Nome do repositório | `hackkalot/crm-prestadores` |
+
+#### Como criar o GITHUB_ACTIONS_TOKEN:
+
+1. Vai a GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens**
+2. Clica **Generate new token**
+3. Dá um nome (ex: "CRM Sync Trigger")
+4. Seleciona o repositório `crm-prestadores`
+5. Em **Permissions**, define:
+   - **Contents**: Read and write
+   - **Metadata**: Read-only
+6. Clica **Generate token** e copia o valor
+
+### Onde encontrar os outros valores:
 
 1. **BACKOFFICE_USERNAME/PASSWORD**: Credenciais de acesso ao backoffice FIXO
 2. **SUPABASE_URL**: Supabase Dashboard → Settings → API → Project URL
@@ -65,7 +88,7 @@ gh workflow run sync-backoffice.yml -f days_back="30"
 
 ## Agendamento Automático
 
-O workflow está configurado para executar diariamente às 6:00 UTC (7:00 hora de Portugal).
+O workflow está configurado para executar diariamente às 6:00 UTC (7:00 hora de Portugal), sincronizando **apenas o dia anterior** para não interferir com syncs manuais.
 
 Para alterar o horário, edita o cron em `.github/workflows/sync-backoffice.yml`:
 
@@ -78,6 +101,17 @@ Exemplos de cron:
 - `0 6 * * *` - Diariamente às 6:00 UTC
 - `0 6 * * 1-5` - Segunda a Sexta às 6:00 UTC
 - `0 6,18 * * *` - Duas vezes ao dia (6:00 e 18:00 UTC)
+
+## Trigger via CRM (Produção)
+
+O botão "Sincronizar Backoffice" no CRM funciona em ambos os ambientes:
+
+| Ambiente | Comportamento |
+|----------|---------------|
+| **Localhost** | Executa Puppeteer localmente (instantâneo) |
+| **Produção (Vercel)** | Dispara GitHub Actions via API |
+
+O CRM deteta automaticamente o ambiente e usa o endpoint correto.
 
 ## Logs e Artefactos
 

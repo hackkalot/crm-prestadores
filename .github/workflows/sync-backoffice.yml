@@ -1,11 +1,11 @@
 name: Sync Backoffice Data
 
 on:
-  # Run daily at 6:00 AM UTC (7:00 AM Portugal time in winter, 7:00 AM in summer)
+  # Run daily at 6:00 AM UTC (7:00 AM Portugal time) - only yesterday's data
   schedule:
     - cron: '0 6 * * *'
 
-  # Allow manual trigger with custom date range
+  # Allow manual trigger with custom date range (from UI or API)
   workflow_dispatch:
     inputs:
       date_from:
@@ -17,9 +17,13 @@ on:
         required: false
         default: ''
       days_back:
-        description: 'Days to sync (ignored if dates provided)'
+        description: 'Days to sync (ignored if dates provided, default 1 for scheduled)'
         required: false
-        default: '7'
+        default: '1'
+
+  # Allow trigger via repository_dispatch (from CRM API)
+  repository_dispatch:
+    types: [sync-backoffice]
 
 env:
   NODE_VERSION: '20'
@@ -48,11 +52,19 @@ jobs:
       - name: Calculate date range
         id: dates
         run: |
-          if [ -n "${{ github.event.inputs.date_from }}" ] && [ -n "${{ github.event.inputs.date_to }}" ]; then
+          # Check for repository_dispatch (from CRM API)
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            DATE_FROM="${{ github.event.client_payload.date_from }}"
+            DATE_TO="${{ github.event.client_payload.date_to }}"
+            echo "date_from=$DATE_FROM" >> $GITHUB_OUTPUT
+            echo "date_to=$DATE_TO" >> $GITHUB_OUTPUT
+          # Check for workflow_dispatch with dates
+          elif [ -n "${{ github.event.inputs.date_from }}" ] && [ -n "${{ github.event.inputs.date_to }}" ]; then
             echo "date_from=${{ github.event.inputs.date_from }}" >> $GITHUB_OUTPUT
             echo "date_to=${{ github.event.inputs.date_to }}" >> $GITHUB_OUTPUT
           else
-            DAYS_BACK="${{ github.event.inputs.days_back || '7' }}"
+            # Default: days_back (1 for scheduled, configurable for manual)
+            DAYS_BACK="${{ github.event.inputs.days_back || '1' }}"
             DATE_FROM=$(date -d "$DAYS_BACK days ago" +%d-%m-%Y)
             DATE_TO=$(date +%d-%m-%Y)
             echo "date_from=$DATE_FROM" >> $GITHUB_OUTPUT
