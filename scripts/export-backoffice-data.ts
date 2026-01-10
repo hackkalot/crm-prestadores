@@ -1,4 +1,3 @@
-
 import puppeteer from 'puppeteer';
 import path from 'path';
 import fs from 'fs';
@@ -10,26 +9,45 @@ const __dirname = path.dirname(__filename);
 
 // CONFIGURAÇÕES
 const LOGIN_URL = 'https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests';
-const USERNAME = 'sofia.amaral.brites@fidelidade.pt';
-const PASSWORD = '12345678';
+const USERNAME = process.env.BACKOFFICE_USERNAME || 'sofia.amaral.brites@fidelidade.pt';
+const PASSWORD = process.env.BACKOFFICE_PASSWORD || '12345678';
 
 // PASTAS DE OUTPUT
 const DATA_PATH = path.resolve(__dirname, '../data');
 const OUTPUT_PATH = path.join(DATA_PATH, 'scrapper-outputs');
 const LOG_FILE = path.join(DATA_PATH, `scrapper_${new Date().toISOString().split('T')[0]}.log`);
 
+// TIPOS
+export interface ScrapperOptions {
+    dateFrom: string  // formato: dd-mm-yyyy
+    dateTo: string    // formato: dd-mm-yyyy
+    outputPath?: string
+    headless?: boolean
+}
+
+export interface ScrapperResult {
+    success: boolean
+    filePath?: string
+    error?: string
+    recordCount?: number
+}
+
 // Função de Logger
 function log(message: string, isError = false) {
-    const timestamp = new Date().toLocaleString();
+    const timestamp = new Date().toLocaleTimeString();
     const formattedMessage = `[${timestamp}] ${message}`;
-    if (isError) console.error(formattedMessage);
-    else console.log(formattedMessage);
+
+    if (isError) {
+        console.error(`❌ ${formattedMessage}`);
+    } else {
+        console.log(`✅ ${formattedMessage}`);
+    }
 
     try {
         if (!fs.existsSync(DATA_PATH)) fs.mkdirSync(DATA_PATH, { recursive: true });
         fs.appendFileSync(LOG_FILE, formattedMessage + '\n');
-    } catch (err) {
-        console.error('Erro log:', err);
+    } catch (e) {
+        // Ignorar erros de log
     }
 }
 
@@ -40,192 +58,429 @@ function formatDate(date: Date): string {
     return `${day}-${month}-${year}`;
 }
 
-async function exportData() {
-    log('🚀 Iniciando scrapper robótico Backoffice FIXO...');
+// Função helper para esperar
+async function wait(ms: number, reason: string) {
+    log(`⏳ Aguardando ${ms}ms: ${reason}`);
+    await new Promise(r => setTimeout(r, ms));
+}
 
-    [DATA_PATH, OUTPUT_PATH].forEach(p => {
+/**
+ * Função principal exportável para scrapping de dados do backoffice
+ */
+export async function runScrapper(options: ScrapperOptions): Promise<ScrapperResult> {
+    const {
+        dateFrom,
+        dateTo,
+        outputPath = OUTPUT_PATH,
+        headless = true
+    } = options;
+
+    log('═══════════════════════════════════════════════');
+    log(`🚀 Scrapper de Backoffice`);
+    log(`📅 Período: ${dateFrom} até ${dateTo}`);
+    log('═══════════════════════════════════════════════');
+
+    // Criar pastas
+    [DATA_PATH, outputPath].forEach(p => {
         if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
     });
 
+    log('🌐 A lançar browser...');
     const browser = await puppeteer.launch({
-        headless: false,
+        headless,
+        slowMo: headless ? 0 : 100,
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
-            '--disable-web-security',
+            '--window-size=1920,1080',
         ]
     });
 
-    let page: any = null;
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    // Configurar download behavior LOGO NO INÍCIO (crucial para headless mode)
+    const client = await page.createCDPSession();
+    await client.send('Browser.setDownloadBehavior', {
+        behavior: 'allow',
+        downloadPath: outputPath,
+        eventsEnabled: true
+    });
+
     try {
-        page = await browser.newPage();
+        // ============================================
+        // PASSO 1: LOGIN
+        // ============================================
+        log('PASSO 1/5: Navegando para página de login...');
+        await page.goto(LOGIN_URL, { waitUntil: 'networkidle2', timeout: 60000 });
 
-        // Logs do browser no terminal
-        page.on('console', (msg: any) => log(`[BROWSER] ${msg.text()}`));
+        log('🔑 Preenchendo credenciais...');
+        await page.type('input[type="text"], input[name="username"]', USERNAME);
+        await page.type('input[type="password"], input[name="password"]', PASSWORD);
 
-        const client = await page.target().createCDPSession();
-        await client.send('Page.setDownloadBehavior', {
-            behavior: 'allow',
-            downloadPath: OUTPUT_PATH,
-        });
+        log('🔐 A fazer login...');
+        await page.click('button[type="submit"], input[type="submit"]');
+        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
+        await wait(1000, 'Login concluído');
 
-        log(`🔗 Navegando para: ${LOGIN_URL}`);
-        await page.goto(LOGIN_URL, { waitUntil: 'networkidle2' });
+        // ============================================
+        // PASSO 2: ENCONTRAR INPUTS DE DATA
+        // ============================================
+        log('PASSO 2/5: Procurando inputs de data...');
 
-        // 1. LOGIN
-        if (page.url().includes('Login')) {
-            log('🔑 A autenticar...');
-            await page.waitForSelector('#Input_UsernameVal');
-            await page.type('#Input_UsernameVal', USERNAME);
-            await page.type('#Input_PasswordVal', PASSWORD);
-            await Promise.all([
-                page.click('button.btn-primary'),
-                page.waitForNavigation({ waitUntil: 'networkidle2' }),
-            ]);
-            log('✅ Login efetuado.');
-        }
+        // Esperar por inputs de data aparecerem
+        await page.waitForSelector('input[type="text"]', { timeout: 10000 });
+        await wait(1000, 'Inputs carregados');
 
-        // 2. AGUARDAR PÁGINA DE PEDIDOS
-        log('⏳ A aguardar carregamento da lista e filtros...');
-        await page.waitForSelector('.list-container, .table', { timeout: 30000 });
-        // Pausa extra para garantir que a barra lateral de filtros (pesada em JS) carregue
-        await new Promise(r => setTimeout(r, 5000));
+        // Análise detalhada dos inputs
+        const inputsInfo = await page.evaluate(() => {
+            const inputs = Array.from(document.querySelectorAll('input[type="text"]'));
+            return inputs.map((input: any, index) => {
+                const rect = input.getBoundingClientRect();
+                const isVisible = rect.width > 0 && rect.height > 0;
 
-        // 3. DEFINIR DATAS (Modo Botão Hoje)
-        log(`📅 Alvo: Selecionar "Hoje" no 4º e 5º inputs (Submissão) via calendário`);
+                // Procurar labels próximos (vários métodos)
+                let label = '';
+                const id = input.id;
+                if (id) {
+                    const labelEl = document.querySelector(`label[for="${id}"]`);
+                    if (labelEl) label = labelEl.textContent || '';
+                }
 
-        const selectTodayInCalendar = async (inputIndex: number, label: string) => {
-            const allInputs = await page.$$('input.form-control');
-            const visibleInputsList = [];
-            for (const input of allInputs) {
-                const info = await input.evaluate((el: any) => ({
-                    id: el.id,
-                    placeholder: el.getAttribute('placeholder'),
-                    isVisible: el.getBoundingClientRect().width > 0,
-                    value: el.value
-                }));
-                if (info.isVisible) visibleInputsList.push({ handle: input, ...info });
-            }
+                // Procurar label acima do input
+                const parent = input.parentElement;
+                if (parent) {
+                    const labelInParent = parent.querySelector('label');
+                    if (labelInParent) label = labelInParent.textContent || '';
 
-            log(`🔎 [DEBUG] Inputs visíveis encontrados (${visibleInputsList.length}):`);
-            visibleInputsList.forEach((inp, i) => {
-                log(`   [${i}] ID: ${inp.id || '(sem id)'} | Placeholder: ${inp.placeholder || '(limpo)'} | Valor: ${inp.value}`);
-            });
-
-            if (visibleInputsList[inputIndex]) {
-                const input = visibleInputsList[inputIndex].handle;
-                log(`📅 Abrindo calendário do ${label} (Índice ${inputIndex})...`);
-
-                await input.evaluate((el: any) => el.scrollIntoView());
-                await input.click();
-
-                await new Promise(r => setTimeout(r, 1000));
-
-                log(`🖱️ Clicando em "Hoje" para ${label}...`);
-                const clicked = await page.evaluate(() => {
-                    const links = Array.from(document.querySelectorAll('a'));
-                    const todayLink = links.find(a => a.textContent?.trim() === 'Hoje');
-                    if (todayLink) {
-                        (todayLink as HTMLElement).click();
-                        return true;
+                    // Procurar texto antes do input
+                    const previousSibling = parent.previousElementSibling;
+                    if (previousSibling && previousSibling.tagName === 'LABEL') {
+                        label = previousSibling.textContent || '';
                     }
-                    return false;
-                });
-
-                if (clicked) {
-                    log(`✅ "Hoje" selecionado para ${label}.`);
-                } else {
-                    log(`⚠️ Não encontrei o botão "Hoje" para ${label}. A tentar fallback...`);
-                    await page.click('.flatpickr-day.today').catch(() => { });
                 }
-            }
-        };
 
-        // Atacar o 4º e 5º inputs visíveis (índices 3 e 4)
-        await selectTodayInCalendar(3, '4º input');
-        await new Promise(r => setTimeout(r, 1000));
-        await selectTodayInCalendar(4, '5º input');
+                // Procurar placeholder
+                const placeholder = input.placeholder || '';
 
-        // PAUSA PARA INSPEÇÃO VISUAL
-        log('⏳ Aguardando 30 segundos para validação visual...');
-        await new Promise(r => setTimeout(r, 30000));
-
-        /* 
-        // ==========================================================
-        // 4. CLICAR NO BOTÃO DE EXPORTAR (DESATIVADO PARA DEBUG)
-        // ==========================================================
-        
-        log('📤 Procurando botões de exportação...');
-        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-        await new Promise(r => setTimeout(r, 2000));
-
-        const buttonInfo = await page.evaluate(() => {
-            const btns = Array.from(document.querySelectorAll('button'));
-            const texts = btns.map(b => b.textContent?.trim());
-            const exportBtn = btns.find(b => b.textContent?.toLowerCase().includes('exportar dados'));
-            
-            if (exportBtn) {
-                exportBtn.scrollIntoView();
                 return {
-                    found: true,
-                    text: exportBtn.textContent?.trim(),
-                    id: exportBtn.id,
-                    allButtons: texts
+                    index,
+                    id: input.id || 'sem-id',
+                    name: input.name || 'sem-name',
+                    placeholder,
+                    label: label.trim(),
+                    value: input.value || '',
+                    isVisible,
+                    classes: input.className || '',
                 };
-            }
-            return { found: false, allButtons: texts };
+            }).filter(info => info.isVisible);
         });
 
-        if (!buttonInfo.found) {
-            log('❌ Botão "Exportar Dados" não encontrado.', true);
-            await page.screenshot({ path: path.join(OUTPUT_PATH, 'error_button_not_found.png'), fullPage: true });
-        } else {
-            log(`🎯 A clicar no botão: "${buttonInfo.text}"`);
-            
-            if (buttonInfo.id) {
-                await page.click(`#${buttonInfo.id}`);
-            } else {
-                await page.evaluate((btnText: string) => {
-                    const btns = Array.from(document.querySelectorAll('button'));
-                    const btn = btns.find(b => b.textContent?.trim() === btnText);
-                    (btn as HTMLElement)?.click();
-                }, buttonInfo.text);
-            }
+        log(`🔍 Encontrados ${inputsInfo.length} inputs visíveis`);
 
-            log('📥 Botão premido. O spinner deve aparecer. Monitorizando download (limite 5 min)...');
-            await page.screenshot({ path: path.join(OUTPUT_PATH, 'after_click_debug.png'), fullPage: true });
-            
-            // MONITORIZAÇÃO DE DOWNLOAD
-            let fileFound = false;
-            for (let i = 0; i < 300; i++) { 
-                const files = fs.readdirSync(OUTPUT_PATH);
-                const downloadedFiles = files.filter(f => !f.endsWith('.png') && !f.startsWith('.'));
-                
-                if (downloadedFiles.length > 0) {
-                    log(`🎯 SUCESSO! Ficheiro detetado: ${downloadedFiles[0]}`);
-                    fileFound = true;
-                    break;
-                }
-                
-                if (i % 30 === 0 && i > 0) log(`... ainda aguardando download (${i}s)...`);
-                await new Promise(r => setTimeout(r, 1000));
-            }
+        // Estratégia: Identificar inputs de data (placeholder "dd-mm-aaaa")
+        const dateInputs = inputsInfo.filter((info: any) =>
+            info.placeholder?.toLowerCase().includes('dd-mm-aaaa') ||
+            info.placeholder?.toLowerCase().includes('dd-mm-yyyy')
+        );
 
-            if (!fileFound) {
-                log('⚠️ O download excedeu os 5 minutos de espera.', true);
-            }
+        log(`📅 Encontrados ${dateInputs.length} inputs de data (placeholder dd-mm-aaaa)`);
+
+        if (dateInputs.length < 2) {
+            throw new Error(`❌ Apenas ${dateInputs.length} inputs de data encontrados (esperava pelo menos 2)`);
         }
-        */
+
+        // Assumir que os 2 ÚLTIMOS inputs de data são "Data Submissão (De)" e "Data Submissão (Até)"
+        const submissionFromInput = dateInputs[dateInputs.length - 2];
+        const submissionToInput = dateInputs[dateInputs.length - 1];
+
+        log(`✅ Usando os 2 últimos inputs de data:`);
+        log(`   - Input ${dateInputs.length - 1} (De): index ${submissionFromInput.index}`);
+        log(`   - Input ${dateInputs.length} (Até): index ${submissionToInput.index}`);
+
+        // ============================================
+        // PASSO 3: PREENCHER DATAS
+        // ============================================
+        log('PASSO 3/5: Preenchendo datas...');
+
+        // Função para preencher data em input específico usando a API do Flatpickr
+        async function fillDate(inputIndex: number, dateString: string, label: string) {
+            log(`📅 Preenchendo "${label}" com: ${dateString}`);
+
+            // Converter formato dd-mm-yyyy para Date object
+            const [day, month, year] = dateString.split('-');
+            const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+            log(`   Data: ${dateObj.toISOString()}`);
+
+            // Encontrar o input visível pelo índice e usar setDate() do Flatpickr
+            const result = await page.evaluate((idx: number, targetDate: string) => {
+                try {
+                    // Encontrar o input visível
+                    const allInputs = Array.from(document.querySelectorAll('input[type="text"]'));
+                    const visibleInput = allInputs[idx] as HTMLInputElement;
+
+                    if (!visibleInput) {
+                        return { success: false, error: 'Input visível não encontrado' };
+                    }
+
+                    // Encontrar o input hidden (type="date")
+                    const parentSpan = visibleInput.closest('span.input-text');
+                    if (!parentSpan) {
+                        return { success: false, error: 'Parent span não encontrado' };
+                    }
+
+                    const hiddenInput = parentSpan.querySelector('input[type="date"]') as any;
+                    if (!hiddenInput) {
+                        return { success: false, error: 'Input hidden não encontrado' };
+                    }
+
+                    // CRITICAL: Use Flatpickr's _flatpickr instance if available
+                    if (hiddenInput._flatpickr) {
+                        // Use Flatpickr's setDate() method which triggers all necessary events
+                        hiddenInput._flatpickr.setDate(targetDate, true); // true = trigger onChange
+
+                        return {
+                            success: true,
+                            method: 'flatpickr.setDate',
+                            hiddenValue: hiddenInput.value,
+                            visibleValue: visibleInput.value
+                        };
+                    } else {
+                        // Fallback: Manual setting with all events
+                        const [year, month, day] = targetDate.split('-');
+                        const isoDate = `${year}-${month}-${day}`;
+                        const displayDate = `${day}-${month}-${year}`;
+
+                        // Set values
+                        hiddenInput.value = isoDate;
+                        visibleInput.value = displayDate;
+
+                        // Trigger all necessary events
+                        ['change', 'input'].forEach(eventType => {
+                            const event = new Event(eventType, { bubbles: true });
+                            hiddenInput.dispatchEvent(event);
+                            visibleInput.dispatchEvent(event);
+                        });
+
+                        // Force blur/focus
+                        visibleInput.blur();
+                        visibleInput.focus();
+
+                        return {
+                            success: true,
+                            method: 'manual',
+                            hiddenValue: hiddenInput.value,
+                            visibleValue: visibleInput.value
+                        };
+                    }
+                } catch (error: any) {
+                    return { success: false, error: error.message };
+                }
+            }, inputIndex, `${year}-${month}-${day}`);
+
+            if (!result.success) {
+                log(`❌ Erro: ${result.error}`, true);
+                throw new Error(result.error);
+            }
+
+            log(`✅ Data definida com sucesso (${result.method}):`);
+            log(`   Hidden input: "${result.hiddenValue}"`);
+            log(`   Visible input: "${result.visibleValue}"`);
+
+            await wait(500, 'Aguardar propagação da mudança');
+        }
+
+        // Preencher primeiro input (Data De)
+        await fillDate(submissionFromInput.index, dateFrom, 'Data Submissão (De)');
+        await wait(1000, 'Pausa entre inputs');
+
+        // Preencher segundo input (Data Até)
+        await fillDate(submissionToInput.index, dateTo, 'Data Submissão (Até)');
+        await wait(3000, 'Aguardar sistema processar filtros (ambas as datas)');
+
+        // Tirar screenshot para debug (opcional)
+        const screenshotPath = path.join(outputPath, `debug_filters_${Date.now()}.png`);
+        await page.screenshot({ path: screenshotPath, fullPage: false });
+        log(`📸 Screenshot salvo: ${screenshotPath}`);
+
+        // Verificar se as datas foram realmente aplicadas
+        const finalValues = await page.evaluate((fromIdx: number, toIdx: number) => {
+            const allInputs = Array.from(document.querySelectorAll('input[type="text"]'));
+            const fromInput = allInputs[fromIdx] as HTMLInputElement;
+            const toInput = allInputs[toIdx] as HTMLInputElement;
+
+            // Tentar diferentes métodos para encontrar os inputs hidden
+            let fromHidden: HTMLInputElement | null = null;
+            let toHidden: HTMLInputElement | null = null;
+
+            // Método 1: span.input-text parent
+            const fromParent = fromInput?.closest('span.input-text');
+            const toParent = toInput?.closest('span.input-text');
+            if (fromParent) fromHidden = fromParent.querySelector('input[type="date"]');
+            if (toParent) toHidden = toParent.querySelector('input[type="date"]');
+
+            // Método 2: procurar por ID (se tiver)
+            if (!fromHidden && fromInput?.id) {
+                const possibleId = fromInput.id.replace('Input', '');
+                fromHidden = document.getElementById(possibleId) as HTMLInputElement;
+            }
+            if (!toHidden && toInput?.id) {
+                const possibleId = toInput.id.replace('Input', '');
+                toHidden = document.getElementById(possibleId) as HTMLInputElement;
+            }
+
+            // Método 3: procurar siblings
+            if (!fromHidden && fromInput) {
+                fromHidden = fromInput.parentElement?.querySelector('input[type="date"]') || null;
+            }
+            if (!toHidden && toInput) {
+                toHidden = toInput.parentElement?.querySelector('input[type="date"]') || null;
+            }
+
+            return {
+                fromVisible: fromInput?.value || 'N/A',
+                toVisible: toInput?.value || 'N/A',
+                fromHidden: fromHidden?.value || 'N/A',
+                toHidden: toHidden?.value || 'N/A',
+                fromInputId: fromInput?.id || 'sem-id',
+                toInputId: toInput?.id || 'sem-id',
+            };
+        }, submissionFromInput.index, submissionToInput.index);
+
+        log('🔍 VERIFICAÇÃO FINAL DAS DATAS:');
+        log(`   Data De (visível): ${finalValues.fromVisible} (ID: ${finalValues.fromInputId})`);
+        log(`   Data De (hidden): ${finalValues.fromHidden}`);
+        log(`   Data Até (visível): ${finalValues.toVisible} (ID: ${finalValues.toInputId})`);
+        log(`   Data Até (hidden): ${finalValues.toHidden}`);
+
+        // ============================================
+        // PASSO 4: CLICAR EXPORTAR
+        // ============================================
+        log('PASSO 4/5: Procurando botão "Exportar Dados"...');
+
+        const exportButton = await page.evaluate(() => {
+            const buttons = Array.from(document.querySelectorAll('button, a'));
+            const exportBtn = buttons.find(btn =>
+                btn.textContent?.trim().toLowerCase() === 'exportar dados'
+            );
+            if (exportBtn) {
+                (exportBtn as HTMLElement).scrollIntoView({ block: 'center', behavior: 'smooth' });
+                return true;
+            }
+            return false;
+        });
+
+        if (!exportButton) {
+            throw new Error('❌ Botão "Exportar Dados" não encontrado');
+        }
+
+        log('✅ Botão encontrado!');
+        await wait(1000, 'Scroll para botão');
+
+        log('🖱️  A clicar em "Exportar Dados"...');
+        await page.evaluate(() => {
+            const buttons = Array.from(document.querySelectorAll('button, a'));
+            const exportBtn = buttons.find(btn =>
+                btn.textContent?.trim().toLowerCase() === 'exportar dados'
+            ) as HTMLElement;
+            exportBtn?.click();
+        });
+
+        await wait(2000, 'Click executado');
+
+        // ============================================
+        // PASSO 5: AGUARDAR DOWNLOAD
+        // ============================================
+        log('PASSO 5/5: Aguardando download do ficheiro...');
+
+        // Limpar ficheiros Excel antigos ANTES de esperar pelo novo
+        log('🧹 Removendo ficheiros Excel antigos...');
+        const existingFiles = fs.readdirSync(outputPath);
+        const oldExcelFiles = existingFiles.filter(f => f.endsWith('.xlsx') && !f.startsWith('~'));
+        oldExcelFiles.forEach(file => {
+            const oldPath = path.join(outputPath, file);
+            fs.unlinkSync(oldPath);
+            log(`   Removido: ${file}`);
+        });
+
+        // Esperar por ficheiro Excel NOVO (máximo 10 minutos = 600s)
+        let downloadedFile = '';
+        let fileFound = false;
+
+        for (let i = 0; i < 600; i++) {
+            const files = fs.readdirSync(outputPath);
+            const excelFile = files.find(f => f.endsWith('.xlsx') && !f.startsWith('~'));
+
+            if (excelFile) {
+                downloadedFile = excelFile;
+                fileFound = true;
+                break;
+            }
+
+            if (i % 10 === 0 && i > 0) {
+                log(`⏳ Aguardando download... ${i}s`);
+            }
+
+            await new Promise(r => setTimeout(r, 1000));
+        }
+
+        if (fileFound) {
+            const filePath = path.join(outputPath, downloadedFile);
+            const stats = fs.statSync(filePath);
+            const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
+
+            log('═══════════════════════════════════════════════');
+            log('✅ SCRAPPER CONCLUÍDO COM SUCESSO!');
+            log(`📁 Ficheiro: ${downloadedFile}`);
+            log(`📊 Tamanho: ${fileSizeMB} MB`);
+            log(`📂 Localização: ${outputPath}`);
+            log('═══════════════════════════════════════════════');
+
+            await wait(1000, 'Finalização');
+            await browser.close();
+
+            return { success: true, filePath };
+        } else {
+            log('❌ Download não completou em 10 minutos (600 segundos)', true);
+            await browser.close();
+
+            return { success: false, error: 'Timeout no download (10 minutos)' };
+        }
 
     } catch (error) {
-        log(`🔴 Erro fatal: ${error}`, true);
-        if (page) {
-            await page.screenshot({ path: path.join(OUTPUT_PATH, 'crash.png') });
-        }
-    } finally {
+        log(`🔴 ERRO: ${error}`, true);
         await browser.close();
-        log('🏁 Processo terminado.');
+
+        return { success: false, error: String(error) };
     }
 }
 
-exportData();
+// ============================================
+// CLI EXECUTION (backward compatibility)
+// ============================================
+if (import.meta.url === `file://${process.argv[1]}`) {
+    const args = process.argv.slice(2);
+    const fromArg = args.find(a => a.startsWith('--from='))?.split('=')[1];
+    const toArg = args.find(a => a.startsWith('--to='))?.split('=')[1];
+    const headlessArg = args.includes('--headless');
+
+    const today = formatDate(new Date());
+
+    console.log('\n🤖 SCRAPPER DE BACKOFFICE\n');
+    console.log('Executando scrapper...\n');
+
+    runScrapper({
+        dateFrom: fromArg || today,
+        dateTo: toArg || today,
+        headless: headlessArg
+    }).then(result => {
+        if (result.success) {
+            console.log('\n✅ Scrapper bem-sucedido!');
+            console.log(`📁 ${result.filePath}`);
+            process.exit(0);
+        } else {
+            console.error('\n❌ Scrapper falhou:', result.error);
+            process.exit(1);
+        }
+    });
+}

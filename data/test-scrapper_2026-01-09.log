@@ -1,0 +1,365 @@
+[5:53:03 PM] ═══════════════════════════════════════════════
+[5:53:03 PM] 🚀 TESTE DO SCRAPPER - MODO INTERATIVO
+[5:53:03 PM] 📅 Período: 01-01-2026 até 09-01-2026
+[5:53:03 PM] ═══════════════════════════════════════════════
+[5:53:03 PM] 🌐 A lançar browser (visível para debugging)...
+[5:53:05 PM] PASSO 1/5: Navegando para página de login...
+[5:53:08 PM] ⏳ Aguardando 1000ms: Página carregada
+[5:53:09 PM] 📸 Screenshot: 1-login-page.png
+[5:53:09 PM] 🔑 Preenchendo credenciais...
+[5:53:19 PM] ⏳ Aguardando 500ms: Username preenchido
+[5:53:23 PM] ⏳ Aguardando 500ms: Password preenchida
+[5:53:23 PM] 📸 Screenshot: 2-credentials-filled.png
+[5:53:23 PM] 🔐 A fazer login...
+[5:53:25 PM] ⏳ Aguardando 2000ms: Login concluído
+[5:53:27 PM] 📸 Screenshot: 3-after-login.png
+[5:53:27 PM] PASSO 2/5: Procurando inputs de data...
+[5:53:28 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[5:53:29 PM] 🔍 Encontrados 5 inputs visíveis:
+[5:53:29 PM]   1. ID: sem-id, Label: "", Placeholder: "Todos os estados"
+[5:53:29 PM]   2. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:53:29 PM]   3. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:53:29 PM]   4. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:53:29 PM]   5. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:53:29 PM] 🔴 ERRO: Error: ❌ Apenas 0 inputs de submissão encontrados (esperava 2)
+[5:53:29 PM] 📸 Screenshot de erro salvo: error.png
+[5:56:14 PM] ═══════════════════════════════════════════════
+[5:56:14 PM] 🚀 TESTE DO SCRAPPER - MODO INTERATIVO
+[5:56:14 PM] 📅 Período: 01-01-2026 até 09-01-2026
+[5:56:14 PM] ═══════════════════════════════════════════════
+[5:56:14 PM] 🌐 A lançar browser (visível para debugging)...
+[5:56:16 PM] PASSO 1/5: Navegando para página de login...
+[5:56:19 PM] ⏳ Aguardando 1000ms: Página carregada
+[5:56:20 PM] 📸 Screenshot: 1-login-page.png
+[5:56:20 PM] 🔑 Preenchendo credenciais...
+[5:56:30 PM] ⏳ Aguardando 500ms: Username preenchido
+[5:56:33 PM] ⏳ Aguardando 500ms: Password preenchida
+[5:56:34 PM] 📸 Screenshot: 2-credentials-filled.png
+[5:56:34 PM] 🔐 A fazer login...
+[5:56:36 PM] ⏳ Aguardando 2000ms: Login concluído
+[5:56:38 PM] 📸 Screenshot: 3-after-login.png
+[5:56:38 PM] PASSO 2/5: Procurando inputs de data...
+[5:56:39 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[5:56:40 PM] 🔍 Encontrados 5 inputs visíveis:
+[5:56:40 PM]   1. ID: sem-id, Label: "", Placeholder: "Todos os estados"
+[5:56:40 PM]   2. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:56:40 PM]   3. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:56:40 PM]   4. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:56:40 PM]   5. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:56:40 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[5:56:40 PM] ✅ Usando os 2 últimos inputs de data:
+[5:56:40 PM]    - Input 3 (De): index 3
+[5:56:40 PM]    - Input 4 (Até): index 4
+[5:56:40 PM] PASSO 3/5: Preenchendo datas...
+[5:56:40 PM] 📅 Preenchendo "Data Submissão (De)" com: 01-01-2026
+[5:56:40 PM] ⏳ Aguardando 500ms: Scroll para input
+[5:56:40 PM] 🔴 ERRO: Error: No element found for selector: input[type="text"]:nth-of-type(4)
+[5:56:41 PM] 📸 Screenshot de erro salvo: error.png
+[5:58:39 PM] ═══════════════════════════════════════════════
+[5:58:39 PM] 🚀 TESTE DO SCRAPPER - MODO INTERATIVO
+[5:58:39 PM] 📅 Período: 01-01-2026 até 09-01-2026
+[5:58:39 PM] ═══════════════════════════════════════════════
+[5:58:39 PM] 🌐 A lançar browser (visível para debugging)...
+[5:58:41 PM] PASSO 1/5: Navegando para página de login...
+[5:58:44 PM] 🔑 Preenchendo credenciais...
+[5:58:55 PM] 🔐 A fazer login...
+[5:58:56 PM] ⏳ Aguardando 1000ms: Login concluído
+[5:58:57 PM] 📸 Screenshot: 3-after-login.png
+[5:58:57 PM] PASSO 2/5: Procurando inputs de data...
+[5:58:58 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[5:58:59 PM] 🔍 Encontrados 5 inputs visíveis:
+[5:58:59 PM]   1. ID: sem-id, Label: "", Placeholder: "Todos os estados"
+[5:58:59 PM]   2. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:58:59 PM]   3. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:58:59 PM]   4. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:58:59 PM]   5. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[5:58:59 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[5:58:59 PM] ✅ Usando os 2 últimos inputs de data:
+[5:58:59 PM]    - Input 3 (De): index 3
+[5:58:59 PM]    - Input 4 (Até): index 4
+[5:58:59 PM] PASSO 3/5: Preenchendo datas...
+[5:58:59 PM] 📅 Preenchendo "Data Submissão (De)" com: 01-01-2026
+[5:58:59 PM] ⏳ Aguardando 300ms: Scroll para input
+[5:59:00 PM] ⏳ Aguardando 200ms: Input focado
+[5:59:01 PM] ⏳ Aguardando 100ms: Texto selecionado
+[5:59:02 PM] ⏳ Aguardando 200ms: Campo limpo
+[5:59:02 PM] ⌨️  Digitando: 01-01-2026
+[5:59:05 PM] ⏳ Aguardando 400ms: Data digitada
+[5:59:05 PM] ⏳ Aguardando 500ms: Tab pressionado
+[5:59:06 PM] ✅ Valor atual do campo: "09-11-2025"
+[5:59:06 PM] 📸 Screenshot: 4-date-Data-Submissão-(De).png
+[5:59:06 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[5:59:07 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[5:59:07 PM] ⏳ Aguardando 300ms: Scroll para input
+[5:59:08 PM] ⏳ Aguardando 200ms: Input focado
+[5:59:09 PM] ⏳ Aguardando 100ms: Texto selecionado
+[5:59:10 PM] ⏳ Aguardando 200ms: Campo limpo
+[5:59:10 PM] ⌨️  Digitando: 09-01-2026
+[5:59:13 PM] ⏳ Aguardando 400ms: Data digitada
+[5:59:13 PM] ⏳ Aguardando 500ms: Tab pressionado
+[5:59:14 PM] ✅ Valor atual do campo: ""
+[5:59:14 PM] 📸 Screenshot: 4-date-Data-Submissão-(Até).png
+[5:59:14 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[5:59:16 PM] 📸 Screenshot: 5-dates-completed.png
+[5:59:16 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[5:59:16 PM] ✅ Botão encontrado!
+[5:59:16 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[5:59:17 PM] 📸 Screenshot: 6-before-export.png
+[5:59:17 PM] 🖱️  A clicar em "Exportar Dados"...
+[5:59:18 PM] ⏳ Aguardando 2000ms: Click executado
+[5:59:20 PM] PASSO 5/5: Aguardando download do ficheiro...
+[5:59:20 PM] ═══════════════════════════════════════════════
+[5:59:20 PM] ✅ TESTE CONCLUÍDO COM SUCESSO!
+[5:59:20 PM] 📁 Ficheiro: service_request_data.xlsx
+[5:59:20 PM] 📊 Tamanho: 0.03 MB
+[5:59:20 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[5:59:20 PM] ═══════════════════════════════════════════════
+[5:59:20 PM] ⏳ Aguardando 2000ms: Visualização final
+[6:02:19 PM] ═══════════════════════════════════════════════
+[6:02:19 PM] 🚀 TESTE DO SCRAPPER - MODO INTERATIVO
+[6:02:19 PM] 📅 Período: 01-01-2026 até 09-01-2026
+[6:02:19 PM] ═══════════════════════════════════════════════
+[6:02:19 PM] 🌐 A lançar browser (visível para debugging)...
+[6:02:21 PM] PASSO 1/5: Navegando para página de login...
+[6:02:24 PM] 🔑 Preenchendo credenciais...
+[6:02:34 PM] 🔐 A fazer login...
+[6:02:36 PM] ⏳ Aguardando 1000ms: Login concluído
+[6:02:37 PM] 📸 Screenshot: 3-after-login.png
+[6:02:37 PM] PASSO 2/5: Procurando inputs de data...
+[6:02:38 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[6:02:39 PM] 🔍 Encontrados 5 inputs visíveis:
+[6:02:39 PM]   1. ID: sem-id, Label: "", Placeholder: "Todos os estados"
+[6:02:39 PM]   2. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:02:39 PM]   3. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:02:39 PM]   4. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:02:39 PM]   5. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:02:39 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[6:02:39 PM] ✅ Usando os 2 últimos inputs de data:
+[6:02:39 PM]    - Input 3 (De): index 3
+[6:02:39 PM]    - Input 4 (Até): index 4
+[6:02:39 PM] PASSO 3/5: Preenchendo datas...
+[6:02:39 PM] 📅 Preenchendo "Data Submissão (De)" com: 01-01-2026
+[6:02:39 PM]    Convertendo 01-01-2026 → 2026-01-01 (ISO)
+[6:02:39 PM] ✅ Data definida com sucesso:
+[6:02:39 PM]    Hidden input (ISO): "2026-01-01"
+[6:02:39 PM]    Visible input (PT): "01-01-2026"
+[6:02:39 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[6:02:40 PM] 📸 Screenshot: 4-date-Data-Submissão-(De).png
+[6:02:40 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[6:02:41 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[6:02:41 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[6:02:41 PM] ✅ Data definida com sucesso:
+[6:02:41 PM]    Hidden input (ISO): "2026-01-09"
+[6:02:41 PM]    Visible input (PT): "09-01-2026"
+[6:02:41 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[6:02:42 PM] 📸 Screenshot: 4-date-Data-Submissão-(Até).png
+[6:02:42 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[6:02:44 PM] 📸 Screenshot: 5-dates-completed.png
+[6:02:44 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[6:02:44 PM] ✅ Botão encontrado!
+[6:02:44 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[6:02:45 PM] 📸 Screenshot: 6-before-export.png
+[6:02:45 PM] 🖱️  A clicar em "Exportar Dados"...
+[6:02:46 PM] ⏳ Aguardando 2000ms: Click executado
+[6:02:48 PM] PASSO 5/5: Aguardando download do ficheiro...
+[6:02:48 PM] ═══════════════════════════════════════════════
+[6:02:48 PM] ✅ TESTE CONCLUÍDO COM SUCESSO!
+[6:02:48 PM] 📁 Ficheiro: service_request_data.xlsx
+[6:02:48 PM] 📊 Tamanho: 0.03 MB
+[6:02:48 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[6:02:48 PM] ═══════════════════════════════════════════════
+[6:02:48 PM] ⏳ Aguardando 2000ms: Visualização final
+[6:06:49 PM] ═══════════════════════════════════════════════
+[6:06:49 PM] 🚀 TESTE DO SCRAPPER - MODO INTERATIVO
+[6:06:49 PM] 📅 Período: 01-01-2026 até 09-01-2026
+[6:06:49 PM] ═══════════════════════════════════════════════
+[6:06:49 PM] 🌐 A lançar browser (visível para debugging)...
+[6:06:50 PM] PASSO 1/5: Navegando para página de login...
+[6:06:53 PM] 🔑 Preenchendo credenciais...
+[6:07:04 PM] 🔐 A fazer login...
+[6:07:06 PM] ⏳ Aguardando 1000ms: Login concluído
+[6:07:07 PM] 📸 Screenshot: 3-after-login.png
+[6:07:07 PM] PASSO 2/5: Procurando inputs de data...
+[6:07:08 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[6:07:09 PM] 🔍 Encontrados 5 inputs visíveis:
+[6:07:09 PM]   1. ID: sem-id, Label: "", Placeholder: "Todos os estados"
+[6:07:09 PM]   2. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:07:09 PM]   3. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:07:09 PM]   4. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:07:09 PM]   5. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:07:09 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[6:07:09 PM] ✅ Usando os 2 últimos inputs de data:
+[6:07:09 PM]    - Input 3 (De): index 3
+[6:07:09 PM]    - Input 4 (Até): index 4
+[6:07:09 PM] PASSO 3/5: Preenchendo datas...
+[6:07:09 PM] 📅 Preenchendo "Data Submissão (De)" com: 01-01-2026
+[6:07:09 PM]    Convertendo 01-01-2026 → 2026-01-01 (ISO)
+[6:07:09 PM] ✅ Data definida com sucesso:
+[6:07:09 PM]    Hidden input (ISO): "2026-01-01"
+[6:07:09 PM]    Visible input (PT): "01-01-2026"
+[6:07:09 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[6:07:10 PM] 📸 Screenshot: 4-date-Data-Submissão-(De).png
+[6:07:10 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[6:07:11 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[6:07:11 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[6:07:11 PM] ✅ Data definida com sucesso:
+[6:07:11 PM]    Hidden input (ISO): "2026-01-09"
+[6:07:11 PM]    Visible input (PT): "09-01-2026"
+[6:07:11 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[6:07:11 PM] 📸 Screenshot: 4-date-Data-Submissão-(Até).png
+[6:07:11 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[6:07:14 PM] 📸 Screenshot: 5-dates-completed.png
+[6:07:14 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[6:07:14 PM] ✅ Botão encontrado!
+[6:07:14 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[6:07:15 PM] 📸 Screenshot: 6-before-export.png
+[6:07:15 PM] 🖱️  A clicar em "Exportar Dados"...
+[6:07:15 PM] ⏳ Aguardando 2000ms: Click executado
+[6:07:17 PM] PASSO 5/5: Aguardando download do ficheiro...
+[6:07:17 PM] ═══════════════════════════════════════════════
+[6:07:17 PM] ✅ TESTE CONCLUÍDO COM SUCESSO!
+[6:07:17 PM] 📁 Ficheiro: service_request_data.xlsx
+[6:07:17 PM] 📊 Tamanho: 0.03 MB
+[6:07:17 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[6:07:17 PM] ═══════════════════════════════════════════════
+[6:07:17 PM] ⏳ Aguardando 2000ms: Visualização final
+[6:12:00 PM] ═══════════════════════════════════════════════
+[6:12:00 PM] 🚀 TESTE DO SCRAPPER - MODO INTERATIVO
+[6:12:00 PM] 📅 Período: 01-01-2026 até 09-01-2026
+[6:12:00 PM] ═══════════════════════════════════════════════
+[6:12:00 PM] 🌐 A lançar browser (visível para debugging)...
+[6:12:01 PM] PASSO 1/5: Navegando para página de login...
+[6:12:04 PM] 🔑 Preenchendo credenciais...
+[6:12:15 PM] 🔐 A fazer login...
+[6:12:17 PM] PASSO 2/5: Procurando inputs de data...
+[6:12:17 PM] 🔍 Encontrados 5 inputs visíveis:
+[6:12:17 PM]   1. ID: sem-id, Label: "", Placeholder: "Todos os estados"
+[6:12:17 PM]   2. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:12:17 PM]   3. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:12:17 PM]   4. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:12:17 PM]   5. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:12:17 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[6:12:17 PM] ✅ Usando os 2 últimos inputs de data:
+[6:12:17 PM]    - Input 3 (De): index 3
+[6:12:17 PM]    - Input 4 (Até): index 4
+[6:12:17 PM] PASSO 3/5: Preenchendo datas...
+[6:12:17 PM] 📅 Preenchendo "Data Submissão (De)" com: 01-01-2026
+[6:12:17 PM]    Convertendo 01-01-2026 → 2026-01-01 (ISO)
+[6:12:18 PM] ✅ Data definida com sucesso:
+[6:12:18 PM]    Hidden input (ISO): "2026-01-01"
+[6:12:18 PM]    Visible input (PT): "01-01-2026"
+[6:12:18 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[6:12:18 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[6:12:18 PM] ✅ Data definida com sucesso:
+[6:12:18 PM]    Hidden input (ISO): "2026-01-09"
+[6:12:18 PM]    Visible input (PT): "09-01-2026"
+[6:12:18 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[6:12:18 PM] ✅ Botão encontrado!
+[6:12:18 PM] 🖱️  A clicar em "Exportar Dados"...
+[6:12:18 PM] PASSO 5/5: Aguardando download do ficheiro...
+[6:12:23 PM] ⏳ Aguardando download... 5s
+[6:12:28 PM] ⏳ Aguardando download... 10s
+[6:12:33 PM] ⏳ Aguardando download... 15s
+[6:12:38 PM] ⏳ Aguardando download... 20s
+[6:12:43 PM] ⏳ Aguardando download... 25s
+[6:12:48 PM] ⏳ Aguardando download... 30s
+[6:12:53 PM] ⏳ Aguardando download... 35s
+[6:12:58 PM] ⏳ Aguardando download... 40s
+[6:13:03 PM] ⏳ Aguardando download... 45s
+[6:13:08 PM] ⏳ Aguardando download... 50s
+[6:13:13 PM] ⏳ Aguardando download... 55s
+[6:13:18 PM] ❌ Download não completou em 60 segundos
+[6:14:43 PM] ═══════════════════════════════════════════════
+[6:14:43 PM] 🚀 TESTE DO SCRAPPER - MODO INTERATIVO
+[6:14:43 PM] 📅 Período: 09-01-2026 até 09-01-2026
+[6:14:43 PM] ═══════════════════════════════════════════════
+[6:14:43 PM] 🌐 A lançar browser (visível para debugging)...
+[6:14:44 PM] PASSO 1/5: Navegando para página de login...
+[6:14:47 PM] 🔑 Preenchendo credenciais...
+[6:14:58 PM] 🔐 A fazer login...
+[6:14:59 PM] PASSO 2/5: Procurando inputs de data...
+[6:15:00 PM] 🔍 Encontrados 5 inputs visíveis:
+[6:15:00 PM]   1. ID: sem-id, Label: "", Placeholder: "Todos os estados"
+[6:15:00 PM]   2. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:15:00 PM]   3. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:15:00 PM]   4. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:15:00 PM]   5. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:15:00 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[6:15:00 PM] ✅ Usando os 2 últimos inputs de data:
+[6:15:00 PM]    - Input 3 (De): index 3
+[6:15:00 PM]    - Input 4 (Até): index 4
+[6:15:00 PM] PASSO 3/5: Preenchendo datas...
+[6:15:00 PM] 📅 Preenchendo "Data Submissão (De)" com: 09-01-2026
+[6:15:00 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[6:15:00 PM] ✅ Data definida com sucesso:
+[6:15:00 PM]    Hidden input (ISO): "2026-01-09"
+[6:15:00 PM]    Visible input (PT): "09-01-2026"
+[6:15:00 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[6:15:00 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[6:15:01 PM] ✅ Data definida com sucesso:
+[6:15:01 PM]    Hidden input (ISO): "2026-01-09"
+[6:15:01 PM]    Visible input (PT): "09-01-2026"
+[6:15:01 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[6:15:01 PM] ✅ Botão encontrado!
+[6:15:01 PM] 🖱️  A clicar em "Exportar Dados"...
+[6:15:01 PM] PASSO 5/5: Aguardando download do ficheiro...
+[6:15:06 PM] ⏳ Aguardando download... 5s
+[6:15:11 PM] ⏳ Aguardando download... 10s
+[6:15:16 PM] ⏳ Aguardando download... 15s
+[6:15:21 PM] ⏳ Aguardando download... 20s
+[6:15:26 PM] ⏳ Aguardando download... 25s
+[6:15:31 PM] ⏳ Aguardando download... 30s
+[6:15:36 PM] ⏳ Aguardando download... 35s
+[6:15:41 PM] ⏳ Aguardando download... 40s
+[6:15:46 PM] ⏳ Aguardando download... 45s
+[6:15:51 PM] ⏳ Aguardando download... 50s
+[6:15:56 PM] ⏳ Aguardando download... 55s
+[6:16:01 PM] ❌ Download não completou em 60 segundos
+[6:16:49 PM] ═══════════════════════════════════════════════
+[6:16:49 PM] 🚀 TESTE DO SCRAPPER - MODO INTERATIVO
+[6:16:49 PM] 📅 Período: 09-01-2026 até 09-01-2026
+[6:16:49 PM] ═══════════════════════════════════════════════
+[6:16:49 PM] 🌐 A lançar browser (visível para debugging)...
+[6:16:51 PM] PASSO 1/5: Navegando para página de login...
+[6:16:54 PM] 🔑 Preenchendo credenciais...
+[6:17:04 PM] 🔐 A fazer login...
+[6:17:06 PM] PASSO 2/5: Procurando inputs de data...
+[6:17:07 PM] 🔍 Encontrados 5 inputs visíveis:
+[6:17:07 PM]   1. ID: sem-id, Label: "", Placeholder: "Todos os estados"
+[6:17:07 PM]   2. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:17:07 PM]   3. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:17:07 PM]   4. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:17:07 PM]   5. ID: sem-id, Label: "", Placeholder: "dd-mm-aaaa"
+[6:17:07 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[6:17:07 PM] ✅ Usando os 2 últimos inputs de data:
+[6:17:07 PM]    - Input 3 (De): index 3
+[6:17:07 PM]    - Input 4 (Até): index 4
+[6:17:07 PM] PASSO 3/5: Preenchendo datas...
+[6:17:07 PM] 📅 Preenchendo "Data Submissão (De)" com: 09-01-2026
+[6:17:07 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[6:17:07 PM] ✅ Data definida com sucesso:
+[6:17:07 PM]    Hidden input (ISO): "2026-01-09"
+[6:17:07 PM]    Visible input (PT): "09-01-2026"
+[6:17:07 PM] ⏳ Aguardando 1000ms: Aguardar OutSystems processar primeira data
+[6:17:08 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[6:17:08 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[6:17:08 PM] ✅ Data definida com sucesso:
+[6:17:08 PM]    Hidden input (ISO): "2026-01-09"
+[6:17:08 PM]    Visible input (PT): "09-01-2026"
+[6:17:08 PM] ⏳ Aguardando 2000ms: Aguardar OutSystems processar e aplicar filtros
+[6:17:10 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[6:17:10 PM] ✅ Botão encontrado!
+[6:17:11 PM] 🖱️  A clicar em "Exportar Dados"...
+[6:17:11 PM] PASSO 5/5: Aguardando download do ficheiro...
+[6:17:16 PM] ⏳ Aguardando download... 5s
+[6:17:21 PM] ⏳ Aguardando download... 10s
+[6:17:26 PM] ⏳ Aguardando download... 15s
+[6:17:31 PM] ⏳ Aguardando download... 20s
+[6:17:36 PM] ⏳ Aguardando download... 25s
+[6:17:41 PM] ⏳ Aguardando download... 30s
+[6:17:46 PM] ⏳ Aguardando download... 35s
+[6:17:51 PM] ⏳ Aguardando download... 40s
+[6:17:56 PM] ⏳ Aguardando download... 45s
+[6:18:01 PM] ⏳ Aguardando download... 50s
+[6:18:06 PM] ⏳ Aguardando download... 55s
+[6:18:11 PM] ❌ Download não completou em 60 segundos

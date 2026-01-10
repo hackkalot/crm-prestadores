@@ -1,0 +1,1263 @@
+{
+  "phase": "list_page",
+  "date": "09-01-2026",
+  "capturedAt": "2026-01-09T19:24:31.504Z",
+  "totalAPICalls": 7,
+  "apis": [
+    {
+      "url": "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/screenservices/FXBO_ServiceRequest_CW/WARN/WARN_ServiceRequest_WarningRequestLists/DataActionAlmostPaymentExpired",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json; charset=UTF-8",
+        "accept": "application/json",
+        "x-csrftoken": "lQUqutwxix4b3WWMpbXCzPDCO9U="
+      },
+      "payload": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "j9UxJ8oXUS5qBlbTiZVAnQ"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {}
+        }
+      },
+      "response": {
+        "versionInfo": {
+          "hasModuleVersionChanged": false,
+          "hasApiVersionChanged": false
+        },
+        "data": {
+          "ServiceRequests": {
+            "List": [],
+            "EmptyListItem": {
+              "UserName": "",
+              "GatewayPaymentDetail": {
+                "Id": "0",
+                "PaymentIntentId": "",
+                "Amount": "0.0",
+                "AmountCaptured": "0.0",
+                "AmountToBeRefunded": "0.0",
+                "PaymentStatusId": 0,
+                "PaymentMethodDetailId": "0",
+                "PaymentMethodTypeId": "",
+                "PaymentGatewayId": "",
+                "CreatedBy": 0,
+                "CreatedAt": "2026-01-09T19:24:18Z",
+                "UpdatedBy": 0,
+                "UpdatedAt": "1900-01-01T00:00:00",
+                "EntityId": "",
+                "EntityType": ""
+              },
+              "ServiceRequestAddress": {
+                "ServiceRequestId": "0",
+                "UserAdressId": "0",
+                "CountyId": "",
+                "StreetName": "",
+                "StreetAndFlatNumber": "",
+                "FlatNum": "",
+                "Location": "",
+                "ZipCode": "",
+                "FormattedAddress": "",
+                "AddressName": "",
+                "Latitude": "0.0",
+                "Longitude": "0.0",
+                "Country": "",
+                "ReferencePoint": "",
+                "AddressTypologyId": 0
+              },
+              "ServiceRequestStatus": {
+                "Id": "0",
+                "Order": 0,
+                "Name": "",
+                "Code": "",
+                "TimelineDescription": "",
+                "LabelDescription": "",
+                "Is_Active": false,
+                "IsOpenCost": false,
+                "StyleClass": ""
+              },
+              "ServiceRequest": {
+                "Id": "0",
+                "ServicePublicId": "",
+                "CategoryId": "0",
+                "ServiceId": "0",
+                "CustomerId": 0,
+                "ProviderId": 0,
+                "Code": "",
+                "ExternalSystemId": "",
+                "ServiceRequestStatusId": "0",
+                "AdditionalInformation": "",
+                "SchedullingDateTime": "1900-01-01T00:00:00",
+                "SchedulingIntervalTime": "00:00:00",
+                "DeliveryDatetime": "1900-01-01T00:00:00",
+                "CustomerName": "",
+                "CustomerPhoneNumber": "",
+                "CustomerPhoneCountryCode": "",
+                "EstimationId": "0",
+                "ServiceCost": "0.0",
+                "ChannelId": 0,
+                "PromocodeId": "0",
+                "OriginalPublicId": "",
+                "CancelInfoMessage": "",
+                "ReceiverPhoneNumber": "",
+                "ReceiverNumCountryCode": "",
+                "IsNewPaymentFlow": false,
+                "TimezoneSystemIdentifier": "",
+                "TimezoneSchOffset": 0,
+                "TimezoneSchDeliveryOffset": 0,
+                "IsRecurrency": false,
+                "IsTimeDarkNotificationSent": false,
+                "UserPromocodeUsageId": "0",
+                "HubSpot_DealId": "",
+                "StatusUpdatedAt": "1900-01-01T00:00:00",
+                "StatusUpdatedBy": 0,
+                "CreatedAt": "1900-01-01T00:00:00",
+                "UpdatedAt": "1900-01-01T00:00:00",
+                "CreatedBy": 0,
+                "UpdatedBy": 0
+              },
+              "ServiceRequestPayment": {
+                "ServiceRequestId": "0",
+                "UserCardDetailId": "0",
+                "UserWalletTransactionId": "0",
+                "AmountWallet": "0.0",
+                "AmountPaymentMethod": "0.0",
+                "IsPaymentHold": false,
+                "IsPaymentWithWallet": false,
+                "IsFullySupportedByWallet": false,
+                "CurrentPaymentHoldAttempts": 0,
+                "PaymentHoldAttempts": 0,
+                "PaymentHoldDateTime": "1900-01-01T00:00:00"
+              },
+              "Service": {
+                "InternalId": "0",
+                "PublicId": "",
+                "CategoryId": "0",
+                "CategoryExternalId": "",
+                "IsMasterData": false,
+                "CreatedAtDateTime": "1900-01-01T00:00:00",
+                "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                "ArchivedAt": "1900-01-01T00:00:00",
+                "CreatedByUser": 0,
+                "UpdatedByUser": 0,
+                "ArchivedBy": 0,
+                "Code": "",
+                "BaseFare": "0.0",
+                "DocumentRequired": false,
+                "SearchTags": "",
+                "Service": "",
+                "ServiceCount": "0",
+                "Activated": false,
+                "IsArchived": false,
+                "AllowsRecurrency": false,
+                "Type": "",
+                "TaxRateId": "",
+                "Service_ERP_Id": "0",
+                "Client_ERP_Id": "0"
+              }
+            }
+          },
+          "Payment_Hold_Time": 114
+        }
+      },
+      "statusCode": 200,
+      "timestamp": "2026-01-09T19:24:18.278Z"
+    },
+    {
+      "url": "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/screenservices/FXBO_ServiceRequest_CW/WARN/WARN_ServiceRequest_WarningRequestLists/DataActionAlmostExpiredWithoutProvider",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json; charset=UTF-8",
+        "accept": "application/json",
+        "x-csrftoken": "lQUqutwxix4b3WWMpbXCzPDCO9U="
+      },
+      "payload": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "ia1NBnt0ldZ9QnM94wcjcA"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {}
+        }
+      },
+      "response": {
+        "versionInfo": {
+          "hasModuleVersionChanged": false,
+          "hasApiVersionChanged": false
+        },
+        "data": {
+          "ServiceRequests": {
+            "List": [],
+            "EmptyListItem": {
+              "UserName": "",
+              "GatewayPaymentDetail": {
+                "Id": "0",
+                "PaymentIntentId": "",
+                "Amount": "0.0",
+                "AmountCaptured": "0.0",
+                "AmountToBeRefunded": "0.0",
+                "PaymentStatusId": 0,
+                "PaymentMethodDetailId": "0",
+                "PaymentMethodTypeId": "",
+                "PaymentGatewayId": "",
+                "CreatedBy": 0,
+                "CreatedAt": "2026-01-09T19:24:18Z",
+                "UpdatedBy": 0,
+                "UpdatedAt": "1900-01-01T00:00:00",
+                "EntityId": "",
+                "EntityType": ""
+              },
+              "ServiceRequestAddress": {
+                "ServiceRequestId": "0",
+                "UserAdressId": "0",
+                "CountyId": "",
+                "StreetName": "",
+                "StreetAndFlatNumber": "",
+                "FlatNum": "",
+                "Location": "",
+                "ZipCode": "",
+                "FormattedAddress": "",
+                "AddressName": "",
+                "Latitude": "0.0",
+                "Longitude": "0.0",
+                "Country": "",
+                "ReferencePoint": "",
+                "AddressTypologyId": 0
+              },
+              "ServiceRequestStatus": {
+                "Id": "0",
+                "Order": 0,
+                "Name": "",
+                "Code": "",
+                "TimelineDescription": "",
+                "LabelDescription": "",
+                "Is_Active": false,
+                "IsOpenCost": false,
+                "StyleClass": ""
+              },
+              "ServiceRequest": {
+                "Id": "0",
+                "ServicePublicId": "",
+                "CategoryId": "0",
+                "ServiceId": "0",
+                "CustomerId": 0,
+                "ProviderId": 0,
+                "Code": "",
+                "ExternalSystemId": "",
+                "ServiceRequestStatusId": "0",
+                "AdditionalInformation": "",
+                "SchedullingDateTime": "1900-01-01T00:00:00",
+                "SchedulingIntervalTime": "00:00:00",
+                "DeliveryDatetime": "1900-01-01T00:00:00",
+                "CustomerName": "",
+                "CustomerPhoneNumber": "",
+                "CustomerPhoneCountryCode": "",
+                "EstimationId": "0",
+                "ServiceCost": "0.0",
+                "ChannelId": 0,
+                "PromocodeId": "0",
+                "OriginalPublicId": "",
+                "CancelInfoMessage": "",
+                "ReceiverPhoneNumber": "",
+                "ReceiverNumCountryCode": "",
+                "IsNewPaymentFlow": false,
+                "TimezoneSystemIdentifier": "",
+                "TimezoneSchOffset": 0,
+                "TimezoneSchDeliveryOffset": 0,
+                "IsRecurrency": false,
+                "IsTimeDarkNotificationSent": false,
+                "UserPromocodeUsageId": "0",
+                "HubSpot_DealId": "",
+                "StatusUpdatedAt": "1900-01-01T00:00:00",
+                "StatusUpdatedBy": 0,
+                "CreatedAt": "1900-01-01T00:00:00",
+                "UpdatedAt": "1900-01-01T00:00:00",
+                "CreatedBy": 0,
+                "UpdatedBy": 0
+              },
+              "ServiceRequestPayment": {
+                "ServiceRequestId": "0",
+                "UserCardDetailId": "0",
+                "UserWalletTransactionId": "0",
+                "AmountWallet": "0.0",
+                "AmountPaymentMethod": "0.0",
+                "IsPaymentHold": false,
+                "IsPaymentWithWallet": false,
+                "IsFullySupportedByWallet": false,
+                "CurrentPaymentHoldAttempts": 0,
+                "PaymentHoldAttempts": 0,
+                "PaymentHoldDateTime": "1900-01-01T00:00:00"
+              },
+              "Service": {
+                "InternalId": "0",
+                "PublicId": "",
+                "CategoryId": "0",
+                "CategoryExternalId": "",
+                "IsMasterData": false,
+                "CreatedAtDateTime": "1900-01-01T00:00:00",
+                "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                "ArchivedAt": "1900-01-01T00:00:00",
+                "CreatedByUser": 0,
+                "UpdatedByUser": 0,
+                "ArchivedBy": 0,
+                "Code": "",
+                "BaseFare": "0.0",
+                "DocumentRequired": false,
+                "SearchTags": "",
+                "Service": "",
+                "ServiceCount": "0",
+                "Activated": false,
+                "IsArchived": false,
+                "AllowsRecurrency": false,
+                "Type": "",
+                "TaxRateId": "",
+                "Service_ERP_Id": "0",
+                "Client_ERP_Id": "0"
+              }
+            }
+          }
+        }
+      },
+      "statusCode": 200,
+      "timestamp": "2026-01-09T19:24:18.278Z"
+    },
+    {
+      "url": "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetRequests",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json; charset=UTF-8",
+        "accept": "application/json",
+        "x-csrftoken": "lQUqutwxix4b3WWMpbXCzPDCO9U="
+      },
+      "payload": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "nz47xpJE1xZle9LEOhqb2Q"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {
+            "SearchKeyword": "",
+            "StartIndex": 0,
+            "MaxRecords": 10,
+            "TableSort": "ServiceRequestCreatedAt DESC",
+            "CategoryId": "0",
+            "InputFromSchedullingDate": "",
+            "InputToSchedullingDate": "",
+            "InputToSubmissionDate": "",
+            "InputFromSubmissionDate": "09-11-2025",
+            "FromSchedullingDate": "1900-01-01T00:00:00",
+            "ToSchedullingDate": "1900-01-01T00:00:00",
+            "FromSubmissionDate": "2025-11-09T00:00:00.000Z",
+            "ToSubmissionDate": "1900-01-01T00:00:00",
+            "SelectedRequestStatusText": "",
+            "SelectedStatus": {
+              "List": [],
+              "EmptyListItem": {
+                "Value": "",
+                "Text": ""
+              }
+            },
+            "IsScheduledDeliveryDateNotDefined": false,
+            "HasExportPermissions": true,
+            "SelectedDistrictId": "",
+            "OnGoingNewVisit": ""
+          }
+        },
+        "inputParameters": {}
+      },
+      "response": {
+        "versionInfo": {
+          "hasModuleVersionChanged": false,
+          "hasApiVersionChanged": false
+        },
+        "data": {
+          "List": {
+            "List": [
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "",
+                "ProviderName": "",
+                "Service": "Limpeza de humidade",
+                "ServiceRequestAddressLocation": "São Domingos de Rana",
+                "ServiceRequestAddressStreetName": "Rua Elvira Velez",
+                "ServiceRequestAddressZipCode": "2785-028",
+                "ServiceRequestCode": "SR116936",
+                "ServiceRequestExternalSystemId": "",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Novo pedido",
+                "UserName": "Erica Antunes",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T19:16:52Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-19T11:00:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 0,
+                "ServiceRequestId": "105854",
+                "ServiceRequestStatusId": "1"
+              },
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "",
+                "ProviderName": "",
+                "Service": "Reparação de autoclismo",
+                "ServiceRequestAddressLocation": "São Domingos de Rana",
+                "ServiceRequestAddressStreetName": "Rua Dom Dinis",
+                "ServiceRequestAddressZipCode": "2785-723",
+                "ServiceRequestCode": "SR116935",
+                "ServiceRequestExternalSystemId": "",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Novo pedido",
+                "UserName": "Karina Rocha",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T18:16:28Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-12T09:00:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 0,
+                "ServiceRequestId": "105853",
+                "ServiceRequestStatusId": "1"
+              },
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "64/26/000948",
+                "ProviderName": "Arranjador - Pontos e Engenhocas, LDA",
+                "Service": "Canalizador",
+                "ServiceRequestAddressLocation": "Lisboa",
+                "ServiceRequestAddressStreetName": "Rua das Trinas",
+                "ServiceRequestAddressZipCode": "1200-858",
+                "ServiceRequestCode": "SR116934",
+                "ServiceRequestExternalSystemId": "64/26/000948",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Prestador atribuído",
+                "UserName": "Vera Pita",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T18:15:45Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-13T09:30:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 0,
+                "ServiceRequestId": "105852",
+                "ServiceRequestStatusId": "4"
+              },
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "",
+                "ProviderName": "",
+                "Service": "Eletricista",
+                "ServiceRequestAddressLocation": "Sacavém",
+                "ServiceRequestAddressStreetName": "Rua António Feliciano de Castilho",
+                "ServiceRequestAddressZipCode": "2685-019",
+                "ServiceRequestCode": "SR116933",
+                "ServiceRequestExternalSystemId": "",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Novo pedido",
+                "UserName": "Miguel Dias",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T17:29:08Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-22T11:00:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 0,
+                "ServiceRequestId": "105851",
+                "ServiceRequestStatusId": "1"
+              },
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "",
+                "ProviderName": "",
+                "Service": "Limpeza de sofás",
+                "ServiceRequestAddressLocation": "São Mamede de Infesta",
+                "ServiceRequestAddressStreetName": "Rua António da Costa Pereira",
+                "ServiceRequestAddressZipCode": "4465-283",
+                "ServiceRequestCode": "SR116932",
+                "ServiceRequestExternalSystemId": "",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Novo pedido",
+                "UserName": "Pedro Pacheco",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T17:25:59Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-12T09:00:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 0,
+                "ServiceRequestId": "105850",
+                "ServiceRequestStatusId": "1"
+              },
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "64/26/000949",
+                "ProviderName": "LUIZ & FRANÇA, LDA",
+                "Service": "Limpeza da casa",
+                "ServiceRequestAddressLocation": "Belas",
+                "ServiceRequestAddressStreetName": "Rua Dona Isabel de Aragão",
+                "ServiceRequestAddressZipCode": "2605-248",
+                "ServiceRequestCode": "SR116931",
+                "ServiceRequestExternalSystemId": "64/26/000949",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Prestador atribuído",
+                "UserName": "Sara Talefe",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T17:20:11Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-12T09:00:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 0,
+                "ServiceRequestId": "105849",
+                "ServiceRequestStatusId": "4"
+              },
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "",
+                "ProviderName": "",
+                "Service": "Limpeza da casa",
+                "ServiceRequestAddressLocation": "Belas",
+                "ServiceRequestAddressStreetName": "Rua Dona Isabel de Aragão",
+                "ServiceRequestAddressZipCode": "2605-248",
+                "ServiceRequestCode": "SR116930",
+                "ServiceRequestExternalSystemId": "",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Cancelado",
+                "UserName": "Sara Talefe",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T17:07:13Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-12T09:00:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 3,
+                "ServiceRequestId": "105848",
+                "ServiceRequestStatusId": "2"
+              },
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "64/26/000951",
+                "ProviderName": "Matilha Moderna Unipessoal Lda",
+                "Service": "Limpeza profunda",
+                "ServiceRequestAddressLocation": "Lisboa",
+                "ServiceRequestAddressStreetName": "Rua Vila de São Martinho",
+                "ServiceRequestAddressZipCode": "1500-623",
+                "ServiceRequestCode": "SR116929",
+                "ServiceRequestExternalSystemId": "64/26/000951",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Prestador atribuído",
+                "UserName": "Leonor Ferreira",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T16:48:25Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-17T09:30:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 0,
+                "ServiceRequestId": "105847",
+                "ServiceRequestStatusId": "4"
+              },
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "64/26/000938",
+                "ProviderName": "Expressão Generosa, Lda",
+                "Service": "Engomadoria com recolha",
+                "ServiceRequestAddressLocation": "Lisboa",
+                "ServiceRequestAddressStreetName": "Rua Visconde Seabra",
+                "ServiceRequestAddressZipCode": "1700-370",
+                "ServiceRequestCode": "SR116927",
+                "ServiceRequestExternalSystemId": "64/26/000938",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Prestador atribuído",
+                "UserName": "Maria Quintas",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T16:41:22Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-12T10:30:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 0,
+                "ServiceRequestId": "105846",
+                "ServiceRequestStatusId": "4"
+              },
+              {
+                "SRRecurrencyMappingServiceRequestRecurrencyId": "0",
+                "FIDID": "64/26/000937",
+                "ProviderName": "Yolanda Gaspar Gia",
+                "Service": "Limpeza da casa",
+                "ServiceRequestAddressLocation": "Lisboa",
+                "ServiceRequestAddressStreetName": "Rua António Pedro",
+                "ServiceRequestAddressZipCode": "1150-044",
+                "ServiceRequestCode": "SR116926",
+                "ServiceRequestExternalSystemId": "64/26/000937",
+                "ServiceRequestRecurrencyCode": "",
+                "ServiceRequestStatusName": "Prestador atribuído",
+                "UserName": "Ana Silva",
+                "Count_BusinessNotes": "0",
+                "Count_Tasks": "0",
+                "ServiceRequestCreatedAt": "2026-01-09T16:33:26Z",
+                "ServiceRequestDeliveryDatetime": "1900-01-01T00:00:00",
+                "ServiceRequestSchedullingDateTime": "2026-01-12T09:00:00Z",
+                "OpenAdditionalVisits": 0,
+                "CancellationReasonId": 0,
+                "ServiceRequestId": "105845",
+                "ServiceRequestStatusId": "4"
+              }
+            ]
+          },
+          "Count": 5720
+        }
+      },
+      "statusCode": 200,
+      "timestamp": "2026-01-09T19:24:18.278Z"
+    },
+    {
+      "url": "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetCategories",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json; charset=UTF-8",
+        "accept": "application/json",
+        "x-csrftoken": "lQUqutwxix4b3WWMpbXCzPDCO9U="
+      },
+      "payload": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "JGL5R1ZVOEtL7XpHchI39w"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {
+            "SearchKeyword": "",
+            "StartIndex": 0,
+            "MaxRecords": 10,
+            "TableSort": "ServiceRequestCreatedAt DESC",
+            "CategoryId": "0",
+            "InputFromSchedullingDate": "",
+            "InputToSchedullingDate": "",
+            "InputToSubmissionDate": "",
+            "InputFromSubmissionDate": "09-11-2025",
+            "FromSchedullingDate": "1900-01-01T00:00:00",
+            "ToSchedullingDate": "1900-01-01T00:00:00",
+            "FromSubmissionDate": "2025-11-09T00:00:00.000Z",
+            "ToSubmissionDate": "1900-01-01T00:00:00",
+            "SelectedRequestStatusText": "",
+            "SelectedStatus": {
+              "List": [],
+              "EmptyListItem": {
+                "Value": "",
+                "Text": ""
+              }
+            },
+            "IsScheduledDeliveryDateNotDefined": false,
+            "HasExportPermissions": true,
+            "SelectedDistrictId": "",
+            "OnGoingNewVisit": ""
+          }
+        },
+        "inputParameters": {}
+      },
+      "response": {
+        "versionInfo": {
+          "hasModuleVersionChanged": false,
+          "hasApiVersionChanged": false
+        },
+        "data": {
+          "List": {
+            "List": [
+              {
+                "Category": {
+                  "InternalId": "433",
+                  "PublicId": "",
+                  "IsMasterData": false,
+                  "CreatedAt": "0",
+                  "UpdatedAt": "0",
+                  "ArchivedAt": "1900-01-01T00:00:00",
+                  "CreatedAtDateTime": "1900-01-01T00:00:00",
+                  "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                  "CreatedByUser": 0,
+                  "UpdatedByUser": 0,
+                  "ArchivedBy": 0,
+                  "ClusterId": "0",
+                  "TenantId": "",
+                  "OrderIndex": "0",
+                  "ServiceAreaId": "",
+                  "ImageName": "",
+                  "Code": "",
+                  "Description": "",
+                  "Category": "Engomadoria e lavandaria",
+                  "Language": "",
+                  "IsActive": false,
+                  "IsArchived": false,
+                  "SyncDateTime": "1900-01-01T00:00:00",
+                  "OriginalPublicId": ""
+                }
+              },
+              {
+                "Category": {
+                  "InternalId": "434",
+                  "PublicId": "",
+                  "IsMasterData": false,
+                  "CreatedAt": "0",
+                  "UpdatedAt": "0",
+                  "ArchivedAt": "1900-01-01T00:00:00",
+                  "CreatedAtDateTime": "1900-01-01T00:00:00",
+                  "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                  "CreatedByUser": 0,
+                  "UpdatedByUser": 0,
+                  "ArchivedBy": 0,
+                  "ClusterId": "0",
+                  "TenantId": "",
+                  "OrderIndex": "0",
+                  "ServiceAreaId": "",
+                  "ImageName": "",
+                  "Code": "",
+                  "Description": "",
+                  "Category": "Remodelação e decoração",
+                  "Language": "",
+                  "IsActive": false,
+                  "IsArchived": false,
+                  "SyncDateTime": "1900-01-01T00:00:00",
+                  "OriginalPublicId": ""
+                }
+              },
+              {
+                "Category": {
+                  "InternalId": "435",
+                  "PublicId": "",
+                  "IsMasterData": false,
+                  "CreatedAt": "0",
+                  "UpdatedAt": "0",
+                  "ArchivedAt": "1900-01-01T00:00:00",
+                  "CreatedAtDateTime": "1900-01-01T00:00:00",
+                  "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                  "CreatedByUser": 0,
+                  "UpdatedByUser": 0,
+                  "ArchivedBy": 0,
+                  "ClusterId": "0",
+                  "TenantId": "",
+                  "OrderIndex": "0",
+                  "ServiceAreaId": "",
+                  "ImageName": "",
+                  "Code": "",
+                  "Description": "",
+                  "Category": "Serviços de limpeza",
+                  "Language": "",
+                  "IsActive": false,
+                  "IsArchived": false,
+                  "SyncDateTime": "1900-01-01T00:00:00",
+                  "OriginalPublicId": ""
+                }
+              },
+              {
+                "Category": {
+                  "InternalId": "436",
+                  "PublicId": "",
+                  "IsMasterData": false,
+                  "CreatedAt": "0",
+                  "UpdatedAt": "0",
+                  "ArchivedAt": "1900-01-01T00:00:00",
+                  "CreatedAtDateTime": "1900-01-01T00:00:00",
+                  "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                  "CreatedByUser": 0,
+                  "UpdatedByUser": 0,
+                  "ArchivedBy": 0,
+                  "ClusterId": "0",
+                  "TenantId": "",
+                  "OrderIndex": "0",
+                  "ServiceAreaId": "",
+                  "ImageName": "",
+                  "Code": "",
+                  "Description": "",
+                  "Category": "Instalação e reparação",
+                  "Language": "",
+                  "IsActive": false,
+                  "IsArchived": false,
+                  "SyncDateTime": "1900-01-01T00:00:00",
+                  "OriginalPublicId": ""
+                }
+              },
+              {
+                "Category": {
+                  "InternalId": "438",
+                  "PublicId": "",
+                  "IsMasterData": false,
+                  "CreatedAt": "0",
+                  "UpdatedAt": "0",
+                  "ArchivedAt": "1900-01-01T00:00:00",
+                  "CreatedAtDateTime": "1900-01-01T00:00:00",
+                  "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                  "CreatedByUser": 0,
+                  "UpdatedByUser": 0,
+                  "ArchivedBy": 0,
+                  "ClusterId": "0",
+                  "TenantId": "",
+                  "OrderIndex": "0",
+                  "ServiceAreaId": "",
+                  "ImageName": "",
+                  "Code": "",
+                  "Description": "",
+                  "Category": "Serviços energéticos",
+                  "Language": "",
+                  "IsActive": false,
+                  "IsArchived": false,
+                  "SyncDateTime": "1900-01-01T00:00:00",
+                  "OriginalPublicId": ""
+                }
+              },
+              {
+                "Category": {
+                  "InternalId": "439",
+                  "PublicId": "",
+                  "IsMasterData": false,
+                  "CreatedAt": "0",
+                  "UpdatedAt": "0",
+                  "ArchivedAt": "1900-01-01T00:00:00",
+                  "CreatedAtDateTime": "1900-01-01T00:00:00",
+                  "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                  "CreatedByUser": 0,
+                  "UpdatedByUser": 0,
+                  "ArchivedBy": 0,
+                  "ClusterId": "0",
+                  "TenantId": "",
+                  "OrderIndex": "0",
+                  "ServiceAreaId": "",
+                  "ImageName": "",
+                  "Code": "",
+                  "Description": "",
+                  "Category": "Empresas",
+                  "Language": "",
+                  "IsActive": false,
+                  "IsArchived": false,
+                  "SyncDateTime": "1900-01-01T00:00:00",
+                  "OriginalPublicId": ""
+                }
+              },
+              {
+                "Category": {
+                  "InternalId": "440",
+                  "PublicId": "",
+                  "IsMasterData": false,
+                  "CreatedAt": "0",
+                  "UpdatedAt": "0",
+                  "ArchivedAt": "1900-01-01T00:00:00",
+                  "CreatedAtDateTime": "1900-01-01T00:00:00",
+                  "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                  "CreatedByUser": 0,
+                  "UpdatedByUser": 0,
+                  "ArchivedBy": 0,
+                  "ClusterId": "0",
+                  "TenantId": "",
+                  "OrderIndex": "0",
+                  "ServiceAreaId": "",
+                  "ImageName": "",
+                  "Code": "",
+                  "Description": "",
+                  "Category": "Saúde e bem-estar",
+                  "Language": "",
+                  "IsActive": false,
+                  "IsArchived": false,
+                  "SyncDateTime": "1900-01-01T00:00:00",
+                  "OriginalPublicId": ""
+                }
+              },
+              {
+                "Category": {
+                  "InternalId": "441",
+                  "PublicId": "",
+                  "IsMasterData": false,
+                  "CreatedAt": "0",
+                  "UpdatedAt": "0",
+                  "ArchivedAt": "1900-01-01T00:00:00",
+                  "CreatedAtDateTime": "1900-01-01T00:00:00",
+                  "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                  "CreatedByUser": 0,
+                  "UpdatedByUser": 0,
+                  "ArchivedBy": 0,
+                  "ClusterId": "0",
+                  "TenantId": "",
+                  "OrderIndex": "0",
+                  "ServiceAreaId": "",
+                  "ImageName": "",
+                  "Code": "",
+                  "Description": "",
+                  "Category": "Animais",
+                  "Language": "",
+                  "IsActive": false,
+                  "IsArchived": false,
+                  "SyncDateTime": "1900-01-01T00:00:00",
+                  "OriginalPublicId": ""
+                }
+              },
+              {
+                "Category": {
+                  "InternalId": "442",
+                  "PublicId": "",
+                  "IsMasterData": false,
+                  "CreatedAt": "0",
+                  "UpdatedAt": "0",
+                  "ArchivedAt": "1900-01-01T00:00:00",
+                  "CreatedAtDateTime": "1900-01-01T00:00:00",
+                  "UpdatedAtDateTime": "1900-01-01T00:00:00",
+                  "CreatedByUser": 0,
+                  "UpdatedByUser": 0,
+                  "ArchivedBy": 0,
+                  "ClusterId": "0",
+                  "TenantId": "",
+                  "OrderIndex": "0",
+                  "ServiceAreaId": "",
+                  "ImageName": "",
+                  "Code": "",
+                  "Description": "",
+                  "Category": "Jardinagem",
+                  "Language": "",
+                  "IsActive": false,
+                  "IsArchived": false,
+                  "SyncDateTime": "1900-01-01T00:00:00",
+                  "OriginalPublicId": ""
+                }
+              }
+            ]
+          },
+          "Count": -1
+        }
+      },
+      "statusCode": 200,
+      "timestamp": "2026-01-09T19:24:18.278Z"
+    },
+    {
+      "url": "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetServiceRequestStatus",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json; charset=UTF-8",
+        "accept": "application/json",
+        "x-csrftoken": "lQUqutwxix4b3WWMpbXCzPDCO9U="
+      },
+      "payload": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "eLZsS4_+Fp3D+FTfWsR9bw"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {
+            "SearchKeyword": "",
+            "StartIndex": 0,
+            "MaxRecords": 10,
+            "TableSort": "ServiceRequestCreatedAt DESC",
+            "CategoryId": "0",
+            "InputFromSchedullingDate": "",
+            "InputToSchedullingDate": "",
+            "InputToSubmissionDate": "",
+            "InputFromSubmissionDate": "09-11-2025",
+            "FromSchedullingDate": "1900-01-01T00:00:00",
+            "ToSchedullingDate": "1900-01-01T00:00:00",
+            "FromSubmissionDate": "2025-11-09T00:00:00.000Z",
+            "ToSubmissionDate": "1900-01-01T00:00:00",
+            "SelectedRequestStatusText": "",
+            "SelectedStatus": {
+              "List": [],
+              "EmptyListItem": {
+                "Value": "",
+                "Text": ""
+              }
+            },
+            "IsScheduledDeliveryDateNotDefined": false,
+            "HasExportPermissions": true,
+            "SelectedDistrictId": "",
+            "OnGoingNewVisit": ""
+          }
+        },
+        "inputParameters": {}
+      },
+      "response": {
+        "versionInfo": {
+          "hasModuleVersionChanged": false,
+          "hasApiVersionChanged": false
+        },
+        "data": {
+          "List": {
+            "List": [
+              {
+                "ServiceRequestStatus": {
+                  "Id": "1",
+                  "Order": 0,
+                  "Name": "Novo pedido",
+                  "Code": "",
+                  "TimelineDescription": "",
+                  "LabelDescription": "",
+                  "Is_Active": false,
+                  "IsOpenCost": false,
+                  "StyleClass": ""
+                }
+              },
+              {
+                "ServiceRequestStatus": {
+                  "Id": "6",
+                  "Order": 0,
+                  "Name": "Expirado",
+                  "Code": "",
+                  "TimelineDescription": "",
+                  "LabelDescription": "",
+                  "Is_Active": false,
+                  "IsOpenCost": false,
+                  "StyleClass": ""
+                }
+              },
+              {
+                "ServiceRequestStatus": {
+                  "Id": "4",
+                  "Order": 0,
+                  "Name": "Prestador atribuído",
+                  "Code": "",
+                  "TimelineDescription": "",
+                  "LabelDescription": "",
+                  "Is_Active": false,
+                  "IsOpenCost": false,
+                  "StyleClass": ""
+                }
+              },
+              {
+                "ServiceRequestStatus": {
+                  "Id": "3",
+                  "Order": 0,
+                  "Name": "Em curso",
+                  "Code": "",
+                  "TimelineDescription": "",
+                  "LabelDescription": "",
+                  "Is_Active": false,
+                  "IsOpenCost": false,
+                  "StyleClass": ""
+                }
+              },
+              {
+                "ServiceRequestStatus": {
+                  "Id": "5",
+                  "Order": 0,
+                  "Name": "Concluído",
+                  "Code": "",
+                  "TimelineDescription": "",
+                  "LabelDescription": "",
+                  "Is_Active": false,
+                  "IsOpenCost": false,
+                  "StyleClass": ""
+                }
+              },
+              {
+                "ServiceRequestStatus": {
+                  "Id": "2",
+                  "Order": 0,
+                  "Name": "Cancelado",
+                  "Code": "",
+                  "TimelineDescription": "",
+                  "LabelDescription": "",
+                  "Is_Active": false,
+                  "IsOpenCost": false,
+                  "StyleClass": ""
+                }
+              },
+              {
+                "ServiceRequestStatus": {
+                  "Id": "8",
+                  "Order": 0,
+                  "Name": "Atribuir prestador",
+                  "Code": "",
+                  "TimelineDescription": "",
+                  "LabelDescription": "",
+                  "Is_Active": false,
+                  "IsOpenCost": false,
+                  "StyleClass": ""
+                }
+              }
+            ]
+          },
+          "Count": -1
+        }
+      },
+      "statusCode": 200,
+      "timestamp": "2026-01-09T19:24:18.278Z"
+    },
+    {
+      "url": "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetFilterOnGoingNewVisit",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json; charset=UTF-8",
+        "accept": "application/json",
+        "x-csrftoken": "lQUqutwxix4b3WWMpbXCzPDCO9U="
+      },
+      "payload": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "zbpmKkk4PckTtuRSNR_3sQ"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {
+            "SearchKeyword": "",
+            "StartIndex": 0,
+            "MaxRecords": 10,
+            "TableSort": "ServiceRequestCreatedAt DESC",
+            "CategoryId": "0",
+            "InputFromSchedullingDate": "",
+            "InputToSchedullingDate": "",
+            "InputToSubmissionDate": "",
+            "InputFromSubmissionDate": "09-11-2025",
+            "FromSchedullingDate": "1900-01-01T00:00:00",
+            "ToSchedullingDate": "1900-01-01T00:00:00",
+            "FromSubmissionDate": "2025-11-09T00:00:00.000Z",
+            "ToSubmissionDate": "1900-01-01T00:00:00",
+            "SelectedRequestStatusText": "",
+            "SelectedStatus": {
+              "List": [],
+              "EmptyListItem": {
+                "Value": "",
+                "Text": ""
+              }
+            },
+            "IsScheduledDeliveryDateNotDefined": false,
+            "HasExportPermissions": true,
+            "SelectedDistrictId": "",
+            "OnGoingNewVisit": ""
+          }
+        },
+        "inputParameters": {}
+      },
+      "response": {
+        "versionInfo": {
+          "hasModuleVersionChanged": false,
+          "hasApiVersionChanged": false
+        },
+        "data": {
+          "List": {
+            "List": [
+              {
+                "Filter_OnGoingNewVisit": {
+                  "Id": "1",
+                  "Label": "Pedidos com entrega agendada"
+                }
+              },
+              {
+                "Filter_OnGoingNewVisit": {
+                  "Id": "2",
+                  "Label": "Pedidos sem entrega agendada"
+                }
+              },
+              {
+                "Filter_OnGoingNewVisit": {
+                  "Id": "3",
+                  "Label": "Pedidos com visitas adicionais agendadas"
+                }
+              }
+            ]
+          },
+          "Count": -1
+        }
+      },
+      "statusCode": 200,
+      "timestamp": "2026-01-09T19:24:18.278Z"
+    },
+    {
+      "url": "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetDistricts",
+      "method": "POST",
+      "headers": {
+        "content-type": "application/json; charset=UTF-8",
+        "accept": "application/json",
+        "x-csrftoken": "lQUqutwxix4b3WWMpbXCzPDCO9U="
+      },
+      "payload": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "SAfr6bbrlurrDwOTBr6jXQ"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {
+            "SearchKeyword": "",
+            "StartIndex": 0,
+            "MaxRecords": 10,
+            "TableSort": "ServiceRequestCreatedAt DESC",
+            "CategoryId": "0",
+            "InputFromSchedullingDate": "",
+            "InputToSchedullingDate": "",
+            "InputToSubmissionDate": "",
+            "InputFromSubmissionDate": "09-11-2025",
+            "FromSchedullingDate": "1900-01-01T00:00:00",
+            "ToSchedullingDate": "1900-01-01T00:00:00",
+            "FromSubmissionDate": "2025-11-09T00:00:00.000Z",
+            "ToSubmissionDate": "1900-01-01T00:00:00",
+            "SelectedRequestStatusText": "",
+            "SelectedStatus": {
+              "List": [],
+              "EmptyListItem": {
+                "Value": "",
+                "Text": ""
+              }
+            },
+            "IsScheduledDeliveryDateNotDefined": false,
+            "HasExportPermissions": true,
+            "SelectedDistrictId": "",
+            "OnGoingNewVisit": ""
+          }
+        },
+        "inputParameters": {}
+      },
+      "response": {
+        "versionInfo": {
+          "hasModuleVersionChanged": false,
+          "hasApiVersionChanged": false
+        },
+        "data": {
+          "List": {
+            "List": [
+              {
+                "District": {
+                  "Id": "aveiro",
+                  "Name": "Aveiro",
+                  "ExternalId": "",
+                  "IsActive": false
+                }
+              },
+              {
+                "District": {
+                  "Id": "braga",
+                  "Name": "Braga",
+                  "ExternalId": "",
+                  "IsActive": false
+                }
+              },
+              {
+                "District": {
+                  "Id": "lisboa",
+                  "Name": "Lisboa",
+                  "ExternalId": "",
+                  "IsActive": false
+                }
+              },
+              {
+                "District": {
+                  "Id": "porto",
+                  "Name": "Porto",
+                  "ExternalId": "",
+                  "IsActive": false
+                }
+              },
+              {
+                "District": {
+                  "Id": "setúbal",
+                  "Name": "Setúbal",
+                  "ExternalId": "",
+                  "IsActive": false
+                }
+              }
+            ]
+          },
+          "Count": -1
+        }
+      },
+      "statusCode": 200,
+      "timestamp": "2026-01-09T19:24:18.279Z"
+    }
+  ]
+}

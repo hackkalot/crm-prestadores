@@ -1,0 +1,984 @@
+[12:01:40 AM] A processar ficheiro: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/provider_data.xlsx
+[12:01:40 AM] Ficheiro encontrado: 68.23 KB
+[12:01:41 AM] Total de providers no ficheiro: 294
+[12:01:41 AM]   Ignorando: FIXO teste (teste ou sem email)
+[12:01:41 AM]   Inserido: Lavandaria Engomadoria Natalia
+[12:01:41 AM]   Associado por email: Maria Saba -> Lavandaria Engomadoria Natalia (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:42 AM]   Associado por email: Interdomicílio -> Maria Saba (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:42 AM] Erro ao processar Costume Equilibrado: RangeError: Invalid time value
+[12:01:42 AM] Erro ao processar ROTOLI TV MARCELO: RangeError: Invalid time value
+[12:01:42 AM] Erro ao processar Biomex: RangeError: Invalid time value
+[12:01:42 AM] Erro ao processar Rasiro Industrial Services: RangeError: Invalid time value
+[12:01:42 AM]   Associado por email: Trevo Solutions -> Interdomicílio (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:42 AM] Erro ao processar Rameuro-Europa Serviços: RangeError: Invalid time value
+[12:01:43 AM]   Associado por email: Passe Bem  Engomadoria Lda -> Trevo Solutions (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:43 AM] Erro ao processar Servitis: RangeError: Invalid time value
+[12:01:43 AM] Erro ao processar Mesos Portugal: RangeError: Invalid time value
+[12:01:43 AM] Erro ao processar LISTACOS Lda: RangeError: Invalid time value
+[12:01:43 AM]   Associado por email: CARES Assistência e Reparações -> Passe Bem  Engomadoria Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:44 AM]   Associado por email: PC MÉDIC Lda -> CARES Assistência e Reparações (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:44 AM]   Associado por email: Zema Construções e Serralharia -> PC MÉDIC Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:44 AM]   Associado por email: Rouparia Aninhas -> Zema Construções e Serralharia (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:44 AM]   Associado por email: CLIMEX  CONTROLO DE AMBIENTE S.A -> Rouparia Aninhas (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:45 AM]   Associado por email: Mymcs-Márcio Gomes Lda -> CLIMEX  CONTROLO DE AMBIENTE S.A (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:45 AM]   Associado por email: AIR Chave -> Mymcs-Márcio Gomes Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:45 AM] Erro ao processar Desentop: RangeError: Invalid time value
+[12:01:45 AM]   Associado por email: Réplica Lda. -> AIR Chave (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:45 AM]   Associado por email: Tempo Suave -> Réplica Lda. (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:46 AM]   Associado por email: SUNJOBS MARKETPLACE UNIPESSOAL LDA -> Tempo Suave (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:46 AM]   Associado por email: Saint - Gobain -> SUNJOBS MARKETPLACE UNIPESSOAL LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:46 AM]   Associado por email: Carlos Martins -> Saint - Gobain (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:46 AM]   Associado por email: Dona Lavandaria & Engomadoria -> Carlos Martins (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:47 AM]   Inserido: SOLVILIGHT Lda.
+[12:01:47 AM]   Associado por email: PLCMD Projetos Lda. -> Dona Lavandaria & Engomadoria (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:47 AM] Erro ao processar Starface: RangeError: Invalid time value
+[12:01:47 AM] Erro ao processar Dothome: RangeError: Invalid time value
+[12:01:47 AM] Erro ao processar Oxygiene: RangeError: Invalid time value
+[12:01:47 AM]   Associado por email: Consigo Limpezas -> PLCMD Projetos Lda. (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:48 AM]   Associado por email: Abstrato Circuito -> Consigo Limpezas (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:48 AM] Erro ao processar Algodão Lavandaria: RangeError: Invalid time value
+[12:01:48 AM]   Associado por email: GNPHS, LDA -> Abstrato Circuito (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:48 AM]   Associado por email: Harmony4Ever -> GNPHS, LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:48 AM]   Associado por email: Trajetória Absoluta -> Harmony4Ever (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:49 AM]   Associado por email: SOCORRO FRANCISCO FERNANDES -> Trajetória Absoluta (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:49 AM]   Associado por email: Daniel Fuentes Tomaz, Unipessoal Lda -> SOCORRO FRANCISCO FERNANDES (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:49 AM]   Associado por email: Alves e Grou, Lda -> Daniel Fuentes Tomaz, Unipessoal Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:49 AM] Erro ao processar Perímetro Final – Limpeza, Manutenção e Serviços Lda: RangeError: Invalid time value
+[12:01:49 AM] Erro ao processar SOLIDOCEAN - UNIPESSOAL LDA: RangeError: Invalid time value
+[12:01:49 AM] Erro ao processar Arlindo Faria: RangeError: Invalid time value
+[12:01:50 AM]   Associado por email: Círculo Navegante -> Alves e Grou, Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:50 AM]   Associado por email: Divas da Limpeza -> Círculo Navegante (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:50 AM] Erro ao processar Hora Técnica: RangeError: Invalid time value
+[12:01:50 AM]   Associado por email: FELISMINA DOMINGOS UNIPESSOAL LDA  -> Divas da Limpeza (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:50 AM] Erro ao processar Impacto Sábio - Unipessoal LDA (Weverton Souza): RangeError: Invalid time value
+[12:01:51 AM] Erro ao processar Janette Santos - Wash Station : RangeError: Invalid time value
+[12:01:51 AM]   Associado por email: Gonçalo Nuno Mendes, Unipessoal, Lda. -> FELISMINA DOMINGOS UNIPESSOAL LDA  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:51 AM] Erro ao processar Lava Maria - Mariana Silva Martins, unip, Lda: RangeError: Invalid time value
+[12:01:51 AM]   Associado por email: RikosRekintes - MAID2SHINE  -> Gonçalo Nuno Mendes, Unipessoal, Lda. (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:51 AM] Erro ao processar Conjugar Métodos, Lda - Vanytime: RangeError: Invalid time value
+[12:01:51 AM] Erro ao processar Chamy: RangeError: Invalid time value
+[12:01:51 AM]   Associado por email: Divertimix Tours, Unipessoal LDA -> RikosRekintes - MAID2SHINE  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:52 AM]   Associado por email: RikosRekintes - MAID2SHINE  -> Divertimix Tours, Unipessoal LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:52 AM] Erro ao processar Instant Movers, Lda: RangeError: Invalid time value
+[12:01:52 AM] Erro ao processar Gente Triunfante LDA: RangeError: Invalid time value
+[12:01:52 AM]   Associado por email: CVZ Construções -> RikosRekintes - MAID2SHINE  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:01:52 AM] Erro ao processar MYCAREFORCE - Leite Morais Unipessoal LDA: RangeError: Invalid time value
+[12:01:52 AM] Erro ao processar Concept Laundry  - PAULOS & LWIANA, LDA.: RangeError: Invalid time value
+[12:01:52 AM] Erro ao processar Equilíbrio D´Azul Lda: RangeError: Invalid time value
+[12:01:52 AM] Erro ao processar CARES: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar BRANDÃO & BRITO SERVIÇOS DE LIMPEZAS, LDA: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar Lavandaria Perto de Mim - Bammito LDA: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar Pretexto Funcional: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar Serrão & Oliveira, Lda: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar Engomadoria a Seu Gosto: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar Quinta da Patada: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar Santos e Sanches: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar Remate Celestial: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar FC Saúde: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar SUAVE CAPRICHO-UNIPESSOAL LDA: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar BigTan: RangeError: Invalid time value
+[12:01:53 AM] Erro ao processar Dr Bricolagem: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar ImpactBubble: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar Andiox: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar Arranjador - Pontos e Engenhocas, LDA: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar ANDIOX TECHNICAL SERVICES: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar Engomadoria Popota - Artur Viveiros: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar Krepair Comercial: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar JFA INSTALAÇÕES ELÉTRICA: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar MatDavy Nails: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar Seaclean & Build Lda : RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar Rosângela Wenzel: RangeError: Invalid time value
+[12:01:54 AM] Erro ao processar Vilhena Cardoso: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar LAVCARPET: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar Unicornvedette: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar AJUDA RAPIDA: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar EXCELSO DETALHE: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar A Dama do Ferro - Lara Monica Costa Machado : RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar Jhonathan Wilton Fontana: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar Porto Clean House - Jaqueline Pereira Andrade: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar PT Clean (Gustavo): RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar Hemen limpezas - Lavender Objective- Hermen: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar Mezzanine Lavandaria Unipessoal, Lda: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar Limpezas para Ontem unipessoal LDA: RangeError: Invalid time value
+[12:01:55 AM] Erro ao processar Márcio Heleno Ferreira: RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Limpezas Pita: RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Luciene Quilotty : RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Hugo Costa (Servtec): RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Silva & Bastos Multiservice: RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Vagner Faria (Logus Service): RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Natural Vet - JOANA MATADO: RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Maria Rafaela Paris - Lavandaria & Serviços Premium: RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Sidcley da Silva Souza: RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Espirito Privilegiado - Unipessoal, lda: RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar F&SaBrilhar : RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Matriz Periférica LDA: RangeError: Invalid time value
+[12:01:56 AM] Erro ao processar Marques&Souza Cleaning - Pablo Henrique Souza Silva: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar Clean Up Group Service: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar Futuro vitalicio - Unipessoal Lda: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar Limpezas Vanilda-VANILDA GONCALVES PEREIRA: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar Caminhos Diligentes: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar DI Jardins: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar ASSUNTO VAPORIZADO: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar MARIAMO ISSUF CHAPDAT: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar Fernanda Moreira: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar Maria Estela da Silva Pinto Sousa: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar Edilene Sampaio Torres: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar RENATA FELIPE SANTIAGO: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar A. Homem do Gas unipessoal lda: RangeError: Invalid time value
+[12:01:57 AM] Erro ao processar LUCIANA DE MELO: RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar Enredo Janota Unipessoal Lda.: RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar Edvaldo Bispo dos Santos - Mudanças Pega Tudo: RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar Jorge Filipe Faleiro Alves Cortiço : RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar TATIANA RODRIGUES ROSA FRAGOSO: RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar Lopes Castela, Lda: RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar Aline Ramos Gumieri Chinke: RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar WAVES CHAMPION-UNIPESSOAL LDA: RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar Paulo Patrick Silva Martiniano : RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar GEP - Gestão de Peritagens, SA: RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar ESPIRITO SINGELO UNIPESSOAL LDA: RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar ANTARES unipessoal Lda : RangeError: Invalid time value
+[12:01:58 AM] Erro ao processar MANUELLA NASCIMENTO DONDONI: RangeError: Invalid time value
+[12:01:59 AM] Erro ao processar Alquimia Sustentável- Unipessoal LDA   : RangeError: Invalid time value
+[12:01:59 AM] Erro ao processar Empenho contagiante - Unipessoal LDA: RangeError: Invalid time value
+[12:01:59 AM] Erro ao processar ELIANA DE CASSIA ANDRADE DE ARAUJO: RangeError: Invalid time value
+[12:01:59 AM] Erro ao processar RUBEN ANDRE DA SILVA GOMES: RangeError: Invalid time value
+[12:01:59 AM] Erro ao processar Danúbia Sinder Rodrigues : RangeError: Invalid time value
+[12:01:59 AM] Erro ao processar Gabriela Aparecida Freire de Oliveira: RangeError: Invalid time value
+[12:01:59 AM]   Inserido: Projetos e Soluções Feligon LDA
+[12:01:59 AM] Erro ao processar Otimismo e Ousadia - Lavandaria Engomadoria Unipessoal, Lda: RangeError: Invalid time value
+[12:01:59 AM] Erro ao processar RUI FILIPE DA SILVA RIBEIRO: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar Cláudio Marcos Alves de Jesus Júnior: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar JULIAN PEREZ ROA - ENGENHARIA E CONSULTORIA, UNIPESSOAL, LDA: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar Telma Filipa Leal da Silva: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar Glaucione da Silva : RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar BRUNO SIMAS ALMEIDA: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar Leia Batista Ramos: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar AT Informática Lda: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar Lorena Maria Mendes Fernandes: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar Gloria Fernanda da Costa Pereira Gonçalves: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar Carla Elisa Simões Barbosa: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar URGENT RATIO UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:00 AM] Erro ao processar Impactante e Envolvente unipessoal , lda: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar Project Up Enterprise,lda: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar MÁRIO JOÃO DE ABREU REIS RODRIGUES: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar EMANUEL FERREIRA BAPTISTA PINHO: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar ITAMARA DE SOUZA HOLANDA: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar Pestrochas - Desinfestação. Lda : RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar Paulo José Moreira Ferreira: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar SERGIO MIGUEL FERREIRO ALVES SOARES: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar SMART SPIN LDA: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar GLOOSERV UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar Tatiane Correia da Rocha de Oliveira: RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar Flávio Abílio Leal Ferreira Carvalho : RangeError: Invalid time value
+[12:02:01 AM] Erro ao processar Aline Cristina da Silva Soares Luiz: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar GLOBALCLEAN UNIPESSOAL, LDA: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar WANEZA BRUNA SILVA SARINHO MARTINS: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar JEFFERSON EMANUEL DA SILVA: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar Cardoso & Torres,lda: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar XPRESS - INSTALAÇÕES E REPARAÇOES 24 HORAS LDA: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar Juliana Cristina Nascimento da Silva: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar Diego Amâncio Lovares : RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar Carol Vitorio Duarte Lechinski: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar Maria Varela - Serviços de limpeza Unipessoal,lda: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar Cintia Silva : RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar Wendel de Almeida Lima: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar Renato Ferreira da Costa: RangeError: Invalid time value
+[12:02:02 AM] Erro ao processar ARTHUR CARLOS VIEIRA PIERONI: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar Mordomias Semanais LDA: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar PATRICIA EVARISTO DIAS, UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar Inovadorambiente Unipessoal Lda  : RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar LUCAS OLIVEIRA LIMA: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar OPINIÕES & GUARDIÕES - LDA: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar DESAFIO PIONEIRO UNIP LDA: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar EDGAR JOSE BARROS DE SOUSA: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar Almeida & Klem Lda: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar RAFAEL FILIPE OLIVEIRA UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar Mayara Aquino de Araujo: RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar Maria Augusta Martins Cardoso : RangeError: Invalid time value
+[12:02:03 AM] Erro ao processar Brunalex, Unipessoal Lda: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar Ana Sofia Macedo Santos Jesus: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar Adilson Morais : RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar Tesouro Prolifero : RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar Samantha Augusto de Oliveira Mendes: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar PAULO CESAR DIAS DA GRAÇA: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar BOLHAS DE EMOÇAO LAVANDARIA UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar SAVVY GOLDEN SERVIÇOS E COMÉRCIO LDA: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar Fernando Jorge da Silva Costa: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar Mateus Clarindo Bastos: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar MIGUEL SILVA GOUVEIA UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar Américo Taciano Gouveia Unipessoal Lda: RangeError: Invalid time value
+[12:02:04 AM] Erro ao processar Alessandro Luís Machado: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar Ana Paula Aquino Araujo Silva: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar V & H HUMAN SERVICES, SOCIEDADE UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar Josilda Bispo de Sousa : RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar CAMADAS D`HARMONIA LIMPISSIMA LDA: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar Danielle Rodrigues Avelar: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar Lógica Adjacente -Unipessoal Lda  : RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar João Paulo Teixeira da Silva: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar Brilliant Care Unipessoal LDA: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar MARCELO PEDRO FERREIRA: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar AZUL PREDICADO LDA: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar Noémia Conceição Nunes: RangeError: Invalid time value
+[12:02:05 AM] Erro ao processar ELIZEU FRANCISCO DE ABREU FILHO: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar INFINITOBÁLSAMO UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar Rui Miguel Alves Rodrigues UNIP. LDA: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar VALCIANE DE PAULA, UNIPESSOAL LDA : RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar HUGO FILOMENO DE NOVAIS FERREIRA: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar FLEXCARE UNIPESSOAL LDA : RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar Trajeto Subtil, Lda: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar CORTESIA IMPERDÍVEL - UNIPESSOAL LDA : RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar MICAEL ARTUR BARROS LOPES MONTEIRO: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar SERGIO RICARDO TEIXEIRA BATISTA: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar RICARDO ANTONIO DE JESUS CASTRO: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar Matilha Moderna Unipessoal Lda: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar In'Canto da Carriça LDA: RangeError: Invalid time value
+[12:02:06 AM] Erro ao processar YULLI BONFIM COSTA : RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar RIBAFIX,lda: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar ADEMIR CESAR RODRIGUES: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar BRUNO DAVID BERNARDINO MOREIRA DA SILVA: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar Vet Sobre Rodas : RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar Confiança e Versatilidade , LDA : RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar ELITE SOLUTIONS, LDA: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar Igor Godinho Unipessoal Lda: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar Anna Paula Andrade Miranda Costa: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar Rui Manuel Cerdeira Cruz: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar ALIADAPUREZA, LDA : RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar Genial Conection, lda: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar DANILO FERNANDES DA SILVA: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar TEIXEIRA NUMBY, UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:07 AM] Erro ao processar Virtudes Fantasticas, lda : RangeError: Invalid time value
+[12:02:07 AM]   Ignorando: Prestador Teste (teste ou sem email)
+[12:02:08 AM] Erro ao processar Henderson Gonçalves Martins associação unipessoal LDA: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar PRÓSPERA JORNADA - LDA: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar MANFORCLIMA, UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar CELESTIALTULIP - UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar SUMÁRIOS & ARDÓSIAS - UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar TURBOWHISPER - ELETRICIDADE LDA: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar DALLY UNIP LDA: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar Nível Periférico -Unipessoal LDA : RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar KAREN MARCELA MOURA DE OLIVEIRA: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar RELAMPOLUZ, UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar Expressão Generosa, Lda: RangeError: Invalid time value
+[12:02:08 AM] Erro ao processar RAFAEL FILIPE OLIVEIRA SOARES: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar LUIZ & FRANÇA, LDA: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar JOSIE APARECIDA DE OLIVEIRA: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar IZABEL MATOS, UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar SUSANA IARA APARECIDA CAETANO NOVAIS: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar DILENE DE NAZARE MOREIRA FERREIRA: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar EXUBERBUBBLE, LDA: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar BEYOND SERVICES, UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar GABRIEL FREIRE - SOLUÇÕES INTEGRADAS, UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar Milton Junior, Unipessoal LDA: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar CTDI - Centro Técnico e Distribuição Informática, Lda: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar Paulo Alexandre Conceição: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar William Vinícius Damazio de Oliveira: RangeError: Invalid time value
+[12:02:09 AM] Erro ao processar Carlos Manuel Figueiredo da Costa : RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar GESSIEL DE SOUZA: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar PAULINA MANUELY XENOFONTE MORAIS CONRADO: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar Amanda Moyses Garbellini: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar Maria Millena da Silva Freitas: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar Yolanda Gaspar Gia: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar QUICK HELP SOLUTIONS SERVICES, LDA: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar LUÍS MIGUEL VIEIRA , UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar SOMENTEXEMPLAR - SOCIEDADE UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar DIEGO STEPHANE COELHO SALLES: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar Amplitude Gigante, LDA: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar Júlio Andre Dias Pinto Sereno Cabral: RangeError: Invalid time value
+[12:02:10 AM] Erro ao processar MOVELTSOLUT, UNIPESSOAL LDA: RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar Maria Eduarda Alves Moreira: RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar António Carlos De Francisco Madeira: RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar Osias De Oliveira Coelho: RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar Frescuramedida Unip. LDA.: RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar Revoada D´Exitos, lda : RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar Cirlene Melocro Coelho: RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar BRENA KAROLINY HENRIQUES GOMES: RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar PRISCILA KAMILLA PEREIRA SOUSA: RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar GOTA DE ÁGUA - PISCINAS E WELLNESS, LDA: RangeError: Invalid time value
+[12:02:11 AM] Erro ao processar Silêncio Escondido , Unipessoal Lda: RangeError: Invalid time value
+[12:02:11 AM] ===============================================
+[12:02:11 AM] IMPORT CONCLUIDO
+[12:02:11 AM] Total processados: 294
+[12:02:11 AM] Inseridos: 3
+[12:02:11 AM] Atualizados: 34
+[12:02:11 AM] Erros: 255
+[12:02:11 AM] ===============================================
+[12:05:42 AM] A processar ficheiro: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/provider_data.xlsx
+[12:05:42 AM] Ficheiro encontrado: 68.23 KB
+[12:05:43 AM] Total de providers no ficheiro: 294
+[12:05:43 AM]   Ignorando: FIXO teste (teste ou sem email)
+[12:05:43 AM]   Associado por email: Lavandaria Engomadoria Natalia -> CVZ Construções (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:43 AM]   Associado por email: Maria Saba -> Lavandaria Engomadoria Natalia (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:43 AM]   Associado por email: Interdomicílio -> Maria Saba (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:43 AM]   Associado por email: Costume Equilibrado -> Interdomicílio (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:44 AM]   Associado por email: ROTOLI TV MARCELO -> Costume Equilibrado (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:44 AM]   Inserido: Biomex
+[12:05:44 AM]   Associado por email: Rasiro Industrial Services -> ROTOLI TV MARCELO (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:44 AM]   Associado por email: Trevo Solutions -> Rasiro Industrial Services (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:45 AM]   Associado por email: Rameuro-Europa Serviços -> Trevo Solutions (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:45 AM]   Associado por email: Passe Bem  Engomadoria Lda -> Rameuro-Europa Serviços (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:45 AM]   Associado por email: Servitis -> Passe Bem  Engomadoria Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:45 AM]   Inserido: Mesos Portugal
+[12:05:45 AM]   Inserido: LISTACOS Lda
+[12:05:46 AM]   Associado por email: CARES Assistência e Reparações -> Servitis (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:46 AM]   Associado por email: PC MÉDIC Lda -> CARES Assistência e Reparações (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:46 AM]   Associado por email: Zema Construções e Serralharia -> PC MÉDIC Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:46 AM]   Associado por email: Rouparia Aninhas -> Zema Construções e Serralharia (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:47 AM]   Associado por email: CLIMEX  CONTROLO DE AMBIENTE S.A -> Rouparia Aninhas (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:47 AM]   Associado por email: Mymcs-Márcio Gomes Lda -> CLIMEX  CONTROLO DE AMBIENTE S.A (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:47 AM]   Associado por email: AIR Chave -> Mymcs-Márcio Gomes Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:47 AM]   Inserido: Desentop
+[12:05:47 AM]   Associado por email: Réplica Lda. -> AIR Chave (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:48 AM]   Associado por email: Tempo Suave -> Réplica Lda. (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:48 AM]   Associado por email: SUNJOBS MARKETPLACE UNIPESSOAL LDA -> Tempo Suave (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:48 AM]   Associado por email: Saint - Gobain -> SUNJOBS MARKETPLACE UNIPESSOAL LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:48 AM]   Associado por email: Carlos Martins -> Saint - Gobain (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:48 AM]   Associado por email: Dona Lavandaria & Engomadoria -> Carlos Martins (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:49 AM]   Atualizado: SOLVILIGHT Lda. (ID: 924f3557-40a3-4794-9075-f417f9776e3b)
+[12:05:49 AM]   Associado por email: PLCMD Projetos Lda. -> Dona Lavandaria & Engomadoria (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:49 AM]   Inserido: Starface
+[12:05:49 AM]   Inserido: Dothome
+[12:05:50 AM]   Associado por email: Oxygiene -> PLCMD Projetos Lda. (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:50 AM]   Associado por email: Consigo Limpezas -> Oxygiene (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:50 AM]   Associado por email: Abstrato Circuito -> Consigo Limpezas (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:50 AM]   Inserido: Algodão Lavandaria
+[12:05:51 AM]   Associado por email: GNPHS, LDA -> Abstrato Circuito (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:51 AM]   Associado por email: Harmony4Ever -> GNPHS, LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:51 AM]   Associado por email: Trajetória Absoluta -> Harmony4Ever (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:51 AM]   Associado por email: SOCORRO FRANCISCO FERNANDES -> Trajetória Absoluta (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:52 AM]   Associado por email: Daniel Fuentes Tomaz, Unipessoal Lda -> SOCORRO FRANCISCO FERNANDES (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:52 AM]   Associado por email: Alves e Grou, Lda -> Daniel Fuentes Tomaz, Unipessoal Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:52 AM]   Associado por email: Perímetro Final – Limpeza, Manutenção e Serviços Lda -> Alves e Grou, Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:52 AM]   Associado por email: SOLIDOCEAN - UNIPESSOAL LDA -> Perímetro Final – Limpeza, Manutenção e Serviços Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:52 AM]   Inserido: Arlindo Faria
+[12:05:53 AM]   Associado por email: Círculo Navegante -> SOLIDOCEAN - UNIPESSOAL LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:53 AM]   Associado por email: Divas da Limpeza -> Círculo Navegante (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:53 AM]   Inserido: Hora Técnica
+[12:05:53 AM]   Associado por email: FELISMINA DOMINGOS UNIPESSOAL LDA  -> Divas da Limpeza (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:54 AM]   Inserido: Impacto Sábio - Unipessoal LDA (Weverton Souza)
+[12:05:54 AM]   Inserido: Janette Santos - Wash Station 
+[12:05:54 AM]   Associado por email: Gonçalo Nuno Mendes, Unipessoal, Lda. -> FELISMINA DOMINGOS UNIPESSOAL LDA  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:54 AM]   Inserido: Lava Maria - Mariana Silva Martins, unip, Lda
+[12:05:55 AM]   Associado por email: RikosRekintes - MAID2SHINE  -> Gonçalo Nuno Mendes, Unipessoal, Lda. (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:55 AM]   Associado por email: Conjugar Métodos, Lda - Vanytime -> RikosRekintes - MAID2SHINE  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:55 AM]   Inserido: Chamy
+[12:05:55 AM]   Associado por email: Divertimix Tours, Unipessoal LDA -> Conjugar Métodos, Lda - Vanytime (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:55 AM]   Associado por email: RikosRekintes - MAID2SHINE  -> Divertimix Tours, Unipessoal LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:56 AM]   Associado por email: Instant Movers, Lda -> RikosRekintes - MAID2SHINE  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:56 AM]   Associado por email: Gente Triunfante LDA -> Instant Movers, Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:56 AM]   Associado por email: CVZ Construções -> Gente Triunfante LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:56 AM]   Inserido: MYCAREFORCE - Leite Morais Unipessoal LDA
+[12:05:57 AM]   Inserido: Concept Laundry  - PAULOS & LWIANA, LDA.
+[12:05:57 AM]   Inserido: Equilíbrio D´Azul Lda
+[12:05:57 AM]   Inserido: CARES
+[12:05:57 AM]   Associado por email: BRANDÃO & BRITO SERVIÇOS DE LIMPEZAS, LDA -> CVZ Construções (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:58 AM]   Inserido: Lavandaria Perto de Mim - Bammito LDA
+[12:05:58 AM]   Inserido: Pretexto Funcional
+[12:05:58 AM]   Inserido: Serrão & Oliveira, Lda
+[12:05:58 AM]   Inserido: Engomadoria a Seu Gosto
+[12:05:59 AM]   Associado por email: Quinta da Patada -> BRANDÃO & BRITO SERVIÇOS DE LIMPEZAS, LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:59 AM]   Associado por email: Santos e Sanches -> Quinta da Patada (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:05:59 AM]   Inserido: Remate Celestial
+[12:05:59 AM]   Inserido: FC Saúde
+[12:06:00 AM]   Associado por email: SUAVE CAPRICHO-UNIPESSOAL LDA -> Santos e Sanches (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:00 AM]   Associado por email: BigTan -> SUAVE CAPRICHO-UNIPESSOAL LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:00 AM]   Associado por email: Dr Bricolagem -> BigTan (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:00 AM]   Associado por email: ImpactBubble -> Dr Bricolagem (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:00 AM]   Associado por email: Andiox -> ImpactBubble (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:01 AM]   Inserido: Arranjador - Pontos e Engenhocas, LDA
+[12:06:01 AM]   Inserido: ANDIOX TECHNICAL SERVICES
+[12:06:01 AM]   Inserido: Engomadoria Popota - Artur Viveiros
+[12:06:01 AM]   Inserido: Krepair Comercial
+[12:06:02 AM]   Inserido: JFA INSTALAÇÕES ELÉTRICA
+[12:06:02 AM]   Associado por email: MatDavy Nails -> Andiox (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:02 AM]   Inserido: Seaclean & Build Lda 
+[12:06:02 AM]   Associado por email: Rosângela Wenzel -> MatDavy Nails (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:03 AM]   Inserido: Vilhena Cardoso
+[12:06:03 AM]   Inserido: LAVCARPET
+[12:06:03 AM]   Inserido: Unicornvedette
+[12:06:03 AM]   Inserido: AJUDA RAPIDA
+[12:06:04 AM]   Inserido: EXCELSO DETALHE
+[12:06:04 AM]   Associado por email: A Dama do Ferro - Lara Monica Costa Machado  -> Rosângela Wenzel (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:04 AM]   Inserido: Jhonathan Wilton Fontana
+[12:06:04 AM]   Associado por email: Porto Clean House - Jaqueline Pereira Andrade -> A Dama do Ferro - Lara Monica Costa Machado  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:04 AM]   Inserido: PT Clean (Gustavo)
+[12:06:05 AM]   Inserido: Hemen limpezas - Lavender Objective- Hermen
+[12:06:05 AM]   Associado por email: Mezzanine Lavandaria Unipessoal, Lda -> Porto Clean House - Jaqueline Pereira Andrade (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:05 AM]   Associado por email: Limpezas para Ontem unipessoal LDA -> Mezzanine Lavandaria Unipessoal, Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:05 AM]   Inserido: Márcio Heleno Ferreira
+[12:06:06 AM]   Associado por email: Limpezas Pita -> Limpezas para Ontem unipessoal LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:06 AM]   Associado por email: Luciene Quilotty  -> Limpezas Pita (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:06 AM]   Inserido: Hugo Costa (Servtec)
+[12:06:06 AM]   Inserido: Silva & Bastos Multiservice
+[12:06:07 AM]   Associado por email: Vagner Faria (Logus Service) -> Luciene Quilotty  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:07 AM]   Associado por email: Natural Vet - JOANA MATADO -> Vagner Faria (Logus Service) (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:07 AM]   Inserido: Maria Rafaela Paris - Lavandaria & Serviços Premium
+[12:06:07 AM]   Inserido: Sidcley da Silva Souza
+[12:06:08 AM]   Associado por email: Espirito Privilegiado - Unipessoal, lda -> Natural Vet - JOANA MATADO (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:08 AM]   Associado por email: F&SaBrilhar  -> Espirito Privilegiado - Unipessoal, lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:08 AM]   Associado por email: Matriz Periférica LDA -> F&SaBrilhar  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:08 AM]   Inserido: Marques&Souza Cleaning - Pablo Henrique Souza Silva
+[12:06:08 AM]   Inserido: Clean Up Group Service
+[12:06:09 AM]   Inserido: Futuro vitalicio - Unipessoal Lda
+[12:06:09 AM]   Inserido: Limpezas Vanilda-VANILDA GONCALVES PEREIRA
+[12:06:09 AM]   Inserido: Caminhos Diligentes
+[12:06:09 AM]   Inserido: DI Jardins
+[12:06:10 AM]   Inserido: ASSUNTO VAPORIZADO
+[12:06:10 AM]   Inserido: MARIAMO ISSUF CHAPDAT
+[12:06:10 AM]   Associado por email: Fernanda Moreira -> Matriz Periférica LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:11 AM]   Inserido: Maria Estela da Silva Pinto Sousa
+[12:06:11 AM]   Associado por email: Edilene Sampaio Torres -> Fernanda Moreira (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:11 AM]   Associado por email: RENATA FELIPE SANTIAGO -> Edilene Sampaio Torres (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:11 AM]   Inserido: A. Homem do Gas unipessoal lda
+[12:06:11 AM]   Inserido: LUCIANA DE MELO
+[12:06:12 AM]   Inserido: Enredo Janota Unipessoal Lda.
+[12:06:12 AM]   Inserido: Edvaldo Bispo dos Santos - Mudanças Pega Tudo
+[12:06:12 AM]   Inserido: Jorge Filipe Faleiro Alves Cortiço 
+[12:06:12 AM]   Associado por email: TATIANA RODRIGUES ROSA FRAGOSO -> RENATA FELIPE SANTIAGO (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:13 AM]   Associado por email: Lopes Castela, Lda -> TATIANA RODRIGUES ROSA FRAGOSO (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:13 AM]   Inserido: Aline Ramos Gumieri Chinke
+[12:06:13 AM]   Inserido: WAVES CHAMPION-UNIPESSOAL LDA
+[12:06:13 AM]   Inserido: Paulo Patrick Silva Martiniano 
+[12:06:14 AM]   Inserido: GEP - Gestão de Peritagens, SA
+[12:06:14 AM]   Inserido: ESPIRITO SINGELO UNIPESSOAL LDA
+[12:06:14 AM]   Inserido: ANTARES unipessoal Lda 
+[12:06:14 AM]   Inserido: MANUELLA NASCIMENTO DONDONI
+[12:06:15 AM]   Inserido: Alquimia Sustentável- Unipessoal LDA   
+[12:06:15 AM]   Inserido: Empenho contagiante - Unipessoal LDA
+[12:06:15 AM]   Inserido: ELIANA DE CASSIA ANDRADE DE ARAUJO
+[12:06:15 AM]   Inserido: RUBEN ANDRE DA SILVA GOMES
+[12:06:16 AM]   Inserido: Danúbia Sinder Rodrigues 
+[12:06:16 AM]   Inserido: Gabriela Aparecida Freire de Oliveira
+[12:06:16 AM]   Atualizado: Projetos e Soluções Feligon LDA (ID: 7b068563-5494-4d6f-ac3a-abb43f41784b)
+[12:06:16 AM]   Inserido: Otimismo e Ousadia - Lavandaria Engomadoria Unipessoal, Lda
+[12:06:16 AM]   Inserido: RUI FILIPE DA SILVA RIBEIRO
+[12:06:17 AM]   Inserido: Cláudio Marcos Alves de Jesus Júnior
+[12:06:17 AM]   Inserido: JULIAN PEREZ ROA - ENGENHARIA E CONSULTORIA, UNIPESSOAL, LDA
+[12:06:17 AM]   Inserido: Telma Filipa Leal da Silva
+[12:06:17 AM]   Inserido: Glaucione da Silva 
+[12:06:18 AM]   Inserido: BRUNO SIMAS ALMEIDA
+[12:06:18 AM]   Associado por email: Leia Batista Ramos -> Lopes Castela, Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:06:18 AM]   Inserido: AT Informática Lda
+[12:06:18 AM]   Inserido: Lorena Maria Mendes Fernandes
+[12:06:19 AM]   Inserido: Gloria Fernanda da Costa Pereira Gonçalves
+[12:06:19 AM]   Inserido: Carla Elisa Simões Barbosa
+[12:06:19 AM]   Inserido: URGENT RATIO UNIPESSOAL LDA
+[12:06:19 AM]   Inserido: Impactante e Envolvente unipessoal , lda
+[12:06:20 AM]   Inserido: Project Up Enterprise,lda
+[12:06:20 AM]   Inserido: MÁRIO JOÃO DE ABREU REIS RODRIGUES
+[12:06:20 AM]   Inserido: EMANUEL FERREIRA BAPTISTA PINHO
+[12:06:20 AM]   Inserido: ITAMARA DE SOUZA HOLANDA
+[12:06:21 AM]   Inserido: Pestrochas - Desinfestação. Lda 
+[12:06:21 AM]   Inserido: Paulo José Moreira Ferreira
+[12:06:21 AM]   Inserido: SERGIO MIGUEL FERREIRO ALVES SOARES
+[12:06:21 AM]   Inserido: SMART SPIN LDA
+[12:06:22 AM]   Inserido: GLOOSERV UNIPESSOAL LDA
+[12:06:22 AM]   Inserido: Tatiane Correia da Rocha de Oliveira
+[12:06:22 AM]   Inserido: Flávio Abílio Leal Ferreira Carvalho 
+[12:06:22 AM]   Inserido: Aline Cristina da Silva Soares Luiz
+[12:06:22 AM]   Inserido: GLOBALCLEAN UNIPESSOAL, LDA
+[12:06:23 AM]   Inserido: WANEZA BRUNA SILVA SARINHO MARTINS
+[12:06:23 AM]   Inserido: JEFFERSON EMANUEL DA SILVA
+[12:06:23 AM]   Inserido: Cardoso & Torres,lda
+[12:06:23 AM]   Inserido: XPRESS - INSTALAÇÕES E REPARAÇOES 24 HORAS LDA
+[12:06:24 AM]   Inserido: Juliana Cristina Nascimento da Silva
+[12:06:24 AM]   Inserido: Diego Amâncio Lovares 
+[12:06:24 AM]   Inserido: Carol Vitorio Duarte Lechinski
+[12:06:24 AM]   Inserido: Maria Varela - Serviços de limpeza Unipessoal,lda
+[12:06:25 AM]   Inserido: Cintia Silva 
+[12:06:25 AM]   Inserido: Wendel de Almeida Lima
+[12:06:25 AM]   Inserido: Renato Ferreira da Costa
+[12:06:25 AM]   Inserido: ARTHUR CARLOS VIEIRA PIERONI
+[12:06:26 AM]   Inserido: Mordomias Semanais LDA
+[12:06:26 AM]   Inserido: PATRICIA EVARISTO DIAS, UNIPESSOAL LDA
+[12:06:26 AM]   Inserido: Inovadorambiente Unipessoal Lda  
+[12:06:26 AM]   Inserido: LUCAS OLIVEIRA LIMA
+[12:06:26 AM]   Inserido: OPINIÕES & GUARDIÕES - LDA
+[12:06:27 AM]   Inserido: DESAFIO PIONEIRO UNIP LDA
+[12:06:27 AM]   Inserido: EDGAR JOSE BARROS DE SOUSA
+[12:06:27 AM]   Inserido: Almeida & Klem Lda
+[12:06:27 AM]   Inserido: RAFAEL FILIPE OLIVEIRA UNIPESSOAL LDA
+[12:06:28 AM]   Inserido: Mayara Aquino de Araujo
+[12:06:28 AM]   Inserido: Maria Augusta Martins Cardoso 
+[12:06:28 AM]   Inserido: Brunalex, Unipessoal Lda
+[12:06:28 AM]   Inserido: Ana Sofia Macedo Santos Jesus
+[12:06:29 AM]   Inserido: Adilson Morais 
+[12:06:29 AM]   Inserido: Tesouro Prolifero 
+[12:06:29 AM]   Inserido: Samantha Augusto de Oliveira Mendes
+[12:06:29 AM]   Inserido: PAULO CESAR DIAS DA GRAÇA
+[12:06:30 AM]   Inserido: BOLHAS DE EMOÇAO LAVANDARIA UNIPESSOAL LDA
+[12:06:30 AM]   Inserido: SAVVY GOLDEN SERVIÇOS E COMÉRCIO LDA
+[12:06:30 AM]   Inserido: Fernando Jorge da Silva Costa
+[12:06:30 AM]   Inserido: Mateus Clarindo Bastos
+[12:06:31 AM]   Inserido: MIGUEL SILVA GOUVEIA UNIPESSOAL LDA
+[12:06:31 AM]   Inserido: Américo Taciano Gouveia Unipessoal Lda
+[12:06:31 AM]   Inserido: Alessandro Luís Machado
+[12:06:31 AM]   Inserido: Ana Paula Aquino Araujo Silva
+[12:06:32 AM]   Inserido: V & H HUMAN SERVICES, SOCIEDADE UNIPESSOAL LDA
+[12:06:32 AM]   Inserido: Josilda Bispo de Sousa 
+[12:06:32 AM]   Inserido: CAMADAS D`HARMONIA LIMPISSIMA LDA
+[12:06:32 AM]   Inserido: Danielle Rodrigues Avelar
+[12:06:33 AM]   Inserido: Lógica Adjacente -Unipessoal Lda  
+[12:06:33 AM]   Inserido: João Paulo Teixeira da Silva
+[12:06:33 AM]   Inserido: Brilliant Care Unipessoal LDA
+[12:06:33 AM]   Inserido: MARCELO PEDRO FERREIRA
+[12:06:34 AM]   Inserido: AZUL PREDICADO LDA
+[12:06:34 AM]   Inserido: Noémia Conceição Nunes
+[12:06:34 AM]   Inserido: ELIZEU FRANCISCO DE ABREU FILHO
+[12:06:34 AM]   Inserido: INFINITOBÁLSAMO UNIPESSOAL LDA
+[12:06:35 AM]   Inserido: Rui Miguel Alves Rodrigues UNIP. LDA
+[12:06:35 AM]   Inserido: VALCIANE DE PAULA, UNIPESSOAL LDA 
+[12:06:35 AM]   Inserido: HUGO FILOMENO DE NOVAIS FERREIRA
+[12:06:35 AM]   Inserido: FLEXCARE UNIPESSOAL LDA 
+[12:06:35 AM]   Inserido: Trajeto Subtil, Lda
+[12:06:36 AM]   Inserido: CORTESIA IMPERDÍVEL - UNIPESSOAL LDA 
+[12:06:36 AM]   Inserido: MICAEL ARTUR BARROS LOPES MONTEIRO
+[12:06:36 AM]   Inserido: SERGIO RICARDO TEIXEIRA BATISTA
+[12:06:36 AM]   Inserido: RICARDO ANTONIO DE JESUS CASTRO
+[12:06:37 AM]   Inserido: Matilha Moderna Unipessoal Lda
+[12:06:37 AM]   Inserido: In'Canto da Carriça LDA
+[12:06:37 AM]   Inserido: YULLI BONFIM COSTA 
+[12:06:38 AM]   Inserido: RIBAFIX,lda
+[12:06:38 AM]   Inserido: ADEMIR CESAR RODRIGUES
+[12:06:38 AM]   Inserido: BRUNO DAVID BERNARDINO MOREIRA DA SILVA
+[12:06:38 AM]   Inserido: Vet Sobre Rodas 
+[12:06:39 AM]   Inserido: Confiança e Versatilidade , LDA 
+[12:06:39 AM]   Inserido: ELITE SOLUTIONS, LDA
+[12:06:39 AM]   Inserido: Igor Godinho Unipessoal Lda
+[12:06:39 AM]   Inserido: Anna Paula Andrade Miranda Costa
+[12:06:39 AM]   Inserido: Rui Manuel Cerdeira Cruz
+[12:06:40 AM]   Inserido: ALIADAPUREZA, LDA 
+[12:06:40 AM]   Inserido: Genial Conection, lda
+[12:06:40 AM]   Inserido: DANILO FERNANDES DA SILVA
+[12:06:41 AM]   Inserido: TEIXEIRA NUMBY, UNIPESSOAL LDA
+[12:06:41 AM]   Inserido: Virtudes Fantasticas, lda 
+[12:06:41 AM]   Ignorando: Prestador Teste (teste ou sem email)
+[12:06:41 AM]   Inserido: Henderson Gonçalves Martins associação unipessoal LDA
+[12:06:41 AM]   Inserido: PRÓSPERA JORNADA - LDA
+[12:06:41 AM]   Inserido: MANFORCLIMA, UNIPESSOAL LDA
+[12:06:42 AM]   Inserido: CELESTIALTULIP - UNIPESSOAL LDA
+[12:06:42 AM]   Inserido: SUMÁRIOS & ARDÓSIAS - UNIPESSOAL LDA
+[12:06:42 AM]   Inserido: TURBOWHISPER - ELETRICIDADE LDA
+[12:06:42 AM]   Inserido: DALLY UNIP LDA
+[12:06:43 AM]   Inserido: Nível Periférico -Unipessoal LDA 
+[12:06:43 AM]   Inserido: KAREN MARCELA MOURA DE OLIVEIRA
+[12:06:43 AM]   Inserido: RELAMPOLUZ, UNIPESSOAL LDA
+[12:06:43 AM]   Inserido: Expressão Generosa, Lda
+[12:06:44 AM]   Inserido: RAFAEL FILIPE OLIVEIRA SOARES
+[12:06:44 AM]   Inserido: LUIZ & FRANÇA, LDA
+[12:06:44 AM]   Inserido: JOSIE APARECIDA DE OLIVEIRA
+[12:06:44 AM]   Inserido: IZABEL MATOS, UNIPESSOAL LDA
+[12:06:45 AM]   Inserido: SUSANA IARA APARECIDA CAETANO NOVAIS
+[12:06:45 AM]   Inserido: DILENE DE NAZARE MOREIRA FERREIRA
+[12:06:45 AM]   Inserido: EXUBERBUBBLE, LDA
+[12:06:45 AM]   Inserido: BEYOND SERVICES, UNIPESSOAL LDA
+[12:06:45 AM]   Inserido: GABRIEL FREIRE - SOLUÇÕES INTEGRADAS, UNIPESSOAL LDA
+[12:06:46 AM]   Inserido: Milton Junior, Unipessoal LDA
+[12:06:46 AM]   Inserido: CTDI - Centro Técnico e Distribuição Informática, Lda
+[12:06:46 AM]   Inserido: Paulo Alexandre Conceição
+[12:06:46 AM]   Inserido: William Vinícius Damazio de Oliveira
+[12:06:47 AM]   Inserido: Carlos Manuel Figueiredo da Costa 
+[12:06:47 AM]   Inserido: GESSIEL DE SOUZA
+[12:06:47 AM]   Inserido: PAULINA MANUELY XENOFONTE MORAIS CONRADO
+[12:06:47 AM]   Inserido: Amanda Moyses Garbellini
+[12:06:48 AM]   Inserido: Maria Millena da Silva Freitas
+[12:06:48 AM]   Inserido: Yolanda Gaspar Gia
+[12:06:48 AM]   Inserido: QUICK HELP SOLUTIONS SERVICES, LDA
+[12:06:48 AM]   Inserido: LUÍS MIGUEL VIEIRA , UNIPESSOAL LDA
+[12:06:48 AM]   Inserido: SOMENTEXEMPLAR - SOCIEDADE UNIPESSOAL LDA
+[12:06:49 AM]   Inserido: DIEGO STEPHANE COELHO SALLES
+[12:06:49 AM]   Inserido: Amplitude Gigante, LDA
+[12:06:49 AM]   Inserido: Júlio Andre Dias Pinto Sereno Cabral
+[12:06:49 AM]   Inserido: MOVELTSOLUT, UNIPESSOAL LDA
+[12:06:50 AM]   Inserido: Maria Eduarda Alves Moreira
+[12:06:50 AM]   Inserido: António Carlos De Francisco Madeira
+[12:06:50 AM]   Inserido: Osias De Oliveira Coelho
+[12:06:50 AM]   Inserido: Frescuramedida Unip. LDA.
+[12:06:51 AM]   Inserido: Revoada D´Exitos, lda 
+[12:06:51 AM]   Inserido: Cirlene Melocro Coelho
+[12:06:51 AM]   Inserido: BRENA KAROLINY HENRIQUES GOMES
+[12:06:51 AM]   Inserido: PRISCILA KAMILLA PEREIRA SOUSA
+[12:06:52 AM]   Inserido: GOTA DE ÁGUA - PISCINAS E WELLNESS, LDA
+[12:06:52 AM]   Inserido: Silêncio Escondido , Unipessoal Lda
+[12:06:52 AM] ===============================================
+[12:06:52 AM] IMPORT CONCLUIDO
+[12:06:52 AM] Total processados: 294
+[12:06:52 AM] Inseridos: 217
+[12:06:52 AM] Atualizados: 75
+[12:06:52 AM] Erros: 0
+[12:06:52 AM] ===============================================
+[12:09:13 AM] A processar ficheiro: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/provider_data.xlsx
+[12:09:13 AM] Ficheiro encontrado: 68.23 KB
+[12:09:13 AM] Total de providers no ficheiro: 294
+[12:09:13 AM]   Ignorando: FIXO teste (teste ou sem email)
+[12:09:14 AM]   Associado por email: Lavandaria Engomadoria Natalia -> Leia Batista Ramos (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:14 AM]   Associado por email: Maria Saba -> Lavandaria Engomadoria Natalia (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:14 AM]   Associado por email: Interdomicílio -> Maria Saba (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:14 AM]   Associado por email: Costume Equilibrado -> Interdomicílio (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:15 AM]   Associado por email: ROTOLI TV MARCELO -> Costume Equilibrado (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:15 AM]   Atualizado: Biomex (ID: 96118316-fb04-46f8-afc8-adff206ffa5d)
+[12:09:15 AM]   Associado por email: Rasiro Industrial Services -> ROTOLI TV MARCELO (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:15 AM]   Associado por email: Trevo Solutions -> Rasiro Industrial Services (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:15 AM]   Associado por email: Rameuro-Europa Serviços -> Trevo Solutions (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:16 AM]   Associado por email: Passe Bem  Engomadoria Lda -> Rameuro-Europa Serviços (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:16 AM]   Associado por email: Servitis -> Passe Bem  Engomadoria Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:16 AM]   Atualizado: Mesos Portugal (ID: e55514dc-477f-437f-9b60-4b0735bcd1a5)
+[12:09:16 AM]   Atualizado: LISTACOS Lda (ID: 7eeb9bd1-a068-4d54-b332-c67ffe052242)
+[12:09:16 AM]   Associado por email: CARES Assistência e Reparações -> Servitis (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:17 AM]   Associado por email: PC MÉDIC Lda -> CARES Assistência e Reparações (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:17 AM]   Associado por email: Zema Construções e Serralharia -> PC MÉDIC Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:17 AM]   Associado por email: Rouparia Aninhas -> Zema Construções e Serralharia (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:17 AM]   Associado por email: CLIMEX  CONTROLO DE AMBIENTE S.A -> Rouparia Aninhas (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:17 AM]   Associado por email: Mymcs-Márcio Gomes Lda -> CLIMEX  CONTROLO DE AMBIENTE S.A (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:18 AM]   Associado por email: AIR Chave -> Mymcs-Márcio Gomes Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:18 AM]   Atualizado: Desentop (ID: 4847b1c8-4408-47b9-ba9e-31d55f4885cd)
+[12:09:18 AM]   Associado por email: Réplica Lda. -> AIR Chave (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:18 AM]   Associado por email: Tempo Suave -> Réplica Lda. (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:19 AM]   Associado por email: SUNJOBS MARKETPLACE UNIPESSOAL LDA -> Tempo Suave (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:19 AM]   Associado por email: Saint - Gobain -> SUNJOBS MARKETPLACE UNIPESSOAL LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:19 AM]   Associado por email: Carlos Martins -> Saint - Gobain (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:19 AM]   Associado por email: Dona Lavandaria & Engomadoria -> Carlos Martins (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:19 AM]   Atualizado: SOLVILIGHT Lda. (ID: 924f3557-40a3-4794-9075-f417f9776e3b)
+[12:09:20 AM]   Associado por email: PLCMD Projetos Lda. -> Dona Lavandaria & Engomadoria (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:20 AM]   Atualizado: Starface (ID: d5e1eedc-dd71-4fd7-a1db-b4698630286e)
+[12:09:20 AM]   Atualizado: Dothome (ID: 1c1c5e88-72ce-41c6-9c33-ce3d540c30af)
+[12:09:20 AM]   Associado por email: Oxygiene -> PLCMD Projetos Lda. (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:20 AM]   Associado por email: Consigo Limpezas -> Oxygiene (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:21 AM]   Associado por email: Abstrato Circuito -> Consigo Limpezas (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:21 AM]   Atualizado: Algodão Lavandaria (ID: 7fa686b0-bdc4-47ca-829e-c4e8812931b8)
+[12:09:21 AM]   Associado por email: GNPHS, LDA -> Abstrato Circuito (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:21 AM]   Associado por email: Harmony4Ever -> GNPHS, LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:21 AM]   Associado por email: Trajetória Absoluta -> Harmony4Ever (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:22 AM]   Associado por email: SOCORRO FRANCISCO FERNANDES -> Trajetória Absoluta (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:22 AM]   Associado por email: Daniel Fuentes Tomaz, Unipessoal Lda -> SOCORRO FRANCISCO FERNANDES (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:22 AM]   Associado por email: Alves e Grou, Lda -> Daniel Fuentes Tomaz, Unipessoal Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:22 AM]   Associado por email: Perímetro Final – Limpeza, Manutenção e Serviços Lda -> Alves e Grou, Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:23 AM]   Associado por email: SOLIDOCEAN - UNIPESSOAL LDA -> Perímetro Final – Limpeza, Manutenção e Serviços Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:23 AM]   Atualizado: Arlindo Faria (ID: 78e839ec-5a06-4610-b7c5-081ca129f3da)
+[12:09:23 AM]   Associado por email: Círculo Navegante -> SOLIDOCEAN - UNIPESSOAL LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:23 AM]   Associado por email: Divas da Limpeza -> Círculo Navegante (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:23 AM]   Atualizado: Hora Técnica (ID: 76cbbc1a-c030-41b9-b274-97bc49dd57ed)
+[12:09:24 AM]   Associado por email: FELISMINA DOMINGOS UNIPESSOAL LDA  -> Divas da Limpeza (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:24 AM]   Atualizado: Impacto Sábio - Unipessoal LDA (Weverton Souza) (ID: 8c7ed815-f2bb-49a8-b3d8-570fa769d5b7)
+[12:09:24 AM]   Atualizado: Janette Santos - Wash Station  (ID: 30804072-01c8-442b-97b0-25c9e5369085)
+[12:09:24 AM]   Associado por email: Gonçalo Nuno Mendes, Unipessoal, Lda. -> FELISMINA DOMINGOS UNIPESSOAL LDA  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:24 AM]   Atualizado: Lava Maria - Mariana Silva Martins, unip, Lda (ID: de3ebf4b-ed61-4b19-98d2-2a82a810536e)
+[12:09:25 AM]   Associado por email: RikosRekintes - MAID2SHINE  -> Gonçalo Nuno Mendes, Unipessoal, Lda. (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:25 AM]   Associado por email: Conjugar Métodos, Lda - Vanytime -> RikosRekintes - MAID2SHINE  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:25 AM]   Atualizado: Chamy (ID: 06c5aea7-f012-4e21-95a1-a47804f89f9d)
+[12:09:25 AM]   Associado por email: Divertimix Tours, Unipessoal LDA -> Conjugar Métodos, Lda - Vanytime (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:25 AM]   Associado por email: RikosRekintes - MAID2SHINE  -> Divertimix Tours, Unipessoal LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:26 AM]   Associado por email: Instant Movers, Lda -> RikosRekintes - MAID2SHINE  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:26 AM]   Associado por email: Gente Triunfante LDA -> Instant Movers, Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:26 AM]   Associado por email: CVZ Construções -> Gente Triunfante LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:26 AM]   Atualizado: MYCAREFORCE - Leite Morais Unipessoal LDA (ID: 19eb8df3-9ab1-47bd-b8ce-844b2e12216c)
+[12:09:26 AM]   Atualizado: Concept Laundry  - PAULOS & LWIANA, LDA. (ID: 53ef0327-2996-4279-b969-bb076ea37b84)
+[12:09:27 AM]   Atualizado: Equilíbrio D´Azul Lda (ID: b7299e10-6e72-4876-a588-aa9678ee7fdf)
+[12:09:27 AM]   Atualizado: CARES (ID: dbe84801-2cbf-4f55-bf98-6c8e326117ec)
+[12:09:27 AM]   Associado por email: BRANDÃO & BRITO SERVIÇOS DE LIMPEZAS, LDA -> CVZ Construções (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:27 AM]   Atualizado: Lavandaria Perto de Mim - Bammito LDA (ID: 8f23da12-2c5f-4aae-a78a-756ec370cd9e)
+[12:09:27 AM]   Atualizado: Pretexto Funcional (ID: 65becb23-9f0a-448d-8fd3-1ab925e2b72d)
+[12:09:27 AM]   Atualizado: Serrão & Oliveira, Lda (ID: 597672d0-ca0d-4d7c-804e-2c256d9bfcaf)
+[12:09:28 AM]   Atualizado: Engomadoria a Seu Gosto (ID: c1a566a0-008e-47c6-951b-61cc9b7b3adb)
+[12:09:28 AM]   Associado por email: Quinta da Patada -> BRANDÃO & BRITO SERVIÇOS DE LIMPEZAS, LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:28 AM]   Associado por email: Santos e Sanches -> Quinta da Patada (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:28 AM]   Atualizado: Remate Celestial (ID: ee03cc59-3d06-4604-b725-6c112d78ff39)
+[12:09:29 AM]   Atualizado: FC Saúde (ID: 3d66f45d-27f7-445a-ab8e-ee6e125c2466)
+[12:09:29 AM]   Associado por email: SUAVE CAPRICHO-UNIPESSOAL LDA -> Santos e Sanches (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:29 AM]   Associado por email: BigTan -> SUAVE CAPRICHO-UNIPESSOAL LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:29 AM]   Associado por email: Dr Bricolagem -> BigTan (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:29 AM]   Associado por email: ImpactBubble -> Dr Bricolagem (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:30 AM]   Associado por email: Andiox -> ImpactBubble (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:30 AM]   Atualizado: Arranjador - Pontos e Engenhocas, LDA (ID: 45a2ab6f-d683-4062-a552-77cc520d097c)
+[12:09:30 AM]   Atualizado: ANDIOX TECHNICAL SERVICES (ID: 25504bcc-ff4c-4f86-8a7e-dcda42d59110)
+[12:09:30 AM]   Atualizado: Engomadoria Popota - Artur Viveiros (ID: 11cda3db-7465-48e4-8a4d-a592e7bf813e)
+[12:09:30 AM]   Atualizado: Krepair Comercial (ID: 9af01828-2e20-4979-8d73-37f12f54558e)
+[12:09:30 AM]   Atualizado: JFA INSTALAÇÕES ELÉTRICA (ID: 9c41e3ed-4e1d-4d18-807b-8a53cebb30ab)
+[12:09:31 AM]   Associado por email: MatDavy Nails -> Andiox (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:31 AM]   Atualizado: Seaclean & Build Lda  (ID: 93486ece-2a7b-4eac-9b8c-0daedd5f085d)
+[12:09:31 AM]   Associado por email: Rosângela Wenzel -> MatDavy Nails (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:31 AM]   Atualizado: Vilhena Cardoso (ID: 52035040-d8d7-4c51-873f-16e8e2bd02a0)
+[12:09:31 AM]   Atualizado: LAVCARPET (ID: 81b62a2b-a39e-42ac-863e-8c606483b641)
+[12:09:31 AM]   Atualizado: Unicornvedette (ID: 2c8c1b97-68b1-4ccb-a759-8b277d4fa3e4)
+[12:09:32 AM]   Atualizado: AJUDA RAPIDA (ID: 45a4d367-edd6-4ff2-aa45-517a1412aff0)
+[12:09:32 AM]   Atualizado: EXCELSO DETALHE (ID: c790e405-50d1-4916-a2f3-059891576d13)
+[12:09:32 AM]   Associado por email: A Dama do Ferro - Lara Monica Costa Machado  -> Rosângela Wenzel (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:32 AM]   Atualizado: Jhonathan Wilton Fontana (ID: c226792e-b23c-4ec7-a0d9-5087df603c01)
+[12:09:32 AM]   Associado por email: Porto Clean House - Jaqueline Pereira Andrade -> A Dama do Ferro - Lara Monica Costa Machado  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:33 AM]   Atualizado: PT Clean (Gustavo) (ID: 4eb9d7ad-f9a1-48eb-9c76-d5146f646a20)
+[12:09:33 AM]   Atualizado: Hemen limpezas - Lavender Objective- Hermen (ID: 7b4abf49-916d-4d51-b52d-e1b08116b661)
+[12:09:33 AM]   Associado por email: Mezzanine Lavandaria Unipessoal, Lda -> Porto Clean House - Jaqueline Pereira Andrade (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:33 AM]   Associado por email: Limpezas para Ontem unipessoal LDA -> Mezzanine Lavandaria Unipessoal, Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:33 AM]   Atualizado: Márcio Heleno Ferreira (ID: 33db3fa1-8b9a-4ddd-a174-3bb9ee3bf564)
+[12:09:34 AM]   Associado por email: Limpezas Pita -> Limpezas para Ontem unipessoal LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:34 AM]   Associado por email: Luciene Quilotty  -> Limpezas Pita (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:34 AM]   Atualizado: Hugo Costa (Servtec) (ID: 1f20716f-1623-4abd-addd-44fe4a3ac8b0)
+[12:09:34 AM]   Atualizado: Silva & Bastos Multiservice (ID: 123d265e-58f7-48e9-a2aa-2e87d453b98f)
+[12:09:34 AM]   Associado por email: Vagner Faria (Logus Service) -> Luciene Quilotty  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:35 AM]   Associado por email: Natural Vet - JOANA MATADO -> Vagner Faria (Logus Service) (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:35 AM]   Atualizado: Maria Rafaela Paris - Lavandaria & Serviços Premium (ID: 50de8f84-975a-4458-97a7-ec3e2d57c090)
+[12:09:35 AM]   Atualizado: Sidcley da Silva Souza (ID: 6ef995c3-d959-475a-9571-89fdfea5a459)
+[12:09:35 AM]   Associado por email: Espirito Privilegiado - Unipessoal, lda -> Natural Vet - JOANA MATADO (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:35 AM]   Associado por email: F&SaBrilhar  -> Espirito Privilegiado - Unipessoal, lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:35 AM]   Associado por email: Matriz Periférica LDA -> F&SaBrilhar  (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:36 AM]   Atualizado: Marques&Souza Cleaning - Pablo Henrique Souza Silva (ID: 4148f861-14c9-4295-a3be-fa284b52f2a6)
+[12:09:36 AM]   Atualizado: Clean Up Group Service (ID: d7e09d04-5756-4cd4-8d26-125b14ca310b)
+[12:09:36 AM]   Atualizado: Futuro vitalicio - Unipessoal Lda (ID: 0929381e-6074-4d31-b329-3e709ed713d6)
+[12:09:36 AM]   Atualizado: Limpezas Vanilda-VANILDA GONCALVES PEREIRA (ID: 3f6917a5-c027-4c60-9301-109bdaecb4fc)
+[12:09:36 AM]   Atualizado: Caminhos Diligentes (ID: cd45362e-75cd-42c2-8e22-01be410a68d3)
+[12:09:36 AM]   Atualizado: DI Jardins (ID: 3bb9ba96-44e9-40ee-90a0-a3e7afe487e5)
+[12:09:37 AM]   Atualizado: ASSUNTO VAPORIZADO (ID: b30591c4-5bf4-451d-9794-b3885cfdfac4)
+[12:09:37 AM]   Atualizado: MARIAMO ISSUF CHAPDAT (ID: 3a1e5308-a1b5-40df-aa51-0491e56662fe)
+[12:09:37 AM]   Associado por email: Fernanda Moreira -> Matriz Periférica LDA (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:37 AM]   Atualizado: Maria Estela da Silva Pinto Sousa (ID: c959cb8c-c120-48fb-b3da-11a03cfd33b6)
+[12:09:37 AM]   Associado por email: Edilene Sampaio Torres -> Fernanda Moreira (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:38 AM]   Associado por email: RENATA FELIPE SANTIAGO -> Edilene Sampaio Torres (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:38 AM]   Atualizado: A. Homem do Gas unipessoal lda (ID: f71c0103-a34a-4bca-a527-ceba0db47b97)
+[12:09:38 AM]   Atualizado: LUCIANA DE MELO (ID: 86adcbda-9dce-4387-bcef-ac4d77d84639)
+[12:09:38 AM]   Atualizado: Enredo Janota Unipessoal Lda. (ID: 79c1f244-ebaf-4fdd-adf9-81acafd56026)
+[12:09:38 AM]   Atualizado: Edvaldo Bispo dos Santos - Mudanças Pega Tudo (ID: e62f35fe-32eb-4a68-a400-1823f3a049fd)
+[12:09:38 AM]   Atualizado: Jorge Filipe Faleiro Alves Cortiço  (ID: 78459c1b-f3af-4d0a-96cb-dfcd16e4f821)
+[12:09:38 AM]   Associado por email: TATIANA RODRIGUES ROSA FRAGOSO -> RENATA FELIPE SANTIAGO (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:39 AM]   Associado por email: Lopes Castela, Lda -> TATIANA RODRIGUES ROSA FRAGOSO (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:39 AM]   Atualizado: Aline Ramos Gumieri Chinke (ID: 7b1c792b-7e57-4062-a787-c33660959a5c)
+[12:09:39 AM]   Atualizado: WAVES CHAMPION-UNIPESSOAL LDA (ID: 7592569b-ab9f-4246-902b-428fa3000254)
+[12:09:39 AM]   Atualizado: Paulo Patrick Silva Martiniano  (ID: 8f49686b-9526-413d-ba37-8ebfd8ed7f55)
+[12:09:39 AM]   Atualizado: GEP - Gestão de Peritagens, SA (ID: 42eb4fbc-f4f2-4707-9990-9fe778e45574)
+[12:09:40 AM]   Atualizado: ESPIRITO SINGELO UNIPESSOAL LDA (ID: cc7c7fbc-dc6b-4be7-ae9f-347c363f8f43)
+[12:09:40 AM]   Atualizado: ANTARES unipessoal Lda  (ID: b3580ec2-d0de-4680-b66e-4e9398edfc46)
+[12:09:40 AM]   Atualizado: MANUELLA NASCIMENTO DONDONI (ID: fde9f880-85da-4776-9a6c-5bf8b65ee1e7)
+[12:09:40 AM]   Atualizado: Alquimia Sustentável- Unipessoal LDA    (ID: fe403ba2-bdf4-42f6-a470-542837132179)
+[12:09:40 AM]   Atualizado: Empenho contagiante - Unipessoal LDA (ID: 92138929-cd94-4ee0-9101-beffae2d3a6b)
+[12:09:40 AM]   Atualizado: ELIANA DE CASSIA ANDRADE DE ARAUJO (ID: 23c3a00d-b10e-48ba-a2ce-6832073a2a62)
+[12:09:40 AM]   Atualizado: RUBEN ANDRE DA SILVA GOMES (ID: bbebfdc0-1b70-407d-80c3-0d2c1ce6a3ee)
+[12:09:41 AM]   Atualizado: Danúbia Sinder Rodrigues  (ID: 2321cdd1-ea74-4f0d-9433-ecc0073c61f1)
+[12:09:41 AM]   Atualizado: Gabriela Aparecida Freire de Oliveira (ID: 0e66b6c7-0f9c-4092-b54f-8328c7377da3)
+[12:09:41 AM]   Atualizado: Projetos e Soluções Feligon LDA (ID: 7b068563-5494-4d6f-ac3a-abb43f41784b)
+[12:09:41 AM]   Atualizado: Otimismo e Ousadia - Lavandaria Engomadoria Unipessoal, Lda (ID: d4afd4bc-c43a-4621-a324-b08ebf0f1270)
+[12:09:41 AM]   Atualizado: RUI FILIPE DA SILVA RIBEIRO (ID: 1a81e342-4cf9-4658-8e36-83fa8dfceeaf)
+[12:09:41 AM]   Atualizado: Cláudio Marcos Alves de Jesus Júnior (ID: 2bb640d0-39d2-4dad-9d82-3aa4615a400e)
+[12:09:42 AM]   Atualizado: JULIAN PEREZ ROA - ENGENHARIA E CONSULTORIA, UNIPESSOAL, LDA (ID: c494940f-7e48-47b2-8fca-84329346b2eb)
+[12:09:42 AM]   Atualizado: Telma Filipa Leal da Silva (ID: 833c3795-eb46-4d6c-ac34-016e86bfd985)
+[12:09:42 AM]   Atualizado: Glaucione da Silva  (ID: 3ff13062-46cf-46ca-b60d-29d3c152b8ae)
+[12:09:42 AM]   Atualizado: BRUNO SIMAS ALMEIDA (ID: a2ff1920-6784-433f-98d8-7a1792dea874)
+[12:09:42 AM]   Associado por email: Leia Batista Ramos -> Lopes Castela, Lda (ID: 52abbb40-7e63-4a8a-a34a-e6e8d4963d15)
+[12:09:42 AM]   Atualizado: AT Informática Lda (ID: 436d36e1-8740-473c-9c33-f6b30a800d0f)
+[12:09:43 AM]   Atualizado: Lorena Maria Mendes Fernandes (ID: 5bf12832-a229-47e9-85d7-741011d51d51)
+[12:09:43 AM]   Atualizado: Gloria Fernanda da Costa Pereira Gonçalves (ID: 7a70974b-4bad-4d14-9c60-64ec4084eab7)
+[12:09:43 AM]   Atualizado: Carla Elisa Simões Barbosa (ID: 125bc5c1-baec-42ab-bb8d-21408b6709d7)
+[12:09:43 AM]   Atualizado: URGENT RATIO UNIPESSOAL LDA (ID: 18206459-6c16-43c9-9477-1eef5dab942f)
+[12:09:43 AM]   Atualizado: Impactante e Envolvente unipessoal , lda (ID: 89f4529f-3eb1-4fcf-b83e-c3ffdc85f60d)
+[12:09:43 AM]   Atualizado: Project Up Enterprise,lda (ID: e084d6af-26ae-4186-a3a7-76996aa4b186)
+[12:09:43 AM]   Atualizado: MÁRIO JOÃO DE ABREU REIS RODRIGUES (ID: c04caec9-4346-49d0-8c16-316cbccde24a)
+[12:09:44 AM]   Atualizado: EMANUEL FERREIRA BAPTISTA PINHO (ID: 1c33d1eb-87d7-46f0-8182-139da799c947)
+[12:09:44 AM]   Atualizado: ITAMARA DE SOUZA HOLANDA (ID: 168949ae-9b50-4d53-8498-a97f9224b2b3)
+[12:09:44 AM]   Atualizado: Pestrochas - Desinfestação. Lda  (ID: db5d42ba-c018-4478-90c5-dcccedbca410)
+[12:09:44 AM]   Atualizado: Paulo José Moreira Ferreira (ID: e71c1eb2-3ab1-4707-ac7e-b608a18059ac)
+[12:09:44 AM]   Atualizado: SERGIO MIGUEL FERREIRO ALVES SOARES (ID: 386ee61b-fdd8-446e-97dd-28d80f7999e4)
+[12:09:44 AM]   Atualizado: SMART SPIN LDA (ID: 3c397f6a-71f3-4a9b-8c8a-9f871d6c4586)
+[12:09:45 AM]   Atualizado: GLOOSERV UNIPESSOAL LDA (ID: 7dfd702c-6b2f-4e06-8878-6e653a3fd41e)
+[12:09:45 AM]   Atualizado: Tatiane Correia da Rocha de Oliveira (ID: dda7b8ae-9527-4771-be9a-1e098b9d832e)
+[12:09:45 AM]   Atualizado: Flávio Abílio Leal Ferreira Carvalho  (ID: a44c15ae-68cb-4545-9040-c3c9cc5ae061)
+[12:09:45 AM]   Atualizado: Aline Cristina da Silva Soares Luiz (ID: 20df4174-5e84-479b-bdb2-5caf8fb4eafe)
+[12:09:45 AM]   Atualizado: GLOBALCLEAN UNIPESSOAL, LDA (ID: 4aff8a13-d81c-4acf-b037-b6ab33af8052)
+[12:09:45 AM]   Atualizado: WANEZA BRUNA SILVA SARINHO MARTINS (ID: 3ffca0ae-afcd-467f-b2f7-7f87025523f4)
+[12:09:46 AM]   Atualizado: JEFFERSON EMANUEL DA SILVA (ID: d3543b31-af49-484a-b199-d8e2c75b6978)
+[12:09:46 AM]   Atualizado: Cardoso & Torres,lda (ID: 6ba398ca-6476-4175-bab7-f6d72a544365)
+[12:09:46 AM]   Atualizado: XPRESS - INSTALAÇÕES E REPARAÇOES 24 HORAS LDA (ID: 3f686692-dd15-4fab-8e84-dc1d8e872d88)
+[12:09:46 AM]   Atualizado: Juliana Cristina Nascimento da Silva (ID: 5486d36a-916f-4e65-be44-0307f76fa05a)
+[12:09:46 AM]   Atualizado: Diego Amâncio Lovares  (ID: f4088044-d192-4027-934c-2697e6acfdc9)
+[12:09:46 AM]   Atualizado: Carol Vitorio Duarte Lechinski (ID: db83db31-1325-478f-bc39-4c89d9d9eec5)
+[12:09:46 AM]   Atualizado: Maria Varela - Serviços de limpeza Unipessoal,lda (ID: ff5c2dd3-8323-475a-82e4-8cfaafa2bbf0)
+[12:09:47 AM]   Atualizado: Cintia Silva  (ID: 73b0cd00-cb56-4dd7-a817-f82408b04e98)
+[12:09:47 AM]   Atualizado: Wendel de Almeida Lima (ID: 88514619-088c-40bd-9fdd-84d3895628f9)
+[12:09:47 AM]   Atualizado: Renato Ferreira da Costa (ID: f1eb561d-5dea-45b4-b00c-29977221e239)
+[12:09:47 AM]   Atualizado: ARTHUR CARLOS VIEIRA PIERONI (ID: d3155cb5-eac6-43bd-8524-4187bbe9f592)
+[12:09:47 AM]   Atualizado: Mordomias Semanais LDA (ID: ce5c47ed-6483-4615-bd2e-f16b38bb5154)
+[12:09:47 AM]   Atualizado: PATRICIA EVARISTO DIAS, UNIPESSOAL LDA (ID: 7a7c81f3-4a00-4d86-9155-e2971daad0e0)
+[12:09:48 AM]   Atualizado: Inovadorambiente Unipessoal Lda   (ID: 1cddfc11-d48e-4da9-904f-bfcadf94eb2c)
+[12:09:48 AM]   Atualizado: LUCAS OLIVEIRA LIMA (ID: ab8ce358-f2c7-4492-8eb4-29c7c5c964aa)
+[12:09:48 AM]   Atualizado: OPINIÕES & GUARDIÕES - LDA (ID: b03ccc73-2d5c-4061-b8e0-f2a5fe34eb31)
+[12:09:48 AM]   Atualizado: DESAFIO PIONEIRO UNIP LDA (ID: dcda970d-bed6-4f2c-9619-04a050bdc012)
+[12:09:48 AM]   Atualizado: EDGAR JOSE BARROS DE SOUSA (ID: 0c52a925-bc7f-4704-ae6a-79a0dd664b98)
+[12:09:48 AM]   Atualizado: Almeida & Klem Lda (ID: 6f155800-44ee-41a4-9723-4f34217e18d0)
+[12:09:49 AM]   Atualizado: RAFAEL FILIPE OLIVEIRA UNIPESSOAL LDA (ID: 021a9073-9715-4f8e-b272-3ac002accb79)
+[12:09:49 AM]   Atualizado: Mayara Aquino de Araujo (ID: 63cfbfe9-6d66-408e-b759-66840a5f5720)
+[12:09:49 AM]   Atualizado: Maria Augusta Martins Cardoso  (ID: b1c2a6b4-b6e0-43f8-907a-73118494f42c)
+[12:09:49 AM]   Atualizado: Brunalex, Unipessoal Lda (ID: 46e4b18e-8970-4f2a-ae78-aea8c59ce1ad)
+[12:09:49 AM]   Atualizado: Ana Sofia Macedo Santos Jesus (ID: d832ba3d-aba8-4e00-be9d-79818cee5baf)
+[12:09:49 AM]   Atualizado: Adilson Morais  (ID: 3ed0a672-f978-41b0-aa76-56ef6d89087c)
+[12:09:49 AM]   Atualizado: Tesouro Prolifero  (ID: 94e64048-68a6-4663-945d-3e3ed39f1c4c)
+[12:09:50 AM]   Atualizado: Samantha Augusto de Oliveira Mendes (ID: 3e75410d-0d9f-4df1-abcd-d9c652ece991)
+[12:09:50 AM]   Atualizado: PAULO CESAR DIAS DA GRAÇA (ID: 26f27e87-3824-4458-ae51-66891c5ba241)
+[12:09:50 AM]   Atualizado: BOLHAS DE EMOÇAO LAVANDARIA UNIPESSOAL LDA (ID: c74a74e2-89d4-4d71-9858-15ba6bcbd731)
+[12:09:50 AM]   Atualizado: SAVVY GOLDEN SERVIÇOS E COMÉRCIO LDA (ID: 590b0313-8931-4e6d-86b0-ac0e2160b4f5)
+[12:09:50 AM]   Atualizado: Fernando Jorge da Silva Costa (ID: fb91ae9b-769e-474f-bae9-d00913620dc0)
+[12:09:50 AM]   Atualizado: Mateus Clarindo Bastos (ID: f9a8a0bd-dc34-4e85-91fd-5dc23b313c68)
+[12:09:51 AM]   Atualizado: MIGUEL SILVA GOUVEIA UNIPESSOAL LDA (ID: a342aa7e-8af9-44c1-b305-d7a9d8cf3659)
+[12:09:51 AM]   Atualizado: Américo Taciano Gouveia Unipessoal Lda (ID: 21bfdc61-31a5-4c1b-8eb6-f5bda171f8ec)
+[12:09:51 AM]   Atualizado: Alessandro Luís Machado (ID: d4204236-77cb-4051-a580-707fc348069c)
+[12:09:51 AM]   Atualizado: Ana Paula Aquino Araujo Silva (ID: 315ff952-8a57-4305-8146-270686afdb6f)
+[12:09:51 AM]   Atualizado: V & H HUMAN SERVICES, SOCIEDADE UNIPESSOAL LDA (ID: 097c148b-8c93-40d2-b5e7-801962e7f5bf)
+[12:09:51 AM]   Atualizado: Josilda Bispo de Sousa  (ID: 7d88caad-6035-41d8-a107-41ebda6e687d)
+[12:09:51 AM]   Atualizado: CAMADAS D`HARMONIA LIMPISSIMA LDA (ID: 06193703-f555-4d0f-94a2-bdbbcbfe8e8f)
+[12:09:52 AM]   Atualizado: Danielle Rodrigues Avelar (ID: c8d8ba2e-955b-482c-a83f-38690f84a2c6)
+[12:09:52 AM]   Atualizado: Lógica Adjacente -Unipessoal Lda   (ID: 643f7fb0-387d-496a-8718-be5264b4d0d8)
+[12:09:52 AM]   Atualizado: João Paulo Teixeira da Silva (ID: e80b7c6a-705c-4c42-b37c-7ca5c976ad6f)
+[12:09:52 AM]   Atualizado: Brilliant Care Unipessoal LDA (ID: 11e6bd37-3670-46ab-97b8-d24e2f0529a3)
+[12:09:52 AM]   Atualizado: MARCELO PEDRO FERREIRA (ID: 8ba84dd6-5420-4f5f-b8f7-59835443ddad)
+[12:09:52 AM]   Atualizado: AZUL PREDICADO LDA (ID: d4ca2bd6-ca26-4373-9c7f-8e2a3d04aff7)
+[12:09:53 AM]   Atualizado: Noémia Conceição Nunes (ID: 6bf08c71-b8b2-496d-8727-b4d3b9ed57fa)
+[12:09:53 AM]   Atualizado: ELIZEU FRANCISCO DE ABREU FILHO (ID: 94845f50-361d-40f4-a5ac-78c21d177388)
+[12:09:53 AM]   Atualizado: INFINITOBÁLSAMO UNIPESSOAL LDA (ID: ab5444e7-d424-4a43-a585-26e355fcd81d)
+[12:09:53 AM]   Atualizado: Rui Miguel Alves Rodrigues UNIP. LDA (ID: f292017b-5b65-4a4b-bf55-dc243405dbbb)
+[12:09:53 AM]   Atualizado: VALCIANE DE PAULA, UNIPESSOAL LDA  (ID: 1234ffaa-11ce-4201-9c9e-333f2bd66d16)
+[12:09:53 AM]   Atualizado: HUGO FILOMENO DE NOVAIS FERREIRA (ID: 4742ba26-9f79-427a-83cf-7a5a47c6fffb)
+[12:09:54 AM]   Atualizado: FLEXCARE UNIPESSOAL LDA  (ID: 62aea83f-a71c-4aea-ac51-3764340d1acb)
+[12:09:54 AM]   Atualizado: Trajeto Subtil, Lda (ID: 379ae975-6da8-47bd-8308-2ae075e71a7d)
+[12:09:54 AM]   Atualizado: CORTESIA IMPERDÍVEL - UNIPESSOAL LDA  (ID: ce383c9f-9801-4e7a-8e1b-f01c6c8c04e1)
+[12:09:54 AM]   Atualizado: MICAEL ARTUR BARROS LOPES MONTEIRO (ID: 94f43a8e-7c91-4a4a-ba93-78d99856c202)
+[12:09:54 AM]   Atualizado: SERGIO RICARDO TEIXEIRA BATISTA (ID: 1d07a688-47af-41f5-9597-ccf31aa360c7)
+[12:09:54 AM]   Atualizado: RICARDO ANTONIO DE JESUS CASTRO (ID: 41356288-7863-4043-b9ca-17f710b40ffe)
+[12:09:55 AM]   Atualizado: Matilha Moderna Unipessoal Lda (ID: 85526d42-3ff8-4824-bd80-408200c462b8)
+[12:09:55 AM]   Atualizado: In'Canto da Carriça LDA (ID: 220d0696-ea4d-490f-8809-0be19b7b1c1e)
+[12:09:55 AM]   Atualizado: YULLI BONFIM COSTA  (ID: 46b8bd46-51db-44cd-aef9-abc6fbf672a5)
+[12:09:55 AM]   Atualizado: RIBAFIX,lda (ID: 984e4d16-4f03-4c9c-a8ad-f295b7e301b8)
+[12:09:55 AM]   Atualizado: ADEMIR CESAR RODRIGUES (ID: 33a99d5f-7eba-43a7-92a4-bffb12cb3c23)
+[12:09:55 AM]   Atualizado: BRUNO DAVID BERNARDINO MOREIRA DA SILVA (ID: 3479bdb3-6aa4-4bce-8d5e-f23575dc577b)
+[12:09:56 AM]   Atualizado: Vet Sobre Rodas  (ID: a4ec83e5-402c-4c59-95ba-b080f50cd416)
+[12:09:56 AM]   Atualizado: Confiança e Versatilidade , LDA  (ID: 19a42c4d-9499-4604-912f-4f34b8f77a84)
+[12:09:56 AM]   Atualizado: ELITE SOLUTIONS, LDA (ID: cbf48d3e-421a-4ef2-b7d2-fa55399a77eb)
+[12:09:56 AM]   Atualizado: Igor Godinho Unipessoal Lda (ID: c1070caa-c82c-4ed9-9764-6a0c4c5df060)
+[12:09:56 AM]   Atualizado: Anna Paula Andrade Miranda Costa (ID: 98654d83-9ff3-4100-bf36-e4b1c22291b6)
+[12:09:56 AM]   Atualizado: Rui Manuel Cerdeira Cruz (ID: f96d3dfb-656f-41d0-bc2f-1149696be617)
+[12:09:56 AM]   Atualizado: ALIADAPUREZA, LDA  (ID: 161e10aa-86c6-49af-a369-0b9342cf24e3)
+[12:09:57 AM]   Atualizado: Genial Conection, lda (ID: 00a84679-8877-4b7a-86cd-fca1478cc71d)
+[12:09:57 AM]   Atualizado: DANILO FERNANDES DA SILVA (ID: c10fe6fe-9c58-43bf-bdf5-3c03dd50e074)
+[12:09:57 AM]   Atualizado: TEIXEIRA NUMBY, UNIPESSOAL LDA (ID: f48912fd-acbb-4c4e-8962-66266513e6e0)
+[12:09:57 AM]   Atualizado: Virtudes Fantasticas, lda  (ID: def722cd-6702-4ffe-869c-39032ba82499)
+[12:09:57 AM]   Ignorando: Prestador Teste (teste ou sem email)
+[12:09:57 AM]   Atualizado: Henderson Gonçalves Martins associação unipessoal LDA (ID: e74b0e0b-5542-4a4e-aa1d-aaeb49836d15)
+[12:09:57 AM]   Atualizado: PRÓSPERA JORNADA - LDA (ID: 9ea200a3-dc0c-4673-b365-6d8916ad9228)
+[12:09:58 AM]   Atualizado: MANFORCLIMA, UNIPESSOAL LDA (ID: bd52129e-0240-497e-a0c0-38f5b3a59543)
+[12:09:58 AM]   Atualizado: CELESTIALTULIP - UNIPESSOAL LDA (ID: 71053124-4d8b-4a95-98f2-27a64c1a4d13)
+[12:09:58 AM]   Atualizado: SUMÁRIOS & ARDÓSIAS - UNIPESSOAL LDA (ID: de1809ac-af20-4fea-a510-2b9aaa63d982)
+[12:09:58 AM]   Atualizado: TURBOWHISPER - ELETRICIDADE LDA (ID: c5968ee2-ac65-4806-a5fd-78dbfbe8e848)
+[12:09:58 AM]   Atualizado: DALLY UNIP LDA (ID: c2444905-43c7-4e13-9b37-b5afed713ba5)
+[12:09:58 AM]   Atualizado: Nível Periférico -Unipessoal LDA  (ID: 8d21501f-332c-41cc-b7a2-729710601092)
+[12:09:59 AM]   Atualizado: KAREN MARCELA MOURA DE OLIVEIRA (ID: 5978642f-c70c-412f-b1f2-37b465a30044)
+[12:09:59 AM]   Atualizado: RELAMPOLUZ, UNIPESSOAL LDA (ID: 9e85cc60-323b-4797-b005-902f7b77dcfa)
+[12:09:59 AM]   Atualizado: Expressão Generosa, Lda (ID: 374a4280-3ded-41a6-8576-a944b9cdc21a)
+[12:09:59 AM]   Atualizado: RAFAEL FILIPE OLIVEIRA SOARES (ID: 5e6c33a7-b2f3-4254-bb2c-e2d180d912f1)
+[12:09:59 AM]   Atualizado: LUIZ & FRANÇA, LDA (ID: 5c7bba2a-0eb2-4ae9-9692-ad95b0e9d9f4)
+[12:09:59 AM]   Atualizado: JOSIE APARECIDA DE OLIVEIRA (ID: 31422622-cade-4d10-acd7-5c3b433efba3)
+[12:10:00 AM]   Atualizado: IZABEL MATOS, UNIPESSOAL LDA (ID: 5f2442df-efda-48c0-b252-74dd6fbd8e2d)
+[12:10:00 AM]   Atualizado: SUSANA IARA APARECIDA CAETANO NOVAIS (ID: 32e92d50-c10f-4d6f-a9cb-d2783872e1d0)
+[12:10:00 AM]   Atualizado: DILENE DE NAZARE MOREIRA FERREIRA (ID: a8f0289d-9225-46d3-a5bc-10b0a805760c)
+[12:10:00 AM]   Atualizado: EXUBERBUBBLE, LDA (ID: c21f017d-bb15-4255-be85-126dc1cdf07f)
+[12:10:00 AM]   Atualizado: BEYOND SERVICES, UNIPESSOAL LDA (ID: e5394ee0-65cc-4f65-b7cb-0e1303719a0a)
+[12:10:00 AM]   Atualizado: GABRIEL FREIRE - SOLUÇÕES INTEGRADAS, UNIPESSOAL LDA (ID: fc3cb75b-ce06-49ff-96bf-f1ba8d628447)
+[12:10:00 AM]   Atualizado: Milton Junior, Unipessoal LDA (ID: c756cdc4-f736-4358-8661-573540ad8d8f)
+[12:10:01 AM]   Atualizado: CTDI - Centro Técnico e Distribuição Informática, Lda (ID: 6cef873a-24ea-417b-a928-64ffa1aa30ae)
+[12:10:01 AM]   Atualizado: Paulo Alexandre Conceição (ID: 9d784b13-3e69-4adc-9fa8-d937ed5ededa)
+[12:10:01 AM]   Atualizado: William Vinícius Damazio de Oliveira (ID: fc5ad396-df48-4f72-ab2f-32399f541b1b)
+[12:10:01 AM]   Atualizado: Carlos Manuel Figueiredo da Costa  (ID: 2c1553a3-06bd-4a90-8258-d5ed3cf2411b)
+[12:10:01 AM]   Atualizado: GESSIEL DE SOUZA (ID: 600c1b04-c664-441d-8755-02ae38aa2618)
+[12:10:01 AM]   Atualizado: PAULINA MANUELY XENOFONTE MORAIS CONRADO (ID: 51479c50-8615-4019-bd61-50f7a5e5b88b)
+[12:10:02 AM]   Atualizado: Amanda Moyses Garbellini (ID: ebfcf666-2db3-4b71-bfe6-3b7d98e4d5fd)
+[12:10:02 AM]   Atualizado: Maria Millena da Silva Freitas (ID: 5937bc03-cf61-4787-8d51-bfbc15ddd7dd)
+[12:10:02 AM]   Atualizado: Yolanda Gaspar Gia (ID: 9bd99437-8903-4858-b280-ca2af375f4c8)
+[12:10:02 AM]   Atualizado: QUICK HELP SOLUTIONS SERVICES, LDA (ID: 7f6eda2d-6579-499e-b116-679260c6110c)
+[12:10:02 AM]   Atualizado: LUÍS MIGUEL VIEIRA , UNIPESSOAL LDA (ID: fc16969e-db51-4063-8e1a-f6eec960718e)
+[12:10:02 AM]   Atualizado: SOMENTEXEMPLAR - SOCIEDADE UNIPESSOAL LDA (ID: babe2845-aeee-415c-a334-564b6a8864d1)
+[12:10:03 AM]   Atualizado: DIEGO STEPHANE COELHO SALLES (ID: eb8c6c57-fd69-4723-8b95-f6ad809da051)
+[12:10:03 AM]   Atualizado: Amplitude Gigante, LDA (ID: 1da8d166-78f0-4fad-bfbb-dc13e3b5dd7c)
+[12:10:03 AM]   Atualizado: Júlio Andre Dias Pinto Sereno Cabral (ID: 548c434f-b634-4d80-bef0-53fb82d36527)
+[12:10:03 AM]   Atualizado: MOVELTSOLUT, UNIPESSOAL LDA (ID: f67d4fdb-1f88-4260-a424-eef8cd39c411)
+[12:10:03 AM]   Atualizado: Maria Eduarda Alves Moreira (ID: 5942f733-3144-4580-bc8a-94ab645f60b7)
+[12:10:03 AM]   Atualizado: António Carlos De Francisco Madeira (ID: 2467baae-2658-4141-9af4-8ba02d5a97c7)
+[12:10:04 AM]   Atualizado: Osias De Oliveira Coelho (ID: 3d0e5048-ea14-44d7-9ac8-92f13f12868c)
+[12:10:04 AM]   Atualizado: Frescuramedida Unip. LDA. (ID: bc1f974c-8a95-4fa8-972f-179ef361fdfd)
+[12:10:04 AM]   Atualizado: Revoada D´Exitos, lda  (ID: cec585a4-8ee9-4c45-9b23-1dd2fa5e5344)
+[12:10:04 AM]   Atualizado: Cirlene Melocro Coelho (ID: 4a9e43f9-0c61-421d-aad7-9d7e78a0a2f6)
+[12:10:04 AM]   Atualizado: BRENA KAROLINY HENRIQUES GOMES (ID: 33c9df67-f90c-4a74-b34a-ae0d66629336)
+[12:10:04 AM]   Atualizado: PRISCILA KAMILLA PEREIRA SOUSA (ID: f39d3783-ba03-4dcf-ab03-88720c883109)
+[12:10:05 AM]   Atualizado: GOTA DE ÁGUA - PISCINAS E WELLNESS, LDA (ID: 3e708f92-d12a-4f54-804d-c2339a45907d)
+[12:10:05 AM]   Atualizado: Silêncio Escondido , Unipessoal Lda (ID: 61b158cb-88f1-417d-8528-6c7337ee78bb)
+[12:10:05 AM] ===============================================
+[12:10:05 AM] IMPORT CONCLUIDO
+[12:10:05 AM] Total processados: 294
+[12:10:05 AM] Inseridos: 0
+[12:10:05 AM] Atualizados: 292
+[12:10:05 AM] Erros: 0
+[12:10:05 AM] ===============================================
+[12:12:05 AM] A processar ficheiro: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/provider_data.xlsx
+[12:12:05 AM] Ficheiro encontrado: 68.23 KB
+[12:12:05 AM] Total de providers no ficheiro: 294
+[12:12:05 AM]   Ignorando: FIXO teste (teste ou sem email)
+[12:12:05 AM]   Ignorando: Prestador Teste (teste ou sem email)
+[12:12:05 AM] Registos validos para upsert: 292
+[12:12:05 AM] Erro no upsert: there is no unique or exclusion constraint matching the ON CONFLICT specification
+[12:12:05 AM] ===============================================
+[12:12:05 AM] IMPORT CONCLUIDO
+[12:12:05 AM] Total processados: 294
+[12:12:05 AM] Inseridos: 0
+[12:12:05 AM] Atualizados: 0
+[12:12:05 AM] Erros: 292
+[12:12:05 AM] ===============================================
+[12:13:28 AM] A processar ficheiro: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/provider_data.xlsx
+[12:13:28 AM] Ficheiro encontrado: 68.23 KB
+[12:13:28 AM] Total de providers no ficheiro: 294
+[12:13:28 AM]   Ignorando: FIXO teste (teste ou sem email)
+[12:13:28 AM]   Ignorando: Prestador Teste (teste ou sem email)
+[12:13:28 AM] Registos validos para upsert: 292
+[12:13:28 AM] Upsert concluido: 292 registos
+[12:13:28 AM] ===============================================
+[12:13:28 AM] IMPORT CONCLUIDO
+[12:13:28 AM] Total processados: 294
+[12:13:28 AM] Inseridos: 292
+[12:13:28 AM] Atualizados: 0
+[12:13:28 AM] Erros: 0
+[12:13:28 AM] ===============================================
+[12:18:24 AM] A processar ficheiro: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/provider_data.xlsx
+[12:18:24 AM] Ficheiro encontrado: 68.23 KB
+[12:18:24 AM] Total de providers no ficheiro: 294
+[12:18:24 AM]   Ignorando: FIXO teste (teste ou sem email)
+[12:18:24 AM]   Ignorando: Prestador Teste (teste ou sem email)
+[12:18:24 AM] Registos validos para upsert: 292
+[12:18:24 AM] Upsert concluido: 292 registos
+[12:18:24 AM] ===============================================
+[12:18:24 AM] IMPORT CONCLUIDO
+[12:18:24 AM] Total processados: 294
+[12:18:24 AM] Inseridos: 292
+[12:18:24 AM] Atualizados: 0
+[12:18:24 AM] Erros: 0
+[12:18:24 AM] ===============================================
+[12:21:00 AM] A processar ficheiro: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/provider_data.xlsx
+[12:21:00 AM] Ficheiro encontrado: 68.23 KB
+[12:21:00 AM] Total de providers no ficheiro: 294
+[12:21:00 AM]   Ignorando: FIXO teste (teste ou sem email)
+[12:21:00 AM]   Ignorando: Prestador Teste (teste ou sem email)
+[12:21:00 AM] Registos validos para upsert: 292
+[12:21:01 AM] Providers existentes: 292
+[12:21:01 AM] Upsert concluido: 0 inseridos, 292 atualizados
+[12:21:01 AM] ===============================================
+[12:21:01 AM] IMPORT CONCLUIDO
+[12:21:01 AM] Total processados: 294
+[12:21:01 AM] Inseridos: 0
+[12:21:01 AM] Atualizados: 292
+[12:21:01 AM] Erros: 0
+[12:21:01 AM] ===============================================
+[12:31:24 AM] A processar ficheiro: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/provider_data.xlsx
+[12:31:24 AM] Ficheiro encontrado: 68.22 KB
+[12:31:24 AM] Total de providers no ficheiro: 294
+[12:31:24 AM]   Ignorando: FIXO teste (teste ou sem email)
+[12:31:24 AM]   Ignorando: Prestador Teste (teste ou sem email)
+[12:31:24 AM] Registos validos para upsert: 292
+[12:31:25 AM] Providers existentes: 292
+[12:31:26 AM] Upsert concluido: 0 inseridos, 292 atualizados
+[12:31:26 AM] ===============================================
+[12:31:26 AM] IMPORT CONCLUIDO
+[12:31:26 AM] Total processados: 294
+[12:31:26 AM] Inseridos: 0
+[12:31:26 AM] Atualizados: 292
+[12:31:26 AM] Erros: 0
+[12:31:26 AM] ===============================================

@@ -1,0 +1,43 @@
+{
+  "testDate": "2026-01-09T19:52:22.027Z",
+  "totalTested": 28,
+  "results": {
+    "success": [
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests"
+    ],
+    "notFound": [
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/api/service-requests",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/api/service-requests/SR116935",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/api/v1/service-requests",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/api/v1/service-requests/SR116935",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/rest/ServiceRequest",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/rest/ServiceRequest/SR116935",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/rest/v1/service-requests",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/rest/FXBO_ServiceRequest_CW/ServiceRequest",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/rest/FXBO_ServiceRequest_CW/ServiceRequest/SR116935",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/odata/ServiceRequest",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/odata/ServiceRequest('SR116935')",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/graphql",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequest/SR116935",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests/SR116935",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/FXBO_ServiceRequest_CW.aspx/ServiceRequest",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/FXBO_ServiceRequest_CW/ServiceRequest",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/data/service-requests.json",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/api/data/service-requests",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/swagger.json",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/api-docs",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/api/docs",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/.well-known/api",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/metadata",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/api/metadata",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/entities/ServiceRequest",
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/entities/ServiceRequest/SR116935"
+    ],
+    "forbidden": [],
+    "methodNotAllowed": [
+      "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetRequests"
+    ],
+    "error": [],
+    "other": []
+  }
+}

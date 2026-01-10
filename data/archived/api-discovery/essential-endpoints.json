@@ -1,0 +1,199 @@
+{
+  "metadata": {
+    "discoveryDate": "2026-01-09",
+    "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+    "baseURL": "https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice",
+    "viewName": "MainFlow.ServiceRequests"
+  },
+  "endpoints": {
+    "serviceRequests": {
+      "name": "ScreenDataSetGetRequests",
+      "priority": "CRITICAL",
+      "url": "/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetRequests",
+      "method": "POST",
+      "apiVersion": "nz47xpJE1xZle9LEOhqb2Q",
+      "description": "Endpoint principal - retorna lista de service requests com filtros de data",
+      "payloadTemplate": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "nz47xpJE1xZle9LEOhqb2Q"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {
+            "SearchKeyword": "",
+            "StartIndex": 0,
+            "MaxRecords": 10000,
+            "TableSort": "ServiceRequestCreatedAt DESC",
+            "CategoryId": "0",
+            "InputFromSchedullingDate": "",
+            "InputToSchedullingDate": "",
+            "InputToSubmissionDate": "{{dateTo_DD-MM-YYYY}}",
+            "InputFromSubmissionDate": "{{dateFrom_DD-MM-YYYY}}",
+            "FromSchedullingDate": "1900-01-01T00:00:00",
+            "ToSchedullingDate": "1900-01-01T00:00:00",
+            "FromSubmissionDate": "{{dateFrom_ISO}}",
+            "ToSubmissionDate": "{{dateTo_ISO}}",
+            "SelectedRequestStatusText": "",
+            "SelectedStatus": {
+              "List": [],
+              "EmptyListItem": {
+                "Value": "",
+                "Text": ""
+              }
+            },
+            "IsScheduledDeliveryDateNotDefined": false,
+            "HasExportPermissions": true,
+            "SelectedDistrictId": "",
+            "OnGoingNewVisit": ""
+          }
+        },
+        "inputParameters": {
+          "StartIndex": 0,
+          "MaxRecords": 10000
+        }
+      },
+      "responseStructure": {
+        "data": {
+          "List": {
+            "List": "Array<ServiceRequest>"
+          },
+          "Count": "number"
+        },
+        "versionInfo": "object"
+      },
+      "keyFields": [
+        "ServiceRequestCode",
+        "FIDID",
+        "ProviderName",
+        "Service",
+        "ServiceRequestStatusName",
+        "ServiceRequestCreatedAt",
+        "ServiceRequestSchedullingDateTime",
+        "ServiceRequestId"
+      ]
+    },
+    "categories": {
+      "name": "ScreenDataSetGetCategories",
+      "priority": "METADATA",
+      "url": "/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetCategories",
+      "method": "POST",
+      "apiVersion": "JGL5R1ZVOEtL7XpHchI39w",
+      "description": "Retorna lista de categorias de serviços (lookup table)",
+      "payloadTemplate": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "JGL5R1ZVOEtL7XpHchI39w"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {}
+        },
+        "inputParameters": {}
+      }
+    },
+    "districts": {
+      "name": "ScreenDataSetGetDistricts",
+      "priority": "METADATA",
+      "url": "/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetDistricts",
+      "method": "POST",
+      "apiVersion": "SAfr6bbrlurrDwOTBr6jXQ",
+      "description": "Retorna lista de distritos (lookup table)",
+      "payloadTemplate": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "SAfr6bbrlurrDwOTBr6jXQ"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {}
+        },
+        "inputParameters": {}
+      }
+    },
+    "statuses": {
+      "name": "ScreenDataSetGetServiceRequestStatus",
+      "priority": "METADATA",
+      "url": "/screenservices/FXBO_ServiceRequest_CW/RequestList/RequestsList/ScreenDataSetGetServiceRequestStatus",
+      "method": "POST",
+      "apiVersion": "eLZsS4_+Fp3D+FTfWsR9bw",
+      "description": "Retorna lista de status possíveis (lookup table)",
+      "payloadTemplate": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "eLZsS4_+Fp3D+FTfWsR9bw"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {}
+        },
+        "inputParameters": {}
+      }
+    },
+    "paymentExpiredWarnings": {
+      "name": "DataActionAlmostPaymentExpired",
+      "priority": "OPTIONAL",
+      "url": "/screenservices/FXBO_ServiceRequest_CW/WARN/WARN_ServiceRequest_WarningRequestLists/DataActionAlmostPaymentExpired",
+      "method": "POST",
+      "apiVersion": "j9UxJ8oXUS5qBlbTiZVAnQ",
+      "description": "Retorna pedidos com pagamento prestes a expirar",
+      "payloadTemplate": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "j9UxJ8oXUS5qBlbTiZVAnQ"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {}
+        }
+      }
+    },
+    "providerExpiredWarnings": {
+      "name": "DataActionAlmostExpiredWithoutProvider",
+      "priority": "OPTIONAL",
+      "url": "/screenservices/FXBO_ServiceRequest_CW/WARN/WARN_ServiceRequest_WarningRequestLists/DataActionAlmostExpiredWithoutProvider",
+      "method": "POST",
+      "apiVersion": "ia1NBnt0ldZ9QnM94wcjcA",
+      "description": "Retorna pedidos prestes a expirar sem provider",
+      "payloadTemplate": {
+        "versionInfo": {
+          "moduleVersion": "Bt6C82gdDc1aqSyWDB5hBQ",
+          "apiVersion": "ia1NBnt0ldZ9QnM94wcjcA"
+        },
+        "viewName": "MainFlow.ServiceRequests",
+        "screenData": {
+          "variables": {}
+        }
+      }
+    }
+  },
+  "authentication": {
+    "method": "cookies + CSRF token",
+    "csrfTokenSource": "nr2FixoUsers cookie",
+    "csrfTokenRegex": "crf%3d([^;]+?)%3b",
+    "requiredHeaders": {
+      "accept": "application/json",
+      "content-type": "application/json; charset=UTF-8",
+      "x-csrftoken": "{{csrfToken}}"
+    }
+  },
+  "dateFormats": {
+    "input": "dd-mm-yyyy (exemplo: 09-01-2026)",
+    "iso": "yyyy-mm-ddT00:00:00.000Z (exemplo: 2026-01-09T00:00:00.000Z)",
+    "note": "Ambos os formatos DEVEM ser enviados no payload"
+  },
+  "implementation": {
+    "phase1_mvp": [
+      "serviceRequests"
+    ],
+    "phase2_metadata": [
+      "categories",
+      "districts",
+      "statuses"
+    ],
+    "phase3_optional": [
+      "paymentExpiredWarnings",
+      "providerExpiredWarnings"
+    ]
+  }
+}

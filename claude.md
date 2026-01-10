@@ -45,6 +45,7 @@ src/
 │   │   ├── candidaturas/  # Gestao de candidaturas
 │   │   ├── onboarding/    # Pipeline de onboarding (Kanban)
 │   │   ├── prestadores/   # Lista de prestadores ativos
+│   │   ├── pedidos/       # Pedidos de servico (importados do backoffice)
 │   │   ├── providers/[id] # Detalhe de prestador (tabs)
 │   │   ├── agenda/        # Calendario de tarefas
 │   │   ├── kpis/          # Dashboard de metricas
@@ -58,8 +59,10 @@ src/
 │   ├── candidaturas/      # Componentes de candidaturas
 │   ├── onboarding/        # Kanban e tarefas
 │   ├── prestadores/       # Listagens e filtros
+│   ├── pedidos/           # Listagens e filtros de pedidos
 │   ├── providers/         # Detalhe de prestador
 │   ├── kpis/              # Graficos e metricas
+│   ├── sync/              # Dialogo de sincronizacao com backoffice
 │   └── layout/            # Header, navegacao
 ├── lib/
 │   ├── supabase/          # Clientes Supabase (server/client/admin)
@@ -68,7 +71,11 @@ src/
 │   ├── prestadores/       # Server actions de prestadores
 │   ├── providers/         # Server actions de providers
 │   ├── pricing/           # Server actions de precos
+│   ├── service-requests/  # Server actions de pedidos de servico
+│   ├── sync/              # Server actions de sincronizacao
 │   └── utils.ts           # Utilitarios (cn, etc.)
+├── scripts/
+│   └── export-backoffice-data.ts  # Scraper para importar dados do backoffice (Puppeteer)
 └── types/
     └── database.ts        # Tipos gerados do Supabase
 ```
@@ -185,6 +192,27 @@ export function MyForm() {
 }
 ```
 
+### Componentes UI Customizados
+
+#### DatePicker e Calendar
+
+Para selecao de datas, usar `DatePicker` do shadcn/ui (baseado em react-day-picker):
+
+```typescript
+import { DatePicker } from '@/components/ui/date-picker'
+
+const [date, setDate] = useState<Date | undefined>()
+
+<DatePicker
+  value={date || null}
+  onChange={(date) => setDate(date)}
+  placeholder="Selecionar data"
+/>
+```
+
+**Formato:** dd/MM/yyyy (locale pt-PT)
+**Features:** Calendario popup, botao limpar, validacao de intervalos (fromDate/toDate)
+
 ## Tipos da Base de Dados
 
 Os tipos sao gerados automaticamente com `npm run db:generate`:
@@ -287,9 +315,31 @@ gap-4            - Gap em grids/flex
 - **onboarding_tasks**: Tarefas de cada card
 - **stage_definitions**: Etapas do onboarding (1-6)
 - **task_definitions**: Definicoes de tarefas por etapa
+- **service_requests**: Pedidos de servico importados do backoffice FIXO
+- **sync_logs**: Logs de sincronizacao com backoffice
 - **notes**: Notas em prestadores
 - **history_log**: Historico de alteracoes
 - **users**: Utilizadores do sistema
+
+## Features Principais
+
+### Sincronizacao com Backoffice
+- Script Puppeteer (`scripts/export-backoffice-data.ts`) para importar dados do backoffice FIXO
+- Parsing automatico de Excel para Supabase
+- Logs detalhados de sincronizacao em `sync_logs`
+- UI de sincronizacao em `/configuracoes/sync-logs`
+
+### Sistema de Alertas
+- Alertas automaticos para tarefas em atraso
+- Configuracoes personalizaveis por user
+- Notificacoes no header (AlertsBell)
+
+### Filtros e Paginacao
+- Todos os listings (prestadores, pedidos, candidaturas) suportam:
+  - Filtros multiplos (status, categoria, distrito, prestador, datas)
+  - Ordenacao por coluna (sortable headers)
+  - Paginacao com controlo de items por pagina
+  - Estado mantido via URL params
 
 ## Notas Importantes
 

@@ -1,0 +1,52 @@
+[7:33:10 PM] ═══════════════════════════════════════════════
+[7:33:10 PM] 🚀 BACKOFFICE SYNC - MVP (Fase 1)
+[7:33:10 PM] ═══════════════════════════════════════════════
+[7:33:10 PM] 📅 Data De: 09-01-2026 → 2026-01-09T00:00:00.000Z
+[7:33:10 PM] 📅 Data Até: 09-01-2026 → 2026-01-09T00:00:00.000Z
+[7:33:10 PM] ═══════════════════════════════════════════════
+[7:33:10 PM] 🔐 AUTENTICAÇÃO NO BACKOFFICE
+[7:33:10 PM] ═══════════════════════════════════════════════
+[7:33:10 PM] 🌐 A lançar browser...
+[7:33:10 PM] 🌐 Navegando para login...
+[7:33:13 PM] 🔑 Preenchendo credenciais...
+[7:33:13 PM] 🔐 A fazer login...
+[7:33:13 PM] ✅ Login bem-sucedido!
+[7:33:14 PM] ✅ CSRF Token extraído: D1aOnajSixLTu1FX6ipn...
+[7:33:14 PM] 
+[7:33:14 PM] ═══════════════════════════════════════════════
+[7:33:14 PM] 📚 PASSO 2/3: Buscando Lookup Tables (cache)
+[7:33:14 PM] ═══════════════════════════════════════════════
+[7:33:14 PM] 📡 Chamando endpoint: Categorias (lookup table)
+[7:33:14 PM] 📡 Chamando endpoint: Distritos (lookup table)
+[7:33:14 PM] 📡 Chamando endpoint: Status (lookup table)
+[7:33:14 PM] ✅ Distritos (lookup table): -1 registos obtidos
+[7:33:14 PM] ✅ Status (lookup table): -1 registos obtidos
+[7:33:14 PM] ✅ Categorias (lookup table): -1 registos obtidos
+[7:33:14 PM] ✅ Lookup tables carregadas:
+[7:33:14 PM]    - Categorias: 9
+[7:33:14 PM]    - Distritos: 5
+[7:33:14 PM]    - Status: 7
+[7:33:14 PM] 
+[7:33:14 PM] ═══════════════════════════════════════════════
+[7:33:14 PM] 📋 PASSO 3/3: Buscando Service Requests
+[7:33:14 PM] ═══════════════════════════════════════════════
+[7:33:14 PM] 📡 Chamando endpoint: Service Requests principais
+[7:33:14 PM] ✅ Service Requests principais: 81 registos obtidos
+[7:33:14 PM] ✅ Service Requests obtidos: 81 de 81 total
+[7:33:14 PM] 
+[7:33:14 PM] ═══════════════════════════════════════════════
+[7:33:14 PM] 💾 Salvando resultados...
+[7:33:14 PM] ═══════════════════════════════════════════════
+[7:33:14 PM] ✅ Ficheiro salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/sync-outputs/sync_09-01-2026_09-01-2026_2026-01-09.json (0.09 MB)
+[7:33:14 PM] 
+[7:33:14 PM] ═══════════════════════════════════════════════
+[7:33:14 PM] ✅ SYNC CONCLUÍDO COM SUCESSO!
+[7:33:14 PM] ═══════════════════════════════════════════════
+[7:33:14 PM] ⏱️  Duração: 4.36s
+[7:33:14 PM] 📊 Estatísticas:
+[7:33:14 PM]    - Service Requests: 81
+[7:33:14 PM]    - Categorias: 9
+[7:33:14 PM]    - Distritos: 5
+[7:33:14 PM]    - Status: 7
+[7:33:14 PM] 📁 Ficheiro: /Users/diogopita/Documents/Projetos/crm-prestadores/data/sync-outputs/sync_09-01-2026_09-01-2026_2026-01-09.json
+[7:33:14 PM] ═══════════════════════════════════════════════

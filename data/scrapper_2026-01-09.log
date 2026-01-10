@@ -356,3 +356,1586 @@
 [1/9/2026, 2:00:30 PM]    [0] ID: b3-Input_TextVar | Placeholder: Introduza o que quer procurar | Valor: 
 [1/9/2026, 2:00:30 PM] ⏳ Aguardando 30 segundos para validação visual...
 [1/9/2026, 2:01:00 PM] 🏁 Processo terminado.
+[1/9/2026, 2:02:53 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:02:54 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:02:55 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:02:56 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:02:56 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:02:57 PM] 🔑 A autenticar...
+[1/9/2026, 2:02:57 PM] ✅ Login efetuado.
+[1/9/2026, 2:02:57 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:02:57 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:02:57 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:03:02 PM] 📅 Alvo: Selecionar "Hoje" no 4º e 5º inputs (Submissão) via calendário
+[1/9/2026, 2:03:02 PM] 🔎 [DEBUG] Inputs visíveis encontrados (5):
+[1/9/2026, 2:03:02 PM]    [0] ID: (sem id) | Placeholder: dd-mm-aaaa | Valor: 
+[1/9/2026, 2:03:02 PM]    [1] ID: (sem id) | Placeholder: dd-mm-aaaa | Valor: 
+[1/9/2026, 2:03:02 PM]    [2] ID: b4-Input_TextVar | Placeholder: Introduza o que quer procurar | Valor: 
+[1/9/2026, 2:03:02 PM]    [3] ID: (sem id) | Placeholder: dd-mm-aaaa | Valor: 09-11-2025
+[1/9/2026, 2:03:02 PM]    [4] ID: (sem id) | Placeholder: dd-mm-aaaa | Valor: 
+[1/9/2026, 2:03:02 PM] 📅 Abrindo calendário do 4º input (Índice 3)...
+[1/9/2026, 2:03:03 PM] 🖱️ Clicando em "Hoje" para 4º input...
+[1/9/2026, 2:03:03 PM] ✅ "Hoje" selecionado para 4º input.
+[1/9/2026, 2:03:04 PM] 🔎 [DEBUG] Inputs visíveis encontrados (5):
+[1/9/2026, 2:03:04 PM]    [0] ID: (sem id) | Placeholder: dd-mm-aaaa | Valor: 09-01-2026
+[1/9/2026, 2:03:04 PM]    [1] ID: (sem id) | Placeholder: dd-mm-aaaa | Valor: 
+[1/9/2026, 2:03:04 PM]    [2] ID: b4-Input_TextVar | Placeholder: Introduza o que quer procurar | Valor: 
+[1/9/2026, 2:03:04 PM]    [3] ID: (sem id) | Placeholder: dd-mm-aaaa | Valor: 09-11-2025
+[1/9/2026, 2:03:04 PM]    [4] ID: (sem id) | Placeholder: dd-mm-aaaa | Valor: 
+[1/9/2026, 2:03:04 PM] 📅 Abrindo calendário do 5º input (Índice 4)...
+[1/9/2026, 2:03:05 PM] 🖱️ Clicando em "Hoje" para 5º input...
+[1/9/2026, 2:03:05 PM] ✅ "Hoje" selecionado para 5º input.
+[1/9/2026, 2:03:05 PM] ⏳ Aguardando 30 segundos para validação visual...
+[1/9/2026, 2:03:35 PM] 🏁 Processo terminado.
+[1/9/2026, 2:05:13 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:05:14 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:05:14 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:05:16 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:05:16 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:05:16 PM] 🔑 A autenticar...
+[1/9/2026, 2:05:17 PM] ✅ Login efetuado.
+[1/9/2026, 2:05:17 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:05:17 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:05:17 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:05:22 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:05:22 PM] 🔎 [DEBUG] Busca por inputs de submissão: {"found":true,"count":8,"containerClass":"","debug":"Encontrados 8 inputs no container"}
+[1/9/2026, 2:05:22 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:05:22 PM] 🔴 Erro fatal: Error: Node is either not clickable or not an Element
+[1/9/2026, 2:05:23 PM] 🏁 Processo terminado.
+[1/9/2026, 2:06:02 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:06:03 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:06:03 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:06:05 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:06:05 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:06:05 PM] 🔑 A autenticar...
+[1/9/2026, 2:06:06 PM] ✅ Login efetuado.
+[1/9/2026, 2:06:06 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:06:06 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:06:06 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:06:11 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:06:11 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 192,
+      "left": 401,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 192,
+      "left": 498,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 297,
+      "left": 401,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 297,
+      "left": 498,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 2:06:11 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:06:13 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Hoje button).
+[1/9/2026, 2:06:13 PM] [BROWSER] The specified value "09-01-2026" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:06:14 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 2:06:16 PM] ⚠️ Botão "Hoje" não encontrado para Data Submissão (Até)
+[1/9/2026, 2:06:16 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 2:06:16 PM] ⏳ Aguardando 30 segundos para validação visual...
+[1/9/2026, 2:06:46 PM] 🏁 Processo terminado.
+[1/9/2026, 2:07:09 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:07:10 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:07:11 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:07:12 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:07:12 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:07:13 PM] 🔑 A autenticar...
+[1/9/2026, 2:07:13 PM] ✅ Login efetuado.
+[1/9/2026, 2:07:13 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:07:13 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:07:13 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:07:18 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:07:18 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 192,
+      "left": 401,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 192,
+      "left": 498,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 297,
+      "left": 401,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 297,
+      "left": 498,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 2:07:18 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:07:20 PM]    Calendário aberto: true
+[1/9/2026, 2:07:20 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Hoje button).
+[1/9/2026, 2:07:22 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 2:07:24 PM]    Calendário aberto: true
+[1/9/2026, 2:07:24 PM] ⚠️ Botão "Hoje" não encontrado para Data Submissão (Até)
+[1/9/2026, 2:07:25 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 2:07:25 PM] ⏳ Aguardando 30 segundos para validação visual...
+[1/9/2026, 2:07:55 PM] 🏁 Processo terminado.
+[1/9/2026, 2:08:27 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:08:28 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:08:29 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:08:30 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:08:30 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:08:31 PM] 🔑 A autenticar...
+[1/9/2026, 2:08:31 PM] ✅ Login efetuado.
+[1/9/2026, 2:08:31 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:08:31 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:08:31 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:08:36 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:08:36 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 192,
+      "left": 401,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 192,
+      "left": 498,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 297,
+      "left": 401,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 297,
+      "left": 498,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 2:08:36 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:08:38 PM]    Calendário aberto: true
+[1/9/2026, 2:08:38 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Hoje button).
+[1/9/2026, 2:08:40 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 2:08:41 PM]    Calendário aberto: true
+[1/9/2026, 2:08:41 PM] ✅ "Hoje" selecionado para Data Submissão (Até) (via Hoje button).
+[1/9/2026, 2:08:42 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 2:08:42 PM] ⏳ Aguardando 30 segundos para validação visual...
+[1/9/2026, 2:09:12 PM] 🏁 Processo terminado.
+[1/9/2026, 2:10:16 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:10:16 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:10:17 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:10:18 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:10:18 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:10:19 PM] 🔑 A autenticar...
+[1/9/2026, 2:10:20 PM] ✅ Login efetuado.
+[1/9/2026, 2:10:20 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:10:20 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:10:20 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:10:25 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:10:25 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 206,
+      "left": 608,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 206,
+      "left": 744,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 293,
+      "left": 608,
+      "value": ""
+    },
+    {
+      "index": 3,
+      "top": 293,
+      "left": 744,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 2:10:25 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:10:27 PM]    Calendário aberto: true
+[1/9/2026, 2:10:27 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Hoje button).
+[1/9/2026, 2:10:28 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 2:10:30 PM]    Calendário aberto: true
+[1/9/2026, 2:10:30 PM] ✅ "Hoje" selecionado para Data Submissão (Até) (via Hoje button).
+[1/9/2026, 2:10:30 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 2:10:30 PM] ⏳ Aguardando 30 segundos para validação visual...
+[1/9/2026, 2:11:01 PM] 🏁 Processo terminado.
+[1/9/2026, 2:11:50 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:11:50 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:11:51 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:11:53 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:11:53 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:11:53 PM] 🔑 A autenticar...
+[1/9/2026, 2:11:54 PM] ✅ Login efetuado.
+[1/9/2026, 2:11:54 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:11:54 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:11:54 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:11:59 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:11:59 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 206,
+      "left": 597,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 206,
+      "left": 730,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 293,
+      "left": 597,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 293,
+      "left": 730,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 2:11:59 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:12:01 PM]    Calendário aberto: true
+[1/9/2026, 2:12:01 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Puppeteer click on Hoje).
+[1/9/2026, 2:12:01 PM] [BROWSER] The specified value "09-01-2026" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:12:02 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 2:12:04 PM]    Calendário aberto: true
+[1/9/2026, 2:12:04 PM] ✅ "Hoje" selecionado para Data Submissão (Até) (via Puppeteer click on Hoje).
+[1/9/2026, 2:12:05 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 2:12:05 PM] ⏳ Aguardando 30 segundos para validação visual...
+[1/9/2026, 2:12:35 PM] 🏁 Processo terminado.
+[1/9/2026, 2:13:24 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:13:25 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:13:26 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:13:27 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:13:27 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:13:28 PM] 🔑 A autenticar...
+[1/9/2026, 2:13:28 PM] ✅ Login efetuado.
+[1/9/2026, 2:13:28 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:13:28 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:13:28 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:13:33 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:13:33 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 206,
+      "left": 597,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 206,
+      "left": 730,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 293,
+      "left": 597,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 293,
+      "left": 730,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 2:13:33 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:13:35 PM]    Calendário aberto: true
+[1/9/2026, 2:13:35 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Puppeteer click on Hoje).
+[1/9/2026, 2:13:35 PM] [BROWSER] The specified value "09-01-2026" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:13:37 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 2:13:38 PM]    Calendário aberto: true
+[1/9/2026, 2:13:38 PM] ✅ "Hoje" selecionado para Data Submissão (Até) (via Puppeteer click on Hoje).
+[1/9/2026, 2:13:39 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 2:13:41 PM] 📤 Procurando botão "Exportar Dados"...
+[1/9/2026, 2:13:41 PM] 🎯 Botão encontrado: "Exportar Dados"
+[1/9/2026, 2:13:42 PM] 📥 Botão premido. Aguardando download...
+[1/9/2026, 2:14:12 PM] ... ainda aguardando download (30s)...
+[1/9/2026, 2:14:42 PM] ... ainda aguardando download (60s)...
+[1/9/2026, 2:15:12 PM] ... ainda aguardando download (90s)...
+[1/9/2026, 2:15:42 PM] ... ainda aguardando download (120s)...
+[1/9/2026, 2:16:12 PM] ... ainda aguardando download (150s)...
+[1/9/2026, 2:16:42 PM] ... ainda aguardando download (180s)...
+[1/9/2026, 2:17:12 PM] ... ainda aguardando download (210s)...
+[1/9/2026, 2:17:42 PM] ... ainda aguardando download (240s)...
+[1/9/2026, 2:18:12 PM] ... ainda aguardando download (270s)...
+[1/9/2026, 2:18:42 PM] ⚠️ O download excedeu os 5 minutos de espera.
+[1/9/2026, 2:18:42 PM] 🏁 Processo terminado.
+[1/9/2026, 2:19:33 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:19:34 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:19:35 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:19:36 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:19:36 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:19:37 PM] 🔑 A autenticar...
+[1/9/2026, 2:19:37 PM] ✅ Login efetuado.
+[1/9/2026, 2:19:37 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:19:37 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:19:37 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:19:42 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:19:43 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 206,
+      "left": 597,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 206,
+      "left": 730,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 293,
+      "left": 597,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 293,
+      "left": 730,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 2:19:43 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:19:44 PM]    Calendário aberto: true
+[1/9/2026, 2:19:44 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Puppeteer click on Hoje).
+[1/9/2026, 2:19:44 PM] [BROWSER] The specified value "09-01-2026" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:19:46 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 2:19:48 PM]    Calendário aberto: true
+[1/9/2026, 2:19:48 PM] ✅ "Hoje" selecionado para Data Submissão (Até) (via Puppeteer click on Hoje).
+[1/9/2026, 2:19:48 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 2:19:50 PM] 📤 Procurando botão "Exportar Dados"...
+[1/9/2026, 2:19:50 PM] 🎯 Botão encontrado: "Exportar Dados"
+[1/9/2026, 2:19:51 PM] 📥 Botão premido. Aguardando download...
+[1/9/2026, 2:20:01 PM] ... aguardando download (10s)...
+[1/9/2026, 2:20:11 PM] ... aguardando download (20s)...
+[1/9/2026, 2:20:21 PM] ... aguardando download (30s)...
+[1/9/2026, 2:20:31 PM] ... aguardando download (40s)...
+[1/9/2026, 2:20:41 PM] ... aguardando download (50s)...
+[1/9/2026, 2:20:51 PM] ⚠️ O download excedeu 60 segundos de espera.
+[1/9/2026, 2:20:51 PM] 🏁 Processo terminado.
+[1/9/2026, 2:21:26 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:21:27 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:21:28 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:21:29 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:21:29 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:21:30 PM] 🔑 A autenticar...
+[1/9/2026, 2:21:30 PM] ✅ Login efetuado.
+[1/9/2026, 2:21:30 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:21:30 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:21:30 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:21:35 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:21:35 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 206,
+      "left": 808,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 206,
+      "left": 994,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 293,
+      "left": 808,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 293,
+      "left": 994,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 2:21:35 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:21:37 PM]    Calendário aberto: true
+[1/9/2026, 2:21:37 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Puppeteer click on Hoje).
+[1/9/2026, 2:21:39 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 2:21:41 PM]    Calendário aberto: true
+[1/9/2026, 2:21:41 PM] ✅ "Hoje" selecionado para Data Submissão (Até) (via Puppeteer click on Hoje).
+[1/9/2026, 2:21:41 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 2:21:43 PM] 📤 Procurando botão "Exportar Dados"...
+[1/9/2026, 2:21:43 PM] 🎯 Botão encontrado: "Exportar Dados"
+[1/9/2026, 2:21:44 PM] 📥 Botão premido. Aguardando download...
+[1/9/2026, 2:21:54 PM] ... aguardando download (10s)...
+[1/9/2026, 2:22:04 PM] ... aguardando download (20s)...
+[1/9/2026, 2:22:14 PM] ... aguardando download (30s)...
+[1/9/2026, 2:22:24 PM] ... aguardando download (40s)...
+[1/9/2026, 2:22:34 PM] ... aguardando download (50s)...
+[1/9/2026, 2:22:44 PM] ⚠️ O download excedeu 60 segundos de espera.
+[1/9/2026, 2:22:44 PM] 🏁 Processo terminado.
+[1/9/2026, 2:23:47 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 2:23:48 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 2:23:48 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:23:50 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 2:23:50 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 2:23:50 PM] 🔑 A autenticar...
+[1/9/2026, 2:23:51 PM] ✅ Login efetuado.
+[1/9/2026, 2:23:51 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 2:23:51 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:23:51 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:23:56 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 2:23:56 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 191,
+      "left": 444,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 191,
+      "left": 553,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 297,
+      "left": 444,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 297,
+      "left": 553,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 2:23:56 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 2:23:58 PM]    Calendário aberto: true
+[1/9/2026, 2:23:58 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Puppeteer click on Hoje).
+[1/9/2026, 2:23:58 PM] [BROWSER] The specified value "09-01-2026" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 2:23:59 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 2:24:01 PM]    Calendário aberto: true
+[1/9/2026, 2:24:01 PM] ✅ "Hoje" selecionado para Data Submissão (Até) (via Puppeteer click on Hoje).
+[1/9/2026, 2:24:02 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 2:24:04 PM] 📤 Procurando botão "Exportar Dados"...
+[1/9/2026, 2:24:04 PM] 🎯 Botão encontrado: "Exportar Dados"
+[1/9/2026, 2:24:04 PM] 📥 Botão premido. Aguardando download...
+[1/9/2026, 2:24:08 PM] 🎯 SUCESSO! Ficheiro detetado: service_request_data.xlsx (atualizado)
+[1/9/2026, 2:24:10 PM] ✅ Download completo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/service_request_data.xlsx
+[1/9/2026, 2:24:11 PM] 🏁 Processo terminado.
+[1/9/2026, 3:06:06 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 3:06:07 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 3:06:08 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 3:06:10 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 3:06:10 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 3:06:10 PM] 🔑 A autenticar...
+[1/9/2026, 3:06:11 PM] ✅ Login efetuado.
+[1/9/2026, 3:06:11 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 3:06:11 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 3:06:11 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 3:06:16 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 3:06:16 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 327,
+      "left": 531,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 327,
+      "left": 648,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 432,
+      "left": 531,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 432,
+      "left": 648,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 3:06:16 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 3:06:18 PM]    Calendário aberto: true
+[1/9/2026, 3:06:18 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Puppeteer click on Hoje).
+[1/9/2026, 3:06:18 PM] [BROWSER] The specified value "09-01-2026" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 3:06:19 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 3:06:21 PM]    Calendário aberto: true
+[1/9/2026, 3:06:21 PM] ✅ "Hoje" selecionado para Data Submissão (Até) (via Puppeteer click on Hoje).
+[1/9/2026, 3:06:22 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 3:06:24 PM] 📤 Procurando botão "Exportar Dados"...
+[1/9/2026, 3:06:24 PM] 🎯 Botão encontrado: "Exportar Dados"
+[1/9/2026, 3:06:24 PM] 📥 Botão premido. Aguardando download...
+[1/9/2026, 3:06:28 PM] 🎯 SUCESSO! Ficheiro detetado: service_request_data.xlsx (atualizado)
+[1/9/2026, 3:06:30 PM] ✅ Download completo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/service_request_data.xlsx
+[1/9/2026, 3:06:31 PM] 🏁 Processo terminado.
+[1/9/2026, 4:46:55 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 4:46:57 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 4:46:57 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 4:46:59 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 4:46:59 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 4:46:59 PM] 🔑 A autenticar...
+[1/9/2026, 4:47:00 PM] ✅ Login efetuado.
+[1/9/2026, 4:47:00 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 4:47:00 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 4:47:00 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 4:47:05 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 4:47:05 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 294,
+      "left": 401,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 294,
+      "left": 498,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 399,
+      "left": 401,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 399,
+      "left": 498,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 4:47:05 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 4:47:07 PM]    Calendário aberto: false
+[1/9/2026, 4:47:07 PM]    Botão "Hoje" não encontrado, tentando clicar no dia atual...
+[1/9/2026, 4:47:07 PM] ⚠️ Botão "Hoje" não encontrado para Data Submissão (De)
+[1/9/2026, 4:47:09 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 4:47:10 PM]    Calendário aberto: false
+[1/9/2026, 4:47:10 PM]    Botão "Hoje" não encontrado, tentando clicar no dia atual...
+[1/9/2026, 4:47:10 PM] ⚠️ Botão "Hoje" não encontrado para Data Submissão (Até)
+[1/9/2026, 4:47:11 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 4:47:13 PM] 📤 Procurando botão "Exportar Dados"...
+[1/9/2026, 4:47:13 PM] 🎯 Botão encontrado: "Exportar Dados"
+[1/9/2026, 4:47:14 PM] 📥 Botão premido. Aguardando download...
+[1/9/2026, 4:47:24 PM] ... aguardando download (10s)...
+[1/9/2026, 4:47:33 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 4:47:34 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 4:47:35 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 4:47:36 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 4:47:36 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 4:47:37 PM] 🔑 A autenticar...
+[1/9/2026, 4:47:37 PM] ✅ Login efetuado.
+[1/9/2026, 4:47:37 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 4:47:37 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 4:47:37 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 4:47:42 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 4:47:42 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 309,
+      "left": 597,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 309,
+      "left": 730,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 396,
+      "left": 597,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 396,
+      "left": 730,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 4:47:42 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 4:47:44 PM]    Calendário aberto: true
+[1/9/2026, 4:47:44 PM] ✅ "Hoje" selecionado para Data Submissão (De) (via Puppeteer click on Hoje).
+[1/9/2026, 4:47:46 PM] 📅 Abrindo calendário para Data Submissão (Até)...
+[1/9/2026, 4:47:48 PM]    Calendário aberto: true
+[1/9/2026, 4:47:48 PM] ✅ "Hoje" selecionado para Data Submissão (Até) (via Puppeteer click on Hoje).
+[1/9/2026, 4:47:48 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 4:47:50 PM] 📤 Procurando botão "Exportar Dados"...
+[1/9/2026, 4:47:50 PM] 🎯 Botão encontrado: "Exportar Dados"
+[1/9/2026, 4:47:51 PM] 📥 Botão premido. Aguardando download...
+[1/9/2026, 4:48:06 PM] 🚀 Iniciando scrapper robótico Backoffice FIXO...
+[1/9/2026, 4:48:07 PM] 🔗 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequests
+[1/9/2026, 4:48:08 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 4:48:09 PM] [BROWSER] Failed to load resource: the server responded with a status of 404 ()
+[1/9/2026, 4:48:09 PM] [BROWSER] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+[1/9/2026, 4:48:10 PM] 🔑 A autenticar...
+[1/9/2026, 4:48:10 PM] ✅ Login efetuado.
+[1/9/2026, 4:48:10 PM] ⏳ A aguardar carregamento da lista e filtros...
+[1/9/2026, 4:48:10 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 4:48:10 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 4:48:15 PM] 📅 Alvo: Selecionar "Hoje" nos inputs de "Data de submissão do serviço"
+[1/9/2026, 4:48:15 PM] 🔎 [DEBUG] Inputs encontrados: {
+  "found": true,
+  "count": 4,
+  "inputsInfo": [
+    {
+      "index": 0,
+      "top": 311,
+      "left": 793,
+      "value": ""
+    },
+    {
+      "index": 1,
+      "top": 311,
+      "left": 975,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "top": 398,
+      "left": 793,
+      "value": "09-11-2025"
+    },
+    {
+      "index": 3,
+      "top": 398,
+      "left": 975,
+      "value": ""
+    }
+  ],
+  "debug": "Encontrados 4 inputs de data visíveis"
+}
+[1/9/2026, 4:48:15 PM] 📅 Abrindo calendário para Data Submissão (De)...
+[1/9/2026, 4:48:17 PM]    Calendário aberto: false
+[1/9/2026, 4:48:17 PM]    Botão "Hoje" não encontrado, tentando clicar no dia atual...
+[1/9/2026, 4:48:17 PM] ⚠️ Botão "Hoje" não encontrado para Data Submissão (De)
+[1/9/2026, 4:48:19 PM] ❌ Input não encontrado: input[data-submission-to="true"]
+[1/9/2026, 4:48:19 PM] 📸 Screenshots guardados em: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[1/9/2026, 4:48:21 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 4:48:21 PM] [BROWSER] The specified value "09-11-2025" does not conform to the required format, "yyyy-MM-dd".
+[1/9/2026, 4:48:21 PM] 📤 Procurando botão "Exportar Dados"...
+[1/9/2026, 4:48:21 PM] 🎯 Botão encontrado: "Exportar Dados"
+[1/9/2026, 4:48:21 PM] 📥 Botão premido. Aguardando download...
+[6:09:01 PM] ═══════════════════════════════════════════════
+[6:09:01 PM] 🚀 Scrapper de Backoffice
+[6:09:01 PM] 📅 Período: 01-01-2026 até 09-01-2026
+[6:09:01 PM] ═══════════════════════════════════════════════
+[6:09:01 PM] 🌐 A lançar browser...
+[6:09:02 PM] PASSO 1/5: Navegando para página de login...
+[6:09:05 PM] 🔑 Preenchendo credenciais...
+[6:09:05 PM] 🔐 A fazer login...
+[6:09:05 PM] ⏳ Aguardando 1000ms: Login concluído
+[6:09:06 PM] PASSO 2/5: Procurando inputs de data...
+[6:09:06 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[6:09:07 PM] 🔍 Encontrados 5 inputs visíveis
+[6:09:07 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[6:09:07 PM] ✅ Usando os 2 últimos inputs de data:
+[6:09:07 PM]    - Input 3 (De): index 3
+[6:09:07 PM]    - Input 4 (Até): index 4
+[6:09:07 PM] PASSO 3/5: Preenchendo datas...
+[6:09:07 PM] 📅 Preenchendo "Data Submissão (De)" com: 01-01-2026
+[6:09:07 PM]    Convertendo 01-01-2026 → 2026-01-01 (ISO)
+[6:09:07 PM] ✅ Data definida com sucesso:
+[6:09:07 PM]    Hidden input (ISO): "2026-01-01"
+[6:09:07 PM]    Visible input (PT): "01-01-2026"
+[6:09:07 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[6:09:08 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[6:09:09 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[6:09:09 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[6:09:09 PM] ✅ Data definida com sucesso:
+[6:09:09 PM]    Hidden input (ISO): "2026-01-09"
+[6:09:09 PM]    Visible input (PT): "09-01-2026"
+[6:09:09 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[6:09:09 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[6:09:11 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[6:09:11 PM] ✅ Botão encontrado!
+[6:09:11 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[6:09:12 PM] 🖱️  A clicar em "Exportar Dados"...
+[6:09:12 PM] ⏳ Aguardando 2000ms: Click executado
+[6:09:14 PM] PASSO 5/5: Aguardando download do ficheiro...
+[6:09:19 PM] ⏳ Aguardando download... 5s
+[6:09:24 PM] ⏳ Aguardando download... 10s
+[6:09:29 PM] ⏳ Aguardando download... 15s
+[6:09:34 PM] ⏳ Aguardando download... 20s
+[6:09:39 PM] ⏳ Aguardando download... 25s
+[6:09:44 PM] ⏳ Aguardando download... 30s
+[6:09:49 PM] ⏳ Aguardando download... 35s
+[6:09:54 PM] ⏳ Aguardando download... 40s
+[6:09:59 PM] ⏳ Aguardando download... 45s
+[6:10:04 PM] ⏳ Aguardando download... 50s
+[6:10:09 PM] ⏳ Aguardando download... 55s
+[6:10:14 PM] ❌ Download não completou em 60 segundos
+[9:02:05 PM] ═══════════════════════════════════════════════
+[9:02:05 PM] 🚀 Scrapper de Backoffice
+[9:02:05 PM] 📅 Período: 09-01-2026 até 09-01-2026
+[9:02:05 PM] ═══════════════════════════════════════════════
+[9:02:05 PM] 🌐 A lançar browser...
+[9:02:08 PM] PASSO 1/5: Navegando para página de login...
+[9:02:10 PM] 🔑 Preenchendo credenciais...
+[9:02:21 PM] 🔐 A fazer login...
+[9:02:23 PM] ⏳ Aguardando 1000ms: Login concluído
+[9:02:24 PM] PASSO 2/5: Procurando inputs de data...
+[9:02:25 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[9:02:26 PM] 🔍 Encontrados 5 inputs visíveis
+[9:02:26 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[9:02:26 PM] ✅ Usando os 2 últimos inputs de data:
+[9:02:26 PM]    - Input 3 (De): index 3
+[9:02:26 PM]    - Input 4 (Até): index 4
+[9:02:26 PM] PASSO 3/5: Preenchendo datas...
+[9:02:26 PM] 📅 Preenchendo "Data Submissão (De)" com: 09-01-2026
+[9:02:26 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[9:02:26 PM] ✅ Data definida com sucesso:
+[9:02:26 PM]    Hidden input (ISO): "2026-01-09"
+[9:02:26 PM]    Visible input (PT): "09-01-2026"
+[9:02:26 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:02:26 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[9:02:27 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[9:02:27 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[9:02:28 PM] ✅ Data definida com sucesso:
+[9:02:28 PM]    Hidden input (ISO): "2026-01-09"
+[9:02:28 PM]    Visible input (PT): "09-01-2026"
+[9:02:28 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:02:28 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[9:02:30 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[9:02:30 PM] ✅ Botão encontrado!
+[9:02:30 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[9:02:31 PM] 🖱️  A clicar em "Exportar Dados"...
+[9:02:31 PM] ⏳ Aguardando 2000ms: Click executado
+[9:02:33 PM] PASSO 5/5: Aguardando download do ficheiro...
+[9:02:38 PM] ⏳ Aguardando download... 5s
+[9:02:43 PM] ⏳ Aguardando download... 10s
+[9:02:48 PM] ⏳ Aguardando download... 15s
+[9:02:53 PM] ⏳ Aguardando download... 20s
+[9:02:58 PM] ⏳ Aguardando download... 25s
+[9:03:03 PM] ⏳ Aguardando download... 30s
+[9:03:08 PM] ⏳ Aguardando download... 35s
+[9:03:13 PM] ⏳ Aguardando download... 40s
+[9:03:18 PM] ⏳ Aguardando download... 45s
+[9:03:23 PM] ⏳ Aguardando download... 50s
+[9:03:28 PM] ⏳ Aguardando download... 55s
+[9:03:33 PM] ❌ Download não completou em 60 segundos
+[9:07:59 PM] ═══════════════════════════════════════════════
+[9:07:59 PM] 🚀 Scrapper de Backoffice
+[9:07:59 PM] 📅 Período: 09-01-2026 até 09-01-2026
+[9:07:59 PM] ═══════════════════════════════════════════════
+[9:07:59 PM] 🌐 A lançar browser...
+[9:08:01 PM] PASSO 1/5: Navegando para página de login...
+[9:08:04 PM] 🔑 Preenchendo credenciais...
+[9:08:15 PM] 🔐 A fazer login...
+[9:08:17 PM] ⏳ Aguardando 1000ms: Login concluído
+[9:08:18 PM] PASSO 2/5: Procurando inputs de data...
+[9:08:18 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[9:08:19 PM] 🔍 Encontrados 5 inputs visíveis
+[9:08:19 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[9:08:19 PM] ✅ Usando os 2 últimos inputs de data:
+[9:08:19 PM]    - Input 3 (De): index 3
+[9:08:19 PM]    - Input 4 (Até): index 4
+[9:08:19 PM] PASSO 3/5: Preenchendo datas...
+[9:08:19 PM] 📅 Preenchendo "Data Submissão (De)" com: 09-01-2026
+[9:08:19 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[9:08:19 PM] ✅ Data definida com sucesso:
+[9:08:19 PM]    Hidden input (ISO): "2026-01-09"
+[9:08:19 PM]    Visible input (PT): "09-01-2026"
+[9:08:19 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:08:20 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[9:08:21 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[9:08:21 PM]    Convertendo 09-01-2026 → 2026-01-09 (ISO)
+[9:08:21 PM] ✅ Data definida com sucesso:
+[9:08:21 PM]    Hidden input (ISO): "2026-01-09"
+[9:08:21 PM]    Visible input (PT): "09-01-2026"
+[9:08:21 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:08:22 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[9:08:24 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[9:08:24 PM] ✅ Botão encontrado!
+[9:08:24 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[9:08:25 PM] 🖱️  A clicar em "Exportar Dados"...
+[9:08:25 PM] ⏳ Aguardando 2000ms: Click executado
+[9:08:27 PM] PASSO 5/5: Aguardando download do ficheiro...
+[9:08:32 PM] ⏳ Aguardando download... 5s
+[9:08:37 PM] ⏳ Aguardando download... 10s
+[9:08:42 PM] ⏳ Aguardando download... 15s
+[9:08:47 PM] ⏳ Aguardando download... 20s
+[9:08:52 PM] ⏳ Aguardando download... 25s
+[9:08:57 PM] ⏳ Aguardando download... 30s
+[9:09:02 PM] ⏳ Aguardando download... 35s
+[9:09:07 PM] ⏳ Aguardando download... 40s
+[9:09:12 PM] ⏳ Aguardando download... 45s
+[9:09:17 PM] ⏳ Aguardando download... 50s
+[9:09:22 PM] ⏳ Aguardando download... 55s
+[9:09:27 PM] ❌ Download não completou em 60 segundos
+[9:10:06 PM] ═══════════════════════════════════════════════
+[9:10:06 PM] 🚀 Scrapper de Backoffice
+[9:10:06 PM] 📅 Período: 09-01-2026 até 09-01-2026
+[9:10:06 PM] ═══════════════════════════════════════════════
+[9:10:06 PM] 🌐 A lançar browser...
+[9:10:08 PM] PASSO 1/5: Navegando para página de login...
+[9:10:10 PM] 🔑 Preenchendo credenciais...
+[9:10:21 PM] 🔐 A fazer login...
+[9:10:23 PM] ⏳ Aguardando 1000ms: Login concluído
+[9:10:24 PM] PASSO 2/5: Procurando inputs de data...
+[9:10:24 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[9:10:26 PM] 🔍 Encontrados 5 inputs visíveis
+[9:10:26 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[9:10:26 PM] ✅ Usando os 2 últimos inputs de data:
+[9:10:26 PM]    - Input 3 (De): index 3
+[9:10:26 PM]    - Input 4 (Até): index 4
+[9:10:26 PM] PASSO 3/5: Preenchendo datas...
+[9:10:26 PM] 📅 Preenchendo "Data Submissão (De)" com: 09-01-2026
+[9:10:26 PM]    Data: 2026-01-09T00:00:00.000Z
+[9:10:26 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:10:26 PM]    Hidden input: "2026-01-09"
+[9:10:26 PM]    Visible input: "09-01-2026"
+[9:10:26 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:10:26 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[9:10:27 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[9:10:27 PM]    Data: 2026-01-09T00:00:00.000Z
+[9:10:27 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:10:27 PM]    Hidden input: "2026-01-09"
+[9:10:27 PM]    Visible input: "09-01-2026"
+[9:10:27 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:10:28 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[9:10:30 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[9:10:30 PM] ✅ Botão encontrado!
+[9:10:30 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[9:10:31 PM] 🖱️  A clicar em "Exportar Dados"...
+[9:10:31 PM] ⏳ Aguardando 2000ms: Click executado
+[9:10:33 PM] PASSO 5/5: Aguardando download do ficheiro...
+[9:10:35 PM] ═══════════════════════════════════════════════
+[9:10:35 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[9:10:35 PM] 📁 Ficheiro: service_request_data.xlsx
+[9:10:35 PM] 📊 Tamanho: 0.04 MB
+[9:10:35 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[9:10:35 PM] ═══════════════════════════════════════════════
+[9:10:35 PM] ⏳ Aguardando 1000ms: Finalização
+[9:19:40 PM] ═══════════════════════════════════════════════
+[9:19:40 PM] 🚀 Scrapper de Backoffice
+[9:19:40 PM] 📅 Período: 02-01-2026 até 09-01-2026
+[9:19:40 PM] ═══════════════════════════════════════════════
+[9:19:40 PM] 🌐 A lançar browser...
+[9:19:40 PM] PASSO 1/5: Navegando para página de login...
+[9:19:43 PM] 🔑 Preenchendo credenciais...
+[9:19:43 PM] 🔐 A fazer login...
+[9:19:44 PM] ⏳ Aguardando 1000ms: Login concluído
+[9:19:45 PM] PASSO 2/5: Procurando inputs de data...
+[9:19:45 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[9:19:46 PM] 🔍 Encontrados 5 inputs visíveis
+[9:19:46 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[9:19:46 PM] ✅ Usando os 2 últimos inputs de data:
+[9:19:46 PM]    - Input 3 (De): index 3
+[9:19:46 PM]    - Input 4 (Até): index 4
+[9:19:46 PM] PASSO 3/5: Preenchendo datas...
+[9:19:46 PM] 📅 Preenchendo "Data Submissão (De)" com: 02-01-2026
+[9:19:46 PM]    Data: 2026-01-02T00:00:00.000Z
+[9:19:46 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:19:46 PM]    Hidden input: "2026-01-02"
+[9:19:46 PM]    Visible input: "02-01-2026"
+[9:19:46 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:19:46 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[9:19:47 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[9:19:47 PM]    Data: 2026-01-09T00:00:00.000Z
+[9:19:47 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:19:47 PM]    Hidden input: "2026-01-09"
+[9:19:47 PM]    Visible input: "09-01-2026"
+[9:19:47 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:19:48 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[9:19:50 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[9:19:50 PM] ✅ Botão encontrado!
+[9:19:50 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[9:19:51 PM] 🖱️  A clicar em "Exportar Dados"...
+[9:19:51 PM] ⏳ Aguardando 2000ms: Click executado
+[9:19:53 PM] PASSO 5/5: Aguardando download do ficheiro...
+[9:19:53 PM] ═══════════════════════════════════════════════
+[9:19:53 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[9:19:53 PM] 📁 Ficheiro: service_request_data.xlsx
+[9:19:53 PM] 📊 Tamanho: 0.04 MB
+[9:19:53 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[9:19:53 PM] ═══════════════════════════════════════════════
+[9:19:53 PM] ⏳ Aguardando 1000ms: Finalização
+[9:28:00 PM] ═══════════════════════════════════════════════
+[9:28:00 PM] 🚀 Scrapper de Backoffice
+[9:28:00 PM] 📅 Período: 02-01-2026 até 09-01-2026
+[9:28:00 PM] ═══════════════════════════════════════════════
+[9:28:00 PM] 🌐 A lançar browser...
+[9:28:01 PM] PASSO 1/5: Navegando para página de login...
+[9:28:04 PM] 🔑 Preenchendo credenciais...
+[9:28:04 PM] 🔐 A fazer login...
+[9:28:04 PM] ⏳ Aguardando 1000ms: Login concluído
+[9:28:05 PM] PASSO 2/5: Procurando inputs de data...
+[9:28:05 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[9:28:06 PM] 🔍 Encontrados 5 inputs visíveis
+[9:28:06 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[9:28:06 PM] ✅ Usando os 2 últimos inputs de data:
+[9:28:06 PM]    - Input 3 (De): index 3
+[9:28:06 PM]    - Input 4 (Até): index 4
+[9:28:06 PM] PASSO 3/5: Preenchendo datas...
+[9:28:06 PM] 📅 Preenchendo "Data Submissão (De)" com: 02-01-2026
+[9:28:06 PM]    Data: 2026-01-02T00:00:00.000Z
+[9:28:06 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:28:06 PM]    Hidden input: "2026-01-02"
+[9:28:06 PM]    Visible input: "02-01-2026"
+[9:28:06 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:28:07 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[9:28:08 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[9:28:08 PM]    Data: 2026-01-09T00:00:00.000Z
+[9:28:08 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:28:08 PM]    Hidden input: "2026-01-09"
+[9:28:08 PM]    Visible input: "09-01-2026"
+[9:28:08 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:28:08 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[9:28:10 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[9:28:10 PM] ✅ Botão encontrado!
+[9:28:10 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[9:28:11 PM] 🖱️  A clicar em "Exportar Dados"...
+[9:28:11 PM] ⏳ Aguardando 2000ms: Click executado
+[9:28:13 PM] PASSO 5/5: Aguardando download do ficheiro...
+[9:28:13 PM] ═══════════════════════════════════════════════
+[9:28:13 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[9:28:13 PM] 📁 Ficheiro: service_request_data.xlsx
+[9:28:13 PM] 📊 Tamanho: 0.04 MB
+[9:28:13 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[9:28:13 PM] ═══════════════════════════════════════════════
+[9:28:13 PM] ⏳ Aguardando 1000ms: Finalização
+[9:30:39 PM] ═══════════════════════════════════════════════
+[9:30:39 PM] 🚀 Scrapper de Backoffice
+[9:30:39 PM] 📅 Período: 02-01-2026 até 09-01-2026
+[9:30:39 PM] ═══════════════════════════════════════════════
+[9:30:39 PM] 🌐 A lançar browser...
+[9:30:40 PM] PASSO 1/5: Navegando para página de login...
+[9:30:42 PM] 🔑 Preenchendo credenciais...
+[9:30:43 PM] 🔐 A fazer login...
+[9:30:43 PM] ⏳ Aguardando 1000ms: Login concluído
+[9:30:44 PM] PASSO 2/5: Procurando inputs de data...
+[9:30:44 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[9:30:45 PM] 🔍 Encontrados 5 inputs visíveis
+[9:30:45 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[9:30:45 PM] ✅ Usando os 2 últimos inputs de data:
+[9:30:45 PM]    - Input 3 (De): index 3
+[9:30:45 PM]    - Input 4 (Até): index 4
+[9:30:45 PM] PASSO 3/5: Preenchendo datas...
+[9:30:45 PM] 📅 Preenchendo "Data Submissão (De)" com: 02-01-2026
+[9:30:45 PM]    Data: 2026-01-02T00:00:00.000Z
+[9:30:45 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:30:45 PM]    Hidden input: "2026-01-02"
+[9:30:45 PM]    Visible input: "02-01-2026"
+[9:30:45 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:30:46 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[9:30:47 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[9:30:47 PM]    Data: 2026-01-09T00:00:00.000Z
+[9:30:47 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:30:47 PM]    Hidden input: "2026-01-09"
+[9:30:47 PM]    Visible input: "09-01-2026"
+[9:30:47 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:30:47 PM] ⏳ Aguardando 2000ms: Ambas as datas preenchidas
+[9:30:49 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1767994249606.png
+[9:30:49 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[9:30:49 PM]    Data De (visível): 02-01-2026
+[9:30:49 PM]    Data De (hidden): N/A
+[9:30:49 PM]    Data Até (visível): 09-01-2026
+[9:30:49 PM]    Data Até (hidden): N/A
+[9:30:49 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[9:30:49 PM] ✅ Botão encontrado!
+[9:30:49 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[9:30:50 PM] 🖱️  A clicar em "Exportar Dados"...
+[9:30:50 PM] ⏳ Aguardando 2000ms: Click executado
+[9:30:52 PM] PASSO 5/5: Aguardando download do ficheiro...
+[9:30:52 PM] ═══════════════════════════════════════════════
+[9:30:52 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[9:30:52 PM] 📁 Ficheiro: service_request_data.xlsx
+[9:30:52 PM] 📊 Tamanho: 0.04 MB
+[9:30:52 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[9:30:52 PM] ═══════════════════════════════════════════════
+[9:30:52 PM] ⏳ Aguardando 1000ms: Finalização
+[9:32:52 PM] ═══════════════════════════════════════════════
+[9:32:52 PM] 🚀 Scrapper de Backoffice
+[9:32:52 PM] 📅 Período: 01-01-2026 até 09-01-2026
+[9:32:52 PM] ═══════════════════════════════════════════════
+[9:32:52 PM] 🌐 A lançar browser...
+[9:32:52 PM] PASSO 1/5: Navegando para página de login...
+[9:32:55 PM] 🔑 Preenchendo credenciais...
+[9:32:55 PM] 🔐 A fazer login...
+[9:32:55 PM] ⏳ Aguardando 1000ms: Login concluído
+[9:32:56 PM] PASSO 2/5: Procurando inputs de data...
+[9:32:57 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[9:32:58 PM] 🔍 Encontrados 5 inputs visíveis
+[9:32:58 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[9:32:58 PM] ✅ Usando os 2 últimos inputs de data:
+[9:32:58 PM]    - Input 3 (De): index 3
+[9:32:58 PM]    - Input 4 (Até): index 4
+[9:32:58 PM] PASSO 3/5: Preenchendo datas...
+[9:32:58 PM] 📅 Preenchendo "Data Submissão (De)" com: 01-01-2026
+[9:32:58 PM]    Data: 2026-01-01T00:00:00.000Z
+[9:32:58 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:32:58 PM]    Hidden input: "2026-01-01"
+[9:32:58 PM]    Visible input: "01-01-2026"
+[9:32:58 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:32:58 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[9:32:59 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[9:32:59 PM]    Data: 2026-01-09T00:00:00.000Z
+[9:32:59 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:32:59 PM]    Hidden input: "2026-01-09"
+[9:32:59 PM]    Visible input: "09-01-2026"
+[9:32:59 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:33:00 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[9:33:03 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1767994383027.png
+[9:33:03 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[9:33:03 PM]    Data De (visível): 01-01-2026 (ID: sem-id)
+[9:33:03 PM]    Data De (hidden): N/A
+[9:33:03 PM]    Data Até (visível): 09-01-2026 (ID: sem-id)
+[9:33:03 PM]    Data Até (hidden): N/A
+[9:33:03 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[9:33:03 PM] ✅ Botão encontrado!
+[9:33:03 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[9:33:04 PM] 🖱️  A clicar em "Exportar Dados"...
+[9:33:04 PM] ⏳ Aguardando 2000ms: Click executado
+[9:33:06 PM] PASSO 5/5: Aguardando download do ficheiro...
+[9:33:06 PM] ═══════════════════════════════════════════════
+[9:33:06 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[9:33:06 PM] 📁 Ficheiro: service_request_data.xlsx
+[9:33:06 PM] 📊 Tamanho: 0.04 MB
+[9:33:06 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[9:33:06 PM] ═══════════════════════════════════════════════
+[9:33:06 PM] ⏳ Aguardando 1000ms: Finalização
+[9:36:40 PM] ═══════════════════════════════════════════════
+[9:36:40 PM] 🚀 Scrapper de Backoffice
+[9:36:40 PM] 📅 Período: 01-01-2026 até 09-01-2026
+[9:36:40 PM] ═══════════════════════════════════════════════
+[9:36:40 PM] 🌐 A lançar browser...
+[9:36:40 PM] PASSO 1/5: Navegando para página de login...
+[9:36:43 PM] 🔑 Preenchendo credenciais...
+[9:36:43 PM] 🔐 A fazer login...
+[9:36:44 PM] ⏳ Aguardando 1000ms: Login concluído
+[9:36:45 PM] PASSO 2/5: Procurando inputs de data...
+[9:36:45 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[9:36:46 PM] 🔍 Encontrados 5 inputs visíveis
+[9:36:46 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[9:36:46 PM] ✅ Usando os 2 últimos inputs de data:
+[9:36:46 PM]    - Input 3 (De): index 3
+[9:36:46 PM]    - Input 4 (Até): index 4
+[9:36:46 PM] PASSO 3/5: Preenchendo datas...
+[9:36:46 PM] 📅 Preenchendo "Data Submissão (De)" com: 01-01-2026
+[9:36:46 PM]    Data: 2026-01-01T00:00:00.000Z
+[9:36:46 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:36:46 PM]    Hidden input: "2026-01-01"
+[9:36:46 PM]    Visible input: "01-01-2026"
+[9:36:46 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:36:46 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[9:36:47 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[9:36:47 PM]    Data: 2026-01-09T00:00:00.000Z
+[9:36:47 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:36:47 PM]    Hidden input: "2026-01-09"
+[9:36:47 PM]    Visible input: "09-01-2026"
+[9:36:47 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:36:48 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[9:36:51 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1767994611049.png
+[9:36:51 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[9:36:51 PM]    Data De (visível): 01-01-2026 (ID: sem-id)
+[9:36:51 PM]    Data De (hidden): N/A
+[9:36:51 PM]    Data Até (visível): 09-01-2026 (ID: sem-id)
+[9:36:51 PM]    Data Até (hidden): N/A
+[9:36:51 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[9:36:51 PM] ✅ Botão encontrado!
+[9:36:51 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[9:36:52 PM] 🖱️  A clicar em "Exportar Dados"...
+[9:36:52 PM] ⏳ Aguardando 2000ms: Click executado
+[9:36:54 PM] PASSO 5/5: Aguardando download do ficheiro...
+[9:36:54 PM] 🧹 Removendo ficheiros Excel antigos...
+[9:36:54 PM]    Removido: service_request_data.xlsx
+[9:36:59 PM] ⏳ Aguardando download... 5s
+[9:37:04 PM] ⏳ Aguardando download... 10s
+[9:37:09 PM] ⏳ Aguardando download... 15s
+[9:37:14 PM] ⏳ Aguardando download... 20s
+[9:37:19 PM] ⏳ Aguardando download... 25s
+[9:37:24 PM] ⏳ Aguardando download... 30s
+[9:37:28 PM] ═══════════════════════════════════════════════
+[9:37:28 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[9:37:28 PM] 📁 Ficheiro: service_request_data.xlsx
+[9:37:28 PM] 📊 Tamanho: 0.30 MB
+[9:37:28 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[9:37:28 PM] ═══════════════════════════════════════════════
+[9:37:28 PM] ⏳ Aguardando 1000ms: Finalização
+[9:39:30 PM] ═══════════════════════════════════════════════
+[9:39:30 PM] 🚀 Scrapper de Backoffice
+[9:39:30 PM] 📅 Período: 09-01-2026 até 09-01-2026
+[9:39:30 PM] ═══════════════════════════════════════════════
+[9:39:30 PM] 🌐 A lançar browser...
+[9:39:30 PM] PASSO 1/5: Navegando para página de login...
+[9:39:33 PM] 🔑 Preenchendo credenciais...
+[9:39:34 PM] 🔐 A fazer login...
+[9:39:34 PM] ⏳ Aguardando 1000ms: Login concluído
+[9:39:35 PM] PASSO 2/5: Procurando inputs de data...
+[9:39:35 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[9:39:36 PM] 🔍 Encontrados 5 inputs visíveis
+[9:39:36 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[9:39:36 PM] ✅ Usando os 2 últimos inputs de data:
+[9:39:36 PM]    - Input 3 (De): index 3
+[9:39:36 PM]    - Input 4 (Até): index 4
+[9:39:36 PM] PASSO 3/5: Preenchendo datas...
+[9:39:36 PM] 📅 Preenchendo "Data Submissão (De)" com: 09-01-2026
+[9:39:36 PM]    Data: 2026-01-09T00:00:00.000Z
+[9:39:36 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:39:36 PM]    Hidden input: "2026-01-09"
+[9:39:36 PM]    Visible input: "09-01-2026"
+[9:39:36 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:39:36 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[9:39:37 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[9:39:37 PM]    Data: 2026-01-09T00:00:00.000Z
+[9:39:37 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[9:39:37 PM]    Hidden input: "2026-01-09"
+[9:39:37 PM]    Visible input: "09-01-2026"
+[9:39:37 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[9:39:38 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[9:39:41 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1767994781484.png
+[9:39:41 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[9:39:41 PM]    Data De (visível): 09-01-2026 (ID: sem-id)
+[9:39:41 PM]    Data De (hidden): N/A
+[9:39:41 PM]    Data Até (visível): 09-01-2026 (ID: sem-id)
+[9:39:41 PM]    Data Até (hidden): N/A
+[9:39:41 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[9:39:41 PM] ✅ Botão encontrado!
+[9:39:41 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[9:39:42 PM] 🖱️  A clicar em "Exportar Dados"...
+[9:39:42 PM] ⏳ Aguardando 2000ms: Click executado
+[9:39:44 PM] PASSO 5/5: Aguardando download do ficheiro...
+[9:39:44 PM] 🧹 Removendo ficheiros Excel antigos...
+[9:39:44 PM]    Removido: service_request_data.xlsx
+[9:39:46 PM] ═══════════════════════════════════════════════
+[9:39:46 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[9:39:46 PM] 📁 Ficheiro: service_request_data.xlsx
+[9:39:46 PM] 📊 Tamanho: 0.04 MB
+[9:39:46 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[9:39:46 PM] ═══════════════════════════════════════════════
+[9:39:46 PM] ⏳ Aguardando 1000ms: Finalização
+[10:12:26 PM] ═══════════════════════════════════════════════
+[10:12:26 PM] 🚀 Scrapper de Backoffice
+[10:12:26 PM] 📅 Período: 09-01-2026 até 09-01-2026
+[10:12:26 PM] ═══════════════════════════════════════════════
+[10:12:26 PM] 🌐 A lançar browser...
+[10:12:26 PM] PASSO 1/5: Navegando para página de login...
+[10:12:29 PM] 🔑 Preenchendo credenciais...
+[10:12:29 PM] 🔐 A fazer login...
+[10:12:30 PM] ⏳ Aguardando 1000ms: Login concluído
+[10:12:31 PM] PASSO 2/5: Procurando inputs de data...
+[10:12:31 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[10:12:32 PM] 🔍 Encontrados 5 inputs visíveis
+[10:12:32 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[10:12:32 PM] ✅ Usando os 2 últimos inputs de data:
+[10:12:32 PM]    - Input 3 (De): index 3
+[10:12:32 PM]    - Input 4 (Até): index 4
+[10:12:32 PM] PASSO 3/5: Preenchendo datas...
+[10:12:32 PM] 📅 Preenchendo "Data Submissão (De)" com: 09-01-2026
+[10:12:32 PM]    Data: 2026-01-09T00:00:00.000Z
+[10:12:32 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[10:12:32 PM]    Hidden input: "2026-01-09"
+[10:12:32 PM]    Visible input: "09-01-2026"
+[10:12:32 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[10:12:32 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[10:12:33 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[10:12:33 PM]    Data: 2026-01-09T00:00:00.000Z
+[10:12:33 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[10:12:33 PM]    Hidden input: "2026-01-09"
+[10:12:33 PM]    Visible input: "09-01-2026"
+[10:12:33 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[10:12:34 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[10:12:37 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1767996757156.png
+[10:12:37 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[10:12:37 PM]    Data De (visível): 09-01-2026 (ID: sem-id)
+[10:12:37 PM]    Data De (hidden): N/A
+[10:12:37 PM]    Data Até (visível): 09-01-2026 (ID: sem-id)
+[10:12:37 PM]    Data Até (hidden): N/A
+[10:12:37 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[10:12:37 PM] ✅ Botão encontrado!
+[10:12:37 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[10:12:38 PM] 🖱️  A clicar em "Exportar Dados"...
+[10:12:38 PM] ⏳ Aguardando 2000ms: Click executado
+[10:12:40 PM] PASSO 5/5: Aguardando download do ficheiro...
+[10:12:40 PM] 🧹 Removendo ficheiros Excel antigos...
+[10:12:40 PM]    Removido: service_request_data.xlsx
+[10:12:42 PM] ═══════════════════════════════════════════════
+[10:12:42 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[10:12:42 PM] 📁 Ficheiro: service_request_data.xlsx
+[10:12:42 PM] 📊 Tamanho: 0.04 MB
+[10:12:42 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[10:12:42 PM] ═══════════════════════════════════════════════
+[10:12:42 PM] ⏳ Aguardando 1000ms: Finalização
+[10:58:17 PM] ═══════════════════════════════════════════════
+[10:58:17 PM] 🚀 Scrapper de Backoffice
+[10:58:17 PM] 📅 Período: 09-01-2026 até 09-01-2026
+[10:58:17 PM] ═══════════════════════════════════════════════
+[10:58:17 PM] 🌐 A lançar browser...
+[10:58:18 PM] PASSO 1/5: Navegando para página de login...
+[10:58:20 PM] 🔑 Preenchendo credenciais...
+[10:58:20 PM] 🔐 A fazer login...
+[10:58:21 PM] ⏳ Aguardando 1000ms: Login concluído
+[10:58:22 PM] PASSO 2/5: Procurando inputs de data...
+[10:58:22 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[10:58:23 PM] 🔍 Encontrados 5 inputs visíveis
+[10:58:23 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[10:58:23 PM] ✅ Usando os 2 últimos inputs de data:
+[10:58:23 PM]    - Input 3 (De): index 3
+[10:58:23 PM]    - Input 4 (Até): index 4
+[10:58:23 PM] PASSO 3/5: Preenchendo datas...
+[10:58:23 PM] 📅 Preenchendo "Data Submissão (De)" com: 09-01-2026
+[10:58:23 PM]    Data: 2026-01-09T00:00:00.000Z
+[10:58:23 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[10:58:23 PM]    Hidden input: "2026-01-09"
+[10:58:23 PM]    Visible input: "09-01-2026"
+[10:58:23 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[10:58:23 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[10:58:24 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[10:58:24 PM]    Data: 2026-01-09T00:00:00.000Z
+[10:58:24 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[10:58:24 PM]    Hidden input: "2026-01-09"
+[10:58:24 PM]    Visible input: "09-01-2026"
+[10:58:24 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[10:58:25 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[10:58:28 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1767999508155.png
+[10:58:28 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[10:58:28 PM]    Data De (visível): 09-01-2026 (ID: sem-id)
+[10:58:28 PM]    Data De (hidden): N/A
+[10:58:28 PM]    Data Até (visível): 09-01-2026 (ID: sem-id)
+[10:58:28 PM]    Data Até (hidden): N/A
+[10:58:28 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[10:58:28 PM] ✅ Botão encontrado!
+[10:58:28 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[10:58:29 PM] 🖱️  A clicar em "Exportar Dados"...
+[10:58:29 PM] ⏳ Aguardando 2000ms: Click executado
+[10:58:31 PM] PASSO 5/5: Aguardando download do ficheiro...
+[10:58:31 PM] 🧹 Removendo ficheiros Excel antigos...
+[10:58:31 PM]    Removido: service_request_data.xlsx
+[10:58:33 PM] ═══════════════════════════════════════════════
+[10:58:33 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[10:58:33 PM] 📁 Ficheiro: service_request_data.xlsx
+[10:58:33 PM] 📊 Tamanho: 0.04 MB
+[10:58:33 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[10:58:33 PM] ═══════════════════════════════════════════════
+[10:58:33 PM] ⏳ Aguardando 1000ms: Finalização
+[11:00:34 PM] ═══════════════════════════════════════════════
+[11:00:34 PM] 🚀 Scrapper de Backoffice
+[11:00:34 PM] 📅 Período: 09-01-2026 até 09-01-2026
+[11:00:34 PM] ═══════════════════════════════════════════════
+[11:00:34 PM] 🌐 A lançar browser...
+[11:00:34 PM] PASSO 1/5: Navegando para página de login...
+[11:00:37 PM] 🔑 Preenchendo credenciais...
+[11:00:37 PM] 🔐 A fazer login...
+[11:00:38 PM] ⏳ Aguardando 1000ms: Login concluído
+[11:00:39 PM] PASSO 2/5: Procurando inputs de data...
+[11:00:39 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[11:00:40 PM] 🔍 Encontrados 5 inputs visíveis
+[11:00:40 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[11:00:40 PM] ✅ Usando os 2 últimos inputs de data:
+[11:00:40 PM]    - Input 3 (De): index 3
+[11:00:40 PM]    - Input 4 (Até): index 4
+[11:00:40 PM] PASSO 3/5: Preenchendo datas...
+[11:00:40 PM] 📅 Preenchendo "Data Submissão (De)" com: 09-01-2026
+[11:00:40 PM]    Data: 2026-01-09T00:00:00.000Z
+[11:00:40 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[11:00:40 PM]    Hidden input: "2026-01-09"
+[11:00:40 PM]    Visible input: "09-01-2026"
+[11:00:40 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[11:00:40 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[11:00:41 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[11:00:41 PM]    Data: 2026-01-09T00:00:00.000Z
+[11:00:41 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[11:00:41 PM]    Hidden input: "2026-01-09"
+[11:00:41 PM]    Visible input: "09-01-2026"
+[11:00:41 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[11:00:42 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[11:00:45 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1767999645040.png
+[11:00:45 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[11:00:45 PM]    Data De (visível): 09-01-2026 (ID: sem-id)
+[11:00:45 PM]    Data De (hidden): N/A
+[11:00:45 PM]    Data Até (visível): 09-01-2026 (ID: sem-id)
+[11:00:45 PM]    Data Até (hidden): N/A
+[11:00:45 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[11:00:45 PM] ✅ Botão encontrado!
+[11:00:45 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[11:00:46 PM] 🖱️  A clicar em "Exportar Dados"...
+[11:00:46 PM] ⏳ Aguardando 2000ms: Click executado
+[11:00:48 PM] PASSO 5/5: Aguardando download do ficheiro...
+[11:00:48 PM] 🧹 Removendo ficheiros Excel antigos...
+[11:00:48 PM]    Removido: service_request_data.xlsx
+[11:00:50 PM] ═══════════════════════════════════════════════
+[11:00:50 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[11:00:50 PM] 📁 Ficheiro: service_request_data.xlsx
+[11:00:50 PM] 📊 Tamanho: 0.04 MB
+[11:00:50 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[11:00:50 PM] ═══════════════════════════════════════════════
+[11:00:50 PM] ⏳ Aguardando 1000ms: Finalização
+[11:02:51 PM] ═══════════════════════════════════════════════
+[11:02:51 PM] 🚀 Scrapper de Backoffice
+[11:02:51 PM] 📅 Período: 15-15-2025 até 09-01-2026
+[11:02:51 PM] ═══════════════════════════════════════════════
+[11:02:51 PM] 🌐 A lançar browser...
+[11:02:52 PM] PASSO 1/5: Navegando para página de login...
+[11:02:54 PM] 🔑 Preenchendo credenciais...
+[11:02:55 PM] 🔐 A fazer login...
+[11:02:55 PM] ⏳ Aguardando 1000ms: Login concluído
+[11:02:56 PM] PASSO 2/5: Procurando inputs de data...
+[11:02:56 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[11:02:57 PM] 🔍 Encontrados 5 inputs visíveis
+[11:02:57 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[11:02:57 PM] ✅ Usando os 2 últimos inputs de data:
+[11:02:57 PM]    - Input 3 (De): index 3
+[11:02:57 PM]    - Input 4 (Até): index 4
+[11:02:57 PM] PASSO 3/5: Preenchendo datas...
+[11:02:57 PM] 📅 Preenchendo "Data Submissão (De)" com: 15-15-2025
+[11:02:57 PM]    Data: 2026-03-15T00:00:00.000Z
+[11:02:57 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[11:02:57 PM]    Hidden input: "2026-03-15"
+[11:02:57 PM]    Visible input: "15-03-2026"
+[11:02:57 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[11:02:58 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[11:02:59 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[11:02:59 PM]    Data: 2026-01-09T00:00:00.000Z
+[11:02:59 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[11:02:59 PM]    Hidden input: "2026-01-09"
+[11:02:59 PM]    Visible input: "09-01-2026"
+[11:02:59 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[11:02:59 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[11:03:02 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1767999782742.png
+[11:03:02 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[11:03:02 PM]    Data De (visível): 15-03-2026 (ID: sem-id)
+[11:03:02 PM]    Data De (hidden): N/A
+[11:03:02 PM]    Data Até (visível): 09-01-2026 (ID: sem-id)
+[11:03:02 PM]    Data Até (hidden): N/A
+[11:03:02 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[11:03:02 PM] ✅ Botão encontrado!
+[11:03:02 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[11:03:03 PM] 🖱️  A clicar em "Exportar Dados"...
+[11:03:03 PM] ⏳ Aguardando 2000ms: Click executado
+[11:03:05 PM] PASSO 5/5: Aguardando download do ficheiro...
+[11:03:05 PM] 🧹 Removendo ficheiros Excel antigos...
+[11:03:05 PM]    Removido: service_request_data.xlsx
+[11:03:15 PM] ⏳ Aguardando download... 10s
+[11:03:25 PM] ⏳ Aguardando download... 20s
+[11:03:35 PM] ⏳ Aguardando download... 30s
+[11:03:45 PM] ⏳ Aguardando download... 40s
+[11:03:55 PM] ⏳ Aguardando download... 50s
+[11:04:06 PM] ⏳ Aguardando download... 60s
+[11:04:16 PM] ⏳ Aguardando download... 70s
+[11:04:26 PM] ⏳ Aguardando download... 80s
+[11:04:36 PM] ⏳ Aguardando download... 90s
+[11:04:46 PM] ⏳ Aguardando download... 100s
+[11:04:56 PM] ⏳ Aguardando download... 110s
+[11:05:06 PM] ⏳ Aguardando download... 120s
+[11:05:16 PM] ⏳ Aguardando download... 130s
+[11:05:26 PM] ⏳ Aguardando download... 140s
+[11:05:36 PM] ⏳ Aguardando download... 150s
+[11:05:46 PM] ⏳ Aguardando download... 160s
+[11:05:56 PM] ⏳ Aguardando download... 170s
+[11:06:06 PM] ⏳ Aguardando download... 180s
+[11:06:16 PM] ⏳ Aguardando download... 190s
+[11:06:26 PM] ⏳ Aguardando download... 200s
+[11:06:36 PM] ⏳ Aguardando download... 210s
+[11:06:46 PM] ⏳ Aguardando download... 220s
+[11:06:56 PM] ⏳ Aguardando download... 230s
+[11:07:06 PM] ⏳ Aguardando download... 240s
+[11:07:16 PM] ⏳ Aguardando download... 250s
+[11:07:26 PM] ⏳ Aguardando download... 260s
+[11:07:36 PM] ⏳ Aguardando download... 270s
+[11:07:46 PM] ⏳ Aguardando download... 280s
+[11:07:56 PM] ⏳ Aguardando download... 290s
+[11:08:06 PM] ❌ Download não completou em 5 minutos (300 segundos)
+[11:08:28 PM] ═══════════════════════════════════════════════
+[11:08:28 PM] 🚀 Scrapper de Backoffice
+[11:08:28 PM] 📅 Período: 08-01-2026 até 09-01-2026
+[11:08:28 PM] ═══════════════════════════════════════════════
+[11:08:28 PM] 🌐 A lançar browser...
+[11:08:28 PM] PASSO 1/5: Navegando para página de login...
+[11:08:31 PM] 🔑 Preenchendo credenciais...
+[11:08:31 PM] 🔐 A fazer login...
+[11:08:31 PM] ⏳ Aguardando 1000ms: Login concluído
+[11:08:32 PM] PASSO 2/5: Procurando inputs de data...
+[11:08:32 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[11:08:33 PM] 🔍 Encontrados 5 inputs visíveis
+[11:08:33 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[11:08:33 PM] ✅ Usando os 2 últimos inputs de data:
+[11:08:33 PM]    - Input 3 (De): index 3
+[11:08:33 PM]    - Input 4 (Até): index 4
+[11:08:33 PM] PASSO 3/5: Preenchendo datas...
+[11:08:33 PM] 📅 Preenchendo "Data Submissão (De)" com: 08-01-2026
+[11:08:33 PM]    Data: 2026-01-08T00:00:00.000Z
+[11:08:33 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[11:08:33 PM]    Hidden input: "2026-01-08"
+[11:08:33 PM]    Visible input: "08-01-2026"
+[11:08:33 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[11:08:34 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[11:08:35 PM] 📅 Preenchendo "Data Submissão (Até)" com: 09-01-2026
+[11:08:35 PM]    Data: 2026-01-09T00:00:00.000Z
+[11:08:35 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[11:08:35 PM]    Hidden input: "2026-01-09"
+[11:08:35 PM]    Visible input: "09-01-2026"
+[11:08:35 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[11:08:35 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[11:08:38 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1768000118892.png
+[11:08:38 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[11:08:38 PM]    Data De (visível): 08-01-2026 (ID: sem-id)
+[11:08:38 PM]    Data De (hidden): N/A
+[11:08:38 PM]    Data Até (visível): 09-01-2026 (ID: sem-id)
+[11:08:38 PM]    Data Até (hidden): N/A
+[11:08:38 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[11:08:38 PM] ✅ Botão encontrado!
+[11:08:38 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[11:08:39 PM] 🖱️  A clicar em "Exportar Dados"...
+[11:08:40 PM] ⏳ Aguardando 2000ms: Click executado
+[11:08:42 PM] PASSO 5/5: Aguardando download do ficheiro...
+[11:08:42 PM] 🧹 Removendo ficheiros Excel antigos...
+[11:08:47 PM] ═══════════════════════════════════════════════
+[11:08:47 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[11:08:47 PM] 📁 Ficheiro: service_request_data.xlsx
+[11:08:47 PM] 📊 Tamanho: 0.06 MB
+[11:08:47 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[11:08:47 PM] ═══════════════════════════════════════════════
+[11:08:47 PM] ⏳ Aguardando 1000ms: Finalização
+[11:11:22 PM] ═══════════════════════════════════════════════
+[11:11:22 PM] 🚀 Scrapper de Backoffice
+[11:11:22 PM] 📅 Período: 15-12-2025 até 31-12-2025
+[11:11:22 PM] ═══════════════════════════════════════════════
+[11:11:22 PM] 🌐 A lançar browser...
+[11:11:23 PM] PASSO 1/5: Navegando para página de login...
+[11:11:25 PM] 🔑 Preenchendo credenciais...
+[11:11:26 PM] 🔐 A fazer login...
+[11:11:26 PM] ⏳ Aguardando 1000ms: Login concluído
+[11:11:27 PM] PASSO 2/5: Procurando inputs de data...
+[11:11:27 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[11:11:28 PM] 🔍 Encontrados 5 inputs visíveis
+[11:11:28 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[11:11:28 PM] ✅ Usando os 2 últimos inputs de data:
+[11:11:28 PM]    - Input 3 (De): index 3
+[11:11:28 PM]    - Input 4 (Até): index 4
+[11:11:28 PM] PASSO 3/5: Preenchendo datas...
+[11:11:28 PM] 📅 Preenchendo "Data Submissão (De)" com: 15-12-2025
+[11:11:28 PM]    Data: 2025-12-15T00:00:00.000Z
+[11:11:28 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[11:11:28 PM]    Hidden input: "2025-12-15"
+[11:11:28 PM]    Visible input: "15-12-2025"
+[11:11:28 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[11:11:29 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[11:11:30 PM] 📅 Preenchendo "Data Submissão (Até)" com: 31-12-2025
+[11:11:30 PM]    Data: 2025-12-31T00:00:00.000Z
+[11:11:30 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[11:11:30 PM]    Hidden input: "2025-12-31"
+[11:11:30 PM]    Visible input: "31-12-2025"
+[11:11:30 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[11:11:30 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[11:11:33 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1768000293642.png
+[11:11:33 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[11:11:33 PM]    Data De (visível): 15-12-2025 (ID: sem-id)
+[11:11:33 PM]    Data De (hidden): N/A
+[11:11:33 PM]    Data Até (visível): 31-12-2025 (ID: sem-id)
+[11:11:33 PM]    Data Até (hidden): N/A
+[11:11:33 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[11:11:33 PM] ✅ Botão encontrado!
+[11:11:33 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[11:11:34 PM] 🖱️  A clicar em "Exportar Dados"...
+[11:11:34 PM] ⏳ Aguardando 2000ms: Click executado
+[11:11:36 PM] PASSO 5/5: Aguardando download do ficheiro...
+[11:11:36 PM] 🧹 Removendo ficheiros Excel antigos...
+[11:11:36 PM]    Removido: service_request_data.xlsx
+[11:11:46 PM] ⏳ Aguardando download... 10s
+[11:11:56 PM] ⏳ Aguardando download... 20s
+[11:12:06 PM] ⏳ Aguardando download... 30s
+[11:12:16 PM] ⏳ Aguardando download... 40s
+[11:12:23 PM] ═══════════════════════════════════════════════
+[11:12:23 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[11:12:23 PM] 📁 Ficheiro: service_request_data.xlsx
+[11:12:23 PM] 📊 Tamanho: 0.54 MB
+[11:12:23 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[11:12:23 PM] ═══════════════════════════════════════════════
+[11:12:23 PM] ⏳ Aguardando 1000ms: Finalização

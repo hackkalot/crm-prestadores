@@ -1,0 +1,228 @@
+[11:26:15 PM] ===============================================
+[11:26:15 PM] SCRAPPER DE PROVIDERS DO BACKOFFICE
+[11:26:15 PM] ===============================================
+[11:26:15 PM] A lancar browser...
+[11:26:16 PM] PASSO 1/4: Navegando para pagina de providers...
+[11:26:19 PM] URL atual: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/Login
+[11:26:19 PM] Preenchendo credenciais...
+[11:26:25 PM] A fazer login...
+[11:26:26 PM] Aguardando 2000ms: Login concluido
+[11:26:28 PM] Aguardando 2000ms: Pagina carregada
+[11:26:30 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/1-providers-page.png
+[11:26:30 PM] PASSO 2/4: Procurando checkbox para mostrar todos os prestadores...
+[11:26:30 PM] Resultado checkbox: {"found":true,"clicked":false,"id":"b3-Checkbox2","text":"","alreadyChecked":true}
+[11:26:30 PM] Checkbox ja estava marcado: b3-Checkbox2
+[11:26:30 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/2-after-checkbox.png
+[11:26:30 PM] Checkboxes visiveis encontrados: 1
+[11:26:30 PM]   1. ID: b3-Checkbox2, checked: true, texto: ""
+[11:26:30 PM] PASSO 3/4: Procurando botao "Exportar Dados"...
+[11:26:30 PM] Resultado busca botao: {"found":true,"text":"Exportar Dados","tag":"BUTTON","visible":true}
+[11:26:30 PM] Botao encontrado: "Exportar Dados"
+[11:26:30 PM] Aguardando 1000ms: Scroll para botao
+[11:26:31 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/3-before-export.png
+[11:26:31 PM] A clicar em "Exportar Dados"...
+[11:26:31 PM] Aguardando 2000ms: Click executado
+[11:26:33 PM] PASSO 4/4: Aguardando download do ficheiro...
+[11:26:33 PM] Removendo ficheiros Excel antigos...
+[11:26:34 PM] ===============================================
+[11:26:34 PM] SCRAPPER CONCLUIDO COM SUCESSO!
+[11:26:34 PM] Ficheiro: provider_data.xlsx
+[11:26:34 PM] Tamanho: 68.23 KB
+[11:26:34 PM] Localizacao: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs
+[11:26:34 PM] ===============================================
+[11:26:35 PM] Aguardando 1000ms: Finalizacao
+[11:37:59 PM] ===============================================
+[11:37:59 PM] SCRAPPER DE PROVIDERS DO BACKOFFICE
+[11:37:59 PM] ===============================================
+[11:37:59 PM] A lancar browser...
+[11:38:00 PM] PASSO 1/4: Navegando para pagina de providers...
+[11:38:02 PM] URL atual: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/Login
+[11:38:02 PM] Preenchendo credenciais...
+[11:38:02 PM] A fazer login...
+[11:38:03 PM] Aguardando 2000ms: Login concluido
+[11:38:05 PM] Aguardando 2000ms: Pagina carregada
+[11:38:07 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/1-providers-page.png
+[11:38:07 PM] PASSO 2/4: Procurando checkbox para mostrar todos os prestadores...
+[11:38:07 PM] Resultado checkbox: {"found":true,"clicked":false,"id":"b3-Checkbox2","text":"","alreadyChecked":true}
+[11:38:07 PM] Checkbox ja estava marcado: b3-Checkbox2
+[11:38:07 PM] PASSO 3/4: Procurando botao "Exportar Dados"...
+[11:38:07 PM] Resultado busca botao: {"found":true,"text":"Exportar Dados","tag":"BUTTON","visible":true}
+[11:38:07 PM] Botao encontrado: "Exportar Dados"
+[11:38:07 PM] Aguardando 1000ms: Scroll para botao
+[11:38:08 PM] A clicar em "Exportar Dados"...
+[11:38:08 PM] Aguardando 2000ms: Click executado
+[11:38:10 PM] PASSO 4/4: Aguardando download do ficheiro...
+[11:38:10 PM] Removendo ficheiros Excel antigos...
+[11:38:10 PM]   Removido: provider_data.xlsx
+[11:38:20 PM] Aguardando download... 10s
+[11:38:30 PM] Aguardando download... 20s
+[11:38:40 PM] Aguardando download... 30s
+[11:38:50 PM] Aguardando download... 40s
+[11:39:00 PM] Aguardando download... 50s
+[11:39:10 PM] Aguardando download... 60s
+[11:39:20 PM] Aguardando download... 70s
+[11:39:30 PM] Aguardando download... 80s
+[11:39:40 PM] Aguardando download... 90s
+[11:39:50 PM] Aguardando download... 100s
+[11:40:00 PM] Aguardando download... 110s
+[11:40:10 PM] Aguardando download... 120s
+[11:40:20 PM] Aguardando download... 130s
+[11:40:30 PM] Aguardando download... 140s
+[11:40:36 PM] ===============================================
+[11:40:36 PM] SCRAPPER DE PROVIDERS DO BACKOFFICE
+[11:40:36 PM] ===============================================
+[11:40:36 PM] A lancar browser...
+[11:40:37 PM] PASSO 1/4: Navegando para pagina de providers...
+[11:40:40 PM] URL atual: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/Login
+[11:40:40 PM] Preenchendo credenciais...
+[11:40:40 PM] Aguardando download... 150s
+[11:40:46 PM] A fazer login...
+[11:40:47 PM] Aguardando 2000ms: Login concluido
+[11:40:49 PM] Aguardando 2000ms: Pagina carregada
+[11:40:50 PM] Aguardando download... 160s
+[11:40:51 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/1-providers-page.png
+[11:40:51 PM] PASSO 2/4: Procurando checkbox para desmarcar e mostrar todos os prestadores...
+[11:40:51 PM] Resultado checkbox: {"found":true,"clicked":true,"id":"b3-Checkbox2","text":"","wasChecked":true}
+[11:40:51 PM] Checkbox desmarcado: b3-Checkbox2
+[11:40:51 PM] Aguardando 3000ms: Aguardar lista atualizar apos desmarcar checkbox
+[11:40:54 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/2-after-checkbox.png
+[11:40:54 PM] Checkboxes visiveis encontrados: 1
+[11:40:54 PM]   1. ID: b3-Checkbox2, checked: false, texto: ""
+[11:40:54 PM] PASSO 3/4: Procurando botao "Exportar Dados"...
+[11:40:54 PM] Resultado busca botao: {"found":true,"text":"Exportar Dados","tag":"BUTTON","visible":true}
+[11:40:54 PM] Botao encontrado: "Exportar Dados"
+[11:40:54 PM] Aguardando 1000ms: Scroll para botao
+[11:40:56 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/3-before-export.png
+[11:40:56 PM] A clicar em "Exportar Dados"...
+[11:40:56 PM] Aguardando 2000ms: Click executado
+[11:40:58 PM] PASSO 4/4: Aguardando download do ficheiro...
+[11:40:58 PM] Removendo ficheiros Excel antigos...
+[11:40:58 PM] ===============================================
+[11:40:58 PM] SCRAPPER CONCLUIDO COM SUCESSO!
+[11:40:58 PM] Ficheiro: provider_data.xlsx
+[11:40:58 PM] Tamanho: 68.23 KB
+[11:40:58 PM] Localizacao: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs
+[11:40:58 PM] ===============================================
+[11:40:58 PM] Aguardando 1000ms: Finalizacao
+[11:40:59 PM] ===============================================
+[11:40:59 PM] SCRAPPER CONCLUIDO COM SUCESSO!
+[11:40:59 PM] Ficheiro: provider_data.xlsx
+[11:40:59 PM] Tamanho: 68.23 KB
+[11:40:59 PM] Localizacao: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs
+[11:40:59 PM] ===============================================
+[11:40:59 PM] Aguardando 1000ms: Finalizacao
+[11:42:14 PM] ===============================================
+[11:42:14 PM] SCRAPPER DE PROVIDERS DO BACKOFFICE
+[11:42:14 PM] ===============================================
+[11:42:14 PM] A lancar browser...
+[11:42:15 PM] PASSO 1/4: Navegando para pagina de providers...
+[11:42:17 PM] URL atual: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/Login
+[11:42:17 PM] Preenchendo credenciais...
+[11:42:23 PM] A fazer login...
+[11:42:24 PM] Aguardando 2000ms: Login concluido
+[11:42:26 PM] Aguardando 2000ms: Pagina carregada
+[11:42:29 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/1-providers-page.png
+[11:42:29 PM] PASSO 2/4: Procurando checkbox para desmarcar e mostrar todos os prestadores...
+[11:42:29 PM] Resultado checkbox: {"found":true,"clicked":true,"id":"b3-Checkbox2","text":"","wasChecked":true}
+[11:42:29 PM] Checkbox desmarcado: b3-Checkbox2
+[11:42:29 PM] Aguardando 3000ms: Aguardar lista atualizar apos desmarcar checkbox
+[11:42:32 PM] PASSO 3/4: Procurando botao "Exportar Dados"...
+[11:42:32 PM] Resultado busca botao: {"found":true,"text":"Exportar Dados","tag":"BUTTON","visible":true}
+[11:42:32 PM] Botao encontrado: "Exportar Dados"
+[11:42:32 PM] Aguardando 1000ms: Scroll para botao
+[11:42:33 PM] A clicar em "Exportar Dados"...
+[11:42:33 PM] Aguardando 2000ms: Click executado
+[11:42:35 PM] PASSO 4/4: Aguardando download do ficheiro...
+[11:42:35 PM] Removendo ficheiros Excel antigos...
+[11:42:35 PM]   Removido: provider_data.xlsx
+[11:42:36 PM] ===============================================
+[11:42:36 PM] SCRAPPER CONCLUIDO COM SUCESSO!
+[11:42:36 PM] Ficheiro: provider_data.xlsx
+[11:42:36 PM] Tamanho: 68.23 KB
+[11:42:36 PM] Localizacao: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs
+[11:42:36 PM] ===============================================
+[11:42:36 PM] Aguardando 1000ms: Finalizacao
+[11:47:59 PM] ===============================================
+[11:47:59 PM] SCRAPPER DE PROVIDERS DO BACKOFFICE
+[11:47:59 PM] ===============================================
+[11:47:59 PM] A lancar browser...
+[11:48:00 PM] PASSO 1/4: Navegando para pagina de providers...
+[11:48:03 PM] URL atual: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/Login
+[11:48:03 PM] Preenchendo credenciais...
+[11:48:09 PM] A fazer login...
+[11:48:10 PM] Aguardando 2000ms: Login concluido
+[11:48:12 PM] Aguardando 2000ms: Pagina carregada
+[11:48:14 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/1-providers-page.png
+[11:48:14 PM] PASSO 2/4: Procurando checkbox para desmarcar e mostrar todos os prestadores...
+[11:48:14 PM] Resultado checkbox: {"found":true,"clicked":true,"id":"b3-Checkbox2","text":"","wasChecked":true}
+[11:48:14 PM] Checkbox desmarcado: b3-Checkbox2
+[11:48:14 PM] Aguardando 3000ms: Aguardar lista atualizar apos desmarcar checkbox
+[11:48:17 PM] PASSO 3/4: Procurando botao "Exportar Dados"...
+[11:48:17 PM] Resultado busca botao: {"found":true,"text":"Exportar Dados","tag":"BUTTON","visible":true}
+[11:48:17 PM] Botao encontrado: "Exportar Dados"
+[11:48:17 PM] Aguardando 1000ms: Scroll para botao
+[11:48:19 PM] A clicar em "Exportar Dados"...
+[11:48:19 PM] Aguardando 2000ms: Click executado
+[11:48:21 PM] PASSO 4/4: Aguardando download do ficheiro...
+[11:48:21 PM] Removendo ficheiros Excel antigos...
+[11:48:21 PM]   Removido: provider_data.xlsx
+[11:48:31 PM] Aguardando download... 10s
+[11:48:41 PM] Aguardando download... 20s
+[11:48:51 PM] Aguardando download... 30s
+[11:49:01 PM] Aguardando download... 40s
+[11:49:11 PM] Aguardando download... 50s
+[11:49:21 PM] Aguardando download... 60s
+[11:49:31 PM] Aguardando download... 70s
+[11:54:56 PM] ===============================================
+[11:54:56 PM] SCRAPPER DE PROVIDERS DO BACKOFFICE
+[11:54:56 PM] ===============================================
+[11:54:56 PM] A lancar browser...
+[11:54:58 PM] PASSO 1/4: Navegando para pagina de providers...
+[11:55:00 PM] URL atual: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/Login
+[11:55:00 PM] Preenchendo credenciais...
+[11:55:06 PM] A fazer login...
+[11:55:07 PM] Aguardando 2000ms: Login concluido
+[11:55:09 PM] Aguardando 2000ms: Pagina carregada
+[11:55:11 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/1-providers-page.png
+[11:55:11 PM] PASSO 2/4: Procurando checkbox para desmarcar e mostrar todos os prestadores...
+[11:55:11 PM] Resultado checkbox: {"found":true,"clicked":true,"id":"b3-Checkbox2","text":"","wasChecked":true}
+[11:55:11 PM] Checkbox desmarcado: b3-Checkbox2
+[11:55:11 PM] Aguardando 3000ms: Aguardar lista atualizar apos desmarcar checkbox
+[11:55:14 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/2-after-checkbox.png
+[11:55:14 PM] Checkboxes visiveis encontrados: 1
+[11:55:14 PM]   1. ID: b3-Checkbox2, checked: false, texto: ""
+[11:55:14 PM] PASSO 3/4: Procurando botao "Exportar Dados"...
+[11:55:14 PM] Resultado busca botao: {"found":true,"text":"Exportar Dados","tag":"BUTTON","visible":true}
+[11:55:14 PM] Botao encontrado: "Exportar Dados"
+[11:55:14 PM] Aguardando 1000ms: Scroll para botao
+[11:55:15 PM] Screenshot: /Users/diogopita/Documents/Projetos/crm-prestadores/data/providers-outputs/3-before-export.png
+[11:55:15 PM] A clicar em "Exportar Dados"...
+[11:55:15 PM] Aguardando 2000ms: Click executado
+[11:55:17 PM] PASSO 4/4: Aguardando download do ficheiro...
+[11:55:17 PM] Removendo ficheiros Excel antigos...
+[11:55:17 PM]   Removido: provider_data.xlsx
+[11:55:27 PM] Aguardando download... 10s
+[11:55:37 PM] Aguardando download... 20s
+[11:55:47 PM] Aguardando download... 30s
+[11:55:57 PM] Aguardando download... 40s
+[11:56:07 PM] Aguardando download... 50s
+[11:56:17 PM] Aguardando download... 60s
+[11:56:28 PM] Aguardando download... 70s
+[11:56:38 PM] Aguardando download... 80s
+[11:56:48 PM] Aguardando download... 90s
+[11:56:58 PM] Aguardando download... 100s
+[11:57:08 PM] Aguardando download... 110s
+[11:57:18 PM] Aguardando download... 120s
+[11:57:28 PM] Aguardando download... 130s
+[11:57:38 PM] Aguardando download... 140s
+[11:57:48 PM] Aguardando download... 150s
+[11:57:58 PM] Aguardando download... 160s
+[11:58:08 PM] Aguardando download... 170s
+[11:58:18 PM] Aguardando download... 180s
+[11:58:28 PM] Aguardando download... 190s
+[11:58:38 PM] Aguardando download... 200s
+[11:58:48 PM] Aguardando download... 210s
+[11:58:58 PM] Aguardando download... 220s
+[11:59:08 PM] Aguardando download... 230s
+[11:59:18 PM] Aguardando download... 240s
+[11:59:28 PM] Aguardando download... 250s

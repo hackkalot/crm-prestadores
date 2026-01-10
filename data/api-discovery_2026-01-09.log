@@ -1,0 +1,178 @@
+[7:06:51 PM] ═══════════════════════════════════════════════
+[7:06:51 PM] 🔍 API ENDPOINT DISCOVERY SCRAPPER
+[7:06:51 PM] ═══════════════════════════════════════════════
+[7:06:51 PM] 📅 Data: 09-01-2026
+[7:06:51 PM] 🌐 A lançar browser...
+[7:06:52 PM] PASSO 1/4: Fazendo login...
+[7:06:55 PM] ✅ Login concluído!
+[7:06:55 PM] ⏳ Aguardando 2000ms: Página estabilizar
+[7:06:57 PM] PASSO 2/4: Capturando APIs da página de listagem...
+[7:06:57 PM] ⏳ Aguardando 5000ms: Aguardar todas as APIs da listagem
+[7:07:02 PM] 📊 Capturados 18 API calls na listagem
+[7:07:02 PM] PASSO 3/4: Clicando no primeiro pedido da lista...
+[7:07:02 PM] ✅ Clicado no primeiro pedido!
+[7:07:02 PM] ⏳ Aguardando 5000ms: Aguardar página de detalhe carregar e APIs completarem
+[7:07:07 PM] PASSO 4/4: Salvando resultados...
+[7:07:07 PM] ═══════════════════════════════════════════════
+[7:07:07 PM] ✅ DISCOVERY CONCLUÍDO COM SUCESSO!
+[7:07:07 PM] 📁 Listagem: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/01_list_page_apis.json
+[7:07:07 PM]    └─ 18 API calls capturados
+[7:07:07 PM] 📁 Detalhe: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/02_detail_page_apis.json
+[7:07:07 PM]    └─ 0 API calls capturados
+[7:07:07 PM] ═══════════════════════════════════════════════
+[7:13:39 PM] ═══════════════════════════════════════════════
+[7:13:39 PM] 🔍 API ENDPOINT DISCOVERY SCRAPPER
+[7:13:39 PM] ═══════════════════════════════════════════════
+[7:13:39 PM] 📅 Data: 09-01-2026
+[7:13:39 PM] 🌐 A lançar browser...
+[7:13:40 PM] PASSO 1/4: Fazendo login...
+[7:13:43 PM] ✅ Login concluído!
+[7:13:43 PM] ⏳ Aguardando 2000ms: Página estabilizar
+[7:13:45 PM] PASSO 2/4: Capturando APIs da página de listagem...
+[7:13:45 PM] ⏳ Aguardando 5000ms: Aguardar todas as APIs da listagem
+[7:13:50 PM] 📊 Capturados 18 API calls na listagem
+[7:13:50 PM] PASSO 3/4: Clicando no primeiro pedido da lista...
+[7:13:50 PM] ✅ Clicado no primeiro pedido!
+[7:13:50 PM] ⏳ Aguardando 8000ms: Aguardar página de detalhe carregar e APIs completarem
+[7:13:58 PM] PASSO 4/4: Salvando resultados...
+[7:13:58 PM] 📊 APIs de dados filtradas:
+[7:13:58 PM]    - Listagem: 10 de 18 total
+[7:13:58 PM]    - Detalhe: 0 de 0 total
+[7:13:58 PM] ═══════════════════════════════════════════════
+[7:13:58 PM] ✅ DISCOVERY CONCLUÍDO COM SUCESSO!
+[7:13:58 PM] 📁 Listagem: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/01_list_page_apis.json
+[7:13:58 PM]    └─ 10 APIs de dados (de 18 total)
+[7:13:58 PM] 📁 Detalhe: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/02_detail_page_apis.json
+[7:13:58 PM]    └─ 0 APIs de dados (de 0 total)
+[7:13:58 PM] ═══════════════════════════════════════════════
+[7:16:00 PM] ═══════════════════════════════════════════════
+[7:16:00 PM] 🔍 API ENDPOINT DISCOVERY SCRAPPER
+[7:16:00 PM] ═══════════════════════════════════════════════
+[7:16:00 PM] 📅 Data: 09-01-2026
+[7:16:00 PM] 🌐 A lançar browser...
+[7:16:01 PM] PASSO 1/4: Fazendo login...
+[7:16:04 PM] ✅ Login concluído!
+[7:16:04 PM] ⏳ Aguardando 2000ms: Página estabilizar
+[7:16:06 PM] PASSO 2/4: Capturando APIs da página de listagem...
+[7:16:06 PM] ⏳ Aguardando 5000ms: Aguardar todas as APIs da listagem
+[7:16:11 PM] 📊 Capturados 18 API calls na listagem
+[7:16:11 PM] PASSO 3/4: Clicando no primeiro pedido da lista...
+[7:16:11 PM] ✅ Clicado no primeiro pedido!
+[7:16:11 PM] ⏳ Aguardando 15000ms: Aguardar página de detalhe carregar e TODOS os APIs completarem
+[7:16:26 PM] PASSO 4/4: Salvando resultados...
+[7:16:26 PM] 📊 APIs de dados filtradas:
+[7:16:26 PM]    - Listagem: 7 de 18 total
+[7:16:26 PM]    - Detalhe: 0 de 0 total
+[7:16:26 PM] ═══════════════════════════════════════════════
+[7:16:26 PM] ✅ DISCOVERY CONCLUÍDO COM SUCESSO!
+[7:16:26 PM] 📁 Listagem: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/01_list_page_apis.json
+[7:16:26 PM]    └─ 7 APIs de dados (de 18 total)
+[7:16:26 PM] 📁 Detalhe: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/02_detail_page_apis.json
+[7:16:26 PM]    └─ 0 APIs de dados (de 0 total)
+[7:16:26 PM] ═══════════════════════════════════════════════
+[7:19:42 PM] ═══════════════════════════════════════════════
+[7:19:42 PM] 🔍 API ENDPOINT DISCOVERY SCRAPPER
+[7:19:42 PM] ═══════════════════════════════════════════════
+[7:19:42 PM] 📅 Data: 09-01-2026
+[7:19:42 PM] 🌐 A lançar browser...
+[7:19:43 PM] PASSO 1/4: Fazendo login...
+[7:19:46 PM] ✅ Login concluído!
+[7:19:46 PM] ⏳ Aguardando 2000ms: Página estabilizar
+[7:19:48 PM] PASSO 2/4: Capturando APIs da página de listagem...
+[7:19:48 PM] ⏳ Aguardando 5000ms: Aguardar todas as APIs da listagem
+[7:19:53 PM] 📊 Capturados 18 API calls na listagem
+[7:19:53 PM] PASSO 3/4: Clicando no primeiro pedido da lista...
+[7:19:53 PM] ✅ Clicado no primeiro pedido!
+[7:19:53 PM] ⏳ Aguardando 15000ms: Aguardar página de detalhe carregar e TODOS os APIs completarem
+[7:20:08 PM] PASSO 4/4: Salvando resultados...
+[7:20:08 PM] 📊 APIs de dados filtradas:
+[7:20:08 PM]    - Listagem: 7 de 18 total
+[7:20:08 PM]    - Detalhe: 0 de 0 total
+[7:20:08 PM] ═══════════════════════════════════════════════
+[7:20:08 PM] ✅ DISCOVERY CONCLUÍDO COM SUCESSO!
+[7:20:08 PM] 📁 Listagem: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/01_list_page_apis.json
+[7:20:08 PM]    └─ 7 APIs de dados (de 18 total)
+[7:20:08 PM] 📁 Detalhe: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/02_detail_page_apis.json
+[7:20:08 PM]    └─ 0 APIs de dados (de 0 total)
+[7:20:08 PM] ═══════════════════════════════════════════════
+[7:20:41 PM] ═══════════════════════════════════════════════
+[7:20:41 PM] 🔍 API ENDPOINT DISCOVERY SCRAPPER
+[7:20:41 PM] ═══════════════════════════════════════════════
+[7:20:41 PM] 📅 Data: 09-01-2026
+[7:20:41 PM] 🌐 A lançar browser...
+[7:20:41 PM] PASSO 1/4: Fazendo login...
+[7:20:45 PM] ✅ Login concluído!
+[7:20:45 PM] ⏳ Aguardando 2000ms: Página estabilizar
+[7:20:47 PM] PASSO 2/4: Capturando APIs da página de listagem...
+[7:20:47 PM] ⏳ Aguardando 5000ms: Aguardar todas as APIs da listagem
+[7:20:52 PM] 📊 Capturados 18 API calls na listagem
+[7:20:52 PM] PASSO 3/4: Clicando no primeiro pedido da lista...
+[7:20:52 PM] ✅ Clicado no primeiro pedido!
+[7:20:52 PM] ⏳ Aguardando 15000ms: Aguardar página de detalhe carregar e TODOS os APIs completarem
+[7:21:07 PM] PASSO 4/4: Salvando resultados...
+[7:21:07 PM] 📊 APIs de dados filtradas:
+[7:21:07 PM]    - Listagem: 7 de 18 total
+[7:21:07 PM]    - Detalhe: 0 de 0 total
+[7:21:07 PM] ═══════════════════════════════════════════════
+[7:21:07 PM] ✅ DISCOVERY CONCLUÍDO COM SUCESSO!
+[7:21:07 PM] 📁 Listagem: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/01_list_page_apis.json
+[7:21:07 PM]    └─ 7 APIs de dados (de 18 total)
+[7:21:07 PM] 📁 Detalhe: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/02_detail_page_apis.json
+[7:21:07 PM]    └─ 0 APIs de dados (de 0 total)
+[7:21:07 PM] ═══════════════════════════════════════════════
+[7:22:15 PM] ═══════════════════════════════════════════════
+[7:22:15 PM] 🔍 API ENDPOINT DISCOVERY SCRAPPER
+[7:22:15 PM] ═══════════════════════════════════════════════
+[7:22:15 PM] 📅 Data: 09-01-2026
+[7:22:15 PM] 🌐 A lançar browser...
+[7:22:16 PM] PASSO 1/4: Fazendo login...
+[7:22:19 PM] ✅ Login concluído!
+[7:22:19 PM] ⏳ Aguardando 2000ms: Página estabilizar
+[7:22:21 PM] PASSO 2/4: Capturando APIs da página de listagem...
+[7:22:21 PM] ⏳ Aguardando 5000ms: Aguardar todas as APIs da listagem
+[7:22:26 PM] 📊 Capturados 18 API calls na listagem
+[7:22:26 PM] PASSO 3/4: Clicando no primeiro pedido da lista...
+[7:22:26 PM] ⏳ Aguardando 2000ms: Garantir que tabela está totalmente renderizada
+[7:22:28 PM] 🔍 Debug - Elementos encontrados:
+[7:22:28 PM]    .table-row: 10 (visível: true)
+[7:22:28 PM]    tbody tr: 10 (visível: true)
+[7:22:28 PM] ✅ Clicado no primeiro pedido (método: table-row)!
+[7:22:28 PM] ⏳ Aguardando 15000ms: Aguardar página de detalhe carregar e TODOS os APIs completarem
+[7:22:43 PM] PASSO 4/4: Salvando resultados...
+[7:22:43 PM] 📊 APIs de dados filtradas:
+[7:22:43 PM]    - Listagem: 7 de 18 total
+[7:22:43 PM]    - Detalhe: 0 de 0 total
+[7:22:44 PM] ═══════════════════════════════════════════════
+[7:22:44 PM] ✅ DISCOVERY CONCLUÍDO COM SUCESSO!
+[7:22:44 PM] 📁 Listagem: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/01_list_page_apis.json
+[7:22:44 PM]    └─ 7 APIs de dados (de 18 total)
+[7:22:44 PM] 📁 Detalhe: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/02_detail_page_apis.json
+[7:22:44 PM]    └─ 0 APIs de dados (de 0 total)
+[7:22:44 PM] ═══════════════════════════════════════════════
+[7:24:13 PM] ═══════════════════════════════════════════════
+[7:24:13 PM] 🔍 API ENDPOINT DISCOVERY SCRAPPER
+[7:24:13 PM] ═══════════════════════════════════════════════
+[7:24:13 PM] 📅 Data: 09-01-2026
+[7:24:13 PM] 🌐 A lançar browser...
+[7:24:13 PM] PASSO 1/4: Fazendo login...
+[7:24:18 PM] ✅ Login concluído!
+[7:24:18 PM] ⏳ Aguardando 2000ms: Página estabilizar
+[7:24:20 PM] PASSO 2/4: Capturando APIs da página de listagem...
+[7:24:20 PM] ⏳ Aguardando 5000ms: Aguardar todas as APIs da listagem
+[7:24:25 PM] 📊 Capturados 18 API calls na listagem
+[7:24:25 PM] PASSO 3/4: Navegando para página de detalhe de um pedido...
+[7:24:25 PM] ✅ Encontrado ServiceRequestCode: SR11693609
+[7:24:25 PM] 🌐 Navegando para: https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/ServiceRequestDetail?SRCode=SR11693609
+[7:24:26 PM] ✅ Página de detalhe carregada!
+[7:24:26 PM] ⏳ Aguardando 5000ms: Aguardar TODOS os API calls da página de detalhe completarem
+[7:24:31 PM] PASSO 4/4: Salvando resultados...
+[7:24:31 PM] 📊 APIs de dados filtradas:
+[7:24:31 PM]    - Listagem: 7 de 18 total
+[7:24:31 PM]    - Detalhe: 27 de 34 total
+[7:24:31 PM] ═══════════════════════════════════════════════
+[7:24:31 PM] ✅ DISCOVERY CONCLUÍDO COM SUCESSO!
+[7:24:31 PM] 📁 Listagem: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/01_list_page_apis.json
+[7:24:31 PM]    └─ 7 APIs de dados (de 18 total)
+[7:24:31 PM] 📁 Detalhe: /Users/diogopita/Documents/Projetos/crm-prestadores/data/api-discovery/02_detail_page_apis.json
+[7:24:31 PM]    └─ 27 APIs de dados (de 34 total)
+[7:24:31 PM] ═══════════════════════════════════════════════
