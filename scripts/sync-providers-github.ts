@@ -198,97 +198,87 @@ async function main() {
     let errors = 0
     const errorMessages: string[] = []
 
-    // Process in batches
-    const BATCH_SIZE = 50
+    // Get existing providers by backoffice_provider_id for counting inserts vs updates
+    const { data: existingProviders } = await supabase
+      .from('providers')
+      .select('backoffice_provider_id')
+      .not('backoffice_provider_id', 'is', null)
 
-    for (let i = 0; i < data.length; i += BATCH_SIZE) {
-      const batch = data.slice(i, i + BATCH_SIZE)
-      const batchNum = Math.floor(i / BATCH_SIZE) + 1
-      const totalBatches = Math.ceil(data.length / BATCH_SIZE)
+    const existingIds = new Set(existingProviders?.map(p => p.backoffice_provider_id) || [])
+    console.log(`   Found ${existingIds.size} existing providers with backoffice IDs`)
 
-      console.log(`   Processing batch ${batchNum}/${totalBatches} (${batch.length} providers)...`)
+    // Transform all data first
+    const allProviderData = data.map(row => ({
+      backoffice_provider_id: row.USER_ID,
+      name: row.NAME,
+      email: row.EMAIL?.toLowerCase(),
+      phone: cleanPhone(row.PHONE),
+      nif: row.VAT,
+      entity_type: 'tecnico' as const,
+      categories: parseToArray(row.CATEGORIES),
+      services: parseToArray(row.SERVICES),
+      counties: parseToArray(row.COUNTIES),
+      districts: parseToArray(row.DISTRICTS),
+      status: mapBackofficeStatus(row.PROVIDER_STATUS),
+      backoffice_status: row.PROVIDER_STATUS,
+      backoffice_is_active: row['IS_ACTIVE?'] || false,
+      backoffice_password_defined: row.PASSWORD_DEFINED || false,
+      backoffice_do_recurrence: row.DO_RECURRENCE || false,
+      total_requests: row.TOTAL_REQUESTS || 0,
+      active_requests: row.ACTIVE_REQUESTS || 0,
+      cancelled_requests: row.CANCELLED_REQUESTS || 0,
+      completed_requests: row.COMPLETED_REQUESTS || 0,
+      requests_received: row.REQUESTS_RECEIVED || 0,
+      requests_accepted: row.REQUESTS_ACCEPTED || 0,
+      requests_expired: row['RESQUESTS_ EXPIRED'] || 0,
+      requests_rejected: row.REQUESTS_REJECTED || 0,
+      service_rating: row.SERVICE_RATING || 0,
+      technician_rating: row.TECHNICIAN_RATING || 0,
+      backoffice_last_login: excelDateToISO(row.LAST_LOGIN),
+      backoffice_created_at: excelDateToISO(row.CREATED_AT),
+      backoffice_updated_at: excelDateToISO(row.LAST_UPDATE),
+      backoffice_status_updated_at: excelDateToISO(row.STATUS_UPDATED_AT),
+      backoffice_synced_at: new Date().toISOString(),
+    }))
 
-      for (const row of batch) {
-        try {
-          const providerData = {
-            backoffice_id: row.USER_ID,
-            name: row.NAME,
-            email: row.EMAIL?.toLowerCase(),
-            phone: cleanPhone(row.PHONE),
-            nif: row.VAT,
-            entity_type: 'tecnico' as const, // Default, can be updated later
-            categories: parseToArray(row.CATEGORIES),
-            services: parseToArray(row.SERVICES),
-            counties: parseToArray(row.COUNTIES),
-            districts: parseToArray(row.DISTRICTS),
-            status: mapBackofficeStatus(row.PROVIDER_STATUS),
-            backoffice_status: row.PROVIDER_STATUS,
-            is_active_backoffice: row['IS_ACTIVE?'] || false,
-            password_defined: row.PASSWORD_DEFINED || false,
-            do_recurrence: row.DO_RECURRENCE || false,
-            // Stats
-            total_requests: row.TOTAL_REQUESTS || 0,
-            active_requests: row.ACTIVE_REQUESTS || 0,
-            cancelled_requests: row.CANCELLED_REQUESTS || 0,
-            completed_requests: row.COMPLETED_REQUESTS || 0,
-            requests_received: row.REQUESTS_RECEIVED || 0,
-            requests_accepted: row.REQUESTS_ACCEPTED || 0,
-            requests_expired: row['RESQUESTS_ EXPIRED'] || 0,
-            requests_rejected: row.REQUESTS_REJECTED || 0,
-            // Ratings
-            service_rating: row.SERVICE_RATING || 0,
-            technician_rating: row.TECHNICIAN_RATING || 0,
-            // Timestamps
-            last_login: excelDateToISO(row.LAST_LOGIN),
-            backoffice_created_at: excelDateToISO(row.CREATED_AT),
-            backoffice_updated_at: excelDateToISO(row.LAST_UPDATE),
-            status_updated_at: excelDateToISO(row.STATUS_UPDATED_AT),
-            // Sync metadata
-            last_synced_at: new Date().toISOString(),
-          }
-
-          // Check if provider exists
-          const { data: existing } = await supabase
-            .from('providers')
-            .select('id')
-            .eq('backoffice_id', row.USER_ID)
-            .single()
-
-          if (existing) {
-            // Update
-            const { error: updateError } = await supabase
-              .from('providers')
-              .update(providerData)
-              .eq('backoffice_id', row.USER_ID)
-
-            if (updateError) {
-              throw updateError
-            }
-            updated++
-          } else {
-            // Insert
-            const { error: insertError } = await supabase
-              .from('providers')
-              .insert(providerData)
-
-            if (insertError) {
-              throw insertError
-            }
-            inserted++
-          }
-        } catch (err: any) {
-          errors++
-          const errMsg = `Error processing ${row.EMAIL}: ${err.message}`
-          errorMessages.push(errMsg)
-          if (errors <= 5) {
-            console.error(`   ❌ ${errMsg}`)
-          }
-        }
+    // Count inserts vs updates
+    for (const p of allProviderData) {
+      if (existingIds.has(p.backoffice_provider_id)) {
+        updated++
+      } else {
+        inserted++
       }
     }
 
-    if (errors > 5) {
-      console.error(`   ... and ${errors - 5} more errors`)
+    // Process in batches using upsert (much faster than individual queries)
+    const BATCH_SIZE = 100
+
+    for (let i = 0; i < allProviderData.length; i += BATCH_SIZE) {
+      const batch = allProviderData.slice(i, i + BATCH_SIZE)
+      const batchNum = Math.floor(i / BATCH_SIZE) + 1
+      const totalBatches = Math.ceil(allProviderData.length / BATCH_SIZE)
+
+      console.log(`   Upserting batch ${batchNum}/${totalBatches} (${batch.length} providers)...`)
+
+      const { error: upsertError } = await supabase
+        .from('providers')
+        .upsert(batch, {
+          onConflict: 'backoffice_provider_id',
+          ignoreDuplicates: false,
+        })
+
+      if (upsertError) {
+        console.error(`   ❌ Batch ${batchNum} error: ${upsertError.message}`)
+        errorMessages.push(`Batch ${batchNum}: ${upsertError.message}`)
+        errors += batch.length
+        // Reset counts since we don't know which succeeded
+        inserted = 0
+        updated = 0
+      }
+    }
+
+    if (errors > 0) {
+      console.error(`   Total errors: ${errors}`)
     }
 
     const totalProcessed = inserted + updated + errors
