@@ -362,6 +362,16 @@ export async function runScrapper(options: ScrapperOptions): Promise<ScrapperRes
         // ============================================
         log('PASSO 4/5: Procurando botão "Exportar Dados"...');
 
+        // Limpar ficheiros Excel antigos ANTES de clicar (evitar race condition)
+        log('🧹 Removendo ficheiros Excel antigos...');
+        const existingFiles = fs.readdirSync(outputPath);
+        const oldExcelFiles = existingFiles.filter(f => f.endsWith('.xlsx') && !f.startsWith('~'));
+        oldExcelFiles.forEach(file => {
+            const oldPath = path.join(outputPath, file);
+            fs.unlinkSync(oldPath);
+            log(`   Removido: ${file}`);
+        });
+
         const exportButton = await page.evaluate(() => {
             const buttons = Array.from(document.querySelectorAll('button, a'));
             const exportBtn = buttons.find(btn =>
@@ -396,16 +406,6 @@ export async function runScrapper(options: ScrapperOptions): Promise<ScrapperRes
         // PASSO 5: AGUARDAR DOWNLOAD
         // ============================================
         log('PASSO 5/5: Aguardando download do ficheiro...');
-
-        // Limpar ficheiros Excel antigos ANTES de esperar pelo novo
-        log('🧹 Removendo ficheiros Excel antigos...');
-        const existingFiles = fs.readdirSync(outputPath);
-        const oldExcelFiles = existingFiles.filter(f => f.endsWith('.xlsx') && !f.startsWith('~'));
-        oldExcelFiles.forEach(file => {
-            const oldPath = path.join(outputPath, file);
-            fs.unlinkSync(oldPath);
-            log(`   Removido: ${file}`);
-        });
 
         // Esperar por ficheiro Excel NOVO (máximo 10 minutos = 600s)
         let downloadedFile = '';
