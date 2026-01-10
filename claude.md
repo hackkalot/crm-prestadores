@@ -383,9 +383,54 @@ const apiEndpoint = isProduction ? '/api/sync/github-actions' : '/api/sync/backo
 - `GITHUB_ACTIONS_TOKEN` - Fine-grained PAT com permissao Contents (read/write)
 - `GITHUB_REPO` - Nome do repositorio (ex: `hackkalot/crm-prestadores`)
 
+#### Triggers Disponiveis
+
+Cada workflow pode ser disparado de 3 formas:
+1. **Schedule (cron)** - Automatico diariamente
+2. **workflow_dispatch** - Manual via GitHub UI
+3. **repository_dispatch** - Via API (usado pelo CRM)
+
+Exemplo de trigger via API (repository_dispatch):
+```typescript
+await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+  },
+  body: JSON.stringify({
+    event_type: 'sync-backoffice',
+    client_payload: {
+      date_from: '01-01-2026',
+      date_to: '10-01-2026',
+      sync_log_id: 'uuid-do-log' // Permite rastrear user que disparou
+    }
+  })
+})
+```
+
+#### Atribuicao de Utilizador nos Logs
+
+Quando um utilizador dispara sync via CRM:
+1. A API route cria o log com `triggered_by: user.id`
+2. O `sync_log_id` e passado via `client_payload` ao GitHub Actions
+3. O script recebe `--sync-log-id=` e usa o log existente (em vez de criar novo)
+
+Para syncs automaticos (cron), o log e criado com:
+- `triggered_by: null`
+- `triggered_by_system: 'github-actions-scheduled'`
+
+#### Artifacts
+
+Os workflows guardam artifacts para debug:
+- **Excel exportado**: `backoffice-data-{date}` ou `providers-data-{run_id}` (7 dias)
+- **Logs e screenshots**: `sync-logs-{run_id}` (3 dias)
+
+Para ver artifacts: GitHub > Actions > Workflow run > Artifacts (fundo da pagina)
+
 #### Polling de Status
 
-A pagina `/configuracoes/sync-logs` faz polling automatico (5s) quando ha syncs `in_progress`, mostrando o status em tempo real.
+A pagina `/configuracoes/sync-logs` faz polling automatico (5s) quando ha syncs `in_progress` ou `pending`, mostrando o status em tempo real.
 
 #### Puppeteer no GitHub Actions
 
