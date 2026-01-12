@@ -14,27 +14,30 @@ type TaskStatus = Database['public']['Enums']['task_status']
 export type CandidaturaFilters = {
   status?: ProviderStatus | 'all'
   entityType?: string
-  district?: string
-  service?: string
+  district?: string      // Legacy single filter
+  service?: string       // Legacy single filter
+  districts?: string[]   // Multi-select filter
+  services?: string[]    // Multi-select filter
   dateFrom?: string
   dateTo?: string
   search?: string
+  page?: number
+  limit?: number
   sortBy?: string
   sortOrder?: 'asc' | 'desc'
 }
 
-export async function getCandidaturas(filters: CandidaturaFilters = {}) {
-  // Determine sort column and order
-  const sortBy = filters.sortBy || 'first_application_at'
-  const sortOrder = filters.sortOrder || 'desc'
-  const ascending = sortOrder === 'asc'
+export interface PaginatedCandidaturas {
+  data: Awaited<ReturnType<typeof getCandidaturasInternal>>
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
 
-  let query = createAdminClient()
-    .from('providers')
-    .select('*')
-    .in('status', ['novo', 'em_onboarding', 'abandonado'])
-    .order(sortBy, { ascending })
-
+// Helper function to apply filters to a query
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function applyCandidaturaFilters(query: any, filters: CandidaturaFilters) {
   if (filters.status && filters.status !== 'all') {
     query = query.eq('status', filters.status)
   }
@@ -43,11 +46,17 @@ export async function getCandidaturas(filters: CandidaturaFilters = {}) {
     query = query.eq('entity_type', filters.entityType)
   }
 
-  if (filters.district) {
+  // Multi-select district filter (new)
+  if (filters.districts && filters.districts.length > 0) {
+    query = query.overlaps('districts', filters.districts)
+  } else if (filters.district) {
     query = query.contains('districts', [filters.district])
   }
 
-  if (filters.service) {
+  // Multi-select service filter (new)
+  if (filters.services && filters.services.length > 0) {
+    query = query.overlaps('services', filters.services)
+  } else if (filters.service) {
     query = query.contains('services', [filters.service])
   }
 
@@ -66,6 +75,23 @@ export async function getCandidaturas(filters: CandidaturaFilters = {}) {
     query = query.or(`name.ilike.%${filters.search}%,email.ilike.%${filters.search}%,nif.ilike.%${filters.search}%`)
   }
 
+  return query
+}
+
+// Internal function to get candidaturas data
+async function getCandidaturasInternal(filters: CandidaturaFilters = {}) {
+  const sortBy = filters.sortBy || 'first_application_at'
+  const sortOrder = filters.sortOrder || 'desc'
+  const ascending = sortOrder === 'asc'
+
+  let query = createAdminClient()
+    .from('providers')
+    .select('*')
+    .in('status', ['novo', 'em_onboarding', 'abandonado'])
+    .order(sortBy, { ascending })
+
+  query = applyCandidaturaFilters(query, filters)
+
   const { data, error } = await query
 
   if (error) {
@@ -74,6 +100,58 @@ export async function getCandidaturas(filters: CandidaturaFilters = {}) {
   }
 
   return data || []
+}
+
+// Obter candidaturas com paginação
+export async function getCandidaturas(filters: CandidaturaFilters = {}): Promise<PaginatedCandidaturas> {
+  const page = filters.page || 1
+  const limit = filters.limit || 50
+  const from = (page - 1) * limit
+  const to = from + limit - 1
+  const sortBy = filters.sortBy || 'first_application_at'
+  const sortOrder = filters.sortOrder || 'desc'
+  const ascending = sortOrder === 'asc'
+
+  // First get total count with filters
+  let countQuery = createAdminClient()
+    .from('providers')
+    .select('*', { count: 'exact', head: true })
+    .in('status', ['novo', 'em_onboarding', 'abandonado'])
+
+  countQuery = applyCandidaturaFilters(countQuery, filters)
+  const { count } = await countQuery
+
+  // Now get paginated data
+  let query = createAdminClient()
+    .from('providers')
+    .select('*')
+    .in('status', ['novo', 'em_onboarding', 'abandonado'])
+
+  query = applyCandidaturaFilters(query, filters)
+  query = query
+    .order(sortBy, { ascending })
+    .range(from, to)
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Erro ao buscar candidaturas:', error)
+    return {
+      data: [],
+      total: 0,
+      page,
+      limit,
+      totalPages: 0,
+    }
+  }
+
+  return {
+    data: data || [],
+    total: count || 0,
+    page,
+    limit,
+    totalPages: Math.ceil((count || 0) / limit),
+  }
 }
 
 export async function getCandidaturaById(id: string) {
@@ -354,6 +432,7 @@ export async function getDistinctDistricts() {
         .from('providers')
         .select('districts')
         .not('districts', 'is', null)
+        .limit(10000)
 
       if (error || !data) return []
 
@@ -381,6 +460,7 @@ export async function getDistinctServices() {
         .from('providers')
         .select('services')
         .not('services', 'is', null)
+        .limit(10000)
 
       if (error || !data) return []
 
@@ -400,25 +480,21 @@ export async function getDistinctServices() {
   )()
 }
 
-// Estatisticas rapidas
+// Estatisticas rapidas - using count queries to avoid 1000 row limit
 export async function getCandidaturasStats() {
-  const { data, error } = await createAdminClient()
-    .from('providers')
-    .select('status')
-    .in('status', ['novo', 'em_onboarding', 'abandonado'])
+  const supabase = createAdminClient()
 
-  if (error || !data) return { novo: 0, em_onboarding: 0, abandonado: 0 }
+  const [novoResult, onboardingResult, abandonadoResult] = await Promise.all([
+    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'novo'),
+    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'em_onboarding'),
+    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'abandonado'),
+  ])
 
-  const result = { novo: 0, em_onboarding: 0, abandonado: 0 }
-
-  for (const p of data) {
-    const status = p.status as ProviderStatus
-    if (status === 'novo' || status === 'em_onboarding' || status === 'abandonado') {
-      result[status] = (result[status] || 0) + 1
-    }
+  return {
+    novo: novoResult.count || 0,
+    em_onboarding: onboardingResult.count || 0,
+    abandonado: abandonadoResult.count || 0,
   }
-
-  return result
 }
 
 // Recuperar candidatura abandonada

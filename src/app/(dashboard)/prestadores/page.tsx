@@ -62,6 +62,10 @@ export default async function PrestadoresPage({
     services: parseMultiParam(params.services),
     ownerId: params.ownerId as string | undefined,
     search: params.search as string | undefined,
+    page: params.page ? parseInt(params.page as string) : 1,
+    limit: params.limit ? parseInt(params.limit as string) : 50,
+    sortBy: params.sortBy as string | undefined,
+    sortOrder: (params.sortOrder as 'asc' | 'desc') || undefined,
   }
 
   // No awaits here - header appears instantly!

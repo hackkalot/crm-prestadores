@@ -12,6 +12,7 @@ import {
   getDistinctDistricts,
   getDistinctServices,
   type CandidaturaFilters,
+  type PaginatedCandidaturas,
 } from '@/lib/candidaturas/actions'
 import type { Database } from '@/types/database'
 
@@ -26,8 +27,8 @@ async function StatsSection() {
 
 // Async component for candidaturas list
 async function CandidaturasListSection({ filters, viewMode }: { filters: CandidaturaFilters; viewMode: 'list' | 'grid' }) {
-  const providers = await getCandidaturas(filters)
-  return <CandidaturasList providers={providers} viewMode={viewMode} />
+  const candidaturas = await getCandidaturas(filters)
+  return <CandidaturasList candidaturas={candidaturas} viewMode={viewMode} />
 }
 
 // Async component for filters (loads cached data)
@@ -57,14 +58,23 @@ export default async function CandidaturasPage({
 
   const viewMode = (params.view as 'list' | 'grid') || 'list'
 
+  // Parse multi-select filters from comma-separated URL params
+  const parseMultiParam = (param: string | string[] | undefined): string[] | undefined => {
+    if (!param) return undefined
+    if (Array.isArray(param)) return param
+    return param.split(',').filter(Boolean)
+  }
+
   const filters: CandidaturaFilters = {
     status: (params.status as ProviderStatus | 'all') || 'all',
     entityType: params.entityType as string | undefined,
-    district: params.district as string | undefined,
-    service: params.service as string | undefined,
+    districts: parseMultiParam(params.districts),
+    services: parseMultiParam(params.services),
     dateFrom: params.dateFrom as string | undefined,
     dateTo: params.dateTo as string | undefined,
     search: params.search as string | undefined,
+    page: params.page ? parseInt(params.page as string) : 1,
+    limit: params.limit ? parseInt(params.limit as string) : 50,
     sortBy: params.sortBy as string | undefined,
     sortOrder: (params.sortOrder as 'asc' | 'desc') || undefined,
   }

@@ -17,21 +17,26 @@ export type PrestadorFilters = {
   services?: string[]    // Multi-select filter
   ownerId?: string
   search?: string
+  page?: number
+  limit?: number
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }
 
-// Obter prestadores ativos (que ja passaram pelo onboarding)
-export async function getPrestadores(filters: PrestadorFilters = {}) {
-  let query = createAdminClient()
-    .from('providers')
-    .select(`
-      *,
-      relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email)
-    `)
+export interface PaginatedPrestadores {
+  data: Awaited<ReturnType<typeof getPrestadoresInternal>>
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
 
+// Helper function to apply filters to a query
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function applyPrestadorFilters(query: any, filters: PrestadorFilters) {
   // Handle status filtering - backward compatible
   if (!filters.status || filters.status === '_all') {
     // Default: show ALL statuses (no filter applied)
-    // Don't add any status filter
   } else if (filters.status === 'all') {
     // Show active network (ativo + suspenso)
     query = query.in('status', ['ativo', 'suspenso'])
@@ -40,27 +45,21 @@ export async function getPrestadores(filters: PrestadorFilters = {}) {
     query = query.eq('status', filters.status)
   }
 
-  query = query.order('name')
-
   if (filters.entityType) {
     query = query.eq('entity_type', filters.entityType)
   }
 
   // Multi-select district filter (new)
   if (filters.districts && filters.districts.length > 0) {
-    // Filter providers that have ANY of the selected districts
     query = query.overlaps('districts', filters.districts)
   } else if (filters.district) {
-    // Legacy single filter - backward compatible
     query = query.contains('districts', [filters.district])
   }
 
   // Multi-select service filter (new)
   if (filters.services && filters.services.length > 0) {
-    // Filter providers that have ANY of the selected services
     query = query.overlaps('services', filters.services)
   } else if (filters.service) {
-    // Legacy single filter - backward compatible
     query = query.contains('services', [filters.service])
   }
 
@@ -72,6 +71,25 @@ export async function getPrestadores(filters: PrestadorFilters = {}) {
     query = query.or(`name.ilike.%${filters.search}%,email.ilike.%${filters.search}%,nif.ilike.%${filters.search}%`)
   }
 
+  return query
+}
+
+// Internal function to get prestadores data
+async function getPrestadoresInternal(filters: PrestadorFilters = {}) {
+  const sortBy = filters.sortBy || 'name'
+  const sortOrder = filters.sortOrder || 'asc'
+  const ascending = sortOrder === 'asc'
+
+  let query = createAdminClient()
+    .from('providers')
+    .select(`
+      *,
+      relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email)
+    `)
+
+  query = applyPrestadorFilters(query, filters)
+  query = query.order(sortBy, { ascending })
+
   const { data, error } = await query
 
   if (error) {
@@ -80,6 +98,59 @@ export async function getPrestadores(filters: PrestadorFilters = {}) {
   }
 
   return data || []
+}
+
+// Obter prestadores com paginação
+export async function getPrestadores(filters: PrestadorFilters = {}): Promise<PaginatedPrestadores> {
+  const page = filters.page || 1
+  const limit = filters.limit || 50
+  const from = (page - 1) * limit
+  const to = from + limit - 1
+  const sortBy = filters.sortBy || 'name'
+  const sortOrder = filters.sortOrder || 'asc'
+  const ascending = sortOrder === 'asc'
+
+  // First get total count with filters
+  let countQuery = createAdminClient()
+    .from('providers')
+    .select('*', { count: 'exact', head: true })
+
+  countQuery = applyPrestadorFilters(countQuery, filters)
+  const { count } = await countQuery
+
+  // Now get paginated data
+  let query = createAdminClient()
+    .from('providers')
+    .select(`
+      *,
+      relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email)
+    `)
+
+  query = applyPrestadorFilters(query, filters)
+  query = query
+    .order(sortBy, { ascending })
+    .range(from, to)
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Erro ao buscar prestadores:', error)
+    return {
+      data: [],
+      total: 0,
+      page,
+      limit,
+      totalPages: 0,
+    }
+  }
+
+  return {
+    data: data || [],
+    total: count || 0,
+    page,
+    limit,
+    totalPages: Math.ceil((count || 0) / limit),
+  }
 }
 
 // Obter detalhes de um prestador
@@ -317,39 +388,26 @@ export async function updateRelationshipOwner(
 
 // Estatisticas
 export async function getPrestadoresStats() {
-  const { data, error } = await createAdminClient()
-    .from('providers')
-    .select('status')
+  // Use count queries to avoid Supabase's default 1000 row limit
+  const supabase = createAdminClient()
 
-  if (error || !data) {
-    return {
-      novo: 0,
-      em_onboarding: 0,
-      ativo: 0,
-      suspenso: 0,
-      abandonado: 0,
-      total: 0,
-    }
+  const [totalResult, novoResult, onboardingResult, ativoResult, suspensoResult, abandonadoResult] = await Promise.all([
+    supabase.from('providers').select('*', { count: 'exact', head: true }),
+    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'novo'),
+    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'em_onboarding'),
+    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'ativo'),
+    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'suspenso'),
+    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'abandonado'),
+  ])
+
+  return {
+    novo: novoResult.count || 0,
+    em_onboarding: onboardingResult.count || 0,
+    ativo: ativoResult.count || 0,
+    suspenso: suspensoResult.count || 0,
+    abandonado: abandonadoResult.count || 0,
+    total: totalResult.count || 0,
   }
-
-  const result = {
-    novo: 0,
-    em_onboarding: 0,
-    ativo: 0,
-    suspenso: 0,
-    abandonado: 0,
-    total: data.length,
-  }
-
-  for (const p of data) {
-    if (p.status === 'novo') result.novo++
-    else if (p.status === 'em_onboarding') result.em_onboarding++
-    else if (p.status === 'ativo') result.ativo++
-    else if (p.status === 'suspenso') result.suspenso++
-    else if (p.status === 'abandonado') result.abandonado++
-  }
-
-  return result
 }
 
 // Obter distritos unicos
@@ -361,6 +419,7 @@ export async function getDistinctPrestadorDistricts() {
         .select('districts')
         .in('status', ['ativo', 'suspenso'])
         .not('districts', 'is', null)
+        .limit(10000)
 
       if (error || !data) return []
 
@@ -389,6 +448,7 @@ export async function getDistinctPrestadorServices() {
         .select('services')
         .in('status', ['ativo', 'suspenso'])
         .not('services', 'is', null)
+        .limit(10000)
 
       if (error || !data) return []
 

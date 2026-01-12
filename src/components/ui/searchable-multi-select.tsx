@@ -1,10 +1,9 @@
 'use client'
 
 import * as React from 'react'
-import { Check, ChevronsUpDown, X } from 'lucide-react'
+import { Check, ChevronsUpDown, X, CheckCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import {
   Command,
   CommandEmpty,
@@ -34,6 +33,7 @@ interface SearchableMultiSelectProps {
   disabled?: boolean
   className?: string
   maxDisplayed?: number
+  maxWidth?: string
 }
 
 export function SearchableMultiSelect({
@@ -46,10 +46,21 @@ export function SearchableMultiSelect({
   disabled = false,
   className,
   maxDisplayed = 2,
+  maxWidth = '400px',
 }: SearchableMultiSelectProps) {
   const [open, setOpen] = React.useState(false)
+  const [search, setSearch] = React.useState('')
 
   const selectedOptions = options.filter((option) => values.includes(option.value))
+
+  // Filter options based on search
+  const filteredOptions = React.useMemo(() => {
+    if (!search) return options
+    const searchLower = search.toLowerCase()
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(searchLower)
+    )
+  }, [options, search])
 
   const toggleOption = (value: string) => {
     if (values.includes(value)) {
@@ -59,15 +70,23 @@ export function SearchableMultiSelect({
     }
   }
 
-  const removeOption = (value: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    onValuesChange(values.filter((v) => v !== value))
-  }
-
   const clearAll = (e: React.MouseEvent) => {
     e.stopPropagation()
     onValuesChange([])
   }
+
+  // Select all filtered options
+  const selectAllFiltered = () => {
+    const filteredValues = filteredOptions.map((o) => o.value)
+    const newValues = [...new Set([...values, ...filteredValues])]
+    onValuesChange(newValues)
+  }
+
+  // Check if all filtered options are selected
+  const allFilteredSelected = React.useMemo(() => {
+    if (filteredOptions.length === 0) return false
+    return filteredOptions.every((option) => values.includes(option.value))
+  }, [filteredOptions, values])
 
   const getDisplayText = () => {
     if (selectedOptions.length === 0) {
@@ -105,13 +124,31 @@ export function SearchableMultiSelect({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-        <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+      <PopoverContent
+        className="p-0"
+        align="start"
+        style={{ width: '100%', maxWidth }}
+      >
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder={searchPlaceholder}
+            value={search}
+            onValueChange={setSearch}
+          />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
-              {options.map((option) => (
+              {/* Select all filtered button */}
+              {search && filteredOptions.length > 0 && !allFilteredSelected && (
+                <CommandItem
+                  onSelect={selectAllFiltered}
+                  className="text-primary font-medium"
+                >
+                  <CheckCheck className="mr-2 h-4 w-4" />
+                  Selecionar todos ({filteredOptions.length})
+                </CommandItem>
+              )}
+              {filteredOptions.map((option) => (
                 <CommandItem
                   key={option.value}
                   value={option.label}
@@ -127,7 +164,7 @@ export function SearchableMultiSelect({
                   >
                     <Check className="h-3 w-3" />
                   </div>
-                  {option.label}
+                  <span className="truncate">{option.label}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
