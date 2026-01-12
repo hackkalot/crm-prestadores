@@ -30,10 +30,24 @@ npm run start        # Iniciar em producao
 npm run lint         # Verificar ESLint
 
 # Base de Dados (Supabase)
-npm run db:generate  # Gerar tipos TypeScript a partir do schema
+npm run db:generate  # Gerar tipos TypeScript a partir do schema (requer Docker)
 npm run db:push      # Push de migracoes para Supabase
 npm run db:reset     # Reset da base de dados local
 ```
+
+### Regenerar Tipos da Base de Dados
+
+O comando `npm run db:generate` requer Docker a correr localmente. Em alternativa, usa o Supabase remoto:
+
+```bash
+# Com Docker (local)
+npm run db:generate
+
+# Sem Docker (remoto) - usa o project ID do Supabase
+npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs > src/types/database.generated.ts
+```
+
+Os tipos sao gerados para `src/types/database.generated.ts` e devem ser regenerados sempre que o schema da base de dados mudar (novas tabelas, colunas, etc.).
 
 ## Estrutura do Projeto
 
@@ -489,4 +503,13 @@ O workflow instala o Chrome e define `PUPPETEER_EXECUTABLE_PATH` automaticamente
 - Navegacao com estado (back button preserva filtros)
 - **23 ficheiros, +2023 linhas**
 
-**Total do dia**: 34 ficheiros modificados, ~3000 linhas adicionadas
+#### 4. Mapa de Cobertura da Rede
+- Mapa choropleth de Portugal com 308 concelhos (Mapbox)
+- GeoJSON simplificado (29MB → 3.2MB) de OpenDataSoft/e-REDES
+- Cores por cobertura: verde (2+ prestadores), amarelo (1), vermelho (0)
+- Filtro por tipo de servico
+- Hover com detalhes do concelho
+- Nova tab "Mapa" na pagina /rede (default)
+- **Ficheiros**: `public/geo/portugal-municipalities-simplified.geojson`, `src/components/network/network-mapbox-map.tsx`, `src/lib/network/actions.ts`
+
+**Total do dia**: 38+ ficheiros modificados, ~3500 linhas adicionadas
