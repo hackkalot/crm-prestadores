@@ -35,11 +35,13 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  FileText,
 } from 'lucide-react'
 import type { PaginatedPrestadores } from '@/lib/prestadores/actions'
 
 interface PrestadoresListProps {
   prestadores: PaginatedPrestadores
+  requestCounts?: Record<number, number>
 }
 
 const entityTypeLabels: Record<string, string> = {
@@ -72,7 +74,7 @@ const statusVariants: Record<string, 'info' | 'warning' | 'success' | 'destructi
   arquivado: 'secondary',
 }
 
-export function PrestadoresList({ prestadores }: PrestadoresListProps) {
+export function PrestadoresList({ prestadores, requestCounts = {} }: PrestadoresListProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data, total, page, limit, totalPages } = prestadores
@@ -203,6 +205,7 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
               </TableHead>
               <TableHead>Zonas</TableHead>
               <TableHead>Serviços</TableHead>
+              <TableHead className="text-center">Pedidos</TableHead>
               <TableHead>
                 <button
                   onClick={() => handleSort('status')}
@@ -276,6 +279,28 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
                         </TooltipProvider>
                       )}
                     </div>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {prestador.backoffice_provider_id ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <ProviderLink
+                              href={`/providers/${prestador.id}?tab=pedidos`}
+                              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+                            >
+                              <FileText className="h-3.5 w-3.5" />
+                              <span className="font-medium">
+                                {requestCounts[prestador.backoffice_provider_id] || 0}
+                              </span>
+                            </ProviderLink>
+                          </TooltipTrigger>
+                          <TooltipContent>Ver pedidos</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">-</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Badge

@@ -468,6 +468,38 @@ export async function getDistinctPrestadorServices() {
   )()
 }
 
+// Get service request counts for a list of providers (by backoffice_provider_id)
+export async function getProviderServiceRequestCounts(backofficeProviderIds: number[]): Promise<Record<number, number>> {
+  if (backofficeProviderIds.length === 0) return {}
+
+  const supabase = createAdminClient()
+
+  // Convert to strings for the query
+  const providerIdStrings = backofficeProviderIds.map(String)
+
+  // Get counts grouped by assigned_provider_id
+  const { data, error } = await supabase
+    .from('service_requests')
+    .select('assigned_provider_id')
+    .in('assigned_provider_id', providerIdStrings)
+
+  if (error) {
+    console.error('Error fetching service request counts:', error)
+    return {}
+  }
+
+  // Count occurrences
+  const counts: Record<number, number> = {}
+  for (const row of data || []) {
+    if (row.assigned_provider_id) {
+      const id = parseInt(row.assigned_provider_id, 10)
+      counts[id] = (counts[id] || 0) + 1
+    }
+  }
+
+  return counts
+}
+
 // Obter usuarios para select (apenas Relationship Managers)
 export async function getUsers() {
   return unstable_cache(

@@ -275,6 +275,102 @@ export async function getDistrictCoverage(district: string): Promise<CoverageDat
   return coverage.find((c) => c.district === district) || null
 }
 
+// Tipo para cobertura de mapa (otimizado para choropleth)
+export type MapCoverageData = {
+  // Mapa de distrito -> status de cobertura por serviço
+  districts: Record<string, {
+    activeProviders: number
+    services: Record<string, {
+      count: number
+      status: 'ok' | 'warning' | 'critical'
+    }>
+    overallStatus: 'ok' | 'warning' | 'critical'
+  }>
+  // Lista de serviços disponíveis
+  services: string[]
+}
+
+// Obter cobertura para mapa choropleth (por distrito, otimizado)
+export async function getMapCoverage(): Promise<MapCoverageData> {
+  const { data: providers, error } = await createAdminClient()
+    .from('providers')
+    .select('id, status, districts, services')
+    .eq('status', 'ativo')
+
+  if (error || !providers) {
+    console.error('Error fetching providers for map coverage:', error)
+    return { districts: {}, services: BASE_SERVICES }
+  }
+
+  const MINIMUM_PROVIDERS = 2
+
+  // Inicializar dados de cobertura para todos os distritos
+  const districts: MapCoverageData['districts'] = {}
+
+  for (const district of PORTUGAL_DISTRICTS) {
+    districts[district] = {
+      activeProviders: 0,
+      services: {},
+      overallStatus: 'critical',
+    }
+    for (const service of BASE_SERVICES) {
+      districts[district].services[service] = {
+        count: 0,
+        status: 'critical',
+      }
+    }
+  }
+
+  // Processar prestadores
+  for (const provider of providers) {
+    const providerDistricts = provider.districts || []
+    const providerServices = provider.services || []
+
+    for (const district of providerDistricts) {
+      if (!districts[district]) continue
+
+      districts[district].activeProviders++
+
+      for (const service of providerServices) {
+        if (districts[district].services[service]) {
+          districts[district].services[service].count++
+        }
+      }
+    }
+  }
+
+  // Calcular status para cada serviço e overall
+  for (const district of PORTUGAL_DISTRICTS) {
+    const districtData = districts[district]
+    let criticalCount = 0
+    let warningCount = 0
+
+    for (const service of BASE_SERVICES) {
+      const serviceData = districtData.services[service]
+      if (serviceData.count === 0) {
+        serviceData.status = 'critical'
+        criticalCount++
+      } else if (serviceData.count < MINIMUM_PROVIDERS) {
+        serviceData.status = 'warning'
+        warningCount++
+      } else {
+        serviceData.status = 'ok'
+      }
+    }
+
+    // Overall status: critical if any critical, warning if any warning, ok otherwise
+    if (criticalCount > 0) {
+      districtData.overallStatus = 'critical'
+    } else if (warningCount > 0) {
+      districtData.overallStatus = 'warning'
+    } else {
+      districtData.overallStatus = 'ok'
+    }
+  }
+
+  return { districts, services: BASE_SERVICES }
+}
+
 // Buscar prestadores disponíveis por filtros
 export async function searchAvailableProviders(filters: {
   district?: string

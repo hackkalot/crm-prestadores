@@ -14,6 +14,7 @@ import {
   getDistinctPrestadorDistricts,
   getDistinctPrestadorServices,
   getUsers,
+  getProviderServiceRequestCounts,
   type PrestadorFilters,
 } from '@/lib/prestadores/actions'
 import type { Database } from '@/types/database'
@@ -30,7 +31,15 @@ async function StatsSection() {
 // Async component for prestadores list
 async function PrestadoresListSection({ filters }: { filters: PrestadorFilters }) {
   const prestadores = await getPrestadores(filters)
-  return <PrestadoresList prestadores={prestadores} />
+
+  // Get service request counts for providers that have backoffice_provider_id
+  const backofficeIds = prestadores.data
+    .filter((p) => p.backoffice_provider_id !== null)
+    .map((p) => p.backoffice_provider_id as number)
+
+  const requestCounts = await getProviderServiceRequestCounts(backofficeIds)
+
+  return <PrestadoresList prestadores={prestadores} requestCounts={requestCounts} />
 }
 
 // Async component for filters (loads cached data)

@@ -6,8 +6,10 @@ import {
   getNetworkStats,
   getNetworkCoverage,
   getNetworkGaps,
+  getMapCoverage,
 } from '@/lib/network/actions'
 import { NetworkCoverageMap } from '@/components/network/network-coverage-map'
+import { NetworkMapboxMap } from '@/components/network/network-mapbox-map'
 import { NetworkGapsList } from '@/components/network/network-gaps-list'
 import { ProviderSearch } from '@/components/network/provider-search'
 import {
@@ -17,13 +19,16 @@ import {
   TrendingUp,
   Users,
   Target,
+  Map,
+  LayoutGrid,
 } from 'lucide-react'
 
 export default async function RedePage() {
-  const [stats, coverage, gaps] = await Promise.all([
+  const [stats, coverage, gaps, mapCoverage] = await Promise.all([
     getNetworkStats(),
     getNetworkCoverage(),
     getNetworkGaps(),
+    getMapCoverage(),
   ])
 
   return (
@@ -33,7 +38,7 @@ export default async function RedePage() {
         description="Analise a cobertura da rede e identifique oportunidades"
       />
 
-      <div className="flex-1 p-6 space-y-6 overflow-auto">
+      <div className="flex-1 p-6 flex flex-col gap-6 overflow-hidden">
         {/* KPIs */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <Card>
@@ -122,9 +127,16 @@ export default async function RedePage() {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="mapa" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="mapa">Mapa de Cobertura</TabsTrigger>
+        <Tabs defaultValue="mapa" className="flex-1 flex flex-col min-h-0">
+          <TabsList className="w-fit">
+            <TabsTrigger value="mapa" className="flex items-center gap-1.5">
+              <Map className="h-4 w-4" />
+              Mapa
+            </TabsTrigger>
+            <TabsTrigger value="distritos" className="flex items-center gap-1.5">
+              <LayoutGrid className="h-4 w-4" />
+              Distritos
+            </TabsTrigger>
             <TabsTrigger value="lacunas">
               Lacunas
               {stats.totalGaps > 0 && (
@@ -136,15 +148,19 @@ export default async function RedePage() {
             <TabsTrigger value="pesquisa">Pesquisa</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="mapa">
+          <TabsContent value="mapa" className="flex-1 mt-4 data-[state=active]:flex data-[state=active]:flex-col">
+            <NetworkMapboxMap coverageData={mapCoverage} />
+          </TabsContent>
+
+          <TabsContent value="distritos" className="mt-4">
             <NetworkCoverageMap coverage={coverage} />
           </TabsContent>
 
-          <TabsContent value="lacunas">
+          <TabsContent value="lacunas" className="mt-4">
             <NetworkGapsList gaps={gaps} />
           </TabsContent>
 
-          <TabsContent value="pesquisa">
+          <TabsContent value="pesquisa" className="mt-4">
             <ProviderSearch />
           </TabsContent>
         </Tabs>

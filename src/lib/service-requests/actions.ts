@@ -423,3 +423,121 @@ export async function getServiceRequestsForMap(filters: ServiceRequestFilters = 
 
   return mapData
 }
+
+// Filters for provider-specific service requests (excludes 'provider' filter since it's implicit)
+export interface ProviderServiceRequestFilters {
+  status?: string
+  category?: string
+  district?: string
+  search?: string
+  dateFrom?: string
+  dateTo?: string
+  page?: number
+  limit?: number
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
+}
+
+// Get service requests for a specific provider by backoffice_provider_id
+export async function getProviderServiceRequests(
+  backofficeProviderId: number,
+  filters: ProviderServiceRequestFilters = {}
+): Promise<PaginatedServiceRequests> {
+  const supabase = createAdminClient()
+  const page = filters.page || 1
+  const limit = filters.limit || 25
+  const from = (page - 1) * limit
+  const to = from + limit - 1
+  const sortBy = filters.sortBy || 'created_at'
+  const sortOrder = filters.sortOrder || 'desc'
+
+  // The assigned_provider_id is stored as string in service_requests
+  const providerIdString = String(backofficeProviderId)
+
+  // First get total count with filters
+  let countQuery = supabase
+    .from('service_requests')
+    .select('*', { count: 'exact', head: true })
+    .eq('assigned_provider_id', providerIdString)
+
+  // Apply filters
+  if (filters.status && filters.status !== 'all') {
+    countQuery = countQuery.eq('status', filters.status)
+  }
+
+  if (filters.category && filters.category !== 'all') {
+    countQuery = countQuery.eq('category', filters.category)
+  }
+
+  if (filters.district && filters.district !== 'all') {
+    countQuery = countQuery.eq('client_district', filters.district)
+  }
+
+  if (filters.search) {
+    countQuery = countQuery.or(`request_code.ilike.%${filters.search}%,city.ilike.%${filters.search}%,service.ilike.%${filters.search}%`)
+  }
+
+  if (filters.dateFrom) {
+    countQuery = countQuery.gte('created_at', filters.dateFrom)
+  }
+
+  if (filters.dateTo) {
+    countQuery = countQuery.lte('created_at', filters.dateTo)
+  }
+
+  const { count } = await countQuery
+
+  // Now get paginated data
+  let query = supabase
+    .from('service_requests')
+    .select('*')
+    .eq('assigned_provider_id', providerIdString)
+    .order(sortBy, { ascending: sortOrder === 'asc' })
+    .range(from, to)
+
+  // Apply filters
+  if (filters.status && filters.status !== 'all') {
+    query = query.eq('status', filters.status)
+  }
+
+  if (filters.category && filters.category !== 'all') {
+    query = query.eq('category', filters.category)
+  }
+
+  if (filters.district && filters.district !== 'all') {
+    query = query.eq('client_district', filters.district)
+  }
+
+  if (filters.search) {
+    query = query.or(`request_code.ilike.%${filters.search}%,city.ilike.%${filters.search}%,service.ilike.%${filters.search}%`)
+  }
+
+  if (filters.dateFrom) {
+    query = query.gte('created_at', filters.dateFrom)
+  }
+
+  if (filters.dateTo) {
+    query = query.lte('created_at', filters.dateTo)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching provider service requests:', error)
+    return {
+      data: [],
+      total: 0,
+      page,
+      limit,
+      totalPages: 0,
+    }
+  }
+
+  return {
+    data: data as ServiceRequest[],
+    total: count || 0,
+    page,
+    limit,
+    totalPages: Math.ceil((count || 0) / limit),
+  }
+}

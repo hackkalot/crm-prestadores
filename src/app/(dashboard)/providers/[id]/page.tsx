@@ -30,6 +30,8 @@ import {
   CandidaturaTabAsync,
   OnboardingTabAsync,
   PrecosTabAsync,
+  PedidosTabAsync,
+  PerformanceTabAsync,
   NotasTabAsync,
   HistoricoTabAsync,
 } from '@/components/providers/tabs/async-tab-wrappers'
@@ -335,6 +337,12 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
             <TabsTrigger value="precos" disabled={!hasPrices}>
               Preços
             </TabsTrigger>
+            <TabsTrigger value="pedidos" disabled={!hasPrices}>
+              Pedidos
+            </TabsTrigger>
+            <TabsTrigger value="performance" disabled={!hasPrices}>
+              Performance
+            </TabsTrigger>
             <TabsTrigger value="notas">
               Notas
             </TabsTrigger>
@@ -371,6 +379,18 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
           <TabsContent value="precos">
             <Suspense fallback={<div className="h-48" />}>
               <PrecosTabAsync providerId={id} provider={provider} />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="pedidos">
+            <Suspense fallback={<div className="h-48" />}>
+              <PedidosTabAsync provider={{ id: provider.id, backoffice_provider_id: provider.backoffice_provider_id, name: provider.name }} />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="performance">
+            <Suspense fallback={<div className="h-48" />}>
+              <PerformanceTabAsync provider={{ id: provider.id, backoffice_provider_id: provider.backoffice_provider_id, name: provider.name }} />
             </Suspense>
           </TabsContent>
 
