@@ -1,9 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { ProviderLink } from '@/components/ui/provider-link'
 import type { Tables } from '@/types/database'
 import { formatDate } from '@/lib/utils'
 import {
@@ -61,7 +61,7 @@ export function CandidaturaCard({ provider, onSendToOnboarding, onAbandon }: Can
       <CardContent className="p-4">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
-          <Link
+          <ProviderLink
             href={`/providers/${provider.id}?tab=perfil`}
             className="flex items-center gap-3 hover:text-primary"
           >
@@ -75,7 +75,7 @@ export function CandidaturaCard({ provider, onSendToOnboarding, onAbandon }: Can
                 {provider.nif && ` • NIF: ${provider.nif}`}
               </p>
             </div>
-          </Link>
+          </ProviderLink>
           <div className="flex items-center gap-2">
             <Badge variant={provider.status ? statusVariants[provider.status] : 'default'}>
               {provider.status ? statusLabels[provider.status] : 'Desconhecido'}
@@ -149,12 +149,12 @@ export function CandidaturaCard({ provider, onSendToOnboarding, onAbandon }: Can
               </Button>
             </>
           ) : (
-            <Link href={`/candidaturas/${provider.id}`} className="flex-1">
+            <ProviderLink href={`/providers/${provider.id}?tab=perfil`} className="flex-1">
               <Button size="sm" variant="outline" className="w-full">
                 <ExternalLink className="h-4 w-4 mr-1" />
                 Ver detalhes
               </Button>
-            </Link>
+            </ProviderLink>
           )}
         </div>
       </CardContent>

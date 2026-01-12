@@ -1,16 +1,14 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { Header } from '@/components/layout/header'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { BackButton } from '@/components/ui/back-button'
 import { getProviderBasicInfo, getUsers } from '@/lib/providers/actions'
 import { getDistinctDistricts, getDistinctServices } from '@/lib/candidaturas/actions'
 import { formatDateTime } from '@/lib/utils'
 import {
-  ArrowLeft,
   Building2,
   User,
   Briefcase,
@@ -120,8 +118,8 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
   // Determinar tab default
   const defaultTab = tab || (provider.status === 'em_onboarding' ? 'onboarding' : 'perfil')
 
-  // Determinar back URL baseado no status
-  const backUrl = provider.status === 'em_onboarding'
+  // Determinar fallback back URL baseado no status
+  const fallbackBackUrl = provider.status === 'em_onboarding'
     ? '/onboarding'
     : ['ativo', 'suspenso'].includes(provider.status)
       ? '/prestadores'
@@ -132,13 +130,7 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
       <Header
         title={provider.name}
         description={entityTypeLabels[provider.entity_type]}
-        backButton={
-          <Link href={backUrl}>
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-        }
+        backButton={<BackButton fallbackUrl={fallbackBackUrl} />}
       />
 
       <div className="flex-1 p-6 space-y-6 overflow-auto">

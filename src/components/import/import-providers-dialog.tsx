@@ -25,6 +25,7 @@ import {
 } from '@/lib/import/actions'
 import { toast } from 'sonner'
 import Papa from 'papaparse'
+import { useMounted } from '@/hooks/use-mounted'
 
 type ImportStep = 'upload' | 'preview' | 'duplicates' | 'processing' | 'complete'
 
@@ -49,6 +50,7 @@ export function ImportProvidersDialog() {
     nonDuplicates: [],
     selectedDuplicateActions: new Map(),
   })
+  const mounted = useMounted()
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -198,6 +200,16 @@ export function ImportProvidersDialog() {
     setTimeout(() => {
       handleReset()
     }, 300)
+  }
+
+  // Render a placeholder button during SSR to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <Button variant="outline" className="gap-2">
+        <Upload className="h-4 w-4" />
+        Importar CSV
+      </Button>
+    )
   }
 
   return (

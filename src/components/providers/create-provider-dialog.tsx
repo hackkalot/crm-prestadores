@@ -24,6 +24,7 @@ import { UserPlus, AlertCircle } from 'lucide-react'
 import { createProvider } from '@/lib/providers/create-actions'
 import { toast } from 'sonner'
 import { MultiSelect } from '@/components/ui/multi-select'
+import { useMounted } from '@/hooks/use-mounted'
 
 interface CreateProviderDialogProps {
   districts: string[]
@@ -39,6 +40,7 @@ export function CreateProviderDialog({ districts, services }: CreateProviderDial
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([])
   const [hasAdminTeam, setHasAdminTeam] = useState<boolean | undefined>(undefined)
   const [hasOwnTransport, setHasOwnTransport] = useState<boolean | undefined>(undefined)
+  const mounted = useMounted()
 
   // Handle success
   useEffect(() => {
@@ -69,6 +71,16 @@ export function CreateProviderDialog({ districts, services }: CreateProviderDial
   }
 
   const isCompanyOrEni = entityType === 'empresa' || entityType === 'eni'
+
+  // Render a placeholder button during SSR to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <Button className="gap-2">
+        <UserPlus className="h-4 w-4" />
+        Adicionar Prestador
+      </Button>
+    )
+  }
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>

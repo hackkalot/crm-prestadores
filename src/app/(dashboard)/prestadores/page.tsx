@@ -1,10 +1,13 @@
 import { Suspense } from 'react'
+import Link from 'next/link'
 import { Header } from '@/components/layout/header'
 import { PrestadoresList } from '@/components/prestadores/prestadores-list'
 import { PrestadoresFilters } from '@/components/prestadores/prestadores-filters'
 import { PrestadoresStats } from '@/components/prestadores/prestadores-stats'
 import { SyncProvidersDialog } from '@/components/sync/sync-providers-dialog'
 import { StatsCardsSkeleton, FiltersSkeleton, PrestadoresTableSkeleton } from '@/components/skeletons/page-skeletons'
+import { Button } from '@/components/ui/button'
+import { Copy } from 'lucide-react'
 import {
   getPrestadores,
   getPrestadoresStats,
@@ -74,7 +77,17 @@ export default async function PrestadoresPage({
       <Header
         title="Prestadores"
         description="Gestao de prestadores ativos na rede"
-        action={<SyncProvidersDialog />}
+        action={
+          <div className="flex gap-2">
+            <Link href="/prestadores/duplicados">
+              <Button variant="outline" size="sm">
+                <Copy className="h-4 w-4 mr-2" />
+                Duplicados
+              </Button>
+            </Link>
+            <SyncProvidersDialog />
+          </div>
+        }
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         {/* Stats load independently */}

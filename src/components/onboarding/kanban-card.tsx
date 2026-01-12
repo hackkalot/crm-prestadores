@@ -1,8 +1,10 @@
 'use client'
 
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { formatDate } from '@/lib/utils'
+import { saveBackUrl } from '@/hooks/use-navigation-state'
 import {
   Building2,
   User,
@@ -65,6 +67,9 @@ const entityTypeIcons: Record<string, typeof User> = {
 }
 
 export function KanbanCard({ card, alertConfig }: KanbanCardProps) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
   const {
     attributes,
     listeners,
@@ -145,6 +150,10 @@ export function KanbanCard({ card, alertConfig }: KanbanCardProps) {
       e.preventDefault()
       return
     }
+    // Save current URL with filters before navigating
+    const queryString = searchParams.toString()
+    const fullUrl = queryString ? `${pathname}?${queryString}` : pathname
+    saveBackUrl(fullUrl)
     window.location.href = `/providers/${card.provider?.id}?tab=onboarding`
   }
 

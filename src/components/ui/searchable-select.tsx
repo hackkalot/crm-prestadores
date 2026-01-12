@@ -17,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { useMounted } from '@/hooks/use-mounted'
 
 export interface SearchableSelectOption {
   value: string
@@ -45,8 +46,25 @@ export function SearchableSelect({
   className,
 }: SearchableSelectProps) {
   const [open, setOpen] = React.useState(false)
+  const mounted = useMounted()
 
   const selectedOption = options.find((option) => option.value === value)
+
+  // Render a placeholder button during SSR to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <Button
+        variant="outline"
+        disabled={disabled}
+        className={cn('w-full justify-between font-normal', className)}
+      >
+        <span className="truncate">
+          {selectedOption && value !== '_all' ? selectedOption.label : placeholder}
+        </span>
+        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    )
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

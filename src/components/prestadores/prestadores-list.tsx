@@ -1,9 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { ProviderLink } from '@/components/ui/provider-link'
 import {
   Select,
   SelectContent,
@@ -223,7 +223,7 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
               return (
                 <TableRow key={prestador.id} className="group">
                   <TableCell>
-                    <Link
+                    <ProviderLink
                       href={`/providers/${prestador.id}?tab=perfil`}
                       className="flex items-center gap-3 hover:text-primary transition-colors"
                     >
@@ -234,7 +234,7 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
                         <p className="font-medium truncate">{prestador.name}</p>
                         <p className="text-sm text-muted-foreground truncate">{prestador.email}</p>
                       </div>
-                    </Link>
+                    </ProviderLink>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">
@@ -290,9 +290,9 @@ export function PrestadoresList({ prestadores }: PrestadoresListProps) {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <Link href={`/providers/${prestador.id}?tab=perfil`}>
+                    <ProviderLink href={`/providers/${prestador.id}?tab=perfil`}>
                       <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                    </Link>
+                    </ProviderLink>
                   </TableCell>
                 </TableRow>
               )

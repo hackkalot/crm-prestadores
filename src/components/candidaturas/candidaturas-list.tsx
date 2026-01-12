@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { ProviderLink } from '@/components/ui/provider-link'
 import {
   Select,
   SelectContent,
@@ -245,7 +245,7 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
                   return (
                     <TableRow key={provider.id} className="group">
                       <TableCell>
-                        <Link
+                        <ProviderLink
                           href={`/providers/${provider.id}?tab=perfil`}
                           className="flex items-center gap-3 hover:text-primary transition-colors"
                         >
@@ -263,7 +263,7 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
                             </div>
                             <p className="text-sm text-muted-foreground truncate">{provider.email}</p>
                           </div>
-                        </Link>
+                        </ProviderLink>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">
@@ -315,9 +315,9 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
                         )}
                       </TableCell>
                       <TableCell>
-                        <Link href={`/providers/${provider.id}?tab=perfil`}>
+                        <ProviderLink href={`/providers/${provider.id}?tab=perfil`}>
                           <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                        </Link>
+                        </ProviderLink>
                       </TableCell>
                     </TableRow>
                   )
