@@ -776,6 +776,68 @@ export type Database = {
           },
         ]
       }
+      provider_sync_logs: {
+        Row: {
+          created_at: string | null
+          duration_seconds: number | null
+          error_message: string | null
+          error_stack: string | null
+          excel_file_path: string | null
+          excel_file_size_kb: number | null
+          id: string
+          records_inserted: number | null
+          records_processed: number | null
+          records_updated: number | null
+          status: string
+          triggered_at: string
+          triggered_by: string | null
+          triggered_by_system: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_sync_logs_triggered_by_fkey"
+            columns: ["triggered_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       providers: {
         Row: {
           abandoned_at: string | null
@@ -786,8 +848,27 @@ export type Database = {
             | null
           abandonment_reason: string | null
           activated_at: string | null
+          active_requests: number | null
           activity_proof_url: string | null
           application_count: number | null
+          archived_at: string | null
+          backoffice_created_at: string | null
+          backoffice_created_by: number | null
+          backoffice_do_recurrence: boolean | null
+          backoffice_is_active: boolean | null
+          backoffice_last_login: string | null
+          backoffice_password_defined: boolean | null
+          backoffice_provider_id: number | null
+          backoffice_status: string | null
+          backoffice_status_updated_at: string | null
+          backoffice_status_updated_by: number | null
+          backoffice_synced_at: string | null
+          backoffice_updated_at: string | null
+          backoffice_updated_by: number | null
+          cancelled_requests: number | null
+          categories: string[] | null
+          completed_requests: number | null
+          counties: string[] | null
           created_at: string | null
           districts: string[] | null
           email: string
@@ -807,9 +888,16 @@ export type Database = {
           onboarding_started_at: string | null
           phone: string | null
           relationship_owner_id: string | null
+          requests_accepted: number | null
+          requests_expired: number | null
+          requests_received: number | null
+          requests_rejected: number | null
+          service_rating: number | null
           services: string[] | null
           status: Database["public"]["Enums"]["provider_status"] | null
           suspended_at: string | null
+          technician_rating: number | null
+          total_requests: number | null
           twitter_url: string | null
           updated_at: string | null
           website: string | null
@@ -824,8 +912,27 @@ export type Database = {
             | null
           abandonment_reason?: string | null
           activated_at?: string | null
+          active_requests?: number | null
           activity_proof_url?: string | null
           application_count?: number | null
+          archived_at?: string | null
+          backoffice_created_at?: string | null
+          backoffice_created_by?: number | null
+          backoffice_do_recurrence?: boolean | null
+          backoffice_is_active?: boolean | null
+          backoffice_last_login?: string | null
+          backoffice_password_defined?: boolean | null
+          backoffice_provider_id?: number | null
+          backoffice_status?: string | null
+          backoffice_status_updated_at?: string | null
+          backoffice_status_updated_by?: number | null
+          backoffice_synced_at?: string | null
+          backoffice_updated_at?: string | null
+          backoffice_updated_by?: number | null
+          cancelled_requests?: number | null
+          categories?: string[] | null
+          completed_requests?: number | null
+          counties?: string[] | null
           created_at?: string | null
           districts?: string[] | null
           email: string
@@ -845,9 +952,16 @@ export type Database = {
           onboarding_started_at?: string | null
           phone?: string | null
           relationship_owner_id?: string | null
+          requests_accepted?: number | null
+          requests_expired?: number | null
+          requests_received?: number | null
+          requests_rejected?: number | null
+          service_rating?: number | null
           services?: string[] | null
           status?: Database["public"]["Enums"]["provider_status"] | null
           suspended_at?: string | null
+          technician_rating?: number | null
+          total_requests?: number | null
           twitter_url?: string | null
           updated_at?: string | null
           website?: string | null
@@ -862,8 +976,27 @@ export type Database = {
             | null
           abandonment_reason?: string | null
           activated_at?: string | null
+          active_requests?: number | null
           activity_proof_url?: string | null
           application_count?: number | null
+          archived_at?: string | null
+          backoffice_created_at?: string | null
+          backoffice_created_by?: number | null
+          backoffice_do_recurrence?: boolean | null
+          backoffice_is_active?: boolean | null
+          backoffice_last_login?: string | null
+          backoffice_password_defined?: boolean | null
+          backoffice_provider_id?: number | null
+          backoffice_status?: string | null
+          backoffice_status_updated_at?: string | null
+          backoffice_status_updated_by?: number | null
+          backoffice_synced_at?: string | null
+          backoffice_updated_at?: string | null
+          backoffice_updated_by?: number | null
+          cancelled_requests?: number | null
+          categories?: string[] | null
+          completed_requests?: number | null
+          counties?: string[] | null
           created_at?: string | null
           districts?: string[] | null
           email?: string
@@ -883,9 +1016,16 @@ export type Database = {
           onboarding_started_at?: string | null
           phone?: string | null
           relationship_owner_id?: string | null
+          requests_accepted?: number | null
+          requests_expired?: number | null
+          requests_received?: number | null
+          requests_rejected?: number | null
+          service_rating?: number | null
           services?: string[] | null
           status?: Database["public"]["Enums"]["provider_status"] | null
           suspended_at?: string | null
+          technician_rating?: number | null
+          total_requests?: number | null
           twitter_url?: string | null
           updated_at?: string | null
           website?: string | null
@@ -1406,7 +1546,8 @@ export type Database = {
           records_updated: number | null
           status: string
           triggered_at: string
-          triggered_by: string
+          triggered_by: string | null
+          triggered_by_system: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1424,7 +1565,8 @@ export type Database = {
           records_updated?: number | null
           status: string
           triggered_at?: string
-          triggered_by: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1442,7 +1584,8 @@ export type Database = {
           records_updated?: number | null
           status?: string
           triggered_at?: string
-          triggered_by?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -1619,6 +1762,7 @@ export type Database = {
         | "ativo"
         | "suspenso"
         | "abandonado"
+        | "arquivado"
       service_request_status:
         | "novo_pedido"
         | "atribuir_prestador"
@@ -1783,6 +1927,7 @@ export const Constants = {
         "ativo",
         "suspenso",
         "abandonado",
+        "arquivado",
       ],
       service_request_status: [
         "novo_pedido",
