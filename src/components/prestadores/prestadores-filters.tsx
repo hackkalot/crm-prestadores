@@ -26,6 +26,12 @@ const entityOptions = [
   { value: 'empresa', label: 'Empresa' },
 ]
 
+const pedidosOptions = [
+  { value: '_all', label: 'Todos' },
+  { value: 'with', label: 'Com pedidos' },
+  { value: 'without', label: 'Sem pedidos' },
+]
+
 interface PrestadoresFiltersProps {
   districts: string[]
   services: string[]
@@ -43,6 +49,7 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
   const currentStatus = searchParams.get('status') || '_all'
   const currentEntity = searchParams.get('entityType') || '_all'
   const currentOwnerId = searchParams.get('ownerId') || '_all'
+  const currentHasPedidos = searchParams.get('hasPedidos') || '_all'
 
   // Parse multi-select values from URL (comma-separated)
   const currentDistricts = useMemo(() => {
@@ -111,6 +118,7 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
     currentDistricts.length > 0 ||
     currentServices.length > 0 ||
     (currentOwnerId && currentOwnerId !== '_all') ||
+    (currentHasPedidos && currentHasPedidos !== '_all') ||
     searchParams.get('search')
 
   const hasAdvancedFilters = currentDistricts.length > 0 ||
@@ -170,7 +178,20 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
             placeholder="Todos os tipos"
             searchPlaceholder="Pesquisar tipo..."
             disabled={isPending}
-            className="w-[160px] h-8"
+            className="w-40 h-8"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Pedidos:</span>
+          <SearchableSelect
+            options={pedidosOptions}
+            value={currentHasPedidos}
+            onValueChange={(value) => updateFilter('hasPedidos', value)}
+            placeholder="Todos"
+            searchPlaceholder="Pesquisar..."
+            disabled={isPending}
+            className="w-36 h-8"
           />
         </div>
 

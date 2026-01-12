@@ -17,6 +17,7 @@ export type PrestadorFilters = {
   services?: string[]    // Multi-select filter
   ownerId?: string
   search?: string
+  hasPedidos?: 'all' | 'with' | 'without'  // Filter by service requests
   page?: number
   limit?: number
   sortBy?: string
@@ -104,21 +105,18 @@ async function getPrestadoresInternal(filters: PrestadorFilters = {}) {
 export async function getPrestadores(filters: PrestadorFilters = {}): Promise<PaginatedPrestadores> {
   const page = filters.page || 1
   const limit = filters.limit || 50
-  const from = (page - 1) * limit
-  const to = from + limit - 1
   const sortBy = filters.sortBy || 'name'
   const sortOrder = filters.sortOrder || 'asc'
   const ascending = sortOrder === 'asc'
 
-  // First get total count with filters
-  let countQuery = createAdminClient()
-    .from('providers')
-    .select('*', { count: 'exact', head: true })
+  // Get providers with service requests if filtering by hasPedidos
+  let providersWithRequests: Set<number> | null = null
+  if (filters.hasPedidos === 'with' || filters.hasPedidos === 'without') {
+    const idsWithRequests = await getProvidersWithServiceRequests()
+    providersWithRequests = new Set(idsWithRequests)
+  }
 
-  countQuery = applyPrestadorFilters(countQuery, filters)
-  const { count } = await countQuery
-
-  // Now get paginated data
+  // Build base query
   let query = createAdminClient()
     .from('providers')
     .select(`
@@ -127,9 +125,7 @@ export async function getPrestadores(filters: PrestadorFilters = {}): Promise<Pa
     `)
 
   query = applyPrestadorFilters(query, filters)
-  query = query
-    .order(sortBy, { ascending })
-    .range(from, to)
+  query = query.order(sortBy, { ascending })
 
   const { data, error } = await query
 
@@ -144,12 +140,32 @@ export async function getPrestadores(filters: PrestadorFilters = {}): Promise<Pa
     }
   }
 
+  // Apply hasPedidos filter in-memory (requires cross-referencing)
+  let filteredData = data || []
+  if (providersWithRequests !== null) {
+    if (filters.hasPedidos === 'with') {
+      filteredData = filteredData.filter(p =>
+        p.backoffice_provider_id !== null && providersWithRequests!.has(p.backoffice_provider_id)
+      )
+    } else if (filters.hasPedidos === 'without') {
+      filteredData = filteredData.filter(p =>
+        p.backoffice_provider_id === null || !providersWithRequests!.has(p.backoffice_provider_id)
+      )
+    }
+  }
+
+  // Apply pagination in-memory after filtering
+  const total = filteredData.length
+  const from = (page - 1) * limit
+  const to = from + limit
+  const paginatedData = filteredData.slice(from, to)
+
   return {
-    data: data || [],
-    total: count || 0,
+    data: paginatedData,
+    total,
     page,
     limit,
-    totalPages: Math.ceil((count || 0) / limit),
+    totalPages: Math.ceil(total / limit),
   }
 }
 
@@ -468,6 +484,52 @@ export async function getDistinctPrestadorServices() {
   )()
 }
 
+// Get all backoffice_provider_ids that have service requests (cached)
+export async function getProvidersWithServiceRequests(): Promise<number[]> {
+  return unstable_cache(
+    async () => {
+      const supabase = createAdminClient()
+
+      // Use pagination to get ALL service requests (Supabase default limit is 1000)
+      const providerIds = new Set<number>()
+      let offset = 0
+      const batchSize = 1000
+
+      while (true) {
+        const { data, error } = await supabase
+          .from('service_requests')
+          .select('assigned_provider_id')
+          .not('assigned_provider_id', 'is', null)
+          .range(offset, offset + batchSize - 1)
+
+        if (error) {
+          console.error('Error fetching providers with requests:', error)
+          break
+        }
+
+        if (!data || data.length === 0) break
+
+        for (const row of data) {
+          if (row.assigned_provider_id) {
+            const id = parseInt(row.assigned_provider_id, 10)
+            if (!isNaN(id)) {
+              providerIds.add(id)
+            }
+          }
+        }
+
+        // If we got less than batchSize, we've reached the end
+        if (data.length < batchSize) break
+        offset += batchSize
+      }
+
+      return Array.from(providerIds)
+    },
+    ['providers-with-requests'],
+    { revalidate: 300, tags: ['providers-with-requests'] } // Cache 5 min
+  )()
+}
+
 // Get service request counts for a list of providers (by backoffice_provider_id)
 export async function getProviderServiceRequestCounts(backofficeProviderIds: number[]): Promise<Record<number, number>> {
   if (backofficeProviderIds.length === 0) return {}
@@ -477,24 +539,35 @@ export async function getProviderServiceRequestCounts(backofficeProviderIds: num
   // Convert to strings for the query
   const providerIdStrings = backofficeProviderIds.map(String)
 
-  // Get counts grouped by assigned_provider_id
-  const { data, error } = await supabase
-    .from('service_requests')
-    .select('assigned_provider_id')
-    .in('assigned_provider_id', providerIdStrings)
-
-  if (error) {
-    console.error('Error fetching service request counts:', error)
-    return {}
-  }
-
-  // Count occurrences
+  // Use pagination to get ALL service requests (Supabase default limit is 1000)
   const counts: Record<number, number> = {}
-  for (const row of data || []) {
-    if (row.assigned_provider_id) {
-      const id = parseInt(row.assigned_provider_id, 10)
-      counts[id] = (counts[id] || 0) + 1
+  let offset = 0
+  const batchSize = 1000
+
+  while (true) {
+    const { data, error } = await supabase
+      .from('service_requests')
+      .select('assigned_provider_id')
+      .in('assigned_provider_id', providerIdStrings)
+      .range(offset, offset + batchSize - 1)
+
+    if (error) {
+      console.error('Error fetching service request counts:', error)
+      break
     }
+
+    if (!data || data.length === 0) break
+
+    for (const row of data) {
+      if (row.assigned_provider_id) {
+        const id = parseInt(row.assigned_provider_id, 10)
+        counts[id] = (counts[id] || 0) + 1
+      }
+    }
+
+    // If we got less than batchSize, we've reached the end
+    if (data.length < batchSize) break
+    offset += batchSize
   }
 
   return counts

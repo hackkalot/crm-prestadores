@@ -20,6 +20,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { CandidaturaCard } from './candidatura-card'
 import { SendToOnboardingDialog } from './send-to-onboarding-dialog'
 import { AbandonDialog } from './abandon-dialog'
@@ -214,7 +220,7 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
                       {getSortIcon('entity_type')}
                     </button>
                   </TableHead>
-                  <TableHead>Telefone</TableHead>
+                  <TableHead>Servicos</TableHead>
                   <TableHead>Zonas</TableHead>
                   <TableHead>
                     <button
@@ -270,10 +276,35 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
                           {entityTypeLabels[provider.entity_type]}
                         </Badge>
                       </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {provider.phone || '-'}
-                        </span>
+                      <TableCell className="max-w-50">
+                        <div className="flex items-center gap-1">
+                          {provider.services && provider.services.length > 0 && (
+                            <Badge variant="secondary" className="text-xs truncate max-w-35">
+                              {provider.services[0]}
+                            </Badge>
+                          )}
+                          {provider.services && provider.services.length > 1 && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Badge variant="outline" className="text-xs shrink-0 cursor-default">
+                                    +{provider.services.length - 1}
+                                  </Badge>
+                                </TooltipTrigger>
+                                <TooltipContent side="top" className="max-w-64">
+                                  <div className="flex flex-col gap-1">
+                                    {provider.services.slice(1).map((service: string, idx: number) => (
+                                      <span key={idx} className="text-xs">{service}</span>
+                                    ))}
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                          {(!provider.services || provider.services.length === 0) && (
+                            <span className="text-sm text-muted-foreground">-</span>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">

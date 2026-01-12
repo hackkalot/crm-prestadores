@@ -74,6 +74,7 @@ export default async function PrestadoresPage({
     services: parseMultiParam(params.services),
     ownerId: params.ownerId as string | undefined,
     search: params.search as string | undefined,
+    hasPedidos: (params.hasPedidos as 'all' | 'with' | 'without') || undefined,
     page: params.page ? parseInt(params.page as string) : 1,
     limit: params.limit ? parseInt(params.limit as string) : 50,
     sortBy: params.sortBy as string | undefined,

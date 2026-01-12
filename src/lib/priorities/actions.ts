@@ -26,7 +26,8 @@ export async function getUserActivePriorities(): Promise<Priority[]> {
 
   if (!user) return []
 
-  const { data, error } = await supabase
+  // Use admin client to bypass RLS (user is already validated)
+  const { data, error } = await createAdminClient()
     .from('priorities')
     .select(
       `
@@ -58,7 +59,8 @@ export async function getUserActivePrioritiesCount(): Promise<number> {
 
   if (!user) return 0
 
-  const { count, error } = await supabase
+  // Use admin client to bypass RLS (user is already validated)
+  const { count, error } = await createAdminClient()
     .from('priorities')
     .select('id, assignments:priority_assignments!inner(user_id)', {
       count: 'exact',
