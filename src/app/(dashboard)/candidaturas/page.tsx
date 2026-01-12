@@ -65,6 +65,8 @@ export default async function CandidaturasPage({
     dateFrom: params.dateFrom as string | undefined,
     dateTo: params.dateTo as string | undefined,
     search: params.search as string | undefined,
+    sortBy: params.sortBy as string | undefined,
+    sortOrder: (params.sortOrder as 'asc' | 'desc') || undefined,
   }
 
   // No awaits here - header appears instantly!

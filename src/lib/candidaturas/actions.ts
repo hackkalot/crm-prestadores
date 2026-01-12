@@ -19,14 +19,21 @@ export type CandidaturaFilters = {
   dateFrom?: string
   dateTo?: string
   search?: string
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }
 
 export async function getCandidaturas(filters: CandidaturaFilters = {}) {
+  // Determine sort column and order
+  const sortBy = filters.sortBy || 'first_application_at'
+  const sortOrder = filters.sortOrder || 'desc'
+  const ascending = sortOrder === 'asc'
+
   let query = createAdminClient()
     .from('providers')
     .select('*')
     .in('status', ['novo', 'em_onboarding', 'abandonado'])
-    .order('created_at', { ascending: false })
+    .order(sortBy, { ascending })
 
   if (filters.status && filters.status !== 'all') {
     query = query.eq('status', filters.status)

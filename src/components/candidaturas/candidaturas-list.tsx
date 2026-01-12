@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,6 +26,9 @@ import {
   Send,
   X,
   ChevronRight,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react'
 
 type Provider = Tables<'providers'>
@@ -61,9 +65,37 @@ const statusLabels: Record<string, string> = {
 }
 
 export function CandidaturasList({ providers, viewMode = 'list' }: CandidaturasListProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [sendDialogOpen, setSendDialogOpen] = useState(false)
   const [abandonDialogOpen, setAbandonDialogOpen] = useState(false)
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null)
+
+  const sortBy = searchParams.get('sortBy') || 'first_application_at'
+  const sortOrder = searchParams.get('sortOrder') || 'desc'
+
+  const handleSort = (column: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    // Toggle sort order if clicking same column
+    if (sortBy === column) {
+      params.set('sortOrder', sortOrder === 'asc' ? 'desc' : 'asc')
+    } else {
+      params.set('sortBy', column)
+      params.set('sortOrder', 'asc')
+    }
+
+    router.push(`/candidaturas?${params.toString()}`)
+  }
+
+  const getSortIcon = (column: string) => {
+    if (sortBy !== column) {
+      return <ArrowUpDown className="h-4 w-4 ml-1 opacity-50" />
+    }
+    return sortOrder === 'asc'
+      ? <ArrowUp className="h-4 w-4 ml-1" />
+      : <ArrowDown className="h-4 w-4 ml-1" />
+  }
 
   const handleSendToOnboarding = (id: string) => {
     setSelectedProviderId(id)
@@ -91,12 +123,44 @@ export function CandidaturasList({ providers, viewMode = 'list' }: CandidaturasL
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Candidato</TableHead>
-                <TableHead>Tipo</TableHead>
+                <TableHead>
+                  <button
+                    onClick={() => handleSort('name')}
+                    className="flex items-center hover:text-foreground transition-colors"
+                  >
+                    Candidato
+                    {getSortIcon('name')}
+                  </button>
+                </TableHead>
+                <TableHead>
+                  <button
+                    onClick={() => handleSort('entity_type')}
+                    className="flex items-center hover:text-foreground transition-colors"
+                  >
+                    Tipo
+                    {getSortIcon('entity_type')}
+                  </button>
+                </TableHead>
                 <TableHead>Telefone</TableHead>
                 <TableHead>Zonas</TableHead>
-                <TableHead>Data</TableHead>
-                <TableHead>Estado</TableHead>
+                <TableHead>
+                  <button
+                    onClick={() => handleSort('first_application_at')}
+                    className="flex items-center hover:text-foreground transition-colors"
+                  >
+                    Data
+                    {getSortIcon('first_application_at')}
+                  </button>
+                </TableHead>
+                <TableHead>
+                  <button
+                    onClick={() => handleSort('status')}
+                    className="flex items-center hover:text-foreground transition-colors"
+                  >
+                    Estado
+                    {getSortIcon('status')}
+                  </button>
+                </TableHead>
                 <TableHead>Ações</TableHead>
                 <TableHead className="w-10"></TableHead>
               </TableRow>
