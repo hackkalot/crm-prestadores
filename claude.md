@@ -464,3 +464,29 @@ O workflow instala o Chrome e define `PUPPETEER_EXECUTABLE_PATH` automaticamente
 - Usar `adminClient` apenas quando necessario (bypass RLS)
 - Os tipos de database estao em `src/types/database.ts`
 - Nao modificar `database.generated.ts` manualmente
+
+---
+
+## Changelog
+
+### 12 Janeiro 2026
+
+#### 1. Ordenacao em Candidaturas (`f33bec3`)
+- Colunas ordenaveis na tabela de candidaturas (nome, email, data, etc.)
+- **3 ficheiros, +78 linhas**
+
+#### 2. Paginacao e Filtros Avancados (`2b9f2b2`)
+- Paginacao completa em Candidaturas e Prestadores
+- Filtros multi-select melhorados (distritos, servicos)
+- Controlo de items por pagina (10, 25, 50, 100)
+- Ordenacao por qualquer coluna
+- **8 ficheiros, +889 linhas**
+
+#### 3. Duplicados e Otimizacao CSV (`4c489e8`)
+- Detecao de duplicados por email, NIF, nome (fuzzy 85%)
+- Quick Merge automatico + Merge manual campo a campo
+- Import CSV otimizado: **~3 min → ~5 seg** (1000 registos)
+- Navegacao com estado (back button preserva filtros)
+- **23 ficheiros, +2023 linhas**
+
+**Total do dia**: 34 ficheiros modificados, ~3000 linhas adicionadas
