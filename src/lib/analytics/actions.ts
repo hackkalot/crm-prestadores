@@ -163,41 +163,62 @@ export async function getOperationalSummary(
     ? getPreviousPeriodRange(currentFrom, currentTo)
     : getPreviousMonthRange()
 
-  // Build service requests query with filters
-  let currentServiceRequestsQuery = adminClient
+  // Build service requests query with filters (for count)
+  let currentServiceRequestsCountQuery = adminClient
     .from('service_requests')
     .select('id', { count: 'exact', head: true })
     .gte('created_at', currentFrom)
     .lte('created_at', currentTo)
 
-  let prevServiceRequestsQuery = adminClient
+  let prevServiceRequestsCountQuery = adminClient
     .from('service_requests')
     .select('id', { count: 'exact', head: true })
     .gte('created_at', prevFrom)
     .lte('created_at', prevTo)
 
+  // Build service requests query for revenue (paid_amount)
+  let currentServiceRequestsRevenueQuery = adminClient
+    .from('service_requests')
+    .select('paid_amount')
+    .gte('created_at', currentFrom)
+    .lte('created_at', currentTo)
+
+  let prevServiceRequestsRevenueQuery = adminClient
+    .from('service_requests')
+    .select('paid_amount')
+    .gte('created_at', prevFrom)
+    .lte('created_at', prevTo)
+
   // Apply district filter to service requests
   if (filters.district) {
-    currentServiceRequestsQuery = currentServiceRequestsQuery.eq('client_district', filters.district)
-    prevServiceRequestsQuery = prevServiceRequestsQuery.eq('client_district', filters.district)
+    currentServiceRequestsCountQuery = currentServiceRequestsCountQuery.eq('client_district', filters.district)
+    prevServiceRequestsCountQuery = prevServiceRequestsCountQuery.eq('client_district', filters.district)
+    currentServiceRequestsRevenueQuery = currentServiceRequestsRevenueQuery.eq('client_district', filters.district)
+    prevServiceRequestsRevenueQuery = prevServiceRequestsRevenueQuery.eq('client_district', filters.district)
   }
   // Apply category filter to service requests
   if (filters.category) {
-    currentServiceRequestsQuery = currentServiceRequestsQuery.eq('category', filters.category)
-    prevServiceRequestsQuery = prevServiceRequestsQuery.eq('category', filters.category)
+    currentServiceRequestsCountQuery = currentServiceRequestsCountQuery.eq('category', filters.category)
+    prevServiceRequestsCountQuery = prevServiceRequestsCountQuery.eq('category', filters.category)
+    currentServiceRequestsRevenueQuery = currentServiceRequestsRevenueQuery.eq('category', filters.category)
+    prevServiceRequestsRevenueQuery = prevServiceRequestsRevenueQuery.eq('category', filters.category)
   }
 
   // Get all data in parallel
   const [
     { count: currentServiceRequestsCount },
     { count: prevServiceRequestsCount },
+    { data: currentServiceRequestsRevenue },
+    { data: prevServiceRequestsRevenue },
     { data: currentAllocation },
     { data: prevAllocation },
     { data: currentBilling },
     { data: prevBilling },
   ] = await Promise.all([
-    currentServiceRequestsQuery,
-    prevServiceRequestsQuery,
+    currentServiceRequestsCountQuery,
+    prevServiceRequestsCountQuery,
+    currentServiceRequestsRevenueQuery,
+    prevServiceRequestsRevenueQuery,
     adminClient
       .from('allocation_history')
       .select('*')
@@ -248,19 +269,39 @@ export async function getOperationalSummary(
       ? Math.round((totalAcceptedPrev / totalAllocatedPrev) * 100)
       : 0
 
-  // Calculate revenue and ticket médio
-  const totalRevenueCurrent = currentBilling?.reduce(
+  // Calculate revenue from service_requests (teórico - paid_amount)
+  const totalRevenueTheoreticCurrent = currentServiceRequestsRevenue?.reduce(
+    (sum, r) => sum + (r.paid_amount || 0),
+    0
+  ) || 0
+  const totalRevenueTheoreticPrev = prevServiceRequestsRevenue?.reduce(
+    (sum, r) => sum + (r.paid_amount || 0),
+    0
+  ) || 0
+
+  // Calculate revenue from billing_processes (real - total_invoice_value)
+  const totalRevenueBillingCurrent = currentBilling?.reduce(
     (sum, r) => sum + (r.total_invoice_value || 0),
     0
   ) || 0
-  const totalRevenuePrev = prevBilling?.reduce(
+  const totalRevenueBillingPrev = prevBilling?.reduce(
     (sum, r) => sum + (r.total_invoice_value || 0),
     0
   ) || 0
   const billingCountCurrent = currentBilling?.length || 0
   const billingCountPrev = prevBilling?.length || 0
-  const avgTicketCurrent = billingCountCurrent > 0 ? totalRevenueCurrent / billingCountCurrent : 0
-  const avgTicketPrev = billingCountPrev > 0 ? totalRevenuePrev / billingCountPrev : 0
+
+  // Ticket Médio Faturação (Revenue Billing / Billing Processes)
+  const avgTicketBillingCurrent = billingCountCurrent > 0 ? totalRevenueBillingCurrent / billingCountCurrent : 0
+  const avgTicketBillingPrev = billingCountPrev > 0 ? totalRevenueBillingPrev / billingCountPrev : 0
+
+  // Ticket Médio Teórico (Revenue Teórico / Service Requests)
+  const avgTicketCurrent = (currentServiceRequestsCount || 0) > 0
+    ? totalRevenueTheoreticCurrent / (currentServiceRequestsCount || 1)
+    : 0
+  const avgTicketPrev = (prevServiceRequestsCount || 0) > 0
+    ? totalRevenueTheoreticPrev / (prevServiceRequestsCount || 1)
+    : 0
 
   // Count at-risk providers (expiration rate > 30%)
   const atRiskProviders = currentAllocation?.filter((r) => {
@@ -314,19 +355,31 @@ export async function getOperationalSummary(
       networkAcceptanceRatePrev
     ),
 
-    // Ticket Médio
-    avgTicket: Math.round(avgTicketCurrent),
-    avgTicketPrevPeriod: Math.round(avgTicketPrev),
+    // Ticket Médio Teórico (Revenue / Service Requests)
+    avgTicket: avgTicketCurrent,
+    avgTicketPrevPeriod: avgTicketPrev,
     avgTicketTrend: calculateTrend(avgTicketCurrent, avgTicketPrev),
+
+    // Ticket Médio Faturação (Revenue / Billing Processes)
+    avgTicketBilling: avgTicketBillingCurrent,
+    avgTicketBillingPrevPeriod: avgTicketBillingPrev,
+    avgTicketBillingTrend: calculateTrend(avgTicketBillingCurrent, avgTicketBillingPrev),
+    billingProcessesCount: billingCountCurrent,
+    billingProcessesCountPrevPeriod: billingCountPrev,
 
     // At Risk
     atRiskProvidersCount: atRiskProviders.length,
     totalActiveProviders: activeProviders.length,
 
-    // Revenue
-    totalRevenue: totalRevenueCurrent,
-    totalRevenuePrevMonth: totalRevenuePrev,
-    revenueTrend: calculateTrend(totalRevenueCurrent, totalRevenuePrev),
+    // Revenue Teórico (da tabela service_requests)
+    totalRevenue: totalRevenueTheoreticCurrent,
+    totalRevenuePrevMonth: totalRevenueTheoreticPrev,
+    revenueTrend: calculateTrend(totalRevenueTheoreticCurrent, totalRevenueTheoreticPrev),
+
+    // Revenue Real (da tabela billing_processes)
+    totalRevenueBilling: totalRevenueBillingCurrent,
+    totalRevenueBillingPrevMonth: totalRevenueBillingPrev,
+    revenueBillingTrend: calculateTrend(totalRevenueBillingCurrent, totalRevenueBillingPrev),
   }
 }
 

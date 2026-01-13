@@ -2,6 +2,12 @@
 
 import { Card, CardContent } from '@/components/ui/card'
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import {
   TrendingUp,
   TrendingDown,
   Minus,
@@ -11,6 +17,7 @@ import {
   Percent,
   Receipt,
   Euro,
+  HelpCircle,
 } from 'lucide-react'
 import type { OperationalSummary } from '@/lib/analytics/types'
 
@@ -25,6 +32,18 @@ function formatCurrency(value: number): string {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value)
+}
+
+function formatCurrencyWithDecimals(value: number): { integer: string; decimal: string } {
+  const formatted = new Intl.NumberFormat('pt-PT', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
+  const parts = formatted.split(',')
+  return {
+    integer: parts[0],
+    decimal: parts[1] || '00',
+  }
 }
 
 function TrendIndicator({ value, inverted = false }: { value: number; inverted?: boolean }) {
@@ -138,8 +157,31 @@ export function AnalyticsSummaryCards({ data }: AnalyticsSummaryCardsProps) {
         <CardContent className="pt-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Ticket Médio</p>
-              <p className="text-3xl font-bold">{formatCurrency(data.avgTicket)}</p>
+              <div className="flex items-center gap-1">
+                <p className="text-sm text-muted-foreground">Ticket Médio</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[280px]">
+                      <p className="text-sm">
+                        <strong>Teórico:</strong> Revenue ÷ Pedidos de Serviço
+                      </p>
+                      <p className="text-sm mt-1">
+                        <strong>Faturação:</strong> {formatCurrency(data.avgTicketBilling)} ({data.billingProcessesCount.toLocaleString('pt-PT')} processos)
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        A diferença existe porque nem todos os pedidos têm processo de faturação associado.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <p className="text-3xl font-bold">
+                {formatCurrencyWithDecimals(data.avgTicket).integer}
+                <span className="text-lg">,{formatCurrencyWithDecimals(data.avgTicket).decimal} €</span>
+              </p>
               <div className="flex items-center gap-2">
                 <TrendIndicator value={data.avgTicketTrend} />
                 <span className="text-xs text-muted-foreground">
@@ -159,7 +201,27 @@ export function AnalyticsSummaryCards({ data }: AnalyticsSummaryCardsProps) {
         <CardContent className="pt-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Revenue Total</p>
+              <div className="flex items-center gap-1">
+                <p className="text-sm text-muted-foreground">Revenue Total</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[280px]">
+                      <p className="text-sm">
+                        <strong>Teórico:</strong> Soma de paid_amount dos pedidos
+                      </p>
+                      <p className="text-sm mt-1">
+                        <strong>Faturação:</strong> {formatCurrency(data.totalRevenueBilling)} ({data.billingProcessesCount.toLocaleString('pt-PT')} processos)
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        A diferença existe porque nem todos os pedidos têm processo de faturação associado.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <p className="text-3xl font-bold">{formatCurrency(data.totalRevenue)}</p>
               <div className="flex items-center gap-2">
                 <TrendIndicator value={data.revenueTrend} />

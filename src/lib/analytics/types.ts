@@ -42,19 +42,31 @@ export interface OperationalSummary {
   networkAcceptanceRatePrevMonth: number
   acceptanceTrend: number
 
-  // Ticket Médio
+  // Ticket Médio (teórico: Revenue / Service Requests)
   avgTicket: number
   avgTicketPrevPeriod: number
   avgTicketTrend: number
+
+  // Ticket Médio Faturação (real: Revenue / Billing Processes)
+  avgTicketBilling: number
+  avgTicketBillingPrevPeriod: number
+  avgTicketBillingTrend: number
+  billingProcessesCount: number
+  billingProcessesCountPrevPeriod: number
 
   // At Risk (kept for other uses)
   atRiskProvidersCount: number
   totalActiveProviders: number
 
-  // Revenue (kept for other uses)
+  // Revenue Teórico (da tabela service_requests - paid_amount)
   totalRevenue: number
   totalRevenuePrevMonth: number
   revenueTrend: number
+
+  // Revenue Real (da tabela billing_processes - total_invoice_value)
+  totalRevenueBilling: number
+  totalRevenueBillingPrevMonth: number
+  revenueBillingTrend: number
 }
 
 // ==================
