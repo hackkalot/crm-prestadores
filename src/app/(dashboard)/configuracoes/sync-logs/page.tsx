@@ -1,5 +1,12 @@
 import { Header } from '@/components/layout/header'
-import { getSyncLogs, getSyncStats, getProviderSyncLogs, getProviderSyncStats } from '@/lib/sync/logs-actions'
+import {
+  getSyncLogs,
+  getSyncStats,
+  getProviderSyncLogs,
+  getProviderSyncStats,
+  getBillingSyncLogs,
+  getBillingSyncStats,
+} from '@/lib/sync/logs-actions'
 import { SyncLogsTabs } from '@/components/sync/sync-logs-tabs'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -17,11 +24,15 @@ export default async function SyncLogsPage({
     serviceStats,
     providerLogs,
     providerStats,
+    billingLogs,
+    billingStats,
   ] = await Promise.all([
     getSyncLogs(),
     getSyncStats(),
     getProviderSyncLogs(),
     getProviderSyncStats(),
+    getBillingSyncLogs(),
+    getBillingSyncStats(),
   ])
 
   return (
@@ -37,6 +48,8 @@ export default async function SyncLogsPage({
           serviceStats={serviceStats}
           providerLogs={providerLogs}
           providerStats={providerStats}
+          billingLogs={billingLogs}
+          billingStats={billingStats}
         />
       </div>
     </div>

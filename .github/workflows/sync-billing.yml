@@ -1,0 +1,84 @@
+name: Sync Billing Data
+
+on:
+  # Run daily at 4:00 AM UTC (5:00 AM Portugal time)
+  schedule:
+    - cron: '0 4 * * *'
+
+  # Allow manual trigger (from UI or API)
+  workflow_dispatch:
+
+  # Allow trigger via repository_dispatch (from CRM API)
+  repository_dispatch:
+    types: [sync-billing]
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for Puppeteer
+        run: |
+          npx puppeteer browsers install chrome
+          echo "PUPPETEER_EXECUTABLE_PATH=$(find $HOME/.cache/puppeteer -name 'chrome' -type f | head -1)" >> $GITHUB_ENV
+
+      - name: Create output directories
+        run: mkdir -p data/billing-outputs
+
+      - name: Run billing scrapper and sync
+        env:
+          BACKOFFICE_USERNAME: ${{ secrets.BACKOFFICE_USERNAME }}
+          BACKOFFICE_PASSWORD: ${{ secrets.BACKOFFICE_PASSWORD }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          # Pass sync_log_id if triggered via repository_dispatch (from CRM)
+          SYNC_LOG_ID="${{ github.event.client_payload.sync_log_id }}"
+          if [ -n "$SYNC_LOG_ID" ] && [ "$SYNC_LOG_ID" != "null" ]; then
+            npx tsx scripts/sync-billing-github.ts --sync-log-id="$SYNC_LOG_ID"
+          else
+            npx tsx scripts/sync-billing-github.ts
+          fi
+
+      - name: Upload Excel artifact (on success)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: billing-data-${{ github.run_id }}
+          path: data/billing-outputs/*.xlsx
+          retention-days: 7
+
+      - name: Upload logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: billing-sync-logs-${{ github.run_id }}
+          path: |
+            data/*.log
+            data/billing-outputs/*.png
+          retention-days: 3
+
+      - name: Report status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Billing sync completed successfully"
+          else
+            echo "❌ Billing sync failed - check logs for details"
+          fi

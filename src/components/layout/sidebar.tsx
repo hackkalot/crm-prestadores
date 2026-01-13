@@ -26,6 +26,7 @@ import {
   Shield,
   Target,
   FileText,
+  Receipt,
   ChevronUp,
 } from 'lucide-react'
 
@@ -34,6 +35,7 @@ const navigation = [
   { name: 'Onboarding', href: '/onboarding', icon: Kanban, contextTab: 'onboarding' },
   { name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil' },
   { name: 'Pedidos', href: '/pedidos', icon: FileText },
+  { name: 'Faturação', href: '/faturacao', icon: Receipt },
   { name: 'Rede', href: '/rede', icon: Network },
   { name: 'Agenda', href: '/agenda', icon: Calendar },
   { name: 'KPIs', href: '/kpis', icon: BarChart3 },

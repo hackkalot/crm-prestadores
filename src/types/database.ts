@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.1"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       alerts: {
@@ -147,6 +122,152 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_processes: {
+        Row: {
+          assigned_provider_name: string | null
+          base_service_cost: number | null
+          bo_validation_date: string | null
+          complaint: boolean | null
+          conclusion_response: string | null
+          created_at: string | null
+          credit_note_number: number | null
+          document_date: string | null
+          document_number: string | null
+          has_duplicate: boolean | null
+          id: string
+          invoices_number: number | null
+          payment_date: string | null
+          process_status: string | null
+          provider_automatic_cost: boolean | null
+          request_code: string
+          scheduled_to: string | null
+          service: string | null
+          service_request_identifier: number | null
+          sum_transactions: number | null
+          synced_at: string | null
+          timestamp_process_status: string | null
+          total_invoice_value: number | null
+          total_service_cost: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_provider_name?: string | null
+          base_service_cost?: number | null
+          bo_validation_date?: string | null
+          complaint?: boolean | null
+          conclusion_response?: string | null
+          created_at?: string | null
+          credit_note_number?: number | null
+          document_date?: string | null
+          document_number?: string | null
+          has_duplicate?: boolean | null
+          id?: string
+          invoices_number?: number | null
+          payment_date?: string | null
+          process_status?: string | null
+          provider_automatic_cost?: boolean | null
+          request_code: string
+          scheduled_to?: string | null
+          service?: string | null
+          service_request_identifier?: number | null
+          sum_transactions?: number | null
+          synced_at?: string | null
+          timestamp_process_status?: string | null
+          total_invoice_value?: number | null
+          total_service_cost?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_provider_name?: string | null
+          base_service_cost?: number | null
+          bo_validation_date?: string | null
+          complaint?: boolean | null
+          conclusion_response?: string | null
+          created_at?: string | null
+          credit_note_number?: number | null
+          document_date?: string | null
+          document_number?: string | null
+          has_duplicate?: boolean | null
+          id?: string
+          invoices_number?: number | null
+          payment_date?: string | null
+          process_status?: string | null
+          provider_automatic_cost?: boolean | null
+          request_code?: string
+          scheduled_to?: string | null
+          service?: string | null
+          service_request_identifier?: number | null
+          sum_transactions?: number | null
+          synced_at?: string | null
+          timestamp_process_status?: string | null
+          total_invoice_value?: number | null
+          total_service_cost?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      billing_sync_logs: {
+        Row: {
+          created_at: string | null
+          duration_seconds: number | null
+          error_message: string | null
+          error_stack: string | null
+          excel_file_path: string | null
+          excel_file_size_kb: number | null
+          id: string
+          records_inserted: number | null
+          records_processed: number | null
+          records_updated: number | null
+          status: string
+          triggered_at: string
+          triggered_by: string | null
+          triggered_by_system: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_sync_logs_triggered_by_fkey"
+            columns: ["triggered_by"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -801,6 +922,68 @@ export type Database = {
           },
         ]
       }
+      provider_sync_logs: {
+        Row: {
+          created_at: string | null
+          duration_seconds: number | null
+          error_message: string | null
+          error_stack: string | null
+          excel_file_path: string | null
+          excel_file_size_kb: number | null
+          id: string
+          records_inserted: number | null
+          records_processed: number | null
+          records_updated: number | null
+          status: string
+          triggered_at: string
+          triggered_by: string | null
+          triggered_by_system: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_sync_logs_triggered_by_fkey"
+            columns: ["triggered_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       providers: {
         Row: {
           abandoned_at: string | null
@@ -811,8 +994,27 @@ export type Database = {
             | null
           abandonment_reason: string | null
           activated_at: string | null
+          active_requests: number | null
           activity_proof_url: string | null
           application_count: number | null
+          archived_at: string | null
+          backoffice_created_at: string | null
+          backoffice_created_by: number | null
+          backoffice_do_recurrence: boolean | null
+          backoffice_is_active: boolean | null
+          backoffice_last_login: string | null
+          backoffice_password_defined: boolean | null
+          backoffice_provider_id: number | null
+          backoffice_status: string | null
+          backoffice_status_updated_at: string | null
+          backoffice_status_updated_by: number | null
+          backoffice_synced_at: string | null
+          backoffice_updated_at: string | null
+          backoffice_updated_by: number | null
+          cancelled_requests: number | null
+          categories: string[] | null
+          completed_requests: number | null
+          counties: string[] | null
           created_at: string | null
           districts: string[] | null
           email: string
@@ -832,9 +1034,16 @@ export type Database = {
           onboarding_started_at: string | null
           phone: string | null
           relationship_owner_id: string | null
+          requests_accepted: number | null
+          requests_expired: number | null
+          requests_received: number | null
+          requests_rejected: number | null
+          service_rating: number | null
           services: string[] | null
           status: Database["public"]["Enums"]["provider_status"] | null
           suspended_at: string | null
+          technician_rating: number | null
+          total_requests: number | null
           twitter_url: string | null
           updated_at: string | null
           website: string | null
@@ -849,8 +1058,27 @@ export type Database = {
             | null
           abandonment_reason?: string | null
           activated_at?: string | null
+          active_requests?: number | null
           activity_proof_url?: string | null
           application_count?: number | null
+          archived_at?: string | null
+          backoffice_created_at?: string | null
+          backoffice_created_by?: number | null
+          backoffice_do_recurrence?: boolean | null
+          backoffice_is_active?: boolean | null
+          backoffice_last_login?: string | null
+          backoffice_password_defined?: boolean | null
+          backoffice_provider_id?: number | null
+          backoffice_status?: string | null
+          backoffice_status_updated_at?: string | null
+          backoffice_status_updated_by?: number | null
+          backoffice_synced_at?: string | null
+          backoffice_updated_at?: string | null
+          backoffice_updated_by?: number | null
+          cancelled_requests?: number | null
+          categories?: string[] | null
+          completed_requests?: number | null
+          counties?: string[] | null
           created_at?: string | null
           districts?: string[] | null
           email: string
@@ -870,9 +1098,16 @@ export type Database = {
           onboarding_started_at?: string | null
           phone?: string | null
           relationship_owner_id?: string | null
+          requests_accepted?: number | null
+          requests_expired?: number | null
+          requests_received?: number | null
+          requests_rejected?: number | null
+          service_rating?: number | null
           services?: string[] | null
           status?: Database["public"]["Enums"]["provider_status"] | null
           suspended_at?: string | null
+          technician_rating?: number | null
+          total_requests?: number | null
           twitter_url?: string | null
           updated_at?: string | null
           website?: string | null
@@ -887,8 +1122,27 @@ export type Database = {
             | null
           abandonment_reason?: string | null
           activated_at?: string | null
+          active_requests?: number | null
           activity_proof_url?: string | null
           application_count?: number | null
+          archived_at?: string | null
+          backoffice_created_at?: string | null
+          backoffice_created_by?: number | null
+          backoffice_do_recurrence?: boolean | null
+          backoffice_is_active?: boolean | null
+          backoffice_last_login?: string | null
+          backoffice_password_defined?: boolean | null
+          backoffice_provider_id?: number | null
+          backoffice_status?: string | null
+          backoffice_status_updated_at?: string | null
+          backoffice_status_updated_by?: number | null
+          backoffice_synced_at?: string | null
+          backoffice_updated_at?: string | null
+          backoffice_updated_by?: number | null
+          cancelled_requests?: number | null
+          categories?: string[] | null
+          completed_requests?: number | null
+          counties?: string[] | null
           created_at?: string | null
           districts?: string[] | null
           email?: string
@@ -908,9 +1162,16 @@ export type Database = {
           onboarding_started_at?: string | null
           phone?: string | null
           relationship_owner_id?: string | null
+          requests_accepted?: number | null
+          requests_expired?: number | null
+          requests_received?: number | null
+          requests_rejected?: number | null
+          service_rating?: number | null
           services?: string[] | null
           status?: Database["public"]["Enums"]["provider_status"] | null
           suspended_at?: string | null
+          technician_rating?: number | null
+          total_requests?: number | null
           twitter_url?: string | null
           updated_at?: string | null
           website?: string | null
@@ -1007,6 +1268,267 @@ export type Database = {
           name?: string
           updated_at?: string | null
           vat_rate?: number | null
+        }
+        Relationships: []
+      }
+      service_requests: {
+        Row: {
+          additional_charges_discount: number | null
+          assigned_provider_id: string | null
+          assigned_provider_name: string | null
+          cancellation_comment: string | null
+          cancellation_reason: string | null
+          category: string | null
+          category_id: number | null
+          checkin_providers_app: boolean | null
+          checkin_providers_app_timestamp: string | null
+          checkout_providers_app: boolean | null
+          checkout_providers_app_timestamp: string | null
+          city: string | null
+          client_district: string | null
+          client_town: string | null
+          cluster: string | null
+          cluster_id: number | null
+          contact_client_calltimes: number | null
+          contact_client_cta: boolean | null
+          contact_client_reason: string | null
+          contact_client_timestamp: string | null
+          cost_estimation: number | null
+          created_at: string
+          created_by: string | null
+          delivery_schedule_providers_app: boolean | null
+          done_on_mbway_flow: boolean | null
+          fees: string | null
+          fees_amount: number | null
+          fid_id: string | null
+          final_cost_estimation: number | null
+          gross_additional_charges: number | null
+          hubspot_deal_id: string | null
+          id: string
+          imported_at: string | null
+          invoice_process_status: string | null
+          is_mgm: boolean | null
+          is_new_pricing_model: boolean | null
+          last_update: string | null
+          multiple_providers: boolean | null
+          net_additional_charges: number | null
+          net_amount: number | null
+          number_additional_visits: number | null
+          paid_amount: number | null
+          payment_method: string | null
+          payment_status: string | null
+          promocode: string | null
+          promocode_discount: number | null
+          provider_allocation_manual: boolean | null
+          provider_confirmed_timestamp: string | null
+          provider_cost: number | null
+          provider_request_notes: string | null
+          providers_conclusion_notes: string | null
+          providers_documents: boolean | null
+          raw_data: Json | null
+          recurrence_code: string | null
+          recurrence_type: string | null
+          refund_amount: number | null
+          refund_comment: string | null
+          refund_reason: string | null
+          request_code: string
+          reschedule_bo: boolean | null
+          reschedule_comment: string | null
+          reschedule_reason: string | null
+          scheduled_delivery_date: string | null
+          scheduled_to: string | null
+          service: string | null
+          service_address_line_1: string | null
+          service_address_line_2: string | null
+          service_id: number | null
+          service_rating: number | null
+          service_rating_comment: string | null
+          source: string | null
+          status: string
+          status_updated_at: string | null
+          status_updated_by: string | null
+          tasks_count: number | null
+          technician_allocation_before_service: boolean | null
+          technician_allocation_timestamp: string | null
+          technician_name: string | null
+          technician_rating: number | null
+          timestamp_rating: string | null
+          updated_by: string | null
+          used_wallet: boolean | null
+          user_id: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          additional_charges_discount?: number | null
+          assigned_provider_id?: string | null
+          assigned_provider_name?: string | null
+          cancellation_comment?: string | null
+          cancellation_reason?: string | null
+          category?: string | null
+          category_id?: number | null
+          checkin_providers_app?: boolean | null
+          checkin_providers_app_timestamp?: string | null
+          checkout_providers_app?: boolean | null
+          checkout_providers_app_timestamp?: string | null
+          city?: string | null
+          client_district?: string | null
+          client_town?: string | null
+          cluster?: string | null
+          cluster_id?: number | null
+          contact_client_calltimes?: number | null
+          contact_client_cta?: boolean | null
+          contact_client_reason?: string | null
+          contact_client_timestamp?: string | null
+          cost_estimation?: number | null
+          created_at: string
+          created_by?: string | null
+          delivery_schedule_providers_app?: boolean | null
+          done_on_mbway_flow?: boolean | null
+          fees?: string | null
+          fees_amount?: number | null
+          fid_id?: string | null
+          final_cost_estimation?: number | null
+          gross_additional_charges?: number | null
+          hubspot_deal_id?: string | null
+          id?: string
+          imported_at?: string | null
+          invoice_process_status?: string | null
+          is_mgm?: boolean | null
+          is_new_pricing_model?: boolean | null
+          last_update?: string | null
+          multiple_providers?: boolean | null
+          net_additional_charges?: number | null
+          net_amount?: number | null
+          number_additional_visits?: number | null
+          paid_amount?: number | null
+          payment_method?: string | null
+          payment_status?: string | null
+          promocode?: string | null
+          promocode_discount?: number | null
+          provider_allocation_manual?: boolean | null
+          provider_confirmed_timestamp?: string | null
+          provider_cost?: number | null
+          provider_request_notes?: string | null
+          providers_conclusion_notes?: string | null
+          providers_documents?: boolean | null
+          raw_data?: Json | null
+          recurrence_code?: string | null
+          recurrence_type?: string | null
+          refund_amount?: number | null
+          refund_comment?: string | null
+          refund_reason?: string | null
+          request_code: string
+          reschedule_bo?: boolean | null
+          reschedule_comment?: string | null
+          reschedule_reason?: string | null
+          scheduled_delivery_date?: string | null
+          scheduled_to?: string | null
+          service?: string | null
+          service_address_line_1?: string | null
+          service_address_line_2?: string | null
+          service_id?: number | null
+          service_rating?: number | null
+          service_rating_comment?: string | null
+          source?: string | null
+          status?: string
+          status_updated_at?: string | null
+          status_updated_by?: string | null
+          tasks_count?: number | null
+          technician_allocation_before_service?: boolean | null
+          technician_allocation_timestamp?: string | null
+          technician_name?: string | null
+          technician_rating?: number | null
+          timestamp_rating?: string | null
+          updated_by?: string | null
+          used_wallet?: boolean | null
+          user_id?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          additional_charges_discount?: number | null
+          assigned_provider_id?: string | null
+          assigned_provider_name?: string | null
+          cancellation_comment?: string | null
+          cancellation_reason?: string | null
+          category?: string | null
+          category_id?: number | null
+          checkin_providers_app?: boolean | null
+          checkin_providers_app_timestamp?: string | null
+          checkout_providers_app?: boolean | null
+          checkout_providers_app_timestamp?: string | null
+          city?: string | null
+          client_district?: string | null
+          client_town?: string | null
+          cluster?: string | null
+          cluster_id?: number | null
+          contact_client_calltimes?: number | null
+          contact_client_cta?: boolean | null
+          contact_client_reason?: string | null
+          contact_client_timestamp?: string | null
+          cost_estimation?: number | null
+          created_at?: string
+          created_by?: string | null
+          delivery_schedule_providers_app?: boolean | null
+          done_on_mbway_flow?: boolean | null
+          fees?: string | null
+          fees_amount?: number | null
+          fid_id?: string | null
+          final_cost_estimation?: number | null
+          gross_additional_charges?: number | null
+          hubspot_deal_id?: string | null
+          id?: string
+          imported_at?: string | null
+          invoice_process_status?: string | null
+          is_mgm?: boolean | null
+          is_new_pricing_model?: boolean | null
+          last_update?: string | null
+          multiple_providers?: boolean | null
+          net_additional_charges?: number | null
+          net_amount?: number | null
+          number_additional_visits?: number | null
+          paid_amount?: number | null
+          payment_method?: string | null
+          payment_status?: string | null
+          promocode?: string | null
+          promocode_discount?: number | null
+          provider_allocation_manual?: boolean | null
+          provider_confirmed_timestamp?: string | null
+          provider_cost?: number | null
+          provider_request_notes?: string | null
+          providers_conclusion_notes?: string | null
+          providers_documents?: boolean | null
+          raw_data?: Json | null
+          recurrence_code?: string | null
+          recurrence_type?: string | null
+          refund_amount?: number | null
+          refund_comment?: string | null
+          refund_reason?: string | null
+          request_code?: string
+          reschedule_bo?: boolean | null
+          reschedule_comment?: string | null
+          reschedule_reason?: string | null
+          scheduled_delivery_date?: string | null
+          scheduled_to?: string | null
+          service?: string | null
+          service_address_line_1?: string | null
+          service_address_line_2?: string | null
+          service_id?: number | null
+          service_rating?: number | null
+          service_rating_comment?: string | null
+          source?: string | null
+          status?: string
+          status_updated_at?: string | null
+          status_updated_by?: string | null
+          tasks_count?: number | null
+          technician_allocation_before_service?: boolean | null
+          technician_allocation_timestamp?: string | null
+          technician_name?: string | null
+          technician_rating?: number | null
+          timestamp_rating?: string | null
+          updated_by?: string | null
+          used_wallet?: boolean | null
+          user_id?: string | null
+          zip_code?: string | null
         }
         Relationships: []
       }
@@ -1153,6 +1675,74 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      sync_logs: {
+        Row: {
+          created_at: string | null
+          date_from: string
+          date_to: string
+          duration_seconds: number | null
+          error_message: string | null
+          error_stack: string | null
+          excel_file_path: string | null
+          excel_file_size_kb: number | null
+          id: string
+          records_inserted: number | null
+          records_processed: number | null
+          records_updated: number | null
+          status: string
+          triggered_at: string
+          triggered_by: string | null
+          triggered_by_system: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date_from: string
+          date_to: string
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date_from?: string
+          date_to?: string
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sync_logs_triggered_by_fkey"
+            columns: ["triggered_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       task_definitions: {
         Row: {
@@ -1308,6 +1898,7 @@ export type Database = {
         | "price_change"
         | "field_change"
       onboarding_type: "normal" | "urgente"
+      payment_status: "pending" | "captured" | "refunded" | "failed"
       priority_status: "ativa" | "concluida" | "cancelada"
       priority_type: "ativar_prestadores" | "concluir_onboardings" | "outro"
       priority_urgency: "baixa" | "media" | "alta" | "urgente"
@@ -1318,6 +1909,15 @@ export type Database = {
         | "suspenso"
         | "abandonado"
         | "arquivado"
+      service_request_status:
+        | "novo_pedido"
+        | "atribuir_prestador"
+        | "prestador_atribuido"
+        | "em_execucao"
+        | "concluido"
+        | "cancelado_cliente"
+        | "cancelado_backoffice"
+        | "cancelado_prestador"
       task_status: "por_fazer" | "em_curso" | "concluida"
       user_approval_status: "pending" | "approved" | "rejected"
       user_role: "admin" | "user" | "manager" | "relationship_manager"
@@ -1446,9 +2046,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       abandonment_party: ["prestador", "fixo"],
@@ -1466,6 +2063,7 @@ export const Constants = {
         "field_change",
       ],
       onboarding_type: ["normal", "urgente"],
+      payment_status: ["pending", "captured", "refunded", "failed"],
       priority_status: ["ativa", "concluida", "cancelada"],
       priority_type: ["ativar_prestadores", "concluir_onboardings", "outro"],
       priority_urgency: ["baixa", "media", "alta", "urgente"],
@@ -1476,6 +2074,16 @@ export const Constants = {
         "suspenso",
         "abandonado",
         "arquivado",
+      ],
+      service_request_status: [
+        "novo_pedido",
+        "atribuir_prestador",
+        "prestador_atribuido",
+        "em_execucao",
+        "concluido",
+        "cancelado_cliente",
+        "cancelado_backoffice",
+        "cancelado_prestador",
       ],
       task_status: ["por_fazer", "em_curso", "concluida"],
       user_approval_status: ["pending", "approved", "rejected"],

@@ -5,10 +5,10 @@ import { useEffect } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { CheckCircle, XCircle, Clock, Download, Timer, Database, FileText, Users } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, Download, Timer, Database, FileText, Users, Receipt } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { pt } from 'date-fns/locale'
-import type { SyncLog, SyncStats, ProviderSyncLog, ProviderSyncStats } from '@/lib/sync/logs-actions'
+import type { SyncLog, SyncStats, ProviderSyncLog, ProviderSyncStats, BillingSyncLog, BillingSyncStats } from '@/lib/sync/logs-actions'
 
 interface SyncLogsTabsProps {
   activeTab: string
@@ -16,6 +16,8 @@ interface SyncLogsTabsProps {
   serviceStats: SyncStats
   providerLogs: ProviderSyncLog[]
   providerStats: ProviderSyncStats
+  billingLogs: BillingSyncLog[]
+  billingStats: BillingSyncStats
 }
 
 export function SyncLogsTabs({
@@ -24,6 +26,8 @@ export function SyncLogsTabs({
   serviceStats,
   providerLogs,
   providerStats,
+  billingLogs,
+  billingStats,
 }: SyncLogsTabsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -31,7 +35,8 @@ export function SyncLogsTabs({
   // Check for in-progress syncs
   const hasServiceInProgress = serviceLogs.some(log => log.status === 'in_progress')
   const hasProviderInProgress = providerLogs.some(log => log.status === 'in_progress')
-  const hasInProgress = hasServiceInProgress || hasProviderInProgress
+  const hasBillingInProgress = billingLogs.some(log => log.status === 'in_progress')
+  const hasInProgress = hasServiceInProgress || hasProviderInProgress || hasBillingInProgress
 
   // Auto-refresh when there's an in_progress sync
   useEffect(() => {
@@ -76,6 +81,13 @@ export function SyncLogsTabs({
             <Clock className="h-3 w-3 animate-spin text-blue-500" />
           )}
         </TabsTrigger>
+        <TabsTrigger value="faturacao" className="flex items-center gap-2">
+          <Receipt className="h-4 w-4" />
+          Faturação
+          {hasBillingInProgress && (
+            <Clock className="h-3 w-3 animate-spin text-blue-500" />
+          )}
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="pedidos">
@@ -84,6 +96,10 @@ export function SyncLogsTabs({
 
       <TabsContent value="providers">
         <ProviderLogsContent logs={providerLogs} stats={providerStats} hasInProgress={hasProviderInProgress} />
+      </TabsContent>
+
+      <TabsContent value="faturacao">
+        <BillingLogsContent logs={billingLogs} stats={billingStats} hasInProgress={hasBillingInProgress} />
       </TabsContent>
     </Tabs>
   )
@@ -325,6 +341,161 @@ function ProviderLogsContent({ logs, stats, hasInProgress }: { logs: ProviderSyn
           {logs.length === 0 ? (
             <div className="p-8 text-center text-muted-foreground">
               Nenhum sync de prestadores realizado ainda
+            </div>
+          ) : (
+            <div className="overflow-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-2 font-medium">Status</th>
+                    <th className="text-left p-2 font-medium">Data/Hora</th>
+                    <th className="text-left p-2 font-medium">Utilizador</th>
+                    <th className="text-right p-2 font-medium">Registos</th>
+                    <th className="text-right p-2 font-medium">Duração</th>
+                    <th className="text-left p-2 font-medium">Ficheiro</th>
+                    <th className="text-left p-2 font-medium">Erro</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {logs.map((log) => (
+                    <tr key={log.id} className={`border-b hover:bg-muted/50 ${log.status === 'in_progress' ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>
+                      <td className="p-2">
+                        <StatusBadge status={log.status} />
+                      </td>
+                      <td className="p-2">
+                        <DateDisplay date={log.triggered_at} />
+                      </td>
+                      <td className="p-2">
+                        <UserDisplay user={log.user} />
+                      </td>
+                      <td className="p-2 text-right">
+                        <div className="flex flex-col items-end">
+                          <span className="font-medium">{log.records_processed || 0}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {log.records_inserted > 0 && `${log.records_inserted} novos`}
+                            {log.records_inserted > 0 && log.records_updated > 0 && ', '}
+                            {log.records_updated > 0 && `${log.records_updated} atualizados`}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-2 text-right">
+                        <DurationDisplay duration={log.duration_seconds} status={log.status} />
+                      </td>
+                      <td className="p-2">
+                        {log.excel_file_size_kb && (
+                          <span className="text-xs text-muted-foreground">
+                            {log.excel_file_size_kb} KB
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-2">
+                        {log.error_message && (
+                          <span className="text-xs text-destructive" title={log.error_stack || undefined}>
+                            {log.error_message.substring(0, 50)}...
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+// Billing Logs Content
+function BillingLogsContent({ logs, stats, hasInProgress }: { logs: BillingSyncLog[]; stats: BillingSyncStats; hasInProgress: boolean }) {
+  return (
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Syncs</CardTitle>
+            <Database className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total}</div>
+            <p className="text-xs text-muted-foreground">
+              {stats.success} sucesso, {stats.error} erros
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Processos Faturação</CardTitle>
+            <Receipt className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalRecordsProcessed.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              Total de todos os syncs
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Duração Média</CardTitle>
+            <Timer className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.avgDuration}s</div>
+            <p className="text-xs text-muted-foreground">
+              Syncs bem-sucedidos
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Ultimo Sync</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {stats.lastSync ? (
+                <Badge variant={stats.lastSync.status === 'success' ? 'success' : stats.lastSync.status === 'in_progress' ? 'secondary' : 'destructive'}>
+                  {stats.lastSync.status === 'in_progress' ? 'Em progresso' : stats.lastSync.status}
+                </Badge>
+              ) : (
+                'N/A'
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.lastSync
+                ? formatDistanceToNow(new Date(stats.lastSync.triggered_at), { addSuffix: true, locale: pt })
+                : 'Nenhum sync ainda'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Logs Table */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Histórico de Sincronizações - Faturação</CardTitle>
+              <CardDescription>Últimas 100 sincronizações de processos de faturação</CardDescription>
+            </div>
+            {hasInProgress && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Clock className="h-3 w-3 animate-spin" />
+                <span>A atualizar automaticamente...</span>
+              </div>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {logs.length === 0 ? (
+            <div className="p-8 text-center text-muted-foreground">
+              Nenhum sync de faturação realizado ainda
             </div>
           ) : (
             <div className="overflow-auto">

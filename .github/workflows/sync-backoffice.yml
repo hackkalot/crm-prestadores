@@ -1,9 +1,9 @@
 name: Sync Backoffice Data
 
 on:
-  # Run daily at 6:00 AM UTC (7:00 AM Portugal time) - only yesterday's data
+  # Run daily at 3:00 AM UTC (4:00 AM Portugal time) - last 90 days
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '0 3 * * *'
 
   # Allow manual trigger with custom date range (from UI or API)
   workflow_dispatch:
@@ -17,9 +17,9 @@ on:
         required: false
         default: ''
       days_back:
-        description: 'Days to sync (ignored if dates provided, default 1 for scheduled)'
+        description: 'Days to sync (ignored if dates provided, default 90 for scheduled)'
         required: false
-        default: '1'
+        default: '90'
 
   # Allow trigger via repository_dispatch (from CRM API)
   repository_dispatch:
@@ -65,8 +65,8 @@ jobs:
             echo "date_from=${{ github.event.inputs.date_from }}" >> $GITHUB_OUTPUT
             echo "date_to=${{ github.event.inputs.date_to }}" >> $GITHUB_OUTPUT
           else
-            # Default: days_back (1 for scheduled, configurable for manual)
-            DAYS_BACK="${{ github.event.inputs.days_back || '1' }}"
+            # Default: days_back (90 for scheduled, configurable for manual)
+            DAYS_BACK="${{ github.event.inputs.days_back || '90' }}"
             DATE_FROM=$(date -d "$DAYS_BACK days ago" +%d-%m-%Y)
             DATE_TO=$(date +%d-%m-%Y)
             echo "date_from=$DATE_FROM" >> $GITHUB_OUTPUT

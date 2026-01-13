@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:generate": "npx supabase gen types typescript --local > src/types/database.generated.ts",
+    "db:generate": "npx supabase gen types typescript --local > src/types/database.ts",
     "db:push": "npx supabase db push",
     "db:reset": "npx supabase db reset"
   },
