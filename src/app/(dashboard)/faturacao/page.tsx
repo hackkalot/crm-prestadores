@@ -15,6 +15,7 @@ import {
   getDistinctBillingProviders,
   getDistinctBillingServices,
   getDistinctBillingStatuses,
+  getAvailableBillingPeriods,
   type BillingFilters,
 } from '@/lib/billing/actions'
 
@@ -34,16 +35,18 @@ async function BillingListSection({ filters }: { filters: BillingFilters }) {
 
 // Async component for filters
 async function FiltersSection() {
-  const [providers, services, statuses] = await Promise.all([
+  const [providers, services, statuses, availablePeriods] = await Promise.all([
     getDistinctBillingProviders(),
     getDistinctBillingServices(),
     getDistinctBillingStatuses(),
+    getAvailableBillingPeriods(),
   ])
   return (
     <FaturacaoFilters
       providers={providers}
       services={services}
       statuses={statuses}
+      availablePeriods={availablePeriods}
     />
   )
 }

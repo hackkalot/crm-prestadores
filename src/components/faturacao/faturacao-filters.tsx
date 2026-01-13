@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -9,52 +10,111 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
-import { Search, X } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { Search, X, CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { pt } from 'date-fns/locale'
+import type { DateRange } from 'react-day-picker'
+import type { AvailableBillingPeriod } from '@/lib/billing/actions'
 
 interface FaturacaoFiltersProps {
   providers: string[]
   services: string[]
   statuses: string[]
+  availablePeriods: AvailableBillingPeriod[]
 }
 
 export function FaturacaoFilters({
   providers,
   services,
   statuses,
+  availablePeriods,
 }: FaturacaoFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const [search, setSearch] = useState(searchParams.get('search') || '')
+  // Get current filter values from URL
+  const search = searchParams.get('search') || ''
+  const dateFrom = searchParams.get('dateFrom') || ''
+  const dateTo = searchParams.get('dateTo') || ''
 
-  // Update search state when URL changes
-  useEffect(() => {
-    setSearch(searchParams.get('search') || '')
-  }, [searchParams])
+  // Local state for search input
+  const [searchInput, setSearchInput] = useState(search)
 
-  const updateFilter = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (value && value !== 'all') {
-      params.set(key, value)
-    } else {
-      params.delete(key)
+  // Date range state for calendar
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
+    if (dateFrom && dateTo) {
+      return {
+        from: new Date(dateFrom),
+        to: new Date(dateTo)
+      }
     }
-    params.set('page', '1') // Reset to page 1 when filtering
+    return undefined
+  })
+
+  const updateParams = useCallback((updates: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null || value === '') {
+        params.delete(key)
+      } else {
+        params.set(key, value)
+      }
+    })
+
+    // Reset to page 1 when filters change
+    params.set('page', '1')
+
     router.push(`/faturacao?${params.toString()}`)
-  }
+  }, [router, searchParams])
 
   const handleSearch = () => {
-    updateFilter('search', search)
+    updateParams({ search: searchInput || null })
+  }
+
+  const handlePeriodSelect = (periodKey: string) => {
+    if (periodKey === 'all') {
+      setDateRange(undefined)
+      updateParams({ dateFrom: null, dateTo: null })
+    } else {
+      const period = availablePeriods.find(p => `${p.periodFrom}_${p.periodTo}` === periodKey)
+      if (period) {
+        setDateRange({
+          from: new Date(period.periodFrom),
+          to: new Date(period.periodTo)
+        })
+        updateParams({
+          dateFrom: period.periodFrom,
+          dateTo: period.periodTo
+        })
+      }
+    }
+  }
+
+  const handleDateRangeSelect = (range: DateRange | undefined) => {
+    setDateRange(range)
+    if (range?.from && range?.to) {
+      updateParams({
+        dateFrom: format(range.from, 'yyyy-MM-dd'),
+        dateTo: format(range.to, 'yyyy-MM-dd')
+      })
+    }
   }
 
   const clearFilters = () => {
-    router.push('/faturacao')
-    setSearch('')
+    setDateRange(undefined)
+    setSearchInput('')
+    router.push('/faturacao?page=1')
   }
 
-  const hasFilters =
+  const hasActiveFilters =
     searchParams.get('status') ||
     searchParams.get('provider') ||
     searchParams.get('service') ||
@@ -62,23 +122,38 @@ export function FaturacaoFilters({
     searchParams.get('dateFrom') ||
     searchParams.get('dateTo')
 
+  // Get current period label
+  const getCurrentPeriodLabel = () => {
+    if (!dateFrom || !dateTo) return 'Todos os períodos'
+
+    const period = availablePeriods.find(
+      p => p.periodFrom === dateFrom && p.periodTo === dateTo
+    )
+    if (period) return period.label
+
+    // Custom date range
+    const from = new Date(dateFrom)
+    const to = new Date(dateTo)
+    return `${format(from, 'dd/MM/yyyy')} - ${format(to, 'dd/MM/yyyy')}`
+  }
+
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className="flex flex-wrap items-center gap-3">
       {/* Search */}
       <div className="flex items-center gap-2">
         <div className="relative">
           <Input
             placeholder="Pesquisar codigo, prestador..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="w-[280px] pr-8"
+            className="w-[250px] pr-8"
           />
-          {search && (
+          {searchInput && (
             <button
               onClick={() => {
-                setSearch('')
-                updateFilter('search', '')
+                setSearchInput('')
+                updateParams({ search: null })
               }}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
@@ -91,16 +166,57 @@ export function FaturacaoFilters({
         </Button>
       </div>
 
+      {/* Period selector */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" className="min-w-[180px] justify-start">
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {getCurrentPeriodLabel()}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <div className="p-3 border-b">
+            <p className="text-sm font-medium mb-2">Selecionar período</p>
+            <Select onValueChange={handlePeriodSelect}>
+              <SelectTrigger>
+                <SelectValue placeholder="Escolher período..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os períodos</SelectItem>
+                {availablePeriods.map((period) => (
+                  <SelectItem
+                    key={`${period.periodFrom}_${period.periodTo}`}
+                    value={`${period.periodFrom}_${period.periodTo}`}
+                  >
+                    {period.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="p-3 border-b">
+            <p className="text-sm font-medium mb-2">Ou selecionar intervalo personalizado</p>
+            <Calendar
+              mode="range"
+              selected={dateRange}
+              onSelect={handleDateRangeSelect}
+              locale={pt}
+              numberOfMonths={2}
+            />
+          </div>
+        </PopoverContent>
+      </Popover>
+
       {/* Status Filter */}
       <Select
         value={searchParams.get('status') || 'all'}
-        onValueChange={(value) => updateFilter('status', value)}
+        onValueChange={(value) => updateParams({ status: value === 'all' ? null : value })}
       >
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-[150px]">
           <SelectValue placeholder="Estado" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os estados</SelectItem>
+          <SelectItem value="all">Todos</SelectItem>
           {statuses.map((status) => (
             <SelectItem key={status} value={status}>
               {status}
@@ -112,13 +228,13 @@ export function FaturacaoFilters({
       {/* Provider Filter */}
       <Select
         value={searchParams.get('provider') || 'all'}
-        onValueChange={(value) => updateFilter('provider', value)}
+        onValueChange={(value) => updateParams({ provider: value === 'all' ? null : value })}
       >
-        <SelectTrigger className="w-[200px]">
+        <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Prestador" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os prestadores</SelectItem>
+          <SelectItem value="all">Todos</SelectItem>
           {providers.map((provider) => (
             <SelectItem key={provider} value={provider}>
               {provider}
@@ -130,13 +246,13 @@ export function FaturacaoFilters({
       {/* Service Filter */}
       <Select
         value={searchParams.get('service') || 'all'}
-        onValueChange={(value) => updateFilter('service', value)}
+        onValueChange={(value) => updateParams({ service: value === 'all' ? null : value })}
       >
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Servico" />
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Serviço" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos os servicos</SelectItem>
+          <SelectItem value="all">Todos</SelectItem>
           {services.map((service) => (
             <SelectItem key={service} value={service}>
               {service}
@@ -145,29 +261,16 @@ export function FaturacaoFilters({
         </SelectContent>
       </Select>
 
-      {/* Date From */}
-      <Input
-        type="date"
-        placeholder="Data inicio"
-        value={searchParams.get('dateFrom') || ''}
-        onChange={(e) => updateFilter('dateFrom', e.target.value)}
-        className="w-[150px]"
-      />
-
-      {/* Date To */}
-      <Input
-        type="date"
-        placeholder="Data fim"
-        value={searchParams.get('dateTo') || ''}
-        onChange={(e) => updateFilter('dateTo', e.target.value)}
-        className="w-[150px]"
-      />
-
       {/* Clear Filters */}
-      {hasFilters && (
-        <Button variant="ghost" size="sm" onClick={clearFilters}>
+      {hasActiveFilters && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearFilters}
+          className="text-muted-foreground hover:text-foreground"
+        >
           <X className="h-4 w-4 mr-1" />
-          Limpar filtros
+          Limpar
         </Button>
       )}
     </div>

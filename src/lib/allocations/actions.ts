@@ -3,10 +3,61 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
+export interface AvailablePeriod {
+  periodFrom: string
+  periodTo: string
+  label: string
+}
+
+export async function getAvailablePeriods(): Promise<AvailablePeriod[]> {
+  const supabase = await createClient()
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) {
+    return []
+  }
+
+  const admin = createAdminClient()
+
+  // Get distinct periods from allocation_history
+  const { data, error } = await admin
+    .from('allocation_history')
+    .select('period_from, period_to')
+    .order('period_from', { ascending: false })
+
+  if (error || !data) {
+    return []
+  }
+
+  // Group by unique period combinations
+  const periodsMap = new Map<string, AvailablePeriod>()
+
+  data.forEach(row => {
+    const key = `${row.period_from}_${row.period_to}`
+    if (!periodsMap.has(key)) {
+      const fromDate = new Date(row.period_from)
+      const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+      const label = `${monthNames[fromDate.getMonth()]} ${fromDate.getFullYear()}`
+
+      periodsMap.set(key, {
+        periodFrom: row.period_from,
+        periodTo: row.period_to,
+        label
+      })
+    }
+  })
+
+  return Array.from(periodsMap.values())
+}
+
 export interface AllocationHistoryFilters {
   search?: string
   periodFrom?: string
   periodTo?: string
+  acceptanceRate?: 'low' | 'medium' | 'high'  // low: <40%, medium: 40-70%, high: >70%
+  expirationRate?: 'low' | 'medium' | 'high'  // low: <10%, medium: 10-30%, high: >30%
+  volume?: 'low' | 'medium' | 'high'          // low: <10, medium: 10-50, high: >50
 }
 
 export interface AllocationHistorySort {
@@ -33,15 +84,12 @@ export async function getAllocationHistory(
 
   const admin = createAdminClient()
 
-  // Calculate offset
-  const offset = (pagination.page - 1) * pagination.limit
-
-  // Build query
+  // Build query - get all data first for calculated filters
   let query = admin
     .from('allocation_history')
-    .select('*', { count: 'exact' })
+    .select('*')
 
-  // Apply filters
+  // Apply basic filters
   if (filters.search) {
     query = query.ilike('provider_name', `%${filters.search}%`)
   }
@@ -54,24 +102,64 @@ export async function getAllocationHistory(
     query = query.lte('period_to', filters.periodTo)
   }
 
+  // Apply volume filter (can be done in DB)
+  if (filters.volume === 'low') {
+    query = query.lt('requests_received', 10)
+  } else if (filters.volume === 'medium') {
+    query = query.gte('requests_received', 10).lte('requests_received', 50)
+  } else if (filters.volume === 'high') {
+    query = query.gt('requests_received', 50)
+  }
+
   // Apply sorting
   const sortField = sort.field || 'requests_received'
   const sortAsc = sort.direction === 'asc'
   query = query.order(sortField, { ascending: sortAsc })
 
-  // Apply pagination
-  query = query.range(offset, offset + pagination.limit - 1)
-
-  const { data, error, count } = await query
+  const { data: allData, error } = await query
 
   if (error) {
     console.error('Error fetching allocation history:', error)
     return { data: [], total: 0, error: error.message }
   }
 
+  // Apply calculated filters (acceptance rate, expiration rate)
+  let filteredData = allData || []
+
+  if (filters.acceptanceRate) {
+    filteredData = filteredData.filter(row => {
+      const received = row.requests_received || 0
+      if (received === 0) return filters.acceptanceRate === 'low'
+      const rate = (row.requests_accepted || 0) / received * 100
+
+      if (filters.acceptanceRate === 'low') return rate < 40
+      if (filters.acceptanceRate === 'medium') return rate >= 40 && rate <= 70
+      if (filters.acceptanceRate === 'high') return rate > 70
+      return true
+    })
+  }
+
+  if (filters.expirationRate) {
+    filteredData = filteredData.filter(row => {
+      const received = row.requests_received || 0
+      if (received === 0) return filters.expirationRate === 'low'
+      const rate = (row.requests_expired || 0) / received * 100
+
+      if (filters.expirationRate === 'low') return rate < 10
+      if (filters.expirationRate === 'medium') return rate >= 10 && rate <= 30
+      if (filters.expirationRate === 'high') return rate > 30
+      return true
+    })
+  }
+
+  // Calculate pagination on filtered data
+  const total = filteredData.length
+  const offset = (pagination.page - 1) * pagination.limit
+  const paginatedData = filteredData.slice(offset, offset + pagination.limit)
+
   return {
-    data: data || [],
-    total: count || 0,
+    data: paginatedData,
+    total,
     error: null
   }
 }

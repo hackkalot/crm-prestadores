@@ -91,6 +91,11 @@ export function AlocacoesList({ data, total, page, limit }: AlocacoesListProps) 
     return Math.round((accepted / received) * 100)
   }
 
+  const calculateExpirationRate = (received: number, expired: number) => {
+    if (received === 0) return 0
+    return Math.round((expired / received) * 100)
+  }
+
   if (data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -146,6 +151,7 @@ export function AlocacoesList({ data, total, page, limit }: AlocacoesListProps) 
                 onSort={handleSort}
               />
               <TableHead>Taxa Aceitação</TableHead>
+              <TableHead>Taxa Expiração</TableHead>
               <SortableHeader
                 field="avg_response_time_raw"
                 label="Tempo Médio"
@@ -157,7 +163,8 @@ export function AlocacoesList({ data, total, page, limit }: AlocacoesListProps) 
           </TableHeader>
           <TableBody>
             {data.map((row) => {
-              const rate = calculateAcceptanceRate(row.requests_received || 0, row.requests_accepted || 0)
+              const acceptanceRate = calculateAcceptanceRate(row.requests_received || 0, row.requests_accepted || 0)
+              const expirationRate = calculateExpirationRate(row.requests_received || 0, row.requests_expired || 0)
 
               return (
                 <TableRow key={row.id}>
@@ -177,14 +184,29 @@ export function AlocacoesList({ data, total, page, limit }: AlocacoesListProps) 
                       <div className="w-16 h-2 rounded-full bg-muted overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
-                            rate >= 70 ? 'bg-green-500' :
-                            rate >= 40 ? 'bg-amber-500' :
+                            acceptanceRate >= 70 ? 'bg-green-500' :
+                            acceptanceRate >= 40 ? 'bg-amber-500' :
                             'bg-red-500'
                           }`}
-                          style={{ width: `${rate}%` }}
+                          style={{ width: `${acceptanceRate}%` }}
                         />
                       </div>
-                      <span className="text-sm text-muted-foreground w-10">{rate}%</span>
+                      <span className="text-sm text-muted-foreground w-10">{acceptanceRate}%</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 h-2 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${
+                            expirationRate <= 10 ? 'bg-green-500' :
+                            expirationRate <= 30 ? 'bg-amber-500' :
+                            'bg-red-500'
+                          }`}
+                          style={{ width: `${expirationRate}%` }}
+                        />
+                      </div>
+                      <span className="text-sm text-muted-foreground w-10">{expirationRate}%</span>
                     </div>
                   </TableCell>
                   <TableCell className="text-muted-foreground">

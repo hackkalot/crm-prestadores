@@ -2,6 +2,57 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 
+export interface AvailableBillingPeriod {
+  periodFrom: string
+  periodTo: string
+  label: string
+}
+
+export async function getAvailableBillingPeriods(): Promise<AvailableBillingPeriod[]> {
+  const supabase = createAdminClient()
+
+  // Get distinct months from document_date
+  const { data, error } = await supabase
+    .from('billing_processes')
+    .select('document_date')
+    .not('document_date', 'is', null)
+    .order('document_date', { ascending: false })
+
+  if (error || !data) {
+    return []
+  }
+
+  // Group by unique month/year combinations
+  const periodsMap = new Map<string, AvailableBillingPeriod>()
+
+  data.forEach(row => {
+    if (!row.document_date) return
+
+    const date = new Date(row.document_date)
+    const year = date.getFullYear()
+    const month = date.getMonth()
+
+    // Create key as YYYY-MM
+    const key = `${year}-${String(month + 1).padStart(2, '0')}`
+
+    if (!periodsMap.has(key)) {
+      const firstDay = new Date(year, month, 1)
+      const lastDay = new Date(year, month + 1, 0)
+
+      const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+
+      periodsMap.set(key, {
+        periodFrom: firstDay.toISOString().split('T')[0],
+        periodTo: lastDay.toISOString().split('T')[0],
+        label: `${monthNames[month]} ${year}`
+      })
+    }
+  })
+
+  return Array.from(periodsMap.values())
+}
+
 export interface BillingProcess {
   id: string
   request_code: string

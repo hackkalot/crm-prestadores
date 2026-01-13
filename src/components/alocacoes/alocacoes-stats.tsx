@@ -97,17 +97,52 @@ export function AlocacoesStats({ stats }: AllocationStatsProps) {
         </Card>
       </div>
 
-      {stats.acceptanceRate > 0 && (
-        <div className="rounded-lg bg-muted p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Taxa de Aceitação Global</span>
-            <span className="text-2xl font-bold text-green-600">{stats.acceptanceRate}%</span>
+      {stats.totalReceived > 0 && (
+        <div className="grid gap-4 md:grid-cols-3">
+          {/* Taxa de Aceitação */}
+          <div className="rounded-lg bg-muted p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">Taxa de Aceitação</span>
+              <span className="text-xl font-bold text-green-600">{stats.acceptanceRate}%</span>
+            </div>
+            <div className="mt-2 h-2 rounded-full bg-muted-foreground/20">
+              <div
+                className="h-2 rounded-full bg-green-500 transition-all"
+                style={{ width: `${stats.acceptanceRate}%` }}
+              />
+            </div>
           </div>
-          <div className="mt-2 h-2 rounded-full bg-muted-foreground/20">
-            <div
-              className="h-2 rounded-full bg-green-500 transition-all"
-              style={{ width: `${stats.acceptanceRate}%` }}
-            />
+
+          {/* Taxa de Rejeição */}
+          <div className="rounded-lg bg-muted p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">Taxa de Rejeição</span>
+              <span className="text-xl font-bold text-red-600">
+                {Math.round((stats.totalRejected / stats.totalReceived) * 100)}%
+              </span>
+            </div>
+            <div className="mt-2 h-2 rounded-full bg-muted-foreground/20">
+              <div
+                className="h-2 rounded-full bg-red-500 transition-all"
+                style={{ width: `${Math.round((stats.totalRejected / stats.totalReceived) * 100)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Taxa de Expiração */}
+          <div className="rounded-lg bg-muted p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">Taxa de Expiração</span>
+              <span className="text-xl font-bold text-amber-600">
+                {Math.round((stats.totalExpired / stats.totalReceived) * 100)}%
+              </span>
+            </div>
+            <div className="mt-2 h-2 rounded-full bg-muted-foreground/20">
+              <div
+                className="h-2 rounded-full bg-amber-500 transition-all"
+                style={{ width: `${Math.round((stats.totalExpired / stats.totalReceived) * 100)}%` }}
+              />
+            </div>
           </div>
         </div>
       )}

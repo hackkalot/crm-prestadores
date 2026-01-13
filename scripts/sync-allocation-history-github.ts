@@ -80,16 +80,24 @@ function formatDate(date: Date): string {
   return `${day}-${month}-${year}`
 }
 
-// Parse date from dd-mm-yyyy to Date object
-function parseDate(dateStr: string): Date {
-  const [day, month, year] = dateStr.split('-').map(Number)
-  return new Date(year, month - 1, day)
-}
-
 // Format date for PostgreSQL (yyyy-mm-dd)
 function toPostgresDate(dateStr: string): string {
   const [day, month, year] = dateStr.split('-')
   return `${year}-${month}-${day}`
+}
+
+/**
+ * Get first day of current month
+ */
+function getFirstDayOfMonth(date: Date = new Date()): Date {
+  return new Date(date.getFullYear(), date.getMonth(), 1)
+}
+
+/**
+ * Get last day of current month (handles Feb 28/29, different month lengths)
+ */
+function getLastDayOfMonth(date: Date = new Date()): Date {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
 }
 
 /**
@@ -105,13 +113,16 @@ async function main() {
   const dateFrom = args['date-from'] || null
   const dateTo = args['date-to'] || null
 
-  // Default dates: last year to today
+  // Default dates: full current month (1st to last day)
+  // This ensures:
+  // - All syncs within a month use the same period → UPDATE operations
+  // - New month = new period → INSERT operations (new records for the month)
   const today = new Date()
-  const oneYearAgo = new Date(today)
-  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+  const firstDayOfMonth = getFirstDayOfMonth(today)
+  const lastDayOfMonth = getLastDayOfMonth(today)
 
-  const periodFrom = dateFrom || formatDate(oneYearAgo)
-  const periodTo = dateTo || formatDate(today)
+  const periodFrom = dateFrom || formatDate(firstDayOfMonth)
+  const periodTo = dateTo || formatDate(lastDayOfMonth)
 
   console.log('═══════════════════════════════════════════════')
   console.log('🚀 GitHub Actions Allocation History Sync')

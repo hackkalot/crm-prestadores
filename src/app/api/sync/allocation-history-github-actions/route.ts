@@ -30,13 +30,14 @@ export async function POST(request: NextRequest) {
       dateFrom = body.dateFrom
       dateTo = body.dateTo
     } catch {
-      // Default: last year to today
+      // Default: full current month (1st to last day)
+      // This ensures consistent periods for INSERT/UPDATE logic
       const today = new Date()
-      const oneYearAgo = new Date(today)
-      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+      const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
 
-      dateFrom = formatDate(oneYearAgo)
-      dateTo = formatDate(today)
+      dateFrom = formatDate(firstDayOfMonth)
+      dateTo = formatDate(lastDayOfMonth)
     }
 
     // Get GitHub token from environment
