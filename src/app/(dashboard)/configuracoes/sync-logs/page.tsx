@@ -6,6 +6,8 @@ import {
   getProviderSyncStats,
   getBillingSyncLogs,
   getBillingSyncStats,
+  getAllocationSyncLogs,
+  getAllocationSyncStats,
 } from '@/lib/sync/logs-actions'
 import { SyncLogsTabs } from '@/components/sync/sync-logs-tabs'
 
@@ -26,6 +28,8 @@ export default async function SyncLogsPage({
     providerStats,
     billingLogs,
     billingStats,
+    allocationLogs,
+    allocationStats,
   ] = await Promise.all([
     getSyncLogs(),
     getSyncStats(),
@@ -33,6 +37,8 @@ export default async function SyncLogsPage({
     getProviderSyncStats(),
     getBillingSyncLogs(),
     getBillingSyncStats(),
+    getAllocationSyncLogs(),
+    getAllocationSyncStats(),
   ])
 
   return (
@@ -50,6 +56,8 @@ export default async function SyncLogsPage({
           providerStats={providerStats}
           billingLogs={billingLogs}
           billingStats={billingStats}
+          allocationLogs={allocationLogs}
+          allocationStats={allocationStats}
         />
       </div>
     </div>

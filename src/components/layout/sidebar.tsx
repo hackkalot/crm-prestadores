@@ -27,6 +27,7 @@ import {
   Target,
   FileText,
   Receipt,
+  GitBranch,
   ChevronUp,
 } from 'lucide-react'
 
@@ -35,6 +36,7 @@ const navigation = [
   { name: 'Onboarding', href: '/onboarding', icon: Kanban, contextTab: 'onboarding' },
   { name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil' },
   { name: 'Pedidos', href: '/pedidos', icon: FileText },
+  { name: 'Alocações', href: '/alocacoes', icon: GitBranch },
   { name: 'Faturação', href: '/faturacao', icon: Receipt },
   { name: 'Rede', href: '/rede', icon: Network },
   { name: 'Agenda', href: '/agenda', icon: Calendar },
