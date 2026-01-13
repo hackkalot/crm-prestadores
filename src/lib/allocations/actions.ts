@@ -94,11 +94,12 @@ export async function getAllocationHistory(
     query = query.ilike('provider_name', `%${filters.search}%`)
   }
 
-  if (filters.periodFrom) {
+  // Period filter: use exact match when both dates provided (specific period)
+  if (filters.periodFrom && filters.periodTo) {
+    query = query.eq('period_from', filters.periodFrom).eq('period_to', filters.periodTo)
+  } else if (filters.periodFrom) {
     query = query.gte('period_from', filters.periodFrom)
-  }
-
-  if (filters.periodTo) {
+  } else if (filters.periodTo) {
     query = query.lte('period_to', filters.periodTo)
   }
 
@@ -157,14 +158,48 @@ export async function getAllocationHistory(
   const offset = (pagination.page - 1) * pagination.limit
   const paginatedData = filteredData.slice(offset, offset + pagination.limit)
 
+  // Fetch provider UUIDs for the paginated data
+  const backofficeIds = paginatedData
+    .map(row => row.backoffice_provider_id)
+    .filter((id): id is number => id !== null)
+
+  let providerMap: Record<number, string> = {}
+
+  if (backofficeIds.length > 0) {
+    const { data: providers } = await admin
+      .from('providers')
+      .select('id, backoffice_provider_id')
+      .in('backoffice_provider_id', backofficeIds)
+
+    if (providers) {
+      providerMap = providers.reduce((acc, p) => {
+        if (p.backoffice_provider_id !== null) {
+          acc[p.backoffice_provider_id] = p.id
+        }
+        return acc
+      }, {} as Record<number, string>)
+    }
+  }
+
+  // Enrich data with provider UUIDs
+  const enrichedData = paginatedData.map(row => ({
+    ...row,
+    provider_uuid: providerMap[row.backoffice_provider_id] || null
+  }))
+
   return {
-    data: paginatedData,
+    data: enrichedData,
     total,
     error: null
   }
 }
 
-export async function getAllocationStats() {
+export interface AllocationStatsFilters {
+  periodFrom?: string
+  periodTo?: string
+}
+
+export async function getAllocationStats(filters: AllocationStatsFilters = {}) {
   const supabase = await createClient()
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -174,28 +209,45 @@ export async function getAllocationStats() {
 
   const admin = createAdminClient()
 
-  // Get latest sync period
-  const { data: latestSync } = await admin
-    .from('allocation_sync_logs')
-    .select('period_from, period_to')
-    .eq('status', 'success')
-    .order('triggered_at', { ascending: false })
-    .limit(1)
-    .single()
+  // Build query based on filters
+  let query = admin
+    .from('allocation_history')
+    .select('requests_received, requests_accepted, requests_expired, requests_rejected, period_from, period_to')
 
-  // Get aggregated stats for the latest period
-  let periodFilter = {}
-  if (latestSync) {
-    periodFilter = {
-      period_from: latestSync.period_from,
-      period_to: latestSync.period_to
+  // If period filters provided, use exact match
+  if (filters.periodFrom && filters.periodTo) {
+    query = query.eq('period_from', filters.periodFrom).eq('period_to', filters.periodTo)
+  } else if (filters.periodFrom) {
+    query = query.gte('period_from', filters.periodFrom)
+  } else if (filters.periodTo) {
+    query = query.lte('period_to', filters.periodTo)
+  }
+
+  // If no filters provided, get latest sync period as default
+  let periodDisplay: { from: string; to: string } | null = null
+
+  if (!filters.periodFrom && !filters.periodTo) {
+    const { data: latestSync } = await admin
+      .from('allocation_sync_logs')
+      .select('period_from, period_to')
+      .eq('status', 'success')
+      .order('triggered_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (latestSync) {
+      query = query.eq('period_from', latestSync.period_from).eq('period_to', latestSync.period_to)
+      periodDisplay = { from: latestSync.period_from, to: latestSync.period_to }
+    }
+  } else {
+    // Use the filter values for display
+    periodDisplay = {
+      from: filters.periodFrom || '',
+      to: filters.periodTo || ''
     }
   }
 
-  const { data: stats } = await admin
-    .from('allocation_history')
-    .select('requests_received, requests_accepted, requests_expired, requests_rejected')
-    .match(periodFilter)
+  const { data: stats } = await query
 
   if (!stats || stats.length === 0) {
     return {
@@ -205,10 +257,22 @@ export async function getAllocationStats() {
       totalRejected: 0,
       totalExpired: 0,
       acceptanceRate: 0,
-      period: latestSync ? {
-        from: latestSync.period_from,
-        to: latestSync.period_to
-      } : null
+      period: periodDisplay
+    }
+  }
+
+  // Get unique period range from actual data
+  if (filters.periodFrom || filters.periodTo) {
+    const periods = stats.map(s => ({ from: s.period_from, to: s.period_to }))
+    const uniquePeriods = [...new Set(periods.map(p => `${p.from}_${p.to}`))]
+    if (uniquePeriods.length === 1) {
+      const [from, to] = uniquePeriods[0].split('_')
+      periodDisplay = { from, to }
+    } else if (uniquePeriods.length > 1) {
+      // Multiple periods - show the range
+      const allFroms = periods.map(p => p.from).sort()
+      const allTos = periods.map(p => p.to).sort()
+      periodDisplay = { from: allFroms[0], to: allTos[allTos.length - 1] }
     }
   }
 
@@ -230,10 +294,7 @@ export async function getAllocationStats() {
     totalRejected: totals.rejected,
     totalExpired: totals.expired,
     acceptanceRate,
-    period: latestSync ? {
-      from: latestSync.period_from,
-      to: latestSync.period_to
-    } : null
+    period: periodDisplay
   }
 }
 

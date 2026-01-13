@@ -1,6 +1,9 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useCallback } from 'react'
+import Link from 'next/link'
+import { saveBackUrl } from '@/hooks/use-navigation-state'
 import {
   Table,
   TableBody,
@@ -79,11 +82,18 @@ function formatCurrency(value: number | null) {
 
 export function FaturacaoList({ paginatedResult }: FaturacaoListProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
   const { data: billing, total, page, limit, totalPages } = paginatedResult
 
   const sortBy = searchParams.get('sortBy') || 'document_date'
   const sortOrder = searchParams.get('sortOrder') || 'desc'
+
+  // Save current URL before navigating to pedido detail
+  const handlePedidoClick = useCallback(() => {
+    const currentUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
+    saveBackUrl(currentUrl, 'faturacao')
+  }, [pathname, searchParams])
 
   const handleSort = (column: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -268,7 +278,13 @@ export function FaturacaoList({ paginatedResult }: FaturacaoListProps) {
             {billing.map((item) => (
               <TableRow key={item.id} className="hover:bg-muted/30">
                 <TableCell className="font-medium">
-                  <span className="text-primary">{item.request_code}</span>
+                  <Link
+                    href={`/pedidos/${item.request_code}`}
+                    className="text-primary hover:underline"
+                    onClick={handlePedidoClick}
+                  >
+                    {item.request_code}
+                  </Link>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1 text-sm">

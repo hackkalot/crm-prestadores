@@ -1,12 +1,10 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { Header } from '@/components/layout/header'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { BackButton } from '@/components/ui/back-button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  ArrowLeft,
   MapPin,
   Calendar,
   Euro,
@@ -142,13 +140,7 @@ export default async function PedidoDetailPage({ params }: { params: Params }) {
       <Header
         title={`Pedido ${pedido.request_code}`}
         description={pedido.service || 'Detalhe do pedido'}
-        backButton={
-          <Link href="/pedidos">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-        }
+        backButton={<BackButton fallbackUrl="/pedidos" />}
       />
 
       <div className="flex-1 p-6 space-y-6 overflow-auto">

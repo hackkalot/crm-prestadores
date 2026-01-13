@@ -21,22 +21,15 @@ export function SyncAllocationDialog() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [isProduction, setIsProduction] = useState(false)
+  const isProduction =
+    typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
 
-  // Default dates: last year to today
+  // Default dates: first day of current month to today
   const today = new Date()
-  const oneYearAgo = new Date(today)
-  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
 
-  const [dateFrom, setDateFrom] = useState<Date | undefined>(oneYearAgo)
+  const [dateFrom, setDateFrom] = useState<Date | undefined>(firstDayOfMonth)
   const [dateTo, setDateTo] = useState<Date | undefined>(today)
-
-  // Detect environment on client side
-  useEffect(() => {
-    setIsProduction(
-      typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
-    )
-  }, [])
 
   const formatDate = (date: Date): string => {
     const day = String(date.getDate()).padStart(2, '0')

@@ -1,7 +1,8 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useCallback } from 'react'
+import Link from 'next/link'
 import {
   Table,
   TableBody,
@@ -12,9 +13,12 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
+import { saveBackUrl } from '@/hooks/use-navigation-state'
 import type { Database } from '@/types/database.generated'
 
-type AllocationHistory = Database['public']['Tables']['allocation_history']['Row']
+type AllocationHistory = Database['public']['Tables']['allocation_history']['Row'] & {
+  provider_uuid?: string | null
+}
 
 interface AlocacoesListProps {
   data: AllocationHistory[]
@@ -57,9 +61,16 @@ function SortableHeader({ field, label, currentSort, currentDir, onSort }: Sorta
 
 export function AlocacoesList({ data, total, page, limit }: AlocacoesListProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const sortField = searchParams.get('sort') || 'requests_received'
+
+  // Save current URL before navigating to provider detail
+  const handleProviderClick = useCallback(() => {
+    const currentUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
+    saveBackUrl(currentUrl, 'alocacoes')
+  }, [pathname, searchParams])
   const sortDir = (searchParams.get('dir') || 'desc') as 'asc' | 'desc'
 
   const totalPages = Math.ceil(total / limit)
@@ -168,7 +179,19 @@ export function AlocacoesList({ data, total, page, limit }: AlocacoesListProps) 
 
               return (
                 <TableRow key={row.id}>
-                  <TableCell className="font-medium">{row.provider_name}</TableCell>
+                  <TableCell className="font-medium">
+                    {row.provider_uuid ? (
+                      <Link
+                        href={`/providers/${row.provider_uuid}`}
+                        className="text-primary hover:underline"
+                        onClick={handleProviderClick}
+                      >
+                        {row.provider_name}
+                      </Link>
+                    ) : (
+                      row.provider_name
+                    )}
+                  </TableCell>
                   <TableCell>{row.requests_received?.toLocaleString('pt-PT') || 0}</TableCell>
                   <TableCell className="text-green-600">
                     {row.requests_accepted?.toLocaleString('pt-PT') || 0}

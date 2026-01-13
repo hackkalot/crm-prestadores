@@ -143,7 +143,7 @@ export function PerformanceTab({
     <div className="space-y-6">
       {/* Date preset buttons */}
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Periodo:</span>
+        <span className="text-sm text-muted-foreground">Período:</span>
         {DATE_PRESETS.map((preset) => (
           <Button
             key={preset.days}
@@ -191,7 +191,7 @@ export function PerformanceTab({
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Taxa Conclusao</p>
+                <p className="text-sm text-muted-foreground">Taxa Conclusão</p>
                 <p className="text-3xl font-bold">{performance.completionRate}%</p>
                 <Badge
                   variant={
@@ -221,7 +221,7 @@ export function PerformanceTab({
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Ticket Medio</p>
+                <p className="text-sm text-muted-foreground">Ticket Médio</p>
                 <p className="text-3xl font-bold">{formatCurrency(performance.avgTicket)}</p>
                 <Badge
                   variant={
@@ -249,7 +249,7 @@ export function PerformanceTab({
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avaliacao</p>
+                <p className="text-sm text-muted-foreground">Avaliação</p>
                 <div className="flex items-baseline gap-1">
                   <p className="text-3xl font-bold">
                     {performance.avgRating !== null ? performance.avgRating : '-'}
@@ -276,7 +276,7 @@ export function PerformanceTab({
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Rede: {benchmark.avgRating} ({performance.totalRatings} avaliacoes)
+              Rede: {benchmark.avgRating} ({performance.totalRatings} avaliações)
             </p>
           </CardContent>
         </Card>
@@ -287,8 +287,8 @@ export function PerformanceTab({
         {/* Trend Chart */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Tendencia Mensal</CardTitle>
-            <CardDescription>Pedidos por mes nos ultimos 12 meses</CardDescription>
+            <CardTitle className="text-base">Tendência Mensal</CardTitle>
+            <CardDescription>Pedidos por mês nos últimos 12 meses</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[250px]">
@@ -338,7 +338,7 @@ export function PerformanceTab({
         {/* Status Breakdown */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Distribuicao por Estado</CardTitle>
+            <CardTitle className="text-base">Distribuição por Estado</CardTitle>
             <CardDescription>Pedidos agrupados por estado atual</CardDescription>
           </CardHeader>
           <CardContent>
@@ -464,13 +464,13 @@ export function PerformanceTab({
         {/* Rating Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Distribuicao de Avaliacoes</CardTitle>
-            <CardDescription>{performance.totalRatings} avaliacoes recebidas</CardDescription>
+            <CardTitle className="text-base">Distribuição de Avaliações</CardTitle>
+            <CardDescription>{performance.totalRatings} avaliações recebidas</CardDescription>
           </CardHeader>
           <CardContent>
             {performance.ratingDistribution.length === 0 ? (
               <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-                Sem avaliacoes
+                Sem avaliações
               </div>
             ) : (
               <div className="h-[200px]">
@@ -525,12 +525,12 @@ export function PerformanceTab({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  Tempo Medio de Execucao (pedidos concluidos)
+                  Tempo médio de Execução (pedidos concluídos)
                 </p>
                 <p className="text-2xl font-bold">{performance.avgExecutionDays} dias</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">Media da rede</p>
+                <p className="text-sm text-muted-foreground">Média da rede</p>
                 <p className="text-lg font-medium">{benchmark.avgExecutionDays} dias</p>
               </div>
             </div>

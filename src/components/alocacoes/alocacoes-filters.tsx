@@ -181,8 +181,8 @@ export function AlocacoesFilters({ availablePeriods }: AlocacoesFiltersProps) {
 
       {/* Acceptance Rate Filter */}
       <Select
-        value={acceptanceRate}
-        onValueChange={(value) => updateParams({ acceptanceRate: value || null })}
+        value={acceptanceRate || 'all'}
+        onValueChange={(value) => updateParams({ acceptanceRate: value === 'all' ? null : value })}
       >
         <SelectTrigger className="w-[160px]">
           <SelectValue placeholder="Taxa aceitação" />
@@ -197,8 +197,8 @@ export function AlocacoesFilters({ availablePeriods }: AlocacoesFiltersProps) {
 
       {/* Expiration Rate Filter */}
       <Select
-        value={expirationRate}
-        onValueChange={(value) => updateParams({ expirationRate: value || null })}
+        value={expirationRate || 'all'}
+        onValueChange={(value) => updateParams({ expirationRate: value === 'all' ? null : value })}
       >
         <SelectTrigger className="w-[160px]">
           <SelectValue placeholder="Taxa expiração" />
@@ -213,8 +213,8 @@ export function AlocacoesFilters({ availablePeriods }: AlocacoesFiltersProps) {
 
       {/* Volume Filter */}
       <Select
-        value={volume}
-        onValueChange={(value) => updateParams({ volume: value || null })}
+        value={volume || 'all'}
+        onValueChange={(value) => updateParams({ volume: value === 'all' ? null : value })}
       >
         <SelectTrigger className="w-[150px]">
           <SelectValue placeholder="Volume" />

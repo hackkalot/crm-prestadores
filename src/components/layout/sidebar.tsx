@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { logout } from '@/lib/auth/actions'
 import { Badge } from '@/components/ui/badge'
+import { getOriginContext } from '@/hooks/use-navigation-state'
+import { useMounted } from '@/hooks/use-mounted'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,18 +30,20 @@ import {
   Receipt,
   GitBranch,
   ChevronUp,
+  TrendingUp,
 } from 'lucide-react'
 
 const navigation = [
-  { name: 'Candidaturas', href: '/candidaturas', icon: Users, contextTab: 'candidatura' },
-  { name: 'Onboarding', href: '/onboarding', icon: Kanban, contextTab: 'onboarding' },
-  { name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil' },
-  { name: 'Pedidos', href: '/pedidos', icon: FileText },
-  { name: 'Alocações', href: '/alocacoes', icon: GitBranch },
-  { name: 'Faturação', href: '/faturacao', icon: Receipt },
+  { name: 'Candidaturas', href: '/candidaturas', icon: Users, contextTab: 'candidatura', originKey: 'candidaturas' },
+  { name: 'Onboarding', href: '/onboarding', icon: Kanban, contextTab: 'onboarding', originKey: 'onboarding' },
+  { name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil', originKey: 'prestadores' },
+  { name: 'Pedidos', href: '/pedidos', icon: FileText, originKey: 'pedidos' },
+  { name: 'Alocações', href: '/alocacoes', icon: GitBranch, originKey: 'alocacoes' },
+  { name: 'Faturação', href: '/faturacao', icon: Receipt, originKey: 'faturacao' },
   { name: 'Rede', href: '/rede', icon: Network },
   { name: 'Agenda', href: '/agenda', icon: Calendar },
   { name: 'KPIs', href: '/kpis', icon: BarChart3 },
+  { name: 'Analytics', href: '/analytics', icon: TrendingUp },
   { name: 'Configurações', href: '/configuracoes', icon: Settings },
 ]
 
@@ -67,11 +70,14 @@ export function Sidebar({ user, pendingUsersCount = 0 }: SidebarProps) {
   const currentTab = searchParams.get('tab')
   const isAdmin = user?.role === 'admin'
   const isManager = user?.role === 'manager' || user?.role === 'admin'
-  const [isMounted, setIsMounted] = useState(false)
+  const isMounted = useMounted()
 
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
+  // Check if we're on a detail page (provider or pedido)
+  const isProviderPage = pathname.startsWith('/providers/')
+  const isPedidoPage = pathname.startsWith('/pedidos/') && pathname !== '/pedidos'
+
+  // Get origin context from session storage (only on client)
+  const originContext = isMounted ? getOriginContext() : null
 
   return (
     <div className="flex h-full w-64 flex-col bg-card border-r">
@@ -88,11 +94,17 @@ export function Sidebar({ user, pendingUsersCount = 0 }: SidebarProps) {
       {/* Navigation */}
       <nav className="flex-1 px-4 py-4 space-y-1">
         {navigation.map((item) => {
-          // Verificar se está ativo por pathname direto ou por contexto em /providers/[id]
-          const isProviderPage = pathname.startsWith('/providers/')
-          const isActiveByTab = isProviderPage && item.contextTab && currentTab === item.contextTab
+          // Verificar se está ativo por pathname direto
           const isActiveByPath = pathname.startsWith(item.href)
-          const isActive = isActiveByTab || isActiveByPath
+
+          // Verificar se está ativo por contexto de tab em /providers/[id]
+          const isActiveByTab = isProviderPage && item.contextTab && currentTab === item.contextTab
+
+          // Verificar se está ativo por contexto de origem (para navegação de alocações/faturação)
+          const isActiveByOrigin = isMounted && (isProviderPage || isPedidoPage) &&
+            item.originKey && originContext === item.originKey
+
+          const isActive = isActiveByTab || isActiveByPath || isActiveByOrigin
           return (
             <Link
               key={item.name}

@@ -5,7 +5,7 @@ import { AlocacoesFilters } from '@/components/alocacoes/alocacoes-filters'
 import { AlocacoesList } from '@/components/alocacoes/alocacoes-list'
 import { SyncAllocationDialog } from '@/components/sync/sync-allocation-dialog'
 import { getAllocationHistory, getAllocationStats, getAvailablePeriods } from '@/lib/allocations/actions'
-import type { AllocationHistoryFilters } from '@/lib/allocations/actions'
+import type { AllocationHistoryFilters, AllocationStatsFilters } from '@/lib/allocations/actions'
 import { Skeleton } from '@/components/ui/skeleton'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -43,8 +43,8 @@ function FiltersLoading() {
   )
 }
 
-async function AlocacoesStatsSection() {
-  const stats = await getAllocationStats()
+async function AlocacoesStatsSection({ filters }: { filters: AllocationStatsFilters }) {
+  const stats = await getAllocationStats(filters)
 
   if ('error' in stats && stats.error) {
     return null
@@ -58,34 +58,54 @@ async function AlocacoesFiltersSection() {
   return <AlocacoesFilters availablePeriods={availablePeriods} />
 }
 
-async function AlocacoesListSection({ searchParams }: { searchParams: SearchParams }) {
-  const params = await searchParams
+async function AlocacoesListSection({
+  periodFrom,
+  periodTo,
+  search,
+  acceptanceRate,
+  expirationRate,
+  volume,
+  sort,
+  dir,
+  page: pageStr,
+  limit: limitStr,
+}: {
+  periodFrom?: string
+  periodTo?: string
+  search?: string
+  acceptanceRate?: string
+  expirationRate?: string
+  volume?: string
+  sort?: string
+  dir?: string
+  page?: string
+  limit?: string
+}) {
+  const page = Number(pageStr) || 1
+  const limit = Number(limitStr) || 25
+  const sortField = sort || 'requests_received'
+  const sortDir = dir === 'asc' ? 'asc' : 'desc'
 
-  const page = Number(params.page) || 1
-  const limit = Number(params.limit) || 25
-  const sortField = typeof params.sort === 'string' ? params.sort : 'requests_received'
-  const sortDir = params.dir === 'asc' ? 'asc' : 'desc'
-
-  // Build filters object from URL params
+  // Build filters object
   const filters: AllocationHistoryFilters = {}
 
-  if (typeof params.search === 'string' && params.search) {
-    filters.search = params.search
+  if (search) {
+    filters.search = search
   }
-  if (typeof params.periodFrom === 'string' && params.periodFrom) {
-    filters.periodFrom = params.periodFrom
+  if (periodFrom) {
+    filters.periodFrom = periodFrom
   }
-  if (typeof params.periodTo === 'string' && params.periodTo) {
-    filters.periodTo = params.periodTo
+  if (periodTo) {
+    filters.periodTo = periodTo
   }
-  if (params.acceptanceRate === 'low' || params.acceptanceRate === 'medium' || params.acceptanceRate === 'high') {
-    filters.acceptanceRate = params.acceptanceRate
+  if (acceptanceRate === 'low' || acceptanceRate === 'medium' || acceptanceRate === 'high') {
+    filters.acceptanceRate = acceptanceRate
   }
-  if (params.expirationRate === 'low' || params.expirationRate === 'medium' || params.expirationRate === 'high') {
-    filters.expirationRate = params.expirationRate
+  if (expirationRate === 'low' || expirationRate === 'medium' || expirationRate === 'high') {
+    filters.expirationRate = expirationRate
   }
-  if (params.volume === 'low' || params.volume === 'medium' || params.volume === 'high') {
-    filters.volume = params.volume
+  if (volume === 'low' || volume === 'medium' || volume === 'high') {
+    filters.volume = volume
   }
 
   const { data, total, error } = await getAllocationHistory(
@@ -117,6 +137,25 @@ export default async function AlocacoesPage({
 }: {
   searchParams: SearchParams
 }) {
+  const params = await searchParams
+
+  // Extract all filter params
+  const periodFrom = typeof params.periodFrom === 'string' ? params.periodFrom : undefined
+  const periodTo = typeof params.periodTo === 'string' ? params.periodTo : undefined
+  const search = typeof params.search === 'string' ? params.search : undefined
+  const acceptanceRate = typeof params.acceptanceRate === 'string' ? params.acceptanceRate : undefined
+  const expirationRate = typeof params.expirationRate === 'string' ? params.expirationRate : undefined
+  const volume = typeof params.volume === 'string' ? params.volume : undefined
+  const sort = typeof params.sort === 'string' ? params.sort : undefined
+  const dir = typeof params.dir === 'string' ? params.dir : undefined
+  const page = typeof params.page === 'string' ? params.page : undefined
+  const limit = typeof params.limit === 'string' ? params.limit : undefined
+
+  // Stats filters (just period)
+  const statsFilters: AllocationStatsFilters = {}
+  if (periodFrom) statsFilters.periodFrom = periodFrom
+  if (periodTo) statsFilters.periodTo = periodTo
+
   return (
     <div className="flex flex-col h-full">
       <Header
@@ -126,7 +165,7 @@ export default async function AlocacoesPage({
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         <Suspense fallback={<StatsLoading />}>
-          <AlocacoesStatsSection />
+          <AlocacoesStatsSection filters={statsFilters} />
         </Suspense>
 
         <div className="space-y-4">
@@ -135,7 +174,18 @@ export default async function AlocacoesPage({
           </Suspense>
 
           <Suspense fallback={<TableLoading />}>
-            <AlocacoesListSection searchParams={searchParams} />
+            <AlocacoesListSection
+              periodFrom={periodFrom}
+              periodTo={periodTo}
+              search={search}
+              acceptanceRate={acceptanceRate}
+              expirationRate={expirationRate}
+              volume={volume}
+              sort={sort}
+              dir={dir}
+              page={page}
+              limit={limit}
+            />
           </Suspense>
         </div>
       </div>
