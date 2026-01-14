@@ -14,6 +14,7 @@ import {
 import type { MapCoverageData } from '@/lib/network/actions'
 import { PORTUGAL_CENTER } from '@/lib/geo/portugal-coordinates'
 import { MapPin, Loader2, Users, AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { MunicipalityCoverageDialog } from './municipality-coverage-dialog'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 interface NetworkMapboxMapProps {
@@ -60,6 +61,8 @@ export function NetworkMapboxMap({ coverageData }: NetworkMapboxMapProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [selectedService, setSelectedService] = useState<string>('_all')
   const [hoveredMunicipality, setHoveredMunicipality] = useState<MunicipalityPopupData | null>(null)
+  const [selectedMunicipality, setSelectedMunicipality] = useState<{ name: string; district: string } | null>(null)
+  const [coverageDialogOpen, setCoverageDialogOpen] = useState(false)
   const [viewState, setViewState] = useState({
     longitude: PORTUGAL_CENTER.lng,
     latitude: PORTUGAL_CENTER.lat,
@@ -161,6 +164,20 @@ export function NetworkMapboxMap({ coverageData }: NetworkMapboxMapProps) {
     setHoveredMunicipality(null)
   }, [])
 
+  const onClick = useCallback((event: MapMouseEvent) => {
+    const feature = event.features?.[0]
+    if (feature?.properties) {
+      const municipalityName = feature.properties.con_name
+      const districtName = feature.properties.dis_name
+
+      setSelectedMunicipality({
+        name: municipalityName,
+        district: districtName,
+      })
+      setCoverageDialogOpen(true)
+    }
+  }, [])
+
   // Count stats by status
   const statusCounts = useMemo(() => {
     if (!processedGeojson) return { ok: 0, warning: 0, critical: 0 }
@@ -259,6 +276,8 @@ export function NetworkMapboxMap({ coverageData }: NetworkMapboxMapProps) {
         interactiveLayerIds={['municipalities-fill']}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onClick={onClick}
+        cursor="pointer"
       >
         <NavigationControl position="top-right" />
 
@@ -321,6 +340,14 @@ export function NetworkMapboxMap({ coverageData }: NetworkMapboxMapProps) {
           </Popup>
         )}
       </Map>
+
+      {/* Municipality Coverage Dialog */}
+      <MunicipalityCoverageDialog
+        municipality={selectedMunicipality?.name || null}
+        district={selectedMunicipality?.district}
+        open={coverageDialogOpen}
+        onOpenChange={setCoverageDialogOpen}
+      />
     </div>
   )
 }
