@@ -1,0 +1,96 @@
+servico_prestador,servico_taxonomia,categoria_taxonomia,taxonomy_id,score,match_type
+"Limpeza da casa","Limpeza da casa","Serviços de limpeza","0220012a-6aa9-49f1-8e1d-06b041a270eb",100,exact
+"Engomadoria com recolha","Engomadoria com recolha","Engomadoria e lavandaria","37d96757-ec2f-4b2d-a238-5761e97aaaab",100,exact
+"Engomadoria com recolha de camisas e calças","Engomadoria com recolha","Engomadoria e lavandaria","37d96757-ec2f-4b2d-a238-5761e97aaaab",100,exact
+"Limpeza profunda","Limpeza profunda","Serviços de limpeza","006946ed-55ac-4f55-97a6-a2c742493914",100,exact
+"Engomadoria com recolha de lençóis e toalhas","Engomadoria com recolha","Engomadoria e lavandaria","37d96757-ec2f-4b2d-a238-5761e97aaaab",100,exact
+"Instalação de eletrodomésticos","Instalação de eletrodomésticos","Instalação e reparação","850ecfd7-1f87-461e-8ef6-737771ddbc6e",100,exact
+"Instalação de candeeiros","Instalação de candeeiros","Instalação e reparação","f6ae9b8e-439d-423e-bb92-adcc5c39bbf4",100,exact
+"Lavandaria e engomadoria com recolha","Engomadoria com recolha","Engomadoria e lavandaria","37d96757-ec2f-4b2d-a238-5761e97aaaab",100,exact
+"Lavandaria com recolha","Lavandaria e engomadoria com recolha","Engomadoria e lavandaria","37ad142a-cfd0-45f8-9f70-8f92ca15f3ae",100,exact
+"Instalação de interruptores e tomadas","Instalação de interruptores e tomadas","Instalação e reparação","21d63a12-0ddd-4a92-85ec-6e952c0ba3f4",100,exact
+"Reparação de eletrodomésticos","Reparação de eletrodomésticos","Instalação e reparação","6d9da7f7-94e5-47db-8378-ffc6d02944fe",100,exact
+"Reparação de máquina de lavar roupa","Reparação de máquina de lavar roupa","Instalação e reparação","e40c1cd5-9366-4020-8aad-0414fada9e85",100,exact
+"Reparação de máquina de lavar loiça","Reparação de máquina de lavar loiça","Instalação e reparação","ce96d57c-34b8-4413-bc02-24a81d51ec15",100,exact
+"Limpeza de humidade","Limpeza de humidade","Serviços de limpeza","daaf6de1-7a16-4b89-9150-14fb9c7e4f58",100,exact
+"Limpeza da casa com engomadoria","Limpeza da casa","Serviços de limpeza","0220012a-6aa9-49f1-8e1d-06b041a270eb",100,exact
+"Substituição de torneiras","Substituição de torneiras","Instalação e reparação","f39c8af4-ef6d-4193-8414-235555350194",100,exact
+"Limpeza de vidros e janelas","Limpeza de vidros e janelas","Serviços de limpeza","950d5093-3f65-4398-9d98-70a04a89431b",100,exact
+"Engomadoria em casa","Engomadoria em casa","Engomadoria e lavandaria","a77cddd2-55b0-4c24-a274-51641e4e160c",100,exact
+"Aplicação de juntas de silicone","Aplicação de juntas de silicone","Instalação e reparação","a1fe6368-f979-4b80-910f-7c1b0c25e32a",100,exact
+"Reparação de autoclismo","Reparação de autoclismo","Instalação e reparação","a95aa58f-40b9-4c48-9dcc-4405014b44e7",100,exact
+"Canalizador","Canalizador","Instalação e reparação","1d98c663-491e-4536-8a13-ec376f042322",100,exact
+"Handyman - Faz tudo em casa","Handyman - Faz tudo em casa","Instalação e reparação","76706a16-1bdb-4124-8894-7a4dada1af9b",100,exact
+"Falhas de energia elétrica","Falhas de energia elétrica","Instalação e reparação","a178d6dd-23b6-4985-80f9-2811ca728f9b",100,exact
+"Eletricista","Eletricista","Instalação e reparação","18ccf94e-0659-4516-af01-2f555a553d1c",100,exact
+"Limpeza de sofás","Limpeza de sofás","Serviços de limpeza","663174be-24a1-4dfa-b5bf-086fe301e1b6",100,exact
+"Instalação de máquina de lavar loiça","Instalação de máquina de lavar loiça","Instalação e reparação","7b0eacdf-f1f8-4ca4-ae8a-1bea75333946",100,exact
+"Instalação de forno elétrico","Instalação de forno elétrico","Instalação e reparação","2bfea591-0573-47ac-8b3b-06bcc2fe5949",100,exact
+"Reparação de frigorífico","Reparação de frigorífico","Instalação e reparação","064168ad-cafe-4946-a47d-07b90f8a6bb8",100,exact
+"Limpeza de colchões","Limpeza de colchões","Serviços de limpeza","490b9d3f-f079-4e6e-8170-c2e03d4d6893",100,exact
+"Limpeza de tapetes em casa","Limpeza de tapetes em casa","Serviços de limpeza","65c17fe7-67ec-4968-a4ef-dcb81ea9eae4",100,exact
+"Fixação à parede","Fixação à parede","Remodelação e decoração","1d90db73-f1ff-4641-b824-2f4bd622b729",100,exact
+"Reparação de estores e persianas","Reparação de estores e persianas","Instalação e reparação","af553bb0-f668-482e-830a-84d214775582",100,exact
+"Instalação e substituição de sanita e autoclismo","Instalação e substituição de sanita e autoclismo","Instalação e reparação","8218689b-17b4-4121-9eeb-c7d9d30408db",100,exact
+"Limpeza profunda de cozinha e casas de banho","Limpeza profunda","Serviços de limpeza","006946ed-55ac-4f55-97a6-a2c742493914",100,exact
+"Eletricista por Orçamento","Eletricista","Instalação e reparação","18ccf94e-0659-4516-af01-2f555a553d1c",100,exact
+"Limpeza pós-obra","Limpeza pós-obra","Serviços de limpeza","42fef37c-ea1e-4baa-8fe2-1af600d25d4b",100,exact
+"Instalação de estendais","Instalação de estendais","Instalação e reparação","bb5ae37e-b24f-4fdf-b9ae-229179f6e787",100,exact
+"Reparação de estendais","Reparação de estendais","Instalação e reparação","5054ed33-d79f-4e5a-ad96-483168c9ab84",100,exact
+"Limpeza de cadeiras e almofadas","Limpeza de cadeiras e almofadas","Serviços de limpeza","3ed927c4-d78b-408d-9802-9132ab7c015e",100,exact
+"Substituição de dobradiças","Substituição de dobradiças","Remodelação e decoração","46b825c2-3cd7-478a-8ff7-1aad8c1eaefd",100,exact
+"Reparação urgente de eletrodomésticos","Reparação de eletrodomésticos","Instalação e reparação","6d9da7f7-94e5-47db-8378-ffc6d02944fe",100,exact
+"Substituição de fechaduras","Substituição de fechaduras","Instalação e reparação","7426ce4d-a719-43df-a137-227dc2cd49dd",100,exact
+"Reparação de eletrodomésticos a gás","Reparação de eletrodomésticos","Instalação e reparação","6d9da7f7-94e5-47db-8378-ffc6d02944fe",100,exact
+"Limpeza de escritórios","Limpeza de escritórios","Empresas","827e4216-a0bd-45af-b2d4-ca502f5c11ae",100,exact
+"Impermeabilização de sofás","Impermeabilização de sofás","Serviços de limpeza","c0f3f91f-0073-4316-80be-037d3f1e4654",100,exact
+"Instalação e substituição de chuveiro e coluna de duche","Instalação e substituição de chuveiro e coluna de duche","Instalação e reparação","2db4b5cf-ebe6-4e4b-932b-8bf952338bdc",100,exact
+"Limpeza de tapetes com recolha","Limpeza de tapetes com recolha","Serviços de limpeza","f9fa5839-3f3e-4e51-9021-4687da5f753e",100,exact
+"Limpeza de bares e restaurantes","Limpeza de bares e restaurantes","Empresas","b8418958-bb92-4bc0-abd7-9320266784c6",100,exact
+"Instalação e substituição de eletrodomésticos a gás","Instalação de eletrodomésticos","Instalação e reparação","850ecfd7-1f87-461e-8ef6-737771ddbc6e",100,exact
+"Engomadoria com entrega rápida","Engomadoria com entrega rápida","Engomadoria e lavandaria","5b3942d3-c390-4fb2-a8a1-284ee6fca742",100,exact
+"Instalações elétricas","Instalação de forno elétrico","Instalação e reparação","2bfea591-0573-47ac-8b3b-06bcc2fe5949",65,low
+"Fugas de gás","Fugas de gás","Instalação e reparação","36030103-5b2c-42c7-bff3-04789c4a6670",100,exact
+"Instalação de estores e persianas exteriores","Instalação de estores e persianas exteriores","Instalação e reparação","c092224e-2a0e-4ef2-81cc-8fbb4d193e5a",100,exact
+"Limpeza doméstica PLUS","Limpeza doméstica PLUS","Serviços de limpeza","cee1d136-db41-43d6-a72c-01b41ed08635",100,exact
+"Limpeza da casa + limpeza de frigorífico grátis","Limpeza da casa","Serviços de limpeza","0220012a-6aa9-49f1-8e1d-06b041a270eb",100,exact
+"Limpeza da casa + limpeza de forno grátis","Limpeza da casa","Serviços de limpeza","0220012a-6aa9-49f1-8e1d-06b041a270eb",100,exact
+"Aplicação de papel de parede","Aplicação de papel de parede","Remodelação e decoração","3f8d89a3-1cb5-4fd0-9c8c-9a9bd4ee6ce8",100,exact
+"Instalação de estores e persianas","Instalação de estores e persianas exteriores","Instalação e reparação","c092224e-2a0e-4ef2-81cc-8fbb4d193e5a",100,exact
+"Limpeza de cabeceira de cama","Limpeza de cabeceira de cama","Serviços de limpeza","8edf8b60-c547-4977-91e2-dbc62d8a4a97",100,exact
+"Instalação de termoacumulador","Instalação de termoacumulador","Instalação e reparação","45aa7c06-2949-46ad-8845-c707e3f6329f",100,exact
+"Montagem de móveis","Montagem de móveis","Remodelação e decoração","61ed75c4-16d9-4dcd-8b0f-545b73a49119",100,exact
+"Pintura de interiores","Pintura de interiores","Remodelação e decoração","698f6eec-e0e8-4958-bc0c-3cf7df42c266",100,exact
+"Roturas de água","Fugas de gás","Instalação e reparação","36030103-5b2c-42c7-bff3-04789c4a6670",59,none
+"Instalação de estores interiores","Instalação de estores interiores","Instalação e reparação","43fa11fb-1f07-4f58-a6b4-9ee82499a112",100,exact
+"Engomadoria com Entrega Rápida","Engomadoria com entrega rápida","Engomadoria e lavandaria","5b3942d3-c390-4fb2-a8a1-284ee6fca742",100,exact
+"Abertura de portas e portões","Limpeza de tapetes em casa","Serviços de limpeza","65c17fe7-67ec-4968-a4ef-dcb81ea9eae4",56,none
+"Limpeza de cama","Limpeza de cabeceira de cama","Serviços de limpeza","8edf8b60-c547-4977-91e2-dbc62d8a4a97",100,exact
+"Controlo de pragas","Controlo de pragas","Serviços de limpeza","c25971e6-ebd9-4acd-8d6d-c0cfe6e0ac36",100,exact
+"Desinfestação de ratos","Desinfestação de ratos","Serviços de limpeza","aa0c4e2b-0c51-4cba-9236-d82dcccc5c08",100,exact
+"Desinfestação de baratas","Desinfestação de baratas","Serviços de limpeza","50c880a2-044b-400a-b7e6-90af763c5de2",100,exact
+"Desinfestação de pulgas","Desinfestação de pulgas","Serviços de limpeza","e17b798c-770b-40cb-9972-8aa5563ff949",100,exact
+"Desinfestação de percevejos","Desinfestação de percevejos","Serviços de limpeza","98db09be-c10c-4429-9e47-ef8bd0126856",100,exact
+"Instalação de estores, persianas e portadas","Instalação de estores e persianas exteriores","Instalação e reparação","c092224e-2a0e-4ef2-81cc-8fbb4d193e5a",88,high
+"Reparação de estores, persianas e portadas","Reparação de estores e persianas","Instalação e reparação","af553bb0-f668-482e-830a-84d214775582",100,exact
+"Limpeza comercial (lojas & vitrines)","Limpeza comercial (lojas & vitrines)","Empresas","15c8b3e6-b163-43c5-b547-24c65653beb4",100,exact
+"Manutenção de termoacumulador","Manutenção de termoacumulador","Instalação e reparação","659bbe2c-bbac-42f0-b413-ae82afa82e4e",100,exact
+"Envernizamento de pavimentos","Envernizamento de pavimentos","Remodelação e decoração","bce76eff-0fb7-4f2c-a4ac-049b538898ab",100,exact
+"Limpeza de ar condicionado","Limpeza de ar condicionado","Serviços de limpeza","a8fe1d66-d624-4925-9f82-6983a58054dc",100,exact
+"Reparação de ar condicionado","Reparação de ar condicionado","Instalação e reparação","d77967ae-2b95-4b11-90aa-5acef9628254",100,exact
+"Certificação energética","Certificação energética","Serviços energéticos","ff881214-ddaf-46e4-b83f-21c123ce2104",100,exact
+"Diagnóstico de eficiência energética","Certificação energética","Serviços energéticos","ff881214-ddaf-46e4-b83f-21c123ce2104",61,low
+"Certificação energética para empresas","Certificação energética","Serviços energéticos","ff881214-ddaf-46e4-b83f-21c123ce2104",100,exact
+"Limpeza de chaminés","Limpeza de chaminés","Serviços de limpeza","3d651618-2363-49cf-b902-6a54630155bb",100,exact
+"Avaliação de sinais vitais ao domicílio","Massagem ao domicílio","Saúde e bem-estar","61c238e9-7dd1-4a75-b397-3a40a13dda2f",73,medium
+"Enfermagem ao domicílio","Enfermagem ao domicílio","Saúde e bem-estar","f7289ddc-5d6f-42ff-ae9b-387368f8078f",100,exact
+"Nutricionista ao domicílio","Nutricionista ao domicílio","Saúde e bem-estar","9fcdb07c-dfe0-4aad-aaa8-9e7065f46370",100,exact
+"Personal trainer ao domicílio","Personal trainer ao domicílio","Saúde e bem-estar","afa0c281-b16a-4dc6-b3bf-261eae191d5f",100,exact
+"Limpeza de tapetes e cortinados","Limpeza de cortinados","Serviços de limpeza","f9d18671-9c0c-48ea-b74a-05998e214fbf",100,exact
+"Limpeza de cortinados","Limpeza de cortinados","Serviços de limpeza","f9d18671-9c0c-48ea-b74a-05998e214fbf",100,exact
+"Jardinagem de exteriores","Jardinagem de exteriores","Jardinagem","6d81abd9-ae18-4827-83a8-dbd06303a611",100,exact
+"Peritagem à casa","Peritagem à casa","Instalação e reparação","4a317311-983e-44b4-8628-eaedf8c117b4",100,exact
+"Desentupimentos","Envernizamento de pavimentos","Remodelação e decoração","bce76eff-0fb7-4f2c-a4ac-049b538898ab",60,low
+"Limpeza de azulejos","Limpeza de azulejos","Serviços de limpeza","a0c340fe-93ea-477e-891a-5c97cf5be2e5",100,exact
+"Hotel para cães","Aplicação de papel de parede","Remodelação e decoração","3f8d89a3-1cb5-4fd0-9c8c-9a9bd4ee6ce8",50,none
+"Massagem ao domicílio","Massagem ao domicílio","Saúde e bem-estar","61c238e9-7dd1-4a75-b397-3a40a13dda2f",100,exact

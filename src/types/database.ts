@@ -1390,6 +1390,254 @@ export type Database = {
         }
         Relationships: []
       }
+      service_mapping: {
+        Row: {
+          confidence_score: number | null
+          created_at: string | null
+          id: string
+          match_type: string | null
+          provider_service_name: string
+          taxonomy_service_id: string
+          updated_at: string | null
+          verified: boolean | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          match_type?: string | null
+          provider_service_name: string
+          taxonomy_service_id: string
+          updated_at?: string | null
+          verified?: boolean | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          match_type?: string | null
+          provider_service_name?: string
+          taxonomy_service_id?: string
+          updated_at?: string | null
+          verified?: boolean | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_mapping_taxonomy_service_id_fkey"
+            columns: ["taxonomy_service_id"]
+            isOneToOne: false
+            referencedRelation: "provider_coverage_by_service"
+            referencedColumns: ["taxonomy_service_id"]
+          },
+          {
+            foreignKeyName: "service_mapping_taxonomy_service_id_fkey"
+            columns: ["taxonomy_service_id"]
+            isOneToOne: false
+            referencedRelation: "service_taxonomy"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_mapping_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_mapping_feedback: {
+        Row: {
+          actual_taxonomy_id: string | null
+          algorithm_score: number | null
+          created_at: string | null
+          id: string
+          provider_service_name: string
+          suggested_taxonomy_id: string | null
+          user_id: string | null
+          was_correct: boolean | null
+        }
+        Insert: {
+          actual_taxonomy_id?: string | null
+          algorithm_score?: number | null
+          created_at?: string | null
+          id?: string
+          provider_service_name: string
+          suggested_taxonomy_id?: string | null
+          user_id?: string | null
+          was_correct?: boolean | null
+        }
+        Update: {
+          actual_taxonomy_id?: string | null
+          algorithm_score?: number | null
+          created_at?: string | null
+          id?: string
+          provider_service_name?: string
+          suggested_taxonomy_id?: string | null
+          user_id?: string | null
+          was_correct?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_mapping_feedback_actual_taxonomy_id_fkey"
+            columns: ["actual_taxonomy_id"]
+            isOneToOne: false
+            referencedRelation: "provider_coverage_by_service"
+            referencedColumns: ["taxonomy_service_id"]
+          },
+          {
+            foreignKeyName: "service_mapping_feedback_actual_taxonomy_id_fkey"
+            columns: ["actual_taxonomy_id"]
+            isOneToOne: false
+            referencedRelation: "service_taxonomy"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_mapping_feedback_suggested_taxonomy_id_fkey"
+            columns: ["suggested_taxonomy_id"]
+            isOneToOne: false
+            referencedRelation: "provider_coverage_by_service"
+            referencedColumns: ["taxonomy_service_id"]
+          },
+          {
+            foreignKeyName: "service_mapping_feedback_suggested_taxonomy_id_fkey"
+            columns: ["suggested_taxonomy_id"]
+            isOneToOne: false
+            referencedRelation: "service_taxonomy"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_mapping_feedback_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_mapping_suggestions: {
+        Row: {
+          admin_notes: string | null
+          approved_taxonomy_id: string | null
+          created_at: string | null
+          id: string
+          provider_service_name: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          suggested_score_1: number | null
+          suggested_score_2: number | null
+          suggested_score_3: number | null
+          suggested_taxonomy_id_1: string | null
+          suggested_taxonomy_id_2: string | null
+          suggested_taxonomy_id_3: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          approved_taxonomy_id?: string | null
+          created_at?: string | null
+          id?: string
+          provider_service_name: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          suggested_score_1?: number | null
+          suggested_score_2?: number | null
+          suggested_score_3?: number | null
+          suggested_taxonomy_id_1?: string | null
+          suggested_taxonomy_id_2?: string | null
+          suggested_taxonomy_id_3?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          approved_taxonomy_id?: string | null
+          created_at?: string | null
+          id?: string
+          provider_service_name?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          suggested_score_1?: number | null
+          suggested_score_2?: number | null
+          suggested_score_3?: number | null
+          suggested_taxonomy_id_1?: string | null
+          suggested_taxonomy_id_2?: string | null
+          suggested_taxonomy_id_3?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_mapping_suggestions_approved_taxonomy_id_fkey"
+            columns: ["approved_taxonomy_id"]
+            isOneToOne: false
+            referencedRelation: "provider_coverage_by_service"
+            referencedColumns: ["taxonomy_service_id"]
+          },
+          {
+            foreignKeyName: "service_mapping_suggestions_approved_taxonomy_id_fkey"
+            columns: ["approved_taxonomy_id"]
+            isOneToOne: false
+            referencedRelation: "service_taxonomy"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_mapping_suggestions_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_1_fkey"
+            columns: ["suggested_taxonomy_id_1"]
+            isOneToOne: false
+            referencedRelation: "provider_coverage_by_service"
+            referencedColumns: ["taxonomy_service_id"]
+          },
+          {
+            foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_1_fkey"
+            columns: ["suggested_taxonomy_id_1"]
+            isOneToOne: false
+            referencedRelation: "service_taxonomy"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_2_fkey"
+            columns: ["suggested_taxonomy_id_2"]
+            isOneToOne: false
+            referencedRelation: "provider_coverage_by_service"
+            referencedColumns: ["taxonomy_service_id"]
+          },
+          {
+            foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_2_fkey"
+            columns: ["suggested_taxonomy_id_2"]
+            isOneToOne: false
+            referencedRelation: "service_taxonomy"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_3_fkey"
+            columns: ["suggested_taxonomy_id_3"]
+            isOneToOne: false
+            referencedRelation: "provider_coverage_by_service"
+            referencedColumns: ["taxonomy_service_id"]
+          },
+          {
+            foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_3_fkey"
+            columns: ["suggested_taxonomy_id_3"]
+            isOneToOne: false
+            referencedRelation: "service_taxonomy"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_requests: {
         Row: {
           additional_charges_discount: number | null
@@ -1648,6 +1896,33 @@ export type Database = {
           used_wallet?: boolean | null
           user_id?: string | null
           zip_code?: string | null
+        }
+        Relationships: []
+      }
+      service_taxonomy: {
+        Row: {
+          active: boolean | null
+          category: string
+          created_at: string | null
+          id: string
+          service: string
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          category: string
+          created_at?: string | null
+          id?: string
+          service: string
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          category?: string
+          created_at?: string | null
+          id?: string
+          service?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1994,7 +2269,19 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      provider_coverage_by_service: {
+        Row: {
+          category: string | null
+          district: string | null
+          municipality: string | null
+          provider_count: number | null
+          provider_ids: string[] | null
+          provider_names: string[] | null
+          service: string | null
+          taxonomy_service_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_user_admin: { Args: { user_id: string }; Returns: boolean }
