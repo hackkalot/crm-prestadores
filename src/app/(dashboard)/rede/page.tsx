@@ -6,8 +6,8 @@ import {
   getNetworkStats,
   getNetworkCoverage,
   getNetworkGaps,
-  getMapCoverage,
 } from '@/lib/network/actions'
+import { getAllMunicipalitiesCoverage } from '@/lib/network/coverage-actions'
 import { NetworkCoverageMap } from '@/components/network/network-coverage-map'
 import { NetworkMapboxMap } from '@/components/network/network-mapbox-map'
 import { NetworkGapsList } from '@/components/network/network-gaps-list'
@@ -24,11 +24,11 @@ import {
 } from 'lucide-react'
 
 export default async function RedePage() {
-  const [stats, coverage, gaps, mapCoverage] = await Promise.all([
+  const [stats, coverage, gaps, municipalityCoverage] = await Promise.all([
     getNetworkStats(),
     getNetworkCoverage(),
     getNetworkGaps(),
-    getMapCoverage(),
+    getAllMunicipalitiesCoverage(),
   ])
 
   return (
@@ -149,7 +149,7 @@ export default async function RedePage() {
           </TabsList>
 
           <TabsContent value="mapa" className="flex-1 mt-4 data-[state=active]:flex data-[state=active]:flex-col">
-            <NetworkMapboxMap coverageData={mapCoverage} />
+            <NetworkMapboxMap municipalityCoverage={municipalityCoverage} />
           </TabsContent>
 
           <TabsContent value="distritos" className="mt-4">

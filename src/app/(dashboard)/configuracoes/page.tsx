@@ -5,6 +5,8 @@ import { TaskDefinitionsTable } from '@/components/settings/task-definitions-tab
 import { GlobalSettings } from '@/components/settings/global-settings'
 import { SettingsLogList } from '@/components/settings/settings-log'
 import { CoverageSettings } from '@/components/settings/coverage-settings'
+import { ServiceMappingReview } from '@/components/service-mapping/service-mapping-review'
+import { ServiceMappingStats } from '@/components/service-mapping/service-mapping-stats'
 import {
   getTaskDefinitions,
   getSettings,
@@ -13,19 +15,32 @@ import {
   ensureDefaultSettings,
 } from '@/lib/settings/actions'
 import { getCoverageSettings } from '@/lib/settings/coverage-actions'
+import { getPendingSuggestions, getMappingStats } from '@/lib/service-mapping/actions'
 import { Settings, ListTodo, History, Network, MapPin } from 'lucide-react'
 
-export default async function ConfiguracoesPage() {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+
+export default async function ConfiguracoesPage({
+  searchParams,
+}: {
+  searchParams: SearchParams
+}) {
+  const params = await searchParams
+  const activeTab = (typeof params.tab === 'string' ? params.tab : 'tasks') as string
+
   // Garantir que as configuracoes padrao existem
   await ensureDefaultSettings()
 
-  const [tasks, settings, logs, users, coverageSettings] = await Promise.all([
-    getTaskDefinitions(),
-    getSettings(),
-    getSettingsLog(),
-    getUsers(),
-    getCoverageSettings(),
-  ])
+  const [tasks, settings, logs, users, coverageSettings, mappingSuggestions, mappingStats] =
+    await Promise.all([
+      getTaskDefinitions(),
+      getSettings(),
+      getSettingsLog(),
+      getUsers(),
+      getCoverageSettings(),
+      getPendingSuggestions(),
+      getMappingStats(),
+    ])
 
   return (
     <div className="flex flex-col h-full">
@@ -34,29 +49,37 @@ export default async function ConfiguracoesPage() {
         description="Definições globais de onboarding, prazos e alertas"
       />
       <div className="flex-1 p-6 overflow-auto">
-        <Tabs defaultValue="tasks" className="space-y-6">
+        <Tabs value={activeTab} className="space-y-6">
           <TabsList>
-            <TabsTrigger value="tasks" className="gap-2">
-              <ListTodo className="h-4 w-4" />
-              Tarefas
+            <TabsTrigger value="tasks" className="gap-2" asChild>
+              <a href="/configuracoes?tab=tasks">
+                <ListTodo className="h-4 w-4" />
+                Tarefas
+              </a>
             </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-2">
-              <Settings className="h-4 w-4" />
-              Alertas
+            <TabsTrigger value="settings" className="gap-2" asChild>
+              <a href="/configuracoes?tab=settings">
+                <Settings className="h-4 w-4" />
+                Alertas
+              </a>
             </TabsTrigger>
-            <TabsTrigger value="coverage" className="gap-2">
-              <MapPin className="h-4 w-4" />
-              Cobertura
+            <TabsTrigger value="coverage" className="gap-2" asChild>
+              <a href="/configuracoes?tab=coverage">
+                <MapPin className="h-4 w-4" />
+                Cobertura
+              </a>
             </TabsTrigger>
             <TabsTrigger value="mapping" className="gap-2" asChild>
-              <a href="/configuracoes/mapeamento-servicos">
+              <a href="/configuracoes?tab=mapping">
                 <Network className="h-4 w-4" />
                 Mapeamento
               </a>
             </TabsTrigger>
-            <TabsTrigger value="history" className="gap-2">
-              <History className="h-4 w-4" />
-              Histórico
+            <TabsTrigger value="history" className="gap-2" asChild>
+              <a href="/configuracoes?tab=history">
+                <History className="h-4 w-4" />
+                Histórico
+              </a>
             </TabsTrigger>
           </TabsList>
 
@@ -93,6 +116,13 @@ export default async function ConfiguracoesPage() {
                 capacityLowMin={coverageSettings.coverage_capacity_low_min}
                 analysisPeriodMonths={coverageSettings.coverage_analysis_period_months}
               />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="mapping" className="space-y-6">
+            <Suspense fallback={<div className="h-96 bg-muted animate-pulse rounded-lg" />}>
+              <ServiceMappingStats stats={mappingStats} />
+              <ServiceMappingReview suggestions={mappingSuggestions.data} />
             </Suspense>
           </TabsContent>
 
