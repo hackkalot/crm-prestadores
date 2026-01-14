@@ -1972,6 +1972,9 @@ export type Database = {
       }
       settings: {
         Row: {
+          coverage_analysis_period_months: number | null
+          coverage_good_min_providers: number | null
+          coverage_low_min_providers: number | null
           description: string | null
           id: string
           key: string
@@ -1980,6 +1983,9 @@ export type Database = {
           value: Json
         }
         Insert: {
+          coverage_analysis_period_months?: number | null
+          coverage_good_min_providers?: number | null
+          coverage_low_min_providers?: number | null
           description?: string | null
           id?: string
           key: string
@@ -1988,6 +1994,9 @@ export type Database = {
           value: Json
         }
         Update: {
+          coverage_analysis_period_months?: number | null
+          coverage_good_min_providers?: number | null
+          coverage_low_min_providers?: number | null
           description?: string | null
           id?: string
           key?: string
@@ -2269,6 +2278,19 @@ export type Database = {
       }
     }
     Views: {
+      municipality_coverage_overview: {
+        Row: {
+          avg_providers_per_service: number | null
+          district: string | null
+          municipality: string | null
+          services_at_risk: number | null
+          services_good_coverage: number | null
+          services_low_coverage: number | null
+          total_requests: number | null
+          total_services: number | null
+        }
+        Relationships: []
+      }
       provider_coverage_by_service: {
         Row: {
           category: string | null
@@ -2277,6 +2299,7 @@ export type Database = {
           provider_count: number | null
           provider_ids: string[] | null
           provider_names: string[] | null
+          request_count: number | null
           service: string | null
           taxonomy_service_id: string | null
         }
