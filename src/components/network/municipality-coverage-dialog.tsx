@@ -62,21 +62,21 @@ export function MunicipalityCoverageDialog({
         return (
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
             <CheckCircle2 className="h-3 w-3 mr-1" />
-            Boa Cobertura
+            Boa
           </Badge>
         )
       case 'low':
         return (
           <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
             <AlertTriangle className="h-3 w-3 mr-1" />
-            Baixa Cobertura
+            Baixa
           </Badge>
         )
-      case 'at_risk':
+      case 'bad':
         return (
           <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
             <AlertTriangle className="h-3 w-3 mr-1" />
-            Em Risco
+            Má
           </Badge>
         )
     }
@@ -156,12 +156,12 @@ export function MunicipalityCoverageDialog({
               <Card className="border-red-200 bg-red-50/50">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-red-700">
-                    Em Risco
+                    Má Cobertura
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-red-700">
-                    {coverage.atRisk}
+                    {coverage.badCoverage}
                   </div>
                 </CardContent>
               </Card>
@@ -174,7 +174,9 @@ export function MunicipalityCoverageDialog({
                   <TableRow>
                     <TableHead>Categoria</TableHead>
                     <TableHead>Serviço</TableHead>
+                    <TableHead className="text-center">Pedidos</TableHead>
                     <TableHead className="text-center">Prestadores</TableHead>
+                    <TableHead className="text-center">Capacidade</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Recomendação</TableHead>
                     <TableHead className="text-right">Ação</TableHead>
@@ -183,8 +185,8 @@ export function MunicipalityCoverageDialog({
                 <TableBody>
                   {coverage.services
                     .sort((a, b) => {
-                      // Sort by status: at_risk first, then low, then good
-                      const statusOrder = { at_risk: 0, low: 1, good: 2 }
+                      // Sort by status: bad first, then low, then good
+                      const statusOrder = { bad: 0, low: 1, good: 2 }
                       return statusOrder[a.status] - statusOrder[b.status]
                     })
                     .map((service, index) => (
@@ -192,10 +194,22 @@ export function MunicipalityCoverageDialog({
                         <TableCell className="font-medium">{service.category}</TableCell>
                         <TableCell>{service.service}</TableCell>
                         <TableCell className="text-center">
+                          <span className="font-semibold">{service.request_count}</span>
+                        </TableCell>
+                        <TableCell className="text-center">
                           <div className="flex items-center justify-center gap-1">
                             <Users className="h-4 w-4 text-muted-foreground" />
                             <span className="font-semibold">{service.provider_count}</span>
                           </div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <span className={`font-semibold ${
+                            service.capacity_percentage >= 100 ? 'text-green-600' :
+                            service.capacity_percentage >= 50 ? 'text-amber-600' :
+                            'text-red-600'
+                          }`}>
+                            {service.capacity_percentage}%
+                          </span>
                         </TableCell>
                         <TableCell>{getStatusBadge(service.status)}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">
@@ -224,23 +238,26 @@ export function MunicipalityCoverageDialog({
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm">Critérios de Cobertura</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm space-y-1">
+              <CardContent className="text-sm space-y-2">
+                <p className="text-muted-foreground mb-2">
+                  <strong className="text-foreground">Capacidade = (Prestadores × Pedidos por Prestador) / Total Pedidos × 100%</strong>
+                </p>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-green-600" />
                   <span>
-                    <strong>Boa Cobertura:</strong> ≥ 3 prestadores ativos
+                    <strong>🟢 Boa:</strong> Capacidade ≥ 100%
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4 text-amber-600" />
                   <span>
-                    <strong>Baixa Cobertura:</strong> 1-2 prestadores ativos
+                    <strong>🟡 Baixa:</strong> Capacidade entre 50-99%
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4 text-red-600" />
                   <span>
-                    <strong>Em Risco:</strong> 0 prestadores ativos
+                    <strong>🔴 Má:</strong> Capacidade {'<'} 50%
                   </span>
                 </div>
               </CardContent>

@@ -1973,8 +1973,9 @@ export type Database = {
       settings: {
         Row: {
           coverage_analysis_period_months: number | null
-          coverage_good_min_providers: number | null
-          coverage_low_min_providers: number | null
+          coverage_capacity_good_min: number | null
+          coverage_capacity_low_min: number | null
+          coverage_requests_per_provider: number | null
           description: string | null
           id: string
           key: string
@@ -1984,8 +1985,9 @@ export type Database = {
         }
         Insert: {
           coverage_analysis_period_months?: number | null
-          coverage_good_min_providers?: number | null
-          coverage_low_min_providers?: number | null
+          coverage_capacity_good_min?: number | null
+          coverage_capacity_low_min?: number | null
+          coverage_requests_per_provider?: number | null
           description?: string | null
           id?: string
           key: string
@@ -1995,8 +1997,9 @@ export type Database = {
         }
         Update: {
           coverage_analysis_period_months?: number | null
-          coverage_good_min_providers?: number | null
-          coverage_low_min_providers?: number | null
+          coverage_capacity_good_min?: number | null
+          coverage_capacity_low_min?: number | null
+          coverage_requests_per_provider?: number | null
           description?: string | null
           id?: string
           key?: string

@@ -5,8 +5,9 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 
 export interface CoverageSettings {
-  coverage_good_min_providers: number
-  coverage_low_min_providers: number
+  coverage_requests_per_provider: number
+  coverage_capacity_good_min: number
+  coverage_capacity_low_min: number
   coverage_analysis_period_months: number
 }
 
@@ -20,8 +21,9 @@ export async function getCoverageSettings(): Promise<CoverageSettings> {
 
   if (authError || !user) {
     return {
-      coverage_good_min_providers: 3,
-      coverage_low_min_providers: 1,
+      coverage_requests_per_provider: 20,
+      coverage_capacity_good_min: 100,
+      coverage_capacity_low_min: 50,
       coverage_analysis_period_months: 1,
     }
   }
@@ -30,20 +32,22 @@ export async function getCoverageSettings(): Promise<CoverageSettings> {
 
   const { data, error } = await admin
     .from('settings')
-    .select('coverage_good_min_providers, coverage_low_min_providers, coverage_analysis_period_months')
+    .select('coverage_requests_per_provider, coverage_capacity_good_min, coverage_capacity_low_min, coverage_analysis_period_months')
     .single()
 
   if (error || !data) {
     return {
-      coverage_good_min_providers: 3,
-      coverage_low_min_providers: 1,
+      coverage_requests_per_provider: 20,
+      coverage_capacity_good_min: 100,
+      coverage_capacity_low_min: 50,
       coverage_analysis_period_months: 1,
     }
   }
 
   return {
-    coverage_good_min_providers: data.coverage_good_min_providers || 3,
-    coverage_low_min_providers: data.coverage_low_min_providers || 1,
+    coverage_requests_per_provider: data.coverage_requests_per_provider || 20,
+    coverage_capacity_good_min: data.coverage_capacity_good_min || 100,
+    coverage_capacity_low_min: data.coverage_capacity_low_min || 50,
     coverage_analysis_period_months: data.coverage_analysis_period_months || 1,
   }
 }
@@ -63,21 +67,26 @@ export async function updateCoverageSettings(
     return { error: 'Não autenticado' }
   }
 
-  const goodMin = parseInt(formData.get('good_min') as string)
-  const lowMin = parseInt(formData.get('low_min') as string)
+  const requestsPerProvider = parseInt(formData.get('requests_per_provider') as string)
+  const capacityGoodMin = parseInt(formData.get('capacity_good_min') as string)
+  const capacityLowMin = parseInt(formData.get('capacity_low_min') as string)
   const periodMonths = parseInt(formData.get('period_months') as string)
 
   // Validações
-  if (isNaN(goodMin) || goodMin < 1) {
-    return { error: 'Boa cobertura deve ser >= 1' }
+  if (isNaN(requestsPerProvider) || requestsPerProvider < 1) {
+    return { error: 'Pedidos por prestador deve ser >= 1' }
   }
 
-  if (isNaN(lowMin) || lowMin < 0) {
-    return { error: 'Baixa cobertura deve ser >= 0' }
+  if (isNaN(capacityGoodMin) || capacityGoodMin < 0 || capacityGoodMin > 200) {
+    return { error: 'Capacidade boa deve estar entre 0 e 200%' }
   }
 
-  if (goodMin <= lowMin) {
-    return { error: 'Boa cobertura deve ser maior que baixa cobertura' }
+  if (isNaN(capacityLowMin) || capacityLowMin < 0 || capacityLowMin > 200) {
+    return { error: 'Capacidade baixa deve estar entre 0 e 200%' }
+  }
+
+  if (capacityGoodMin <= capacityLowMin) {
+    return { error: 'Capacidade boa deve ser maior que capacidade baixa' }
   }
 
   if (isNaN(periodMonths) || periodMonths < 1 || periodMonths > 12) {
@@ -89,8 +98,9 @@ export async function updateCoverageSettings(
   const { error } = await admin
     .from('settings')
     .update({
-      coverage_good_min_providers: goodMin,
-      coverage_low_min_providers: lowMin,
+      coverage_requests_per_provider: requestsPerProvider,
+      coverage_capacity_good_min: capacityGoodMin,
+      coverage_capacity_low_min: capacityLowMin,
       coverage_analysis_period_months: periodMonths,
       updated_at: new Date().toISOString(),
     })

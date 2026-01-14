@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useActionState } from 'react'
+import { useActionState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -9,14 +9,16 @@ import { Loader2, Save } from 'lucide-react'
 import { updateCoverageSettings } from '@/lib/settings/coverage-actions'
 
 interface CoverageSettingsProps {
-  goodMinProviders: number
-  lowMinProviders: number
+  requestsPerProvider: number
+  capacityGoodMin: number
+  capacityLowMin: number
   analysisPeriodMonths: number
 }
 
 export function CoverageSettings({
-  goodMinProviders,
-  lowMinProviders,
+  requestsPerProvider,
+  capacityGoodMin,
+  capacityLowMin,
   analysisPeriodMonths,
 }: CoverageSettingsProps) {
   const [state, formAction, pending] = useActionState(updateCoverageSettings, {})
@@ -27,45 +29,67 @@ export function CoverageSettings({
         <CardHeader>
           <CardTitle>Thresholds de Cobertura</CardTitle>
           <CardDescription>
-            Define os critérios para avaliar a cobertura de serviços por concelho
+            Define os critérios para avaliar a cobertura de serviços por concelho com base na capacidade
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-6 md:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="good_min">
-                Boa Cobertura (mín. prestadores)
+              <Label htmlFor="requests_per_provider">
+                Pedidos por Prestador
               </Label>
               <Input
-                id="good_min"
-                name="good_min"
+                id="requests_per_provider"
+                name="requests_per_provider"
                 type="number"
                 min="1"
-                defaultValue={goodMinProviders}
+                max="100"
+                defaultValue={requestsPerProvider}
                 required
               />
               <p className="text-xs text-muted-foreground">
-                Concelho com ≥ este número de prestadores = 🟢 Verde
+                Quantos pedidos 1 prestador consegue cobrir por período
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="low_min">
-                Baixa Cobertura (mín. prestadores)
+              <Label htmlFor="capacity_good_min">
+                Boa Cobertura (% capacidade)
               </Label>
               <Input
-                id="low_min"
-                name="low_min"
+                id="capacity_good_min"
+                name="capacity_good_min"
                 type="number"
                 min="0"
-                defaultValue={lowMinProviders}
+                max="200"
+                defaultValue={capacityGoodMin}
                 required
               />
               <p className="text-xs text-muted-foreground">
-                Concelho com ≥ este número mas {`<`} boa cobertura = 🟡 Amarelo
+                Capacidade ≥ este valor = 🟢 Verde
               </p>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="capacity_low_min">
+                Baixa Cobertura (% capacidade)
+              </Label>
+              <Input
+                id="capacity_low_min"
+                name="capacity_low_min"
+                type="number"
+                min="0"
+                max="200"
+                defaultValue={capacityLowMin}
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                Capacidade ≥ este valor mas {`<`} boa = 🟡 Amarelo
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="period_months">
                 Período de Análise (meses)
@@ -87,23 +111,28 @@ export function CoverageSettings({
 
           <div className="rounded-lg bg-muted p-4 space-y-2">
             <h4 className="font-medium text-sm">Como funciona:</h4>
+            <p className="text-sm text-muted-foreground mb-2">
+              <strong className="text-foreground">Capacidade = (Prestadores × {requestsPerProvider}) / Pedidos × 100%</strong>
+            </p>
             <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
               <li>
-                <strong className="text-foreground">Verde (Boa):</strong> {goodMinProviders} ou mais
-                prestadores ativos
+                <strong className="text-foreground">🟢 Verde (Boa):</strong> Capacidade ≥ {capacityGoodMin}%
               </li>
               <li>
-                <strong className="text-foreground">Amarelo (Baixa):</strong> Entre {lowMinProviders} e{' '}
-                {goodMinProviders - 1} prestadores
+                <strong className="text-foreground">🟡 Amarelo (Baixa):</strong> Capacidade entre {capacityLowMin}% e {capacityGoodMin - 1}%
               </li>
               <li>
-                <strong className="text-foreground">Vermelho (Em Risco):</strong> Menos de{' '}
-                {lowMinProviders} prestador(es)
+                <strong className="text-foreground">🔴 Vermelho (Má):</strong> Capacidade {`<`} {capacityLowMin}%
               </li>
               <li>
                 <strong className="text-foreground">Transparente:</strong> Sem pedidos no período
               </li>
             </ul>
+            <div className="mt-3 pt-3 border-t border-border">
+              <p className="text-xs text-muted-foreground">
+                <strong className="text-foreground">Exemplo:</strong> 100 pedidos, 5 prestadores → Capacidade = (5 × {requestsPerProvider}) / 100 = {(5 * requestsPerProvider / 100 * 100).toFixed(0)}%
+              </p>
+            </div>
           </div>
 
           {state.error && (

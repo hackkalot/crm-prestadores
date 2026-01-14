@@ -2,11 +2,12 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getCoverageSettings } from '@/lib/settings/coverage-actions'
 
 export interface CoverageThreshold {
-  good_min: number
-  low_min: number
-  at_risk_max: number
+  requests_per_provider: number
+  capacity_good_min: number
+  capacity_low_min: number
 }
 
 export interface ServiceCoverage {
@@ -14,9 +15,11 @@ export interface ServiceCoverage {
   service: string
   taxonomy_service_id: string
   provider_count: number
+  request_count: number
+  capacity_percentage: number
   provider_ids: string[]
   provider_names: string[]
-  status: 'good' | 'low' | 'at_risk'
+  status: 'good' | 'low' | 'bad'
   recommendation?: string
 }
 
@@ -27,34 +30,56 @@ export interface MunicipalityCoverage {
   totalServices: number
   goodCoverage: number
   lowCoverage: number
-  atRisk: number
-  overallStatus: 'good' | 'low' | 'at_risk'
+  badCoverage: number
+  overallStatus: 'good' | 'low' | 'bad'
 }
 
-// Default thresholds (podem ser configurados no futuro)
+// Default thresholds
 const DEFAULT_THRESHOLDS: CoverageThreshold = {
-  good_min: 3,    // >= 3 prestadores = boa cobertura
-  low_min: 1,     // 1-2 prestadores = baixa cobertura
-  at_risk_max: 0, // 0 prestadores = em risco
+  requests_per_provider: 20,  // 1 prestador consegue cobrir 20 pedidos
+  capacity_good_min: 100,     // >= 100% capacidade = boa cobertura
+  capacity_low_min: 50,       // >= 50% capacidade = baixa cobertura
 }
 
-function getCoverageStatus(
+/**
+ * Calcula a capacidade de cobertura em %
+ * Capacidade = (Prestadores × Pedidos_por_Prestador) / Total_Pedidos × 100
+ */
+function calculateCapacity(
   providerCount: number,
-  thresholds: CoverageThreshold = DEFAULT_THRESHOLDS
-): 'good' | 'low' | 'at_risk' {
-  if (providerCount >= thresholds.good_min) return 'good'
-  if (providerCount >= thresholds.low_min) return 'low'
-  return 'at_risk'
+  requestCount: number,
+  requestsPerProvider: number
+): number {
+  if (requestCount === 0) return 0
+  return Math.round((providerCount * requestsPerProvider) / requestCount * 100)
 }
 
+/**
+ * Determina o status de cobertura baseado na % de capacidade
+ */
+function getCoverageStatus(
+  capacityPercentage: number,
+  thresholds: CoverageThreshold = DEFAULT_THRESHOLDS
+): 'good' | 'low' | 'bad' {
+  if (capacityPercentage >= thresholds.capacity_good_min) return 'good'
+  if (capacityPercentage >= thresholds.capacity_low_min) return 'low'
+  return 'bad'
+}
+
+/**
+ * Calcula quantos prestadores são necessários para atingir boa cobertura
+ */
 function getRecommendation(
   service: string,
   category: string,
   providerCount: number,
+  requestCount: number,
   municipality: string,
   thresholds: CoverageThreshold = DEFAULT_THRESHOLDS
 ): string | undefined {
-  const needed = thresholds.good_min - providerCount
+  // Prestadores necessários para boa cobertura (100%)
+  const neededForGood = Math.ceil(requestCount / thresholds.requests_per_provider)
+  const needed = neededForGood - providerCount
 
   if (needed <= 0) return undefined
 
@@ -84,6 +109,14 @@ export async function getMunicipalityCoverage(
     return null
   }
 
+  // Fetch coverage settings
+  const settings = await getCoverageSettings()
+  const thresholds: CoverageThreshold = {
+    requests_per_provider: settings.coverage_requests_per_provider,
+    capacity_good_min: settings.coverage_capacity_good_min,
+    capacity_low_min: settings.coverage_capacity_low_min,
+  }
+
   const admin = createAdminClient()
 
   // Query the coverage view
@@ -103,17 +136,25 @@ export async function getMunicipalityCoverage(
     return null
   }
 
-  // Process services and apply thresholds
+  // Process services and apply capacity-based thresholds
   const services: ServiceCoverage[] = data.map((row) => {
     const providerCount = row.provider_count || 0
-    const status = getCoverageStatus(providerCount)
+    const requestCount = row.request_count || 0
+    const capacityPercentage = calculateCapacity(
+      providerCount,
+      requestCount,
+      thresholds.requests_per_provider
+    )
+    const status = getCoverageStatus(capacityPercentage, thresholds)
     const recommendation =
       status !== 'good'
         ? getRecommendation(
             row.service,
             row.category,
             providerCount,
-            municipality
+            requestCount,
+            municipality,
+            thresholds
           )
         : undefined
 
@@ -122,6 +163,8 @@ export async function getMunicipalityCoverage(
       service: row.service,
       taxonomy_service_id: row.taxonomy_service_id,
       provider_count: providerCount,
+      request_count: requestCount,
+      capacity_percentage: capacityPercentage,
       provider_ids: row.provider_ids || [],
       provider_names: row.provider_names || [],
       status,
@@ -132,13 +175,13 @@ export async function getMunicipalityCoverage(
   // Calculate statistics
   const goodCoverage = services.filter((s) => s.status === 'good').length
   const lowCoverage = services.filter((s) => s.status === 'low').length
-  const atRisk = services.filter((s) => s.status === 'at_risk').length
+  const badCoverage = services.filter((s) => s.status === 'bad').length
 
   // Overall status based on majority
-  let overallStatus: 'good' | 'low' | 'at_risk' = 'good'
-  if (atRisk > services.length / 2) {
-    overallStatus = 'at_risk'
-  } else if (lowCoverage + atRisk > services.length / 2) {
+  let overallStatus: 'good' | 'low' | 'bad' = 'good'
+  if (badCoverage > services.length / 2) {
+    overallStatus = 'bad'
+  } else if (lowCoverage + badCoverage > services.length / 2) {
     overallStatus = 'low'
   }
 
@@ -149,13 +192,13 @@ export async function getMunicipalityCoverage(
     totalServices: services.length,
     goodCoverage,
     lowCoverage,
-    atRisk,
+    badCoverage,
     overallStatus,
   }
 }
 
 export async function getAllMunicipalitiesCoverage(): Promise<
-  Array<{ municipality: string; district: string; status: 'good' | 'low' | 'at_risk' }>
+  Array<{ municipality: string; district: string; status: 'good' | 'low' | 'bad' }>
 > {
   const supabase = await createClient()
 
@@ -168,37 +211,53 @@ export async function getAllMunicipalitiesCoverage(): Promise<
     return []
   }
 
+  // Fetch coverage settings
+  const settings = await getCoverageSettings()
+  const thresholds: CoverageThreshold = {
+    requests_per_provider: settings.coverage_requests_per_provider,
+    capacity_good_min: settings.coverage_capacity_good_min,
+    capacity_low_min: settings.coverage_capacity_low_min,
+  }
+
   const admin = createAdminClient()
 
-  // Get all unique municipalities with their coverage
+  // Get all unique municipalities with their coverage (including request_count)
   const { data, error } = await admin
     .from('provider_coverage_by_service')
-    .select('municipality, district, provider_count')
+    .select('municipality, district, provider_count, request_count')
 
   if (error || !data) {
     return []
   }
 
-  // Group by municipality and calculate status
+  // Group by municipality and calculate capacity-based status
   const municipalityMap = new Map<
     string,
-    { district: string; counts: number[] }
+    { district: string; capacities: number[] }
   >()
 
   data.forEach((row) => {
+    const capacity = calculateCapacity(
+      row.provider_count || 0,
+      row.request_count || 0,
+      thresholds.requests_per_provider
+    )
+
     if (!municipalityMap.has(row.municipality)) {
       municipalityMap.set(row.municipality, {
         district: row.district,
-        counts: [],
+        capacities: [],
       })
     }
-    municipalityMap.get(row.municipality)!.counts.push(row.provider_count || 0)
+    municipalityMap.get(row.municipality)!.capacities.push(capacity)
   })
 
-  // Calculate overall status for each municipality
-  return Array.from(municipalityMap.entries()).map(([municipality, { district, counts }]) => {
-    const avgCoverage = counts.reduce((sum, c) => sum + c, 0) / counts.length
-    const status = getCoverageStatus(Math.round(avgCoverage))
+  // Calculate overall status for each municipality based on average capacity
+  return Array.from(municipalityMap.entries()).map(([municipality, { district, capacities }]) => {
+    const avgCapacity = Math.round(
+      capacities.reduce((sum, c) => sum + c, 0) / capacities.length
+    )
+    const status = getCoverageStatus(avgCapacity, thresholds)
 
     return { municipality, district, status }
   })

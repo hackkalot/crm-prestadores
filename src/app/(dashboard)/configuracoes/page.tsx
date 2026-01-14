@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { TaskDefinitionsTable } from '@/components/settings/task-definitions-table'
 import { GlobalSettings } from '@/components/settings/global-settings'
 import { SettingsLogList } from '@/components/settings/settings-log'
+import { CoverageSettings } from '@/components/settings/coverage-settings'
 import {
   getTaskDefinitions,
   getSettings,
@@ -11,17 +12,19 @@ import {
   getUsers,
   ensureDefaultSettings,
 } from '@/lib/settings/actions'
-import { Settings, ListTodo, History, Network } from 'lucide-react'
+import { getCoverageSettings } from '@/lib/settings/coverage-actions'
+import { Settings, ListTodo, History, Network, MapPin } from 'lucide-react'
 
 export default async function ConfiguracoesPage() {
   // Garantir que as configuracoes padrao existem
   await ensureDefaultSettings()
 
-  const [tasks, settings, logs, users] = await Promise.all([
+  const [tasks, settings, logs, users, coverageSettings] = await Promise.all([
     getTaskDefinitions(),
     getSettings(),
     getSettingsLog(),
     getUsers(),
+    getCoverageSettings(),
   ])
 
   return (
@@ -40,6 +43,10 @@ export default async function ConfiguracoesPage() {
             <TabsTrigger value="settings" className="gap-2">
               <Settings className="h-4 w-4" />
               Alertas
+            </TabsTrigger>
+            <TabsTrigger value="coverage" className="gap-2">
+              <MapPin className="h-4 w-4" />
+              Cobertura
             </TabsTrigger>
             <TabsTrigger value="mapping" className="gap-2" asChild>
               <a href="/configuracoes/mapeamento-servicos">
@@ -75,6 +82,17 @@ export default async function ConfiguracoesPage() {
             </div>
             <Suspense fallback={<div className="h-48 bg-muted animate-pulse rounded-lg" />}>
               <GlobalSettings settings={settings} users={users} />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="coverage" className="space-y-4">
+            <Suspense fallback={<div className="h-48 bg-muted animate-pulse rounded-lg" />}>
+              <CoverageSettings
+                requestsPerProvider={coverageSettings.coverage_requests_per_provider}
+                capacityGoodMin={coverageSettings.coverage_capacity_good_min}
+                capacityLowMin={coverageSettings.coverage_capacity_low_min}
+                analysisPeriodMonths={coverageSettings.coverage_analysis_period_months}
+              />
             </Suspense>
           </TabsContent>
 
