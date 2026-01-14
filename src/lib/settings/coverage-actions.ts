@@ -95,7 +95,14 @@ export async function updateCoverageSettings(
 
   const admin = createAdminClient()
 
-  const { error } = await admin
+  console.log('[Coverage Settings] Updating with values:', {
+    coverage_requests_per_provider: requestsPerProvider,
+    coverage_capacity_good_min: capacityGoodMin,
+    coverage_capacity_low_min: capacityLowMin,
+    coverage_analysis_period_months: periodMonths,
+  })
+
+  const { data, error } = await admin
     .from('settings')
     .update({
       coverage_requests_per_provider: requestsPerProvider,
@@ -104,12 +111,15 @@ export async function updateCoverageSettings(
       coverage_analysis_period_months: periodMonths,
       updated_at: new Date().toISOString(),
     })
-    .eq('id', '00000000-0000-0000-0000-000000000000') // ID fixo da única row de settings
+    .eq('id', '00000000-0000-0000-0000-000000000000')
+    .select()
 
   if (error) {
-    console.error('Error updating coverage settings:', error)
-    return { error: 'Erro ao guardar configurações' }
+    console.error('[Coverage Settings] Error updating:', error)
+    return { error: `Erro ao guardar configurações: ${error.message}` }
   }
+
+  console.log('[Coverage Settings] Update successful:', data)
 
   revalidatePath('/configuracoes')
   revalidatePath('/rede')
