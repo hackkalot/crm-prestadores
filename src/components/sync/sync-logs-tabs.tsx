@@ -9,6 +9,7 @@ import { CheckCircle, XCircle, Clock, Download, Timer, Database, FileText, Users
 import { formatDistanceToNow } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import type { SyncLog, SyncStats, ProviderSyncLog, ProviderSyncStats, BillingSyncLog, BillingSyncStats, AllocationSyncLog, AllocationSyncStats } from '@/lib/sync/logs-actions'
+import { SyncCoverageHeatmap } from '@/components/sync/sync-coverage-heatmap'
 
 interface SyncLogsTabsProps {
   activeTab: string
@@ -125,6 +126,9 @@ export function SyncLogsTabs({
 function ServiceLogsContent({ logs, stats, hasInProgress }: { logs: SyncLog[]; stats: SyncStats; hasInProgress: boolean }) {
   return (
     <div className="space-y-6">
+      {/* Coverage Heatmap */}
+      <SyncCoverageHeatmap logs={logs} startYear={2023} />
+
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -580,8 +584,20 @@ function BillingLogsContent({ logs, stats, hasInProgress }: { logs: BillingSyncL
 
 // Allocation Logs Content
 function AllocationLogsContent({ logs, stats, hasInProgress }: { logs: AllocationSyncLog[]; stats: AllocationSyncStats; hasInProgress: boolean }) {
+  // Transform allocation logs to match heatmap interface
+  const transformedLogs = logs.map(log => ({
+    id: log.id,
+    status: log.status || 'unknown',
+    date_from: log.period_from || '',
+    date_to: log.period_to || '',
+    triggered_at: log.triggered_at || '',
+  }))
+
   return (
     <div className="space-y-6">
+      {/* Coverage Heatmap */}
+      <SyncCoverageHeatmap logs={transformedLogs} startYear={2023} />
+
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
