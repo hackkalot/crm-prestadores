@@ -44,10 +44,10 @@ O comando `npm run db:generate` requer Docker a correr localmente. Em alternativ
 npm run db:generate
 
 # Sem Docker (remoto) - usa o project ID do Supabase
-npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs > src/types/database.generated.ts
+npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs > src/types/database.ts
 ```
 
-Os tipos sao gerados para `src/types/database.generated.ts` e devem ser regenerados sempre que o schema da base de dados mudar (novas tabelas, colunas, etc.).
+Os tipos sao gerados para `src/types/database.ts` e devem ser regenerados sempre que o schema da base de dados mudar (novas tabelas, colunas, etc.).
 
 ## Estrutura do Projeto
 
