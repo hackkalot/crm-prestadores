@@ -6,6 +6,7 @@ export interface AnalyticsFilters {
   dateTo?: string   // YYYY-MM-DD
   district?: string
   category?: string
+  service?: string
   providerId?: string // backoffice_provider_id
 }
 
@@ -306,6 +307,7 @@ export interface ComplaintMetrics {
 export interface AnalyticsFilterOptions {
   districts: string[]
   categories: string[]
+  categoryServices: Record<string, string[]> // Map: category -> list of services
   providers: { id: number; name: string }[]
   periods: { from: string; to: string }[]
 }

@@ -60,6 +60,7 @@ export default async function AnalyticsPage({
     dateTo: typeof params.dateTo === 'string' ? params.dateTo : undefined,
     district: typeof params.district === 'string' ? params.district : undefined,
     category: typeof params.category === 'string' ? params.category : undefined,
+    service: typeof params.service === 'string' ? params.service : undefined,
   }
 
   const currentTab = typeof params.tab === 'string' ? params.tab : 'overview'

@@ -1,0 +1,220 @@
+[10:36:29 AM] ═══════════════════════════════════════════════
+[10:36:29 AM] 🚀 Scrapper de Backoffice
+[10:36:29 AM] 📅 Período: 01-07-2025 até 31-08-2025
+[10:36:29 AM] ═══════════════════════════════════════════════
+[10:36:29 AM] 🌐 A lançar browser...
+[10:36:30 AM] PASSO 1/5: Navegando para página de login...
+[10:36:33 AM] 🔑 Preenchendo credenciais...
+[10:36:33 AM] 🔐 A fazer login...
+[10:36:34 AM] ⏳ Aguardando 1000ms: Login concluído
+[10:36:35 AM] PASSO 2/5: Procurando inputs de data...
+[10:36:35 AM] ⏳ Aguardando 1000ms: Inputs carregados
+[10:36:36 AM] 🔍 Encontrados 5 inputs visíveis
+[10:36:36 AM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[10:36:36 AM] ✅ Usando os 2 últimos inputs de data:
+[10:36:36 AM]    - Input 3 (De): index 3
+[10:36:36 AM]    - Input 4 (Até): index 4
+[10:36:36 AM] PASSO 3/5: Preenchendo datas...
+[10:36:36 AM] 📅 Preenchendo "Data Submissão (De)" com: 01-07-2025
+[10:36:36 AM]    Data: 2025-06-30T23:00:00.000Z
+[10:36:36 AM] ✅ Data definida com sucesso (flatpickr.setDate):
+[10:36:36 AM]    Hidden input: "2025-07-01"
+[10:36:36 AM]    Visible input: "01-07-2025"
+[10:36:36 AM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[10:36:36 AM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[10:36:37 AM] 📅 Preenchendo "Data Submissão (Até)" com: 31-08-2025
+[10:36:37 AM]    Data: 2025-08-30T23:00:00.000Z
+[10:36:37 AM] ✅ Data definida com sucesso (flatpickr.setDate):
+[10:36:37 AM]    Hidden input: "2025-08-31"
+[10:36:37 AM]    Visible input: "31-08-2025"
+[10:36:37 AM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[10:36:38 AM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[10:36:41 AM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1768387001331.png
+[10:36:41 AM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[10:36:41 AM]    Data De (visível): 01-07-2025 (ID: sem-id)
+[10:36:41 AM]    Data De (hidden): N/A
+[10:36:41 AM]    Data Até (visível): 31-08-2025 (ID: sem-id)
+[10:36:41 AM]    Data Até (hidden): N/A
+[10:36:41 AM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[10:36:41 AM] 🧹 Removendo ficheiros Excel antigos...
+[10:36:41 AM]    Removido: service_request_data.xlsx
+[10:36:41 AM] ✅ Botão encontrado!
+[10:36:41 AM] ⏳ Aguardando 1000ms: Scroll para botão
+[10:36:42 AM] 🖱️  A clicar em "Exportar Dados"...
+[10:36:42 AM] ⏳ Aguardando 2000ms: Click executado
+[10:36:44 AM] PASSO 5/5: Aguardando download do ficheiro...
+[10:36:54 AM] ⏳ Aguardando download... 10s
+[10:37:04 AM] ⏳ Aguardando download... 20s
+[10:37:14 AM] ⏳ Aguardando download... 30s
+[10:37:24 AM] ⏳ Aguardando download... 40s
+[10:37:34 AM] ⏳ Aguardando download... 50s
+[10:37:44 AM] ⏳ Aguardando download... 60s
+[10:37:54 AM] ⏳ Aguardando download... 70s
+[10:38:04 AM] ⏳ Aguardando download... 80s
+[10:38:14 AM] ⏳ Aguardando download... 90s
+[10:38:24 AM] ⏳ Aguardando download... 100s
+[10:38:34 AM] ⏳ Aguardando download... 110s
+[10:38:44 AM] ⏳ Aguardando download... 120s
+[10:38:54 AM] ⏳ Aguardando download... 130s
+[10:39:04 AM] ⏳ Aguardando download... 140s
+[10:39:14 AM] ⏳ Aguardando download... 150s
+[10:39:24 AM] ⏳ Aguardando download... 160s
+[10:39:34 AM] ⏳ Aguardando download... 170s
+[10:39:44 AM] ⏳ Aguardando download... 180s
+[10:39:54 AM] ⏳ Aguardando download... 190s
+[10:40:04 AM] ⏳ Aguardando download... 200s
+[10:40:14 AM] ⏳ Aguardando download... 210s
+[10:40:24 AM] ⏳ Aguardando download... 220s
+[10:40:34 AM] ⏳ Aguardando download... 230s
+[10:40:45 AM] ⏳ Aguardando download... 240s
+[10:40:55 AM] ⏳ Aguardando download... 250s
+[10:40:59 AM] ═══════════════════════════════════════════════
+[10:40:59 AM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[10:40:59 AM] 📁 Ficheiro: service_request_data.xlsx
+[10:40:59 AM] 📊 Tamanho: 2.41 MB
+[10:40:59 AM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[10:40:59 AM] ═══════════════════════════════════════════════
+[10:40:59 AM] ⏳ Aguardando 1000ms: Finalização
+[10:42:12 AM] ═══════════════════════════════════════════════
+[10:42:12 AM] 🚀 Scrapper de Backoffice
+[10:42:12 AM] 📅 Período: 01-02-2025 até 30-04-2025
+[10:42:12 AM] ═══════════════════════════════════════════════
+[10:42:12 AM] 🌐 A lançar browser...
+[10:42:12 AM] PASSO 1/5: Navegando para página de login...
+[10:42:15 AM] 🔑 Preenchendo credenciais...
+[10:42:16 AM] 🔐 A fazer login...
+[10:42:16 AM] ⏳ Aguardando 1000ms: Login concluído
+[10:42:17 AM] PASSO 2/5: Procurando inputs de data...
+[10:42:17 AM] ⏳ Aguardando 1000ms: Inputs carregados
+[10:42:18 AM] 🔍 Encontrados 5 inputs visíveis
+[10:42:18 AM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[10:42:18 AM] ✅ Usando os 2 últimos inputs de data:
+[10:42:18 AM]    - Input 3 (De): index 3
+[10:42:18 AM]    - Input 4 (Até): index 4
+[10:42:18 AM] PASSO 3/5: Preenchendo datas...
+[10:42:18 AM] 📅 Preenchendo "Data Submissão (De)" com: 01-02-2025
+[10:42:18 AM]    Data: 2025-02-01T00:00:00.000Z
+[10:42:18 AM] ✅ Data definida com sucesso (flatpickr.setDate):
+[10:42:18 AM]    Hidden input: "2025-02-01"
+[10:42:18 AM]    Visible input: "01-02-2025"
+[10:42:18 AM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[10:42:19 AM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[10:42:20 AM] 📅 Preenchendo "Data Submissão (Até)" com: 30-04-2025
+[10:42:20 AM]    Data: 2025-04-29T23:00:00.000Z
+[10:42:20 AM] ✅ Data definida com sucesso (flatpickr.setDate):
+[10:42:20 AM]    Hidden input: "2025-04-30"
+[10:42:20 AM]    Visible input: "30-04-2025"
+[10:42:20 AM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[10:42:20 AM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[10:42:23 AM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1768387343622.png
+[10:42:23 AM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[10:42:23 AM]    Data De (visível): 01-02-2025 (ID: sem-id)
+[10:42:23 AM]    Data De (hidden): N/A
+[10:42:23 AM]    Data Até (visível): 30-04-2025 (ID: sem-id)
+[10:42:23 AM]    Data Até (hidden): N/A
+[10:42:23 AM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[10:42:23 AM] 🧹 Removendo ficheiros Excel antigos...
+[10:42:23 AM]    Removido: service_request_data.xlsx
+[10:42:23 AM] ✅ Botão encontrado!
+[10:42:23 AM] ⏳ Aguardando 1000ms: Scroll para botão
+[10:42:24 AM] 🖱️  A clicar em "Exportar Dados"...
+[10:42:24 AM] ⏳ Aguardando 2000ms: Click executado
+[10:42:26 AM] PASSO 5/5: Aguardando download do ficheiro...
+[10:42:36 AM] ⏳ Aguardando download... 10s
+[10:42:46 AM] ⏳ Aguardando download... 20s
+[10:42:56 AM] ⏳ Aguardando download... 30s
+[10:43:06 AM] ⏳ Aguardando download... 40s
+[10:43:16 AM] ⏳ Aguardando download... 50s
+[10:43:26 AM] ⏳ Aguardando download... 60s
+[10:43:36 AM] ⏳ Aguardando download... 70s
+[10:43:46 AM] ⏳ Aguardando download... 80s
+[10:43:56 AM] ⏳ Aguardando download... 90s
+[10:44:06 AM] ⏳ Aguardando download... 100s
+[10:44:16 AM] ⏳ Aguardando download... 110s
+[10:44:27 AM] ⏳ Aguardando download... 120s
+[10:44:37 AM] ⏳ Aguardando download... 130s
+[10:44:47 AM] ⏳ Aguardando download... 140s
+[10:44:57 AM] ⏳ Aguardando download... 150s
+[10:45:07 AM] ⏳ Aguardando download... 160s
+[10:45:17 AM] ⏳ Aguardando download... 170s
+[10:45:27 AM] ⏳ Aguardando download... 180s
+[10:45:37 AM] ⏳ Aguardando download... 190s
+[10:45:47 AM] ⏳ Aguardando download... 200s
+[10:45:57 AM] ⏳ Aguardando download... 210s
+[10:46:07 AM] ⏳ Aguardando download... 220s
+[10:46:17 AM] ⏳ Aguardando download... 230s
+[10:46:27 AM] ⏳ Aguardando download... 240s
+[10:46:37 AM] ⏳ Aguardando download... 250s
+[10:46:47 AM] ⏳ Aguardando download... 260s
+[10:46:57 AM] ⏳ Aguardando download... 270s
+[10:47:07 AM] ⏳ Aguardando download... 280s
+[10:47:17 AM] ⏳ Aguardando download... 290s
+[10:47:27 AM] ⏳ Aguardando download... 300s
+[10:47:31 AM] ═══════════════════════════════════════════════
+[10:47:31 AM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[10:47:31 AM] 📁 Ficheiro: service_request_data.xlsx
+[10:47:31 AM] 📊 Tamanho: 2.62 MB
+[10:47:31 AM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[10:47:31 AM] ═══════════════════════════════════════════════
+[10:47:31 AM] ⏳ Aguardando 1000ms: Finalização
+[12:06:59 PM] ═══════════════════════════════════════════════
+[12:06:59 PM] 🚀 Scrapper de Backoffice
+[12:06:59 PM] 📅 Período: 01-01-2025 até 31-01-2025
+[12:06:59 PM] ═══════════════════════════════════════════════
+[12:06:59 PM] 🌐 A lançar browser...
+[12:07:00 PM] PASSO 1/5: Navegando para página de login...
+[12:07:02 PM] 🔑 Preenchendo credenciais...
+[12:07:02 PM] 🔐 A fazer login...
+[12:07:03 PM] ⏳ Aguardando 1000ms: Login concluído
+[12:07:04 PM] PASSO 2/5: Procurando inputs de data...
+[12:07:04 PM] ⏳ Aguardando 1000ms: Inputs carregados
+[12:07:05 PM] 🔍 Encontrados 5 inputs visíveis
+[12:07:05 PM] 📅 Encontrados 4 inputs de data (placeholder dd-mm-aaaa)
+[12:07:05 PM] ✅ Usando os 2 últimos inputs de data:
+[12:07:05 PM]    - Input 3 (De): index 3
+[12:07:05 PM]    - Input 4 (Até): index 4
+[12:07:05 PM] PASSO 3/5: Preenchendo datas...
+[12:07:05 PM] 📅 Preenchendo "Data Submissão (De)" com: 01-01-2025
+[12:07:05 PM]    Data: 2025-01-01T00:00:00.000Z
+[12:07:05 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[12:07:05 PM]    Hidden input: "2025-01-01"
+[12:07:05 PM]    Visible input: "01-01-2025"
+[12:07:05 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[12:07:06 PM] ⏳ Aguardando 1000ms: Pausa entre inputs
+[12:07:07 PM] 📅 Preenchendo "Data Submissão (Até)" com: 31-01-2025
+[12:07:07 PM]    Data: 2025-01-31T00:00:00.000Z
+[12:07:07 PM] ✅ Data definida com sucesso (flatpickr.setDate):
+[12:07:07 PM]    Hidden input: "2025-01-31"
+[12:07:07 PM]    Visible input: "31-01-2025"
+[12:07:07 PM] ⏳ Aguardando 500ms: Aguardar propagação da mudança
+[12:07:07 PM] ⏳ Aguardando 3000ms: Aguardar sistema processar filtros (ambas as datas)
+[12:07:10 PM] 📸 Screenshot salvo: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs/debug_filters_1768392430554.png
+[12:07:10 PM] 🔍 VERIFICAÇÃO FINAL DAS DATAS:
+[12:07:10 PM]    Data De (visível): 01-01-2025 (ID: sem-id)
+[12:07:10 PM]    Data De (hidden): N/A
+[12:07:10 PM]    Data Até (visível): 31-01-2025 (ID: sem-id)
+[12:07:10 PM]    Data Até (hidden): N/A
+[12:07:10 PM] PASSO 4/5: Procurando botão "Exportar Dados"...
+[12:07:10 PM] 🧹 Removendo ficheiros Excel antigos...
+[12:07:10 PM]    Removido: service_request_data.xlsx
+[12:07:10 PM] ✅ Botão encontrado!
+[12:07:10 PM] ⏳ Aguardando 1000ms: Scroll para botão
+[12:07:11 PM] 🖱️  A clicar em "Exportar Dados"...
+[12:07:11 PM] ⏳ Aguardando 2000ms: Click executado
+[12:07:13 PM] PASSO 5/5: Aguardando download do ficheiro...
+[12:07:23 PM] ⏳ Aguardando download... 10s
+[12:07:33 PM] ⏳ Aguardando download... 20s
+[12:07:43 PM] ⏳ Aguardando download... 30s
+[12:07:53 PM] ⏳ Aguardando download... 40s
+[12:08:03 PM] ⏳ Aguardando download... 50s
+[12:08:13 PM] ⏳ Aguardando download... 60s
+[12:08:23 PM] ⏳ Aguardando download... 70s
+[12:08:33 PM] ⏳ Aguardando download... 80s
+[12:08:43 PM] ⏳ Aguardando download... 90s
+[12:08:48 PM] ═══════════════════════════════════════════════
+[12:08:48 PM] ✅ SCRAPPER CONCLUÍDO COM SUCESSO!
+[12:08:48 PM] 📁 Ficheiro: service_request_data.xlsx
+[12:08:48 PM] 📊 Tamanho: 1.04 MB
+[12:08:48 PM] 📂 Localização: /Users/diogopita/Documents/Projetos/crm-prestadores/data/scrapper-outputs
+[12:08:48 PM] ═══════════════════════════════════════════════
+[12:08:48 PM] ⏳ Aguardando 1000ms: Finalização

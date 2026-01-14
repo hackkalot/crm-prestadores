@@ -34,6 +34,8 @@ export function AnalyticsFilters({ filterOptions }: AnalyticsFiltersProps) {
 
   const dateFrom = searchParams.get('dateFrom') || ''
   const dateTo = searchParams.get('dateTo') || ''
+  const selectedCategory = searchParams.get('category') || ''
+  const selectedService = searchParams.get('service') || ''
 
   // Date range state for calendar
   const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
@@ -45,6 +47,11 @@ export function AnalyticsFilters({ filterOptions }: AnalyticsFiltersProps) {
     }
     return undefined
   })
+
+  // Get services for selected category
+  const availableServices = selectedCategory
+    ? filterOptions.categoryServices[selectedCategory] || []
+    : []
 
   const updateParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -114,16 +121,34 @@ export function AnalyticsFilters({ filterOptions }: AnalyticsFiltersProps) {
     }
   }
 
-  const clearFilters = () => {
-    setDateRange(undefined)
-    updateParams({ dateFrom: null, dateTo: null })
+  const handleCategoryChange = (value: string) => {
+    if (value === 'all') {
+      // Clear category and service
+      updateParams({ category: null, service: null })
+    } else {
+      // Set category and clear service (will be filtered by new category)
+      updateParams({ category: value, service: null })
+    }
   }
 
-  const hasActiveFilters = dateFrom || dateTo
+  const handleServiceChange = (value: string) => {
+    if (value === 'all') {
+      updateParams({ service: null })
+    } else {
+      updateParams({ service: value })
+    }
+  }
+
+  const clearFilters = () => {
+    setDateRange(undefined)
+    updateParams({ dateFrom: null, dateTo: null, category: null, service: null })
+  }
+
+  const hasActiveFilters = dateFrom || dateTo || selectedCategory || selectedService
 
   // Get current period label
   const getCurrentPeriodLabel = () => {
-    if (!dateFrom || !dateTo) return 'Todo o período (desde 2023)'
+    if (!dateFrom || !dateTo) return 'Mês atual'
 
     // Check if matches a preset
     const from = new Date(dateFrom)
@@ -219,6 +244,46 @@ export function AnalyticsFilters({ filterOptions }: AnalyticsFiltersProps) {
           </div>
         </PopoverContent>
       </Popover>
+
+      {/* Category Filter */}
+      <Select
+        value={selectedCategory || 'all'}
+        onValueChange={handleCategoryChange}
+        disabled={isPending}
+      >
+        <SelectTrigger className="w-[200px]">
+          <SelectValue placeholder="Categoria" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Todas as categorias</SelectItem>
+          {filterOptions.categories.map((category) => (
+            <SelectItem key={category} value={category}>
+              {category}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* Service Filter (conditional - only shows if category is selected) */}
+      {selectedCategory && (
+        <Select
+          value={selectedService || 'all'}
+          onValueChange={handleServiceChange}
+          disabled={isPending}
+        >
+          <SelectTrigger className="w-[250px]">
+            <SelectValue placeholder="Serviço" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os serviços</SelectItem>
+            {availableServices.map((service) => (
+              <SelectItem key={service} value={service}>
+                {service}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
 
       {/* Clear filters button */}
       {hasActiveFilters && (

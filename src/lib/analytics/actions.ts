@@ -83,10 +83,18 @@ function formatPeriodLabel(periodKey: string, granularity: TrendGranularity): st
 
 function getDateRange(filters: AnalyticsFilters): { from: string; to: string } {
   const now = new Date()
-  const to = filters.dateTo || now.toISOString().split('T')[0]
 
-  // Default to all time (desde 01-01-2023) quando não há filtro de data
-  const from = filters.dateFrom || '2023-01-01'
+  // Default: primeiro dia do mês atual às 00:00:00
+  const defaultFrom = new Date(now.getFullYear(), now.getMonth(), 1)
+  const fromDate = filters.dateFrom || defaultFrom.toISOString().split('T')[0]
+
+  // Default: hoje às 23:59:59
+  const defaultTo = now
+  const toDate = filters.dateTo || defaultTo.toISOString().split('T')[0]
+
+  // Add time components: start of day for 'from', end of day for 'to'
+  const from = `${fromDate} 00:00:00`
+  const to = `${toDate} 23:59:59`
 
   return { from, to }
 }
@@ -202,6 +210,13 @@ export async function getOperationalSummary(
     prevServiceRequestsCountQuery = prevServiceRequestsCountQuery.eq('category', filters.category)
     currentServiceRequestsRevenueQuery = currentServiceRequestsRevenueQuery.eq('category', filters.category)
     prevServiceRequestsRevenueQuery = prevServiceRequestsRevenueQuery.eq('category', filters.category)
+  }
+  // Apply service filter to service requests
+  if (filters.service) {
+    currentServiceRequestsCountQuery = currentServiceRequestsCountQuery.eq('service', filters.service)
+    prevServiceRequestsCountQuery = prevServiceRequestsCountQuery.eq('service', filters.service)
+    currentServiceRequestsRevenueQuery = currentServiceRequestsRevenueQuery.eq('service', filters.service)
+    prevServiceRequestsRevenueQuery = prevServiceRequestsRevenueQuery.eq('service', filters.service)
   }
 
   // Get all data in parallel
@@ -553,6 +568,9 @@ export async function getNetworkHealthData(
   }
   if (filters.category) {
     serviceRequestsQuery = serviceRequestsQuery.eq('category', filters.category)
+  }
+  if (filters.service) {
+    serviceRequestsQuery = serviceRequestsQuery.eq('service', filters.service)
   }
 
   const { count: serviceRequestsCount } = await serviceRequestsQuery
@@ -1281,15 +1299,31 @@ export async function getAnalyticsFilterOptions(): Promise<AnalyticsFilterOption
     ...new Set(districtData?.map((d) => d.client_district).filter(Boolean) || []),
   ].sort() as string[]
 
-  // Get categories from service_requests
-  const { data: categoryData } = await adminClient
+  // Get categories and services from service_requests
+  const { data: categoryServiceData } = await adminClient
     .from('service_requests')
-    .select('category')
+    .select('category, service')
     .not('category', 'is', null)
+    .not('service', 'is', null)
 
-  const categories = [
-    ...new Set(categoryData?.map((c) => c.category).filter(Boolean) || []),
-  ].sort() as string[]
+  // Build categories list and category -> services map
+  const categoryServicesMap = new Map<string, Set<string>>()
+
+  categoryServiceData?.forEach((item) => {
+    if (item.category && item.service) {
+      if (!categoryServicesMap.has(item.category)) {
+        categoryServicesMap.set(item.category, new Set())
+      }
+      categoryServicesMap.get(item.category)!.add(item.service)
+    }
+  })
+
+  const categories = Array.from(categoryServicesMap.keys()).sort()
+
+  const categoryServices: Record<string, string[]> = {}
+  categoryServicesMap.forEach((services, category) => {
+    categoryServices[category] = Array.from(services).sort()
+  })
 
   // Get providers from allocation_history
   const { data: providerData } = await adminClient
@@ -1330,6 +1364,7 @@ export async function getAnalyticsFilterOptions(): Promise<AnalyticsFilterOption
   return {
     districts,
     categories,
+    categoryServices,
     providers,
     periods,
   }
