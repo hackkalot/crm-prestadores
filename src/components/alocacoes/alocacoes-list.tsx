@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import { saveBackUrl } from '@/hooks/use-navigation-state'
-import type { Database } from '@/types/database.generated'
+import type { Database } from '@/types/database'
 
 type AllocationHistory = Database['public']['Tables']['allocation_history']['Row'] & {
   provider_uuid?: string | null

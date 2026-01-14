@@ -88,6 +88,125 @@ export type Database = {
           },
         ]
       }
+      allocation_history: {
+        Row: {
+          avg_response_time: unknown
+          avg_response_time_raw: string | null
+          backoffice_provider_id: number
+          created_at: string | null
+          id: string
+          period_from: string
+          period_to: string
+          provider_name: string
+          requests_accepted: number | null
+          requests_expired: number | null
+          requests_received: number | null
+          requests_rejected: number | null
+          synced_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avg_response_time?: unknown
+          avg_response_time_raw?: string | null
+          backoffice_provider_id: number
+          created_at?: string | null
+          id?: string
+          period_from: string
+          period_to: string
+          provider_name: string
+          requests_accepted?: number | null
+          requests_expired?: number | null
+          requests_received?: number | null
+          requests_rejected?: number | null
+          synced_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avg_response_time?: unknown
+          avg_response_time_raw?: string | null
+          backoffice_provider_id?: number
+          created_at?: string | null
+          id?: string
+          period_from?: string
+          period_to?: string
+          provider_name?: string
+          requests_accepted?: number | null
+          requests_expired?: number | null
+          requests_received?: number | null
+          requests_rejected?: number | null
+          synced_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      allocation_sync_logs: {
+        Row: {
+          created_at: string | null
+          duration_seconds: number | null
+          error_message: string | null
+          error_stack: string | null
+          excel_file_path: string | null
+          excel_file_size_kb: number | null
+          id: string
+          period_from: string | null
+          period_to: string | null
+          records_inserted: number | null
+          records_processed: number | null
+          records_updated: number | null
+          status: string | null
+          triggered_at: string | null
+          triggered_by: string | null
+          triggered_by_system: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          period_from?: string | null
+          period_to?: string | null
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string | null
+          triggered_at?: string | null
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          period_from?: string | null
+          period_to?: string | null
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string | null
+          triggered_at?: string | null
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "allocation_sync_logs_triggered_by_fkey"
+            columns: ["triggered_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       application_history: {
         Row: {
           applied_at: string
