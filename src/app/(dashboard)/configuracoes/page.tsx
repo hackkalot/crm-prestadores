@@ -11,7 +11,7 @@ import {
   getUsers,
   ensureDefaultSettings,
 } from '@/lib/settings/actions'
-import { Settings, ListTodo, History } from 'lucide-react'
+import { Settings, ListTodo, History, Network } from 'lucide-react'
 
 export default async function ConfiguracoesPage() {
   // Garantir que as configuracoes padrao existem
@@ -40,6 +40,12 @@ export default async function ConfiguracoesPage() {
             <TabsTrigger value="settings" className="gap-2">
               <Settings className="h-4 w-4" />
               Alertas
+            </TabsTrigger>
+            <TabsTrigger value="mapping" className="gap-2" asChild>
+              <a href="/configuracoes/mapeamento-servicos">
+                <Network className="h-4 w-4" />
+                Mapeamento
+              </a>
             </TabsTrigger>
             <TabsTrigger value="history" className="gap-2">
               <History className="h-4 w-4" />
