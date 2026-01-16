@@ -1,5 +1,6 @@
 import { getProviderApplicationHistory, getProviderOnboarding, getProviderNotes, getProviderHistory } from '@/lib/providers/actions'
 import { getProviderPricingTable } from '@/lib/pricing/actions'
+import { getProviderPricingOptions } from '@/lib/providers/pricing-actions'
 import { getProviderDocuments } from '@/lib/documents/actions'
 import {
   getProviderServiceRequests,
@@ -12,6 +13,7 @@ import { getProviderPerformance, getNetworkBenchmark } from '@/lib/providers/per
 import { CandidaturaTab } from './candidatura-tab'
 import { OnboardingTab } from './onboarding-tab'
 import { PrecosTab } from './precos-tab'
+import { PricingSelectionTab } from '@/components/providers/pricing-selection-tab'
 import { NotasTab } from './notas-tab'
 import { HistoricoTab } from './historico-tab'
 import { PedidosTab } from './pedidos-tab'
@@ -65,8 +67,15 @@ export async function PrecosTabAsync({
   providerId: string
   provider: any
 }) {
-  const pricingTable = await getProviderPricingTable(providerId)
-  return <PrecosTab provider={provider} pricingTable={pricingTable} />
+  const clusters = await getProviderPricingOptions(providerId)
+  return (
+    <PricingSelectionTab
+      providerId={providerId}
+      providerName={provider.name}
+      hasFormsSubmitted={!!provider.forms_submitted_at}
+      clusters={clusters}
+    />
+  )
 }
 
 // Async wrapper for Notas tab

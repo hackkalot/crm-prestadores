@@ -100,7 +100,7 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
 
   // Determinar tabs disponíveis
   const hasOnboarding = ['em_onboarding', 'ativo', 'suspenso', 'arquivado'].includes(provider.status) || onboardingCard
-  const hasPrices = ['ativo', 'suspenso', 'arquivado'].includes(provider.status)
+  const hasPrices = !!provider.forms_submitted_at
 
   // Calcular stats do onboarding (se existir)
   const tasks = onboardingCard?.tasks || []

@@ -20,7 +20,7 @@ interface CoverageSelectorProps {
 
 export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageSelectorProps) {
   const [search, setSearch] = useState('')
-  const [filteredDistricts, setFilteredDistricts] = useState(PORTUGAL_DISTRICTS)
+  const [filteredDistricts, setFilteredDistricts] = useState<Record<string, string[]>>(PORTUGAL_DISTRICTS)
 
   // Filtrar concelhos por pesquisa
   useEffect(() => {
@@ -30,12 +30,16 @@ export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageS
     }
 
     const searchLower = search.toLowerCase()
-    const filtered = PORTUGAL_DISTRICTS.map((district) => ({
-      ...district,
-      municipalities: district.municipalities.filter((m) =>
+    const filtered: Record<string, string[]> = {}
+
+    Object.entries(PORTUGAL_DISTRICTS).forEach(([district, municipalities]) => {
+      const matchingMunicipalities = municipalities.filter((m) =>
         m.toLowerCase().includes(searchLower)
-      ),
-    })).filter((district) => district.municipalities.length > 0)
+      )
+      if (matchingMunicipalities.length > 0) {
+        filtered[district] = matchingMunicipalities
+      }
+    })
 
     setFilteredDistricts(filtered)
   }, [search])
@@ -49,18 +53,18 @@ export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageS
   }
 
   const toggleDistrict = (districtName: string) => {
-    const district = PORTUGAL_DISTRICTS.find((d) => d.name === districtName)
-    if (!district) return
+    const municipalities = PORTUGAL_DISTRICTS[districtName]
+    if (!municipalities) return
 
-    const allSelected = district.municipalities.every((m) =>
+    const allSelected = municipalities.every((m) =>
       selectedMunicipalities.includes(m)
     )
 
     if (allSelected) {
-      onChange(selectedMunicipalities.filter((m) => !district.municipalities.includes(m)))
+      onChange(selectedMunicipalities.filter((m) => !municipalities.includes(m)))
     } else {
       const newSelected = [...selectedMunicipalities]
-      district.municipalities.forEach((m) => {
+      municipalities.forEach((m) => {
         if (!newSelected.includes(m)) {
           newSelected.push(m)
         }
@@ -70,9 +74,9 @@ export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageS
   }
 
   const isDistrictFullySelected = (districtName: string) => {
-    const district = PORTUGAL_DISTRICTS.find((d) => d.name === districtName)
-    if (!district) return false
-    return district.municipalities.every((m) => selectedMunicipalities.includes(m))
+    const municipalities = PORTUGAL_DISTRICTS[districtName]
+    if (!municipalities) return false
+    return municipalities.every((m) => selectedMunicipalities.includes(m))
   }
 
   return (
@@ -92,38 +96,38 @@ export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageS
       </div>
 
       <Accordion type="multiple" className="space-y-2">
-        {filteredDistricts.map((district) => {
-          const isFullySelected = isDistrictFullySelected(district.name)
-          const selectedCount = district.municipalities.filter((m) =>
+        {Object.entries(filteredDistricts).map(([districtName, municipalities]) => {
+          const isFullySelected = isDistrictFullySelected(districtName)
+          const selectedCount = municipalities.filter((m) =>
             selectedMunicipalities.includes(m)
           ).length
 
           return (
-            <AccordionItem key={district.name} value={district.name} className="border rounded-lg">
+            <AccordionItem key={districtName} value={districtName} className="border rounded-lg">
               <AccordionTrigger className="px-4 hover:no-underline">
                 <div className="flex items-center gap-3 flex-1">
                   <Checkbox
                     checked={isFullySelected}
-                    onCheckedChange={() => toggleDistrict(district.name)}
+                    onCheckedChange={() => toggleDistrict(districtName)}
                     onClick={(e) => e.stopPropagation()}
                   />
-                  <span className="font-medium">{district.name}</span>
+                  <span className="font-medium">{districtName}</span>
                   <Badge variant="outline" className="text-xs">
-                    {selectedCount}/{district.municipalities.length}
+                    {selectedCount}/{municipalities.length}
                   </Badge>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 ml-6">
-                  {district.municipalities.map((municipality) => (
+                  {municipalities.map((municipality) => (
                     <div key={municipality} className="flex items-center gap-2">
                       <Checkbox
-                        id={`${district.name}-${municipality}`}
+                        id={`${districtName}-${municipality}`}
                         checked={selectedMunicipalities.includes(municipality)}
                         onCheckedChange={() => toggleMunicipality(municipality)}
                       />
                       <label
-                        htmlFor={`${district.name}-${municipality}`}
+                        htmlFor={`${districtName}-${municipality}`}
                         className="text-sm cursor-pointer flex-1 leading-tight"
                       >
                         {municipality}
@@ -137,7 +141,7 @@ export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageS
         })}
       </Accordion>
 
-      {filteredDistricts.length === 0 && (
+      {Object.keys(filteredDistricts).length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
           Nenhum concelho encontrado
         </div>

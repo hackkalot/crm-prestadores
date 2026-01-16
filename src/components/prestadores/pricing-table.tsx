@@ -36,6 +36,7 @@ import {
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { setProviderPrice, createPriceSnapshot, generateInitialPriceProposal } from '@/lib/pricing/actions'
+import { generatePricingProposalHTML } from '@/lib/providers/pdf-actions'
 import { cn, formatCurrency } from '@/lib/utils'
 
 interface ServiceCategory {
@@ -195,6 +196,37 @@ export function PricingTable({ providerId, providerName, data, deviationThreshol
     })
   }
 
+  const handleGeneratePDF = () => {
+    try {
+      const html = generatePricingProposalHTML(
+        {
+          id: providerId,
+          name: providerName || 'Prestador',
+          nif: null,
+          email: '',
+        },
+        data
+      )
+
+      // Create blob and open in new window
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const window_ref = window.open(url, '_blank')
+
+      if (window_ref) {
+        // Allow the window to load before printing
+        setTimeout(() => {
+          window_ref.print()
+        }, 500)
+      } else {
+        toast.error('Não foi possível abrir a janela de impressão')
+      }
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error)
+      toast.error('Erro ao gerar proposta em PDF')
+    }
+  }
+
   const calculateDeviation = (providerPrice: number, referencePrice: number) => {
     return ((providerPrice - referencePrice) / referencePrice) * 100
   }
@@ -254,6 +286,16 @@ export function PricingTable({ providerId, providerName, data, deviationThreshol
               Gerar Proposta Inicial
             </Button>
           )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleGeneratePDF}
+            disabled={!hasAnyPrices}
+            title="Gerar e imprimir proposta em PDF"
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Proposta PDF
+          </Button>
           <Button
             variant="outline"
             size="sm"

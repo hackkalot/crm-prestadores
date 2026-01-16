@@ -143,9 +143,7 @@ export async function submitServicesForm(
       .eq('id', providerId)
       .single()
 
-    const servicesBefor
-
-e = provider?.services || []
+    const servicesBefore = provider?.services || []
 
     // Inserir/atualizar dados do forms
     const formsData: ProviderFormsData = {
