@@ -1008,6 +1008,83 @@ export type Database = {
           },
         ]
       }
+      provider_forms_data: {
+        Row: {
+          available_weekdays: string[] | null
+          certifications: string[] | null
+          coverage_municipalities: string[] | null
+          created_at: string | null
+          has_activity_declaration: boolean | null
+          has_computer: boolean | null
+          has_liability_insurance: boolean | null
+          has_transport: boolean | null
+          has_work_accidents_insurance: boolean | null
+          id: string
+          num_technicians: number | null
+          own_equipment: string[] | null
+          provider_id: string
+          selected_services: string[] | null
+          submitted_at: string | null
+          submitted_ip: string | null
+          updated_at: string | null
+          work_hours_end: string | null
+          work_hours_start: string | null
+          works_with_platforms: string[] | null
+        }
+        Insert: {
+          available_weekdays?: string[] | null
+          certifications?: string[] | null
+          coverage_municipalities?: string[] | null
+          created_at?: string | null
+          has_activity_declaration?: boolean | null
+          has_computer?: boolean | null
+          has_liability_insurance?: boolean | null
+          has_transport?: boolean | null
+          has_work_accidents_insurance?: boolean | null
+          id?: string
+          num_technicians?: number | null
+          own_equipment?: string[] | null
+          provider_id: string
+          selected_services?: string[] | null
+          submitted_at?: string | null
+          submitted_ip?: string | null
+          updated_at?: string | null
+          work_hours_end?: string | null
+          work_hours_start?: string | null
+          works_with_platforms?: string[] | null
+        }
+        Update: {
+          available_weekdays?: string[] | null
+          certifications?: string[] | null
+          coverage_municipalities?: string[] | null
+          created_at?: string | null
+          has_activity_declaration?: boolean | null
+          has_computer?: boolean | null
+          has_liability_insurance?: boolean | null
+          has_transport?: boolean | null
+          has_work_accidents_insurance?: boolean | null
+          id?: string
+          num_technicians?: number | null
+          own_equipment?: string[] | null
+          provider_id?: string
+          selected_services?: string[] | null
+          submitted_at?: string | null
+          submitted_ip?: string | null
+          updated_at?: string | null
+          work_hours_end?: string | null
+          work_hours_start?: string | null
+          works_with_platforms?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_forms_data_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_price_snapshots: {
         Row: {
           created_at: string | null
@@ -1053,41 +1130,48 @@ export type Database = {
       provider_prices: {
         Row: {
           created_at: string | null
+          created_by: string | null
+          custom_price_without_vat: number | null
           id: string
-          is_active: boolean | null
-          price_without_vat: number
+          is_selected_for_proposal: boolean | null
+          notes: string | null
           provider_id: string
-          service_id: string
+          reference_price_id: string
           updated_at: string | null
-          valid_from: string | null
-          valid_until: string | null
-          variant_name: string | null
+          updated_by: string | null
         }
         Insert: {
           created_at?: string | null
+          created_by?: string | null
+          custom_price_without_vat?: number | null
           id?: string
-          is_active?: boolean | null
-          price_without_vat: number
+          is_selected_for_proposal?: boolean | null
+          notes?: string | null
           provider_id: string
-          service_id: string
+          reference_price_id: string
           updated_at?: string | null
-          valid_from?: string | null
-          valid_until?: string | null
-          variant_name?: string | null
+          updated_by?: string | null
         }
         Update: {
           created_at?: string | null
+          created_by?: string | null
+          custom_price_without_vat?: number | null
           id?: string
-          is_active?: boolean | null
-          price_without_vat?: number
+          is_selected_for_proposal?: boolean | null
+          notes?: string | null
           provider_id?: string
-          service_id?: string
+          reference_price_id?: string
           updated_at?: string | null
-          valid_from?: string | null
-          valid_until?: string | null
-          variant_name?: string | null
+          updated_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "provider_prices_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "provider_prices_provider_id_fkey"
             columns: ["provider_id"]
@@ -1096,10 +1180,65 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "provider_prices_service_id_fkey"
-            columns: ["service_id"]
+            foreignKeyName: "provider_prices_reference_price_id_fkey"
+            columns: ["reference_price_id"]
             isOneToOne: false
-            referencedRelation: "services"
+            referencedRelation: "angariacao_reference_prices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_prices_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_services_history: {
+        Row: {
+          changed_at: string | null
+          changed_by: string | null
+          id: string
+          notes: string | null
+          provider_id: string
+          services_after: string[] | null
+          services_before: string[] | null
+          source: string
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          notes?: string | null
+          provider_id: string
+          services_after?: string[] | null
+          services_before?: string[] | null
+          source: string
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: string
+          notes?: string | null
+          provider_id?: string
+          services_after?: string[] | null
+          services_before?: string[] | null
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_services_history_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_services_history_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
             referencedColumns: ["id"]
           },
         ]
@@ -1203,6 +1342,9 @@ export type Database = {
           entity_type: Database["public"]["Enums"]["entity_type"]
           facebook_url: string | null
           first_application_at: string | null
+          forms_response_id: string | null
+          forms_submitted_at: string | null
+          forms_token: string | null
           has_admin_team: boolean | null
           has_own_transport: boolean | null
           hubspot_contact_id: string | null
@@ -1267,6 +1409,9 @@ export type Database = {
           entity_type: Database["public"]["Enums"]["entity_type"]
           facebook_url?: string | null
           first_application_at?: string | null
+          forms_response_id?: string | null
+          forms_submitted_at?: string | null
+          forms_token?: string | null
           has_admin_team?: boolean | null
           has_own_transport?: boolean | null
           hubspot_contact_id?: string | null
@@ -1331,6 +1476,9 @@ export type Database = {
           entity_type?: Database["public"]["Enums"]["entity_type"]
           facebook_url?: string | null
           first_application_at?: string | null
+          forms_response_id?: string | null
+          forms_submitted_at?: string | null
+          forms_token?: string | null
           has_admin_team?: boolean | null
           has_own_transport?: boolean | null
           hubspot_contact_id?: string | null
