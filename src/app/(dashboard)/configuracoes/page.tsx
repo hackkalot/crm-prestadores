@@ -10,21 +10,42 @@ import {
 } from '@/lib/settings/actions'
 import { getCoverageSettings } from '@/lib/settings/coverage-actions'
 import { getPendingSuggestions, getMappingStats } from '@/lib/service-mapping/actions'
+import {
+  getAngariacaoStats,
+  getAngariacaoPrices,
+  getAngariacaoMaterials,
+  getAngariacaoClusters,
+} from '@/lib/angariacao/actions'
 
 export default async function ConfiguracoesPage() {
   // Garantir que as configuracoes padrao existem
   await ensureDefaultSettings()
 
-  const [tasks, settings, logs, users, coverageSettings, mappingSuggestions, mappingStats] =
-    await Promise.all([
-      getTaskDefinitions(),
-      getSettings(),
-      getSettingsLog(),
-      getUsers(),
-      getCoverageSettings(),
-      getPendingSuggestions(),
-      getMappingStats(),
-    ])
+  const [
+    tasks,
+    settings,
+    logs,
+    users,
+    coverageSettings,
+    mappingSuggestions,
+    mappingStats,
+    angariacaoStats,
+    angariacaoPrices,
+    angariacaoMaterials,
+    angariacaoClusters,
+  ] = await Promise.all([
+    getTaskDefinitions(),
+    getSettings(),
+    getSettingsLog(),
+    getUsers(),
+    getCoverageSettings(),
+    getPendingSuggestions(),
+    getMappingStats(),
+    getAngariacaoStats(),
+    getAngariacaoPrices({ limit: 50 }),
+    getAngariacaoMaterials(),
+    getAngariacaoClusters(),
+  ])
 
   return (
     <div className="flex flex-col h-full">
@@ -42,6 +63,10 @@ export default async function ConfiguracoesPage() {
             coverageSettings={coverageSettings}
             mappingSuggestions={mappingSuggestions.data}
             mappingStats={mappingStats}
+            angariacaoStats={angariacaoStats}
+            angariacaoPrices={angariacaoPrices.data}
+            angariacaoMaterials={angariacaoMaterials}
+            angariacaoClusters={angariacaoClusters}
           />
         </Suspense>
       </div>

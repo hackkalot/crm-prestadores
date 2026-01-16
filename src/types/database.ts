@@ -207,6 +207,108 @@ export type Database = {
           },
         ]
       }
+      angariacao_materials: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          material_name: string
+          price_without_vat: number
+          updated_at: string | null
+          vat_rate: number
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          material_name: string
+          price_without_vat: number
+          updated_at?: string | null
+          vat_rate?: number
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          material_name?: string
+          price_without_vat?: number
+          updated_at?: string | null
+          vat_rate?: number
+        }
+        Relationships: []
+      }
+      angariacao_reference_prices: {
+        Row: {
+          cluster: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          launch_date: string | null
+          price_base: number | null
+          price_cleaning: number | null
+          price_cleaning_imper: number | null
+          price_cleaning_imper_treatments: number | null
+          price_cleaning_treatments: number | null
+          price_extra_night: number | null
+          price_hour_no_materials: number | null
+          price_hour_with_materials: number | null
+          price_new_visit: number | null
+          service_group: string | null
+          service_name: string
+          typology: string | null
+          unit_description: string
+          updated_at: string | null
+          vat_rate: number
+        }
+        Insert: {
+          cluster: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          launch_date?: string | null
+          price_base?: number | null
+          price_cleaning?: number | null
+          price_cleaning_imper?: number | null
+          price_cleaning_imper_treatments?: number | null
+          price_cleaning_treatments?: number | null
+          price_extra_night?: number | null
+          price_hour_no_materials?: number | null
+          price_hour_with_materials?: number | null
+          price_new_visit?: number | null
+          service_group?: string | null
+          service_name: string
+          typology?: string | null
+          unit_description: string
+          updated_at?: string | null
+          vat_rate: number
+        }
+        Update: {
+          cluster?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          launch_date?: string | null
+          price_base?: number | null
+          price_cleaning?: number | null
+          price_cleaning_imper?: number | null
+          price_cleaning_imper_treatments?: number | null
+          price_cleaning_treatments?: number | null
+          price_extra_night?: number | null
+          price_hour_no_materials?: number | null
+          price_hour_with_materials?: number | null
+          price_new_visit?: number | null
+          service_group?: string | null
+          service_name?: string
+          typology?: string | null
+          unit_description?: string
+          updated_at?: string | null
+          vat_rate?: number
+        }
+        Relationships: []
+      }
       application_history: {
         Row: {
           applied_at: string
@@ -1002,45 +1104,6 @@ export type Database = {
           },
         ]
       }
-      provider_services: {
-        Row: {
-          assigned_at: string | null
-          id: string
-          is_active: boolean | null
-          provider_id: string
-          service_id: string
-        }
-        Insert: {
-          assigned_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          provider_id: string
-          service_id: string
-        }
-        Update: {
-          assigned_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          provider_id?: string
-          service_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "provider_services_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "providers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "provider_services_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "services"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       provider_sync_logs: {
         Row: {
           created_at: string | null
@@ -1432,13 +1495,6 @@ export type Database = {
             foreignKeyName: "service_mapping_taxonomy_service_id_fkey"
             columns: ["taxonomy_service_id"]
             isOneToOne: false
-            referencedRelation: "provider_coverage_by_service"
-            referencedColumns: ["taxonomy_service_id"]
-          },
-          {
-            foreignKeyName: "service_mapping_taxonomy_service_id_fkey"
-            columns: ["taxonomy_service_id"]
-            isOneToOne: false
             referencedRelation: "service_taxonomy"
             referencedColumns: ["id"]
           },
@@ -1487,22 +1543,8 @@ export type Database = {
             foreignKeyName: "service_mapping_feedback_actual_taxonomy_id_fkey"
             columns: ["actual_taxonomy_id"]
             isOneToOne: false
-            referencedRelation: "provider_coverage_by_service"
-            referencedColumns: ["taxonomy_service_id"]
-          },
-          {
-            foreignKeyName: "service_mapping_feedback_actual_taxonomy_id_fkey"
-            columns: ["actual_taxonomy_id"]
-            isOneToOne: false
             referencedRelation: "service_taxonomy"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_mapping_feedback_suggested_taxonomy_id_fkey"
-            columns: ["suggested_taxonomy_id"]
-            isOneToOne: false
-            referencedRelation: "provider_coverage_by_service"
-            referencedColumns: ["taxonomy_service_id"]
           },
           {
             foreignKeyName: "service_mapping_feedback_suggested_taxonomy_id_fkey"
@@ -1577,13 +1619,6 @@ export type Database = {
             foreignKeyName: "service_mapping_suggestions_approved_taxonomy_id_fkey"
             columns: ["approved_taxonomy_id"]
             isOneToOne: false
-            referencedRelation: "provider_coverage_by_service"
-            referencedColumns: ["taxonomy_service_id"]
-          },
-          {
-            foreignKeyName: "service_mapping_suggestions_approved_taxonomy_id_fkey"
-            columns: ["approved_taxonomy_id"]
-            isOneToOne: false
             referencedRelation: "service_taxonomy"
             referencedColumns: ["id"]
           },
@@ -1598,13 +1633,6 @@ export type Database = {
             foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_1_fkey"
             columns: ["suggested_taxonomy_id_1"]
             isOneToOne: false
-            referencedRelation: "provider_coverage_by_service"
-            referencedColumns: ["taxonomy_service_id"]
-          },
-          {
-            foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_1_fkey"
-            columns: ["suggested_taxonomy_id_1"]
-            isOneToOne: false
             referencedRelation: "service_taxonomy"
             referencedColumns: ["id"]
           },
@@ -1612,22 +1640,8 @@ export type Database = {
             foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_2_fkey"
             columns: ["suggested_taxonomy_id_2"]
             isOneToOne: false
-            referencedRelation: "provider_coverage_by_service"
-            referencedColumns: ["taxonomy_service_id"]
-          },
-          {
-            foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_2_fkey"
-            columns: ["suggested_taxonomy_id_2"]
-            isOneToOne: false
             referencedRelation: "service_taxonomy"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_3_fkey"
-            columns: ["suggested_taxonomy_id_3"]
-            isOneToOne: false
-            referencedRelation: "provider_coverage_by_service"
-            referencedColumns: ["taxonomy_service_id"]
           },
           {
             foreignKeyName: "service_mapping_suggestions_suggested_taxonomy_id_3_fkey"
@@ -1972,10 +1986,6 @@ export type Database = {
       }
       settings: {
         Row: {
-          coverage_analysis_period_months: number | null
-          coverage_capacity_good_min: number | null
-          coverage_capacity_low_min: number | null
-          coverage_requests_per_provider: number | null
           description: string | null
           id: string
           key: string
@@ -1984,10 +1994,6 @@ export type Database = {
           value: Json
         }
         Insert: {
-          coverage_analysis_period_months?: number | null
-          coverage_capacity_good_min?: number | null
-          coverage_capacity_low_min?: number | null
-          coverage_requests_per_provider?: number | null
           description?: string | null
           id?: string
           key: string
@@ -1996,10 +2002,6 @@ export type Database = {
           value: Json
         }
         Update: {
-          coverage_analysis_period_months?: number | null
-          coverage_capacity_good_min?: number | null
-          coverage_capacity_low_min?: number | null
-          coverage_requests_per_provider?: number | null
           description?: string | null
           id?: string
           key?: string
@@ -2281,19 +2283,6 @@ export type Database = {
       }
     }
     Views: {
-      municipality_coverage_overview: {
-        Row: {
-          avg_providers_per_service: number | null
-          district: string | null
-          municipality: string | null
-          services_at_risk: number | null
-          services_good_coverage: number | null
-          services_low_coverage: number | null
-          total_requests: number | null
-          total_services: number | null
-        }
-        Relationships: []
-      }
       provider_coverage_by_service: {
         Row: {
           category: string | null
@@ -2310,6 +2299,20 @@ export type Database = {
       }
     }
     Functions: {
+      get_provider_coverage_by_service: {
+        Args: { period_months?: number }
+        Returns: {
+          category: string
+          district: string
+          municipality: string
+          provider_count: number
+          provider_ids: string[]
+          provider_names: string[]
+          request_count: number
+          service: string
+          taxonomy_service_id: string
+        }[]
+      }
       is_user_admin: { Args: { user_id: string }; Returns: boolean }
       is_user_approved: { Args: { user_id: string }; Returns: boolean }
       is_user_manager: { Args: { user_id: string }; Returns: boolean }

@@ -49,6 +49,122 @@ npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs > src/types/
 
 Os tipos sao gerados para `src/types/database.ts` e devem ser regenerados sempre que o schema da base de dados mudar (novas tabelas, colunas, etc.).
 
+## ⚠️ REGRAS CRÍTICAS - O QUE NÃO FAZER
+
+### 1. **NUNCA modificar tipos de base de dados sem regenerar `database.ts`**
+- ❌ NÃO alterar interfaces locais (ServiceCategory, ProviderPrice, etc.) sem verificar o tipo gerado
+- ✅ SEMPRE importar tipos de `@/lib/*/actions.ts` ou `@/types/database.ts`
+- ✅ **CRÍTICO**: Quando criar novas tabelas, SEMPRE regenerar tipos: `npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs > src/types/database.ts`
+- ⚠️ Após regenerar, **remover** manualmente mensagens do CLI (últimas 2 linhas) se aparecerem no ficheiro
+
+### 2. **NUNCA usar `as any` sem eslint-disable (CAUSA ERROS DE BUILD)**
+- ❌ **NÃO** usar `as any` diretamente - causa erros ESLint que bloqueiam CI/CD
+- ✅ **SEMPRE** adicionar `// eslint-disable-next-line @typescript-eslint/no-explicit-any` na linha ANTES
+- ✅ Alternativa MELHOR: usar `as unknown` + type guard quando possível
+- ✅ Se houver conflito de tipos, a MELHOR solução é regenerar `database.ts`
+
+### 3. **NUNCA corrigir erros TypeScript um a um**
+- ❌ NÃO fazer fixes incrementais que revelam novos erros em cascata
+- ✅ SEMPRE usar `npm run build` para ver TODOS os erros de uma vez
+- ✅ Se houver mais de 5 erros de tipos conflitantes, regenerar `database.ts` em vez de usar `as any`
+
+### 4. **NUNCA adicionar console.log em server components sem try-catch**
+- ❌ NÃO usar `console.log()` em funções async de server components (causa EPIPE)
+- ✅ SEMPRE usar try-catch em server components que fazem queries
+- ✅ Logs devem estar apenas em `'use server'` actions, não em page components
+
+### 5. **NUNCA modificar código fora do escopo da tarefa**
+- ❌ NÃO "melhorar" código adjacente ao fazer uma feature
+- ❌ NÃO corrigir warnings ESLint em ficheiros não relacionados
+- ✅ APENAS modificar ficheiros estritamente necessários para a tarefa
+
+### 6. **NUNCA assumir que o build está limpo**
+- ❌ NÃO assumir que não há erros só porque o dev server funciona
+- ✅ SEMPRE fazer `npm run build` ANTES de fazer alterações grandes
+- ✅ Se houver erros pre-existentes, verificar se falta regenerar `database.ts`
+
+### 7. **NUNCA criar interfaces duplicadas**
+- ❌ NÃO redefinir ServiceCategory, ProviderPrice, ReferencePrice em componentes
+- ✅ SEMPRE importar de `@/lib/pricing/actions` ou source of truth
+- ✅ Usar `type` imports: `import type { X } from '@/lib/actions'`
+
+### 8. **NUNCA fazer refactoring "preventivo"**
+- ❌ NÃO adicionar null checks "por precaução"
+- ❌ NÃO mudar `||` para `??` sem motivo
+- ✅ APENAS corrigir erros de compilação reais, não potenciais
+
+### Exemplos de Abordagem CORRETA:
+
+#### 1. Tipos de Base de Dados
+```typescript
+// ❌ ERRADO - criar interface local
+interface ServiceCategory {
+  vat_rate: number | null
+}
+
+// ✅ CORRETO - importar tipo
+import type { ServiceCategory } from '@/lib/pricing/actions'
+```
+
+#### 2. Conflitos de Tipo (quando regenerar database.ts não resolve)
+```typescript
+// ❌ ERRADO - usar as any sem eslint-disable
+const data = prices.map(...) as any
+
+// ✅ MELHOR - usar type guard
+const data = prices.map(...) as unknown as ProviderPrice[]
+
+// ✅ ACEITÁVEL - as any com eslint-disable
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const data = prices.map(...) as any
+
+// ✅ MELHOR AINDA - regenerar database.ts
+// npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs > src/types/database.ts
+// Depois remover últimas 2 linhas se tiver mensagem do CLI
+```
+
+#### 3. Server Components
+```typescript
+// ❌ ERRADO - console.log em server component
+export default async function Page() {
+  const data = await getData()
+  console.log(data) // Causa EPIPE!
+  return <div>{data}</div>
+}
+
+// ✅ CORRETO - sem logs
+export default async function Page() {
+  const data = await getData()
+  return <div>{data}</div>
+}
+
+// ✅ ACEITÁVEL - logs apenas em actions
+'use server'
+export async function myAction() {
+  const data = await getData()
+  console.log('Action data:', data) // OK aqui
+  return data
+}
+```
+
+#### 4. Fluxo Correto Quando Criar Nova Tabela
+```bash
+# 1. Criar migration no Supabase
+# 2. Aplicar migration
+npm run db:push
+
+# 3. Regenerar tipos
+npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs > src/types/database.ts
+
+# 4. Remover mensagem do CLI (se existir)
+# Abrir database.ts e apagar últimas 2 linhas se tiver "A new version..."
+
+# 5. Testar build
+npm run build
+
+# 6. Se houver erros de tipos, NUNCA usar as any - importar de database.ts
+```
+
 ## Estrutura do Projeto
 
 ```

@@ -378,7 +378,7 @@ export async function getAverageTimePerStage(filters: KpiFilters = {}) {
   if (!stages) return []
 
   // Obter log de movimentacoes de etapas
-  let query = createAdminClient()
+  const query = createAdminClient()
     .from('history_log')
     .select(`
       card_id,

@@ -8,21 +8,27 @@ import { SettingsLogList } from '@/components/settings/settings-log'
 import { CoverageSettings } from '@/components/settings/coverage-settings'
 import { ServiceMappingReview } from '@/components/service-mapping/service-mapping-review'
 import { ServiceMappingStats } from '@/components/service-mapping/service-mapping-stats'
-import { Settings, ListTodo, History, Network, MapPin } from 'lucide-react'
+import { AngariacaoUpload } from '@/components/angariacao/angariacao-upload'
+import { AngariacaoStatsCards } from '@/components/angariacao/angariacao-stats'
+import { AngariacaoPricesTable } from '@/components/angariacao/angariacao-prices-table'
+import { AngariacaoMaterialsTable } from '@/components/angariacao/angariacao-materials-table'
+import { Settings, ListTodo, History, Network, MapPin, Euro } from 'lucide-react'
+import type { AngariacaoPrice, AngariacaoMaterial, AngariacaoStats as AngariacaoStatsType } from '@/lib/angariacao/actions'
+import type { TaskDefinitionWithStage, Setting, SettingsLog } from '@/lib/settings/actions'
+import type { CoverageSettings as CoverageSettingsType } from '@/lib/settings/coverage-actions'
 
 interface ConfiguracoesTabsProps {
-  tasks: any[]
-  settings: any
-  logs: any[]
-  users: any[]
-  coverageSettings: {
-    coverage_requests_per_provider: number
-    coverage_capacity_good_min: number
-    coverage_capacity_low_min: number
-    coverage_analysis_period_months: number
-  }
-  mappingSuggestions: any[]
-  mappingStats: any
+  tasks: TaskDefinitionWithStage[]
+  settings: Setting[]
+  logs: SettingsLog[]
+  users: Array<{ id: string; name: string; email: string }>
+  coverageSettings: CoverageSettingsType
+  mappingSuggestions: unknown[]
+  mappingStats: unknown
+  angariacaoStats: AngariacaoStatsType
+  angariacaoPrices: AngariacaoPrice[]
+  angariacaoMaterials: AngariacaoMaterial[]
+  angariacaoClusters: string[]
 }
 
 export function ConfiguracoesTabs({
@@ -33,6 +39,10 @@ export function ConfiguracoesTabs({
   coverageSettings,
   mappingSuggestions,
   mappingStats,
+  angariacaoStats,
+  angariacaoPrices,
+  angariacaoMaterials,
+  angariacaoClusters,
 }: ConfiguracoesTabsProps) {
   const [activeTab, setActiveTab] = useState('tasks')
 
@@ -54,6 +64,10 @@ export function ConfiguracoesTabs({
         <TabsTrigger value="mapping" className="gap-2">
           <Network className="h-4 w-4" />
           Mapeamento
+        </TabsTrigger>
+        <TabsTrigger value="angariacao" className="gap-2">
+          <Euro className="h-4 w-4" />
+          Preços Angariação
         </TabsTrigger>
         <TabsTrigger value="history" className="gap-2">
           <History className="h-4 w-4" />
@@ -92,8 +106,20 @@ export function ConfiguracoesTabs({
       </TabsContent>
 
       <TabsContent value="mapping" className="space-y-6">
-        <ServiceMappingStats stats={mappingStats} />
-        <ServiceMappingReview suggestions={mappingSuggestions} />
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <ServiceMappingStats stats={mappingStats as any} />
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <ServiceMappingReview suggestions={mappingSuggestions as any} />
+      </TabsContent>
+
+      <TabsContent value="angariacao" className="space-y-4">
+        <AngariacaoStatsCards stats={angariacaoStats} />
+        <AngariacaoUpload />
+        <AngariacaoPricesTable
+          prices={angariacaoPrices}
+          clusters={angariacaoClusters}
+        />
+        <AngariacaoMaterialsTable materials={angariacaoMaterials} />
       </TabsContent>
 
       <TabsContent value="history" className="space-y-4">

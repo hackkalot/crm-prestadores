@@ -15,9 +15,12 @@ type ThemeProviderState = {
   setTheme: (theme: Theme) => void
 }
 
-const ThemeProviderContext = React.createContext<ThemeProviderState | undefined>(
-  undefined
-)
+const initialState: ThemeProviderState = {
+  theme: 'system',
+  setTheme: () => null,
+}
+
+const ThemeProviderContext = React.createContext<ThemeProviderState>(initialState)
 
 export function ThemeProvider({
   children,
@@ -60,21 +63,14 @@ export function ThemeProvider({
     () => ({
       theme,
       setTheme: (theme: Theme) => {
-        localStorage.setItem(storageKey, theme)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(storageKey, theme)
+        }
         setTheme(theme)
       },
     }),
     [theme, storageKey]
   )
-
-  // Prevent flash of unstyled content
-  if (!mounted) {
-    return (
-      <ThemeProviderContext.Provider value={value} {...props}>
-        {children}
-      </ThemeProviderContext.Provider>
-    )
-  }
 
   return (
     <ThemeProviderContext.Provider value={value} {...props}>
@@ -84,10 +80,5 @@ export function ThemeProvider({
 }
 
 export const useTheme = () => {
-  const context = React.useContext(ThemeProviderContext)
-
-  if (context === undefined)
-    throw new Error('useTheme must be used within a ThemeProvider')
-
-  return context
+  return React.useContext(ThemeProviderContext)
 }
