@@ -1,9 +1,9 @@
 name: Sync Allocation History
 
 on:
-  # Run daily at 3:00 AM UTC (4:00 AM Portugal time) - before providers sync
+  # Run weekly on Monday at 7:30 AM UTC (8:30 AM Portugal time)
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '30 7 * * 1'
 
   # Allow manual trigger (from UI or API)
   workflow_dispatch:

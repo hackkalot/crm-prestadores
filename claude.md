@@ -475,10 +475,12 @@ O sistema de sincronizacao com o backoffice FIXO usa **GitHub Actions** para exe
 
 #### Workflows Disponiveis
 
-| Workflow | Ficheiro | Schedule | Tabela de Logs |
+| Workflow | Ficheiro | Schedule (Segundas-feiras) | Tabela de Logs |
 |----------|----------|----------|----------------|
-| Pedidos de Servico | `.github/workflows/sync-backoffice.yml` | 6:00 UTC (dia anterior) | `sync_logs` |
-| Prestadores | `.github/workflows/sync-providers.yml` | 5:00 UTC (todos) | `provider_sync_logs` |
+| Pedidos de Servico | `.github/workflows/sync-backoffice.yml` | 06:00 UTC (últimos 90 dias) | `sync_logs` |
+| Facturação | `.github/workflows/sync-billing.yml` | 06:30 UTC | `billing_sync_logs` |
+| Prestadores | `.github/workflows/sync-providers.yml` | 07:00 UTC | `provider_sync_logs` |
+| Histórico Alocações | `.github/workflows/sync-allocation-history.yml` | 07:30 UTC | `allocation_sync_logs` |
 
 #### Scripts
 
@@ -520,7 +522,7 @@ const apiEndpoint = isProduction ? '/api/sync/github-actions' : '/api/sync/backo
 #### Triggers Disponiveis
 
 Cada workflow pode ser disparado de 3 formas:
-1. **Schedule (cron)** - Automatico diariamente
+1. **Schedule (cron)** - Automatico semanalmente (segundas-feiras)
 2. **workflow_dispatch** - Manual via GitHub UI
 3. **repository_dispatch** - Via API (usado pelo CRM)
 

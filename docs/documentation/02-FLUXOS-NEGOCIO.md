@@ -464,7 +464,7 @@ O prestador acede via URL: `/forms/services/[token]`
 
 - Token é validado contra `providers.forms_token`
 - Se válido, carrega dados actuais do prestador para pré-preenchimento
-- Formulário permite múltiplas submissões (não bloqueia após primeira)
+- Formulário permite múltiplas submissões
 
 #### 3. Submissão do Formulário
 
@@ -488,7 +488,7 @@ O prestador acede via URL: `/forms/services/[token]`
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  3. UPDATE providers com dados actuais                          │
-│     (versão editável que pode ser alterada pelo backoffice)     │
+│     (versão editável)                                           │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -614,9 +614,11 @@ Os pedidos de serviço são importados do backoffice FIXO via scraping:
 │                    TRIGGERS DE SYNC                             │
 └─────────────────────────────────────────────────────────────────┘
 
-1. AUTOMÁTICO (cron)
-   - Diariamente às 6:00 UTC
-   - Importa pedidos do dia anterior
+1. AUTOMÁTICO (cron) - Semanalmente às segundas-feiras
+   - 06:00 UTC - Sync Backoffice (pedidos últimos 90 dias)
+   - 06:30 UTC - Sync Billing (facturação)
+   - 07:00 UTC - Sync Providers (prestadores)
+   - 07:30 UTC - Sync Allocation History (histórico alocações)
 
 2. MANUAL (UI)
    - Botão "Sincronizar" em /configuracoes

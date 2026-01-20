@@ -1,9 +1,9 @@
 name: Sync Billing Data
 
 on:
-  # Run daily at 4:00 AM UTC (5:00 AM Portugal time)
+  # Run weekly on Monday at 6:30 AM UTC (7:30 AM Portugal time)
   schedule:
-    - cron: '0 4 * * *'
+    - cron: '30 6 * * 1'
 
   # Allow manual trigger (from UI or API)
   workflow_dispatch:

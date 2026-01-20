@@ -143,6 +143,7 @@ crm-prestadores/
 | **Card** | Representação visual do prestador no Kanban de onboarding |
 | **Etapa** | Fase do onboarding (1-6), cada uma com tarefas específicas |
 | **Backoffice FIXO** | Sistema externo legado de onde são importados pedidos de serviço |
+| **Backoffice** | Sistema interno usado pelos users do crm |
 | **Pedido de Serviço** | Trabalho atribuído a um prestador (importado do backoffice) |
 | **Cobertura** | Concelhos/distritos onde um prestador pode operar |
 | **Preços de Referência** | Tabela base de preços por serviço/categoria |

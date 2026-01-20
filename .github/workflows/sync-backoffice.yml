@@ -1,9 +1,9 @@
 name: Sync Backoffice Data
 
 on:
-  # Run daily at 3:00 AM UTC (4:00 AM Portugal time) - last 90 days
+  # Run weekly on Monday at 6:00 AM UTC (7:00 AM Portugal time) - last 90 days
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 6 * * 1'
 
   # Allow manual trigger with custom date range (from UI or API)
   workflow_dispatch:
