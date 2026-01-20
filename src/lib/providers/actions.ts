@@ -2,8 +2,6 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { getProviderPricingTable } from '@/lib/pricing/actions'
-import { getProviderDocuments } from '@/lib/documents/actions'
 import { revalidatePath } from 'next/cache'
 import { unstable_cache } from 'next/cache'
 
@@ -68,8 +66,7 @@ export async function getProviderOnboarding(id: string) {
         task_definition:task_definitions(
           *,
           stage:stage_definitions(id, name, stage_number, display_order)
-        ),
-        task_owner:users!onboarding_tasks_owner_id_fkey(id, name, email)
+        )
       )
     `)
     .eq('provider_id', id)
@@ -105,36 +102,6 @@ export async function getProviderHistory(id: string) {
     .limit(100)
 
   return data || []
-}
-
-// DEPRECATED: Use individual functions above for better performance
-export async function getProviderComplete(id: string) {
-  const basicInfo = await getProviderBasicInfo(id)
-  if (!basicInfo) return null
-
-  const [applicationHistory, onboardingCard, notes, history] = await Promise.all([
-    getProviderApplicationHistory(id),
-    getProviderOnboarding(id),
-    getProviderNotes(id),
-    getProviderHistory(id),
-  ])
-
-  let pricingTable = null
-  if (['ativo', 'suspenso'].includes(basicInfo.provider.status)) {
-    pricingTable = await getProviderPricingTable(id)
-  }
-
-  const documents = await getProviderDocuments(id)
-
-  return {
-    provider: basicInfo.provider,
-    applicationHistory,
-    onboardingCard,
-    notes,
-    history,
-    pricingTable,
-    documents,
-  }
 }
 
 export async function getUsers() {

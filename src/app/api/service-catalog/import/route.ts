@@ -4,8 +4,8 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import * as XLSX from 'xlsx'
 import type { Database } from '@/types/database'
 
-type AngariacaoPriceInsert = Database['public']['Tables']['angariacao_reference_prices']['Insert']
-type AngariacaoMaterialInsert = Database['public']['Tables']['angariacao_materials']['Insert']
+type ServicePriceInsert = Database['public']['Tables']['service_prices']['Insert']
+type MaterialCatalogInsert = Database['public']['Tables']['material_catalog']['Insert']
 
 // Parseia taxa de IVA (ex: "23%" -> 23, 0.23 -> 23)
 function parseVatRate(value: string | number | undefined): number {
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       Record<string, unknown>
     >
 
-    const priceRecords: AngariacaoPriceInsert[] = []
+    const priceRecords: ServicePriceInsert[] = []
 
     for (const row of dbRows) {
       const serviceName = cleanString(row['Serviços'] as string)
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
 
     // Limpar tabela de preços
     await adminClient
-      .from('angariacao_reference_prices')
+      .from('service_prices')
       .delete()
       .neq('id', '00000000-0000-0000-0000-000000000000')
 
@@ -153,13 +153,13 @@ export async function POST(request: NextRequest) {
 
     for (let i = 0; i < priceRecords.length; i += batchSize) {
       const batch = priceRecords.slice(i, i + batchSize)
-      const { error } = await adminClient.from('angariacao_reference_prices').insert(batch)
+      const { error } = await adminClient.from('service_prices').insert(batch)
 
       if (error) {
         // Se falhar em batch, tentar um a um
         for (const record of batch) {
           const { error: singleError } = await adminClient
-            .from('angariacao_reference_prices')
+            .from('service_prices')
             .insert(record)
           if (!singleError) {
             pricesInserted++
@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
         defval: undefined,
       }) as Array<Record<string, unknown>>
 
-      const materialRecords: AngariacaoMaterialInsert[] = []
+      const materialRecords: MaterialCatalogInsert[] = []
 
       for (const row of materialsRows) {
         const materialName = cleanString(row['Material'] as string)
@@ -202,12 +202,12 @@ export async function POST(request: NextRequest) {
 
       // Limpar tabela de materiais
       await adminClient
-        .from('angariacao_materials')
+        .from('material_catalog')
         .delete()
         .neq('id', '00000000-0000-0000-0000-000000000000')
 
       // Inserir materiais
-      const { error } = await adminClient.from('angariacao_materials').insert(materialRecords)
+      const { error } = await adminClient.from('material_catalog').insert(materialRecords)
 
       if (!error) {
         materialsInserted = materialRecords.length
@@ -220,7 +220,7 @@ export async function POST(request: NextRequest) {
       materialsCount: materialsInserted,
     })
   } catch (error) {
-    console.error('Error importing angariacao prices:', error)
+    console.error('Error importing service catalog:', error)
     return NextResponse.json(
       { error: 'Erro ao processar ficheiro' },
       { status: 500 }

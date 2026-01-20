@@ -2,13 +2,13 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DollarSign, Package, FolderOpen, Clock } from 'lucide-react'
-import type { AngariacaoStats } from '@/lib/angariacao/actions'
+import type { CatalogStats } from '@/lib/service-catalog/actions'
 
-interface AngariacaoStatsCardsProps {
-  stats: AngariacaoStats
+interface CatalogStatsCardsProps {
+  stats: CatalogStats
 }
 
-export function AngariacaoStatsCards({ stats }: AngariacaoStatsCardsProps) {
+export function CatalogStatsCards({ stats }: CatalogStatsCardsProps) {
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Nunca'
     const date = new Date(dateString)

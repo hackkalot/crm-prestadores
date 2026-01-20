@@ -8,12 +8,12 @@ import { SettingsLogList } from '@/components/settings/settings-log'
 import { CoverageSettings } from '@/components/settings/coverage-settings'
 import { ServiceMappingReview } from '@/components/service-mapping/service-mapping-review'
 import { ServiceMappingStats } from '@/components/service-mapping/service-mapping-stats'
-import { AngariacaoUpload } from '@/components/angariacao/angariacao-upload'
-import { AngariacaoStatsCards } from '@/components/angariacao/angariacao-stats'
-import { AngariacaoPricesTable } from '@/components/angariacao/angariacao-prices-table'
-import { AngariacaoMaterialsTable } from '@/components/angariacao/angariacao-materials-table'
+import { CatalogUpload } from '@/components/service-catalog/catalog-upload'
+import { CatalogStatsCards } from '@/components/service-catalog/catalog-stats'
+import { CatalogPricesTable } from '@/components/service-catalog/prices-table'
+import { CatalogMaterialsTable } from '@/components/service-catalog/materials-table'
 import { Settings, ListTodo, History, Network, MapPin, Euro } from 'lucide-react'
-import type { AngariacaoPrice, AngariacaoMaterial, AngariacaoStats as AngariacaoStatsType } from '@/lib/angariacao/actions'
+import type { CatalogPrice, CatalogMaterial, CatalogStats } from '@/lib/service-catalog/actions'
 import type { TaskDefinitionWithStage, Setting, SettingsLog } from '@/lib/settings/actions'
 import type { CoverageSettings as CoverageSettingsType } from '@/lib/settings/coverage-actions'
 
@@ -25,10 +25,10 @@ interface ConfiguracoesTabsProps {
   coverageSettings: CoverageSettingsType
   mappingSuggestions: unknown[]
   mappingStats: unknown
-  angariacaoStats: AngariacaoStatsType
-  angariacaoPrices: AngariacaoPrice[]
-  angariacaoMaterials: AngariacaoMaterial[]
-  angariacaoClusters: string[]
+  catalogStats: CatalogStats
+  catalogPrices: CatalogPrice[]
+  catalogMaterials: CatalogMaterial[]
+  catalogClusters: string[]
 }
 
 export function ConfiguracoesTabs({
@@ -39,10 +39,10 @@ export function ConfiguracoesTabs({
   coverageSettings,
   mappingSuggestions,
   mappingStats,
-  angariacaoStats,
-  angariacaoPrices,
-  angariacaoMaterials,
-  angariacaoClusters,
+  catalogStats,
+  catalogPrices,
+  catalogMaterials,
+  catalogClusters,
 }: ConfiguracoesTabsProps) {
   const [activeTab, setActiveTab] = useState('tasks')
 
@@ -65,9 +65,9 @@ export function ConfiguracoesTabs({
           <Network className="h-4 w-4" />
           Mapeamento
         </TabsTrigger>
-        <TabsTrigger value="angariacao" className="gap-2">
+        <TabsTrigger value="catalog" className="gap-2">
           <Euro className="h-4 w-4" />
-          Preços Angariação
+          Catálogo Serviços
         </TabsTrigger>
         <TabsTrigger value="history" className="gap-2">
           <History className="h-4 w-4" />
@@ -112,14 +112,14 @@ export function ConfiguracoesTabs({
         <ServiceMappingReview suggestions={mappingSuggestions as any} />
       </TabsContent>
 
-      <TabsContent value="angariacao" className="space-y-4">
-        <AngariacaoStatsCards stats={angariacaoStats} />
-        <AngariacaoUpload />
-        <AngariacaoPricesTable
-          prices={angariacaoPrices}
-          clusters={angariacaoClusters}
+      <TabsContent value="catalog" className="space-y-4">
+        <CatalogStatsCards stats={catalogStats} />
+        <CatalogUpload />
+        <CatalogPricesTable
+          prices={catalogPrices}
+          clusters={catalogClusters}
         />
-        <AngariacaoMaterialsTable materials={angariacaoMaterials} />
+        <CatalogMaterialsTable materials={catalogMaterials} />
       </TabsContent>
 
       <TabsContent value="history" className="space-y-4">

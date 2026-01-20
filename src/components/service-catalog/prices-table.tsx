@@ -20,21 +20,21 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Search, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
-import { getAngariacaoPrices, getAngariacaoServiceGroups } from '@/lib/angariacao/actions'
-import type { AngariacaoPrice } from '@/lib/angariacao/actions'
+import { getCatalogPrices, getCatalogServiceGroups } from '@/lib/service-catalog/actions'
+import type { CatalogPrice } from '@/lib/service-catalog/actions'
 
-interface AngariacaoPricesTableProps {
-  prices: AngariacaoPrice[]
+interface CatalogPricesTableProps {
+  prices: CatalogPrice[]
   clusters: string[]
 }
 
 const ITEMS_PER_PAGE = 25
 
-export function AngariacaoPricesTable({
+export function CatalogPricesTable({
   prices,
   clusters,
-}: AngariacaoPricesTableProps) {
-  const [data, setData] = useState<AngariacaoPrice[]>(prices || [])
+}: CatalogPricesTableProps) {
+  const [data, setData] = useState<CatalogPrice[]>(prices || [])
   const [total, setTotal] = useState(prices?.length || 0)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
@@ -46,9 +46,9 @@ export function AngariacaoPricesTable({
   // Atualizar grupos quando cluster muda
   useEffect(() => {
     if (cluster) {
-      getAngariacaoServiceGroups(cluster).then(setServiceGroups)
+      getCatalogServiceGroups(cluster).then(setServiceGroups)
     } else {
-      getAngariacaoServiceGroups().then(setServiceGroups)
+      getCatalogServiceGroups().then(setServiceGroups)
     }
     setServiceGroup('')
   }, [cluster])
@@ -56,7 +56,7 @@ export function AngariacaoPricesTable({
   // Buscar dados
   const fetchData = () => {
     startTransition(async () => {
-      const result = await getAngariacaoPrices({
+      const result = await getCatalogPrices({
         cluster: cluster || undefined,
         serviceGroup: serviceGroup || undefined,
         search: search || undefined,

@@ -1,5 +1,29 @@
 # Modelação de Dados - CRM Prestadores FIXO
 
+## Índice
+
+- [Diagrama de Relações](#diagrama-de-relações-simplificado)
+- [Enums](#enums)
+- [Tabelas](#tabelas)
+  - [users](#1-users---utilizadores-do-crm)
+  - [providers](#2-providers---prestadores)
+  - [application_history](#3-application_history---histórico-de-candidaturas-duplicados)
+  - [stage_definitions](#4-stage_definitions---definição-das-etapas-do-kanban)
+  - [task_definitions](#5-task_definitions---definição-das-tarefas-configuração-global)
+  - [onboarding_cards](#6-onboarding_cards---cards-do-kanban-instância-de-onboarding)
+  - [onboarding_tasks](#7-onboarding_tasks---tarefas-instanciadas-para-cada-prestador)
+  - [notes](#8-notes---notas-sobre-prestadores)
+  - [history_log](#9-history_log---log-de-todas-as-alterações)
+  - [service_categories](#10-service_categories---categorias-de-serviços)
+  - [services](#11-services---serviços-específicos)
+  - [reference_prices](#12-reference_prices---tabela-de-preços-de-referência-fixo)
+  - [provider_services](#13-provider_services---serviços-que-cada-prestador-oferece)
+  - [provider_prices](#14-provider_prices---preços-acordados-com-cada-prestador)
+  - [alerts](#15-alerts---alertas-e-notificações)
+  - [settings](#16-settings---configurações-do-sistema)
+
+---
+
 ## Diagrama de Relações (Simplificado)
 
 ```
@@ -293,9 +317,6 @@ CREATE TABLE onboarding_tasks (
   -- Estado
   status task_status DEFAULT 'por_fazer',
 
-  -- Owner específico desta tarefa (pode diferir do default)
-  owner_id UUID REFERENCES users(id),
-
   -- Prazos
   deadline_at TIMESTAMPTZ,
   original_deadline_at TIMESTAMPTZ, -- Prazo original para tracking
@@ -314,7 +335,6 @@ CREATE TABLE onboarding_tasks (
 -- Índices
 CREATE INDEX idx_onboarding_tasks_card ON onboarding_tasks(card_id);
 CREATE INDEX idx_onboarding_tasks_definition ON onboarding_tasks(task_definition_id);
-CREATE INDEX idx_onboarding_tasks_owner ON onboarding_tasks(owner_id);
 CREATE INDEX idx_onboarding_tasks_status ON onboarding_tasks(status);
 CREATE INDEX idx_onboarding_tasks_deadline ON onboarding_tasks(deadline_at);
 ```
@@ -626,7 +646,7 @@ SELECT
   t.id AS task_id,
   t.status,
   t.deadline_at,
-  t.owner_id,
+  p.relationship_owner_id,  -- RM responsável pelo provider
   td.name AS task_name,
   td.task_number,
   sd.name AS stage_name,

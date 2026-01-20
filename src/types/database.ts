@@ -207,108 +207,6 @@ export type Database = {
           },
         ]
       }
-      angariacao_materials: {
-        Row: {
-          category: string | null
-          created_at: string | null
-          id: string
-          is_active: boolean | null
-          material_name: string
-          price_without_vat: number
-          updated_at: string | null
-          vat_rate: number
-        }
-        Insert: {
-          category?: string | null
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          material_name: string
-          price_without_vat: number
-          updated_at?: string | null
-          vat_rate?: number
-        }
-        Update: {
-          category?: string | null
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          material_name?: string
-          price_without_vat?: number
-          updated_at?: string | null
-          vat_rate?: number
-        }
-        Relationships: []
-      }
-      angariacao_reference_prices: {
-        Row: {
-          cluster: string
-          created_at: string | null
-          id: string
-          is_active: boolean | null
-          launch_date: string | null
-          price_base: number | null
-          price_cleaning: number | null
-          price_cleaning_imper: number | null
-          price_cleaning_imper_treatments: number | null
-          price_cleaning_treatments: number | null
-          price_extra_night: number | null
-          price_hour_no_materials: number | null
-          price_hour_with_materials: number | null
-          price_new_visit: number | null
-          service_group: string | null
-          service_name: string
-          typology: string | null
-          unit_description: string
-          updated_at: string | null
-          vat_rate: number
-        }
-        Insert: {
-          cluster: string
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          launch_date?: string | null
-          price_base?: number | null
-          price_cleaning?: number | null
-          price_cleaning_imper?: number | null
-          price_cleaning_imper_treatments?: number | null
-          price_cleaning_treatments?: number | null
-          price_extra_night?: number | null
-          price_hour_no_materials?: number | null
-          price_hour_with_materials?: number | null
-          price_new_visit?: number | null
-          service_group?: string | null
-          service_name: string
-          typology?: string | null
-          unit_description: string
-          updated_at?: string | null
-          vat_rate: number
-        }
-        Update: {
-          cluster?: string
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          launch_date?: string | null
-          price_base?: number | null
-          price_cleaning?: number | null
-          price_cleaning_imper?: number | null
-          price_cleaning_imper_treatments?: number | null
-          price_cleaning_treatments?: number | null
-          price_extra_night?: number | null
-          price_hour_no_materials?: number | null
-          price_hour_with_materials?: number | null
-          price_new_visit?: number | null
-          service_group?: string | null
-          service_name?: string
-          typology?: string | null
-          unit_description?: string
-          updated_at?: string | null
-          vat_rate?: number
-        }
-        Relationships: []
-      }
       application_history: {
         Row: {
           applied_at: string
@@ -564,6 +462,39 @@ export type Database = {
           },
         ]
       }
+      material_catalog: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          material_name: string
+          price_without_vat: number
+          updated_at: string | null
+          vat_rate: number
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          material_name: string
+          price_without_vat: number
+          updated_at?: string | null
+          vat_rate?: number
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          material_name?: string
+          price_without_vat?: number
+          updated_at?: string | null
+          vat_rate?: number
+        }
+        Relationships: []
+      }
       notes: {
         Row: {
           content: string
@@ -676,7 +607,6 @@ export type Database = {
           deadline_at: string | null
           id: string
           original_deadline_at: string | null
-          owner_id: string | null
           started_at: string | null
           status: Database["public"]["Enums"]["task_status"] | null
           task_definition_id: string
@@ -690,7 +620,6 @@ export type Database = {
           deadline_at?: string | null
           id?: string
           original_deadline_at?: string | null
-          owner_id?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["task_status"] | null
           task_definition_id: string
@@ -704,7 +633,6 @@ export type Database = {
           deadline_at?: string | null
           id?: string
           original_deadline_at?: string | null
-          owner_id?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["task_status"] | null
           task_definition_id?: string
@@ -721,13 +649,6 @@ export type Database = {
           {
             foreignKeyName: "onboarding_tasks_completed_by_fkey"
             columns: ["completed_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "onboarding_tasks_owner_id_fkey"
-            columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -1024,6 +945,7 @@ export type Database = {
           own_equipment: string[] | null
           provider_id: string
           selected_services: string[] | null
+          submission_number: number | null
           submitted_at: string | null
           submitted_ip: string | null
           updated_at: string | null
@@ -1046,6 +968,7 @@ export type Database = {
           own_equipment?: string[] | null
           provider_id: string
           selected_services?: string[] | null
+          submission_number?: number | null
           submitted_at?: string | null
           submitted_ip?: string | null
           updated_at?: string | null
@@ -1068,6 +991,7 @@ export type Database = {
           own_equipment?: string[] | null
           provider_id?: string
           selected_services?: string[] | null
+          submission_number?: number | null
           submitted_at?: string | null
           submitted_ip?: string | null
           updated_at?: string | null
@@ -1079,7 +1003,7 @@ export type Database = {
           {
             foreignKeyName: "provider_forms_data_provider_id_fkey"
             columns: ["provider_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "providers"
             referencedColumns: ["id"]
           },
@@ -1183,7 +1107,7 @@ export type Database = {
             foreignKeyName: "provider_prices_reference_price_id_fkey"
             columns: ["reference_price_id"]
             isOneToOne: false
-            referencedRelation: "angariacao_reference_prices"
+            referencedRelation: "service_prices"
             referencedColumns: ["id"]
           },
           {
@@ -1319,6 +1243,7 @@ export type Database = {
           activity_proof_url: string | null
           application_count: number | null
           archived_at: string | null
+          available_weekdays: string[] | null
           backoffice_created_at: string | null
           backoffice_created_by: number | null
           backoffice_do_recurrence: boolean | null
@@ -1334,6 +1259,7 @@ export type Database = {
           backoffice_updated_by: number | null
           cancelled_requests: number | null
           categories: string[] | null
+          certifications: string[] | null
           completed_requests: number | null
           counties: string[] | null
           created_at: string | null
@@ -1345,8 +1271,12 @@ export type Database = {
           forms_response_id: string | null
           forms_submitted_at: string | null
           forms_token: string | null
+          has_activity_declaration: boolean | null
           has_admin_team: boolean | null
+          has_computer: boolean | null
+          has_liability_insurance: boolean | null
           has_own_transport: boolean | null
+          has_work_accidents_insurance: boolean | null
           hubspot_contact_id: string | null
           iban: string | null
           id: string
@@ -1356,6 +1286,7 @@ export type Database = {
           nif: string | null
           num_technicians: number | null
           onboarding_started_at: string | null
+          own_equipment: string[] | null
           phone: string | null
           relationship_owner_id: string | null
           requests_accepted: number | null
@@ -1371,7 +1302,10 @@ export type Database = {
           twitter_url: string | null
           updated_at: string | null
           website: string | null
+          work_hours_end: string | null
+          work_hours_start: string | null
           working_hours: string | null
+          works_with_platforms: string[] | null
         }
         Insert: {
           abandoned_at?: string | null
@@ -1386,6 +1320,7 @@ export type Database = {
           activity_proof_url?: string | null
           application_count?: number | null
           archived_at?: string | null
+          available_weekdays?: string[] | null
           backoffice_created_at?: string | null
           backoffice_created_by?: number | null
           backoffice_do_recurrence?: boolean | null
@@ -1401,6 +1336,7 @@ export type Database = {
           backoffice_updated_by?: number | null
           cancelled_requests?: number | null
           categories?: string[] | null
+          certifications?: string[] | null
           completed_requests?: number | null
           counties?: string[] | null
           created_at?: string | null
@@ -1412,8 +1348,12 @@ export type Database = {
           forms_response_id?: string | null
           forms_submitted_at?: string | null
           forms_token?: string | null
+          has_activity_declaration?: boolean | null
           has_admin_team?: boolean | null
+          has_computer?: boolean | null
+          has_liability_insurance?: boolean | null
           has_own_transport?: boolean | null
+          has_work_accidents_insurance?: boolean | null
           hubspot_contact_id?: string | null
           iban?: string | null
           id?: string
@@ -1423,6 +1363,7 @@ export type Database = {
           nif?: string | null
           num_technicians?: number | null
           onboarding_started_at?: string | null
+          own_equipment?: string[] | null
           phone?: string | null
           relationship_owner_id?: string | null
           requests_accepted?: number | null
@@ -1438,7 +1379,10 @@ export type Database = {
           twitter_url?: string | null
           updated_at?: string | null
           website?: string | null
+          work_hours_end?: string | null
+          work_hours_start?: string | null
           working_hours?: string | null
+          works_with_platforms?: string[] | null
         }
         Update: {
           abandoned_at?: string | null
@@ -1453,6 +1397,7 @@ export type Database = {
           activity_proof_url?: string | null
           application_count?: number | null
           archived_at?: string | null
+          available_weekdays?: string[] | null
           backoffice_created_at?: string | null
           backoffice_created_by?: number | null
           backoffice_do_recurrence?: boolean | null
@@ -1468,6 +1413,7 @@ export type Database = {
           backoffice_updated_by?: number | null
           cancelled_requests?: number | null
           categories?: string[] | null
+          certifications?: string[] | null
           completed_requests?: number | null
           counties?: string[] | null
           created_at?: string | null
@@ -1479,8 +1425,12 @@ export type Database = {
           forms_response_id?: string | null
           forms_submitted_at?: string | null
           forms_token?: string | null
+          has_activity_declaration?: boolean | null
           has_admin_team?: boolean | null
+          has_computer?: boolean | null
+          has_liability_insurance?: boolean | null
           has_own_transport?: boolean | null
+          has_work_accidents_insurance?: boolean | null
           hubspot_contact_id?: string | null
           iban?: string | null
           id?: string
@@ -1490,6 +1440,7 @@ export type Database = {
           nif?: string | null
           num_technicians?: number | null
           onboarding_started_at?: string | null
+          own_equipment?: string[] | null
           phone?: string | null
           relationship_owner_id?: string | null
           requests_accepted?: number | null
@@ -1505,7 +1456,10 @@ export type Database = {
           twitter_url?: string | null
           updated_at?: string | null
           website?: string | null
+          work_hours_end?: string | null
+          work_hours_start?: string | null
           working_hours?: string | null
+          works_with_platforms?: string[] | null
         }
         Relationships: [
           {
@@ -1523,83 +1477,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      reference_prices: {
-        Row: {
-          created_at: string | null
-          id: string
-          is_active: boolean | null
-          price_without_vat: number
-          service_id: string
-          updated_at: string | null
-          valid_from: string | null
-          valid_until: string | null
-          variant_description: string | null
-          variant_name: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          price_without_vat: number
-          service_id: string
-          updated_at?: string | null
-          valid_from?: string | null
-          valid_until?: string | null
-          variant_description?: string | null
-          variant_name?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          price_without_vat?: number
-          service_id?: string
-          updated_at?: string | null
-          valid_from?: string | null
-          valid_until?: string | null
-          variant_description?: string | null
-          variant_name?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "reference_prices_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "services"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      service_categories: {
-        Row: {
-          cluster: string | null
-          created_at: string | null
-          id: string
-          is_active: boolean | null
-          name: string
-          updated_at: string | null
-          vat_rate: number | null
-        }
-        Insert: {
-          cluster?: string | null
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          name: string
-          updated_at?: string | null
-          vat_rate?: number | null
-        }
-        Update: {
-          cluster?: string | null
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          name?: string
-          updated_at?: string | null
-          vat_rate?: number | null
-        }
-        Relationships: []
       }
       service_mapping: {
         Row: {
@@ -1799,6 +1676,75 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      service_prices: {
+        Row: {
+          cluster: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          launch_date: string | null
+          price_base: number | null
+          price_cleaning: number | null
+          price_cleaning_imper: number | null
+          price_cleaning_imper_treatments: number | null
+          price_cleaning_treatments: number | null
+          price_extra_night: number | null
+          price_hour_no_materials: number | null
+          price_hour_with_materials: number | null
+          price_new_visit: number | null
+          service_group: string | null
+          service_name: string
+          typology: string | null
+          unit_description: string
+          updated_at: string | null
+          vat_rate: number
+        }
+        Insert: {
+          cluster: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          launch_date?: string | null
+          price_base?: number | null
+          price_cleaning?: number | null
+          price_cleaning_imper?: number | null
+          price_cleaning_imper_treatments?: number | null
+          price_cleaning_treatments?: number | null
+          price_extra_night?: number | null
+          price_hour_no_materials?: number | null
+          price_hour_with_materials?: number | null
+          price_new_visit?: number | null
+          service_group?: string | null
+          service_name: string
+          typology?: string | null
+          unit_description: string
+          updated_at?: string | null
+          vat_rate: number
+        }
+        Update: {
+          cluster?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          launch_date?: string | null
+          price_base?: number | null
+          price_cleaning?: number | null
+          price_cleaning_imper?: number | null
+          price_cleaning_imper_treatments?: number | null
+          price_cleaning_treatments?: number | null
+          price_extra_night?: number | null
+          price_hour_no_materials?: number | null
+          price_hour_with_materials?: number | null
+          price_new_visit?: number | null
+          service_group?: string | null
+          service_name?: string
+          typology?: string | null
+          unit_description?: string
+          updated_at?: string | null
+          vat_rate?: number
+        }
+        Relationships: []
       }
       service_requests: {
         Row: {
@@ -2087,50 +2033,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
-      }
-      services: {
-        Row: {
-          category_id: string
-          created_at: string | null
-          description: string | null
-          id: string
-          is_active: boolean | null
-          launched_at: string | null
-          name: string
-          unit: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          category_id: string
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          is_active?: boolean | null
-          launched_at?: string | null
-          name: string
-          unit?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          category_id?: string
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          is_active?: boolean | null
-          launched_at?: string | null
-          name?: string
-          unit?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "services_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "service_categories"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       settings: {
         Row: {
@@ -2480,6 +2382,7 @@ export type Database = {
         | "status_change"
         | "price_change"
         | "field_change"
+        | "forms_submission"
       onboarding_type: "normal" | "urgente"
       payment_status: "pending" | "captured" | "refunded" | "failed"
       priority_status: "ativa" | "concluida" | "cancelada"
@@ -2644,6 +2547,7 @@ export const Constants = {
         "status_change",
         "price_change",
         "field_change",
+        "forms_submission",
       ],
       onboarding_type: ["normal", "urgente"],
       payment_status: ["pending", "captured", "refunded", "failed"],

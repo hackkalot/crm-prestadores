@@ -249,7 +249,6 @@ export function CardDetailDialog({
                     status: string
                     deadline_at: string | null
                     task_definition?: { task_number: number; name: string }
-                    task_owner?: { name: string }
                   }) => {
                     const StatusIcon = statusIcons[task.status] || Circle
                     const isOverdue =
@@ -279,9 +278,8 @@ export function CardDetailDialog({
                               {task.task_definition?.task_number}. {task.task_definition?.name}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {task.task_owner?.name || 'Sem responsavel'}
                               {task.deadline_at && (
-                                <> • Prazo: {formatDate(task.deadline_at)}</>
+                                <>Prazo: {formatDate(task.deadline_at)}</>
                               )}
                             </p>
                           </div>

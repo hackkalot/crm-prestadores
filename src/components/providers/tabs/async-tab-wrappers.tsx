@@ -1,5 +1,4 @@
 import { getProviderApplicationHistory, getProviderOnboarding, getProviderNotes, getProviderHistory } from '@/lib/providers/actions'
-import { getProviderPricingTable } from '@/lib/pricing/actions'
 import { getProviderPricingOptions } from '@/lib/providers/pricing-actions'
 import { getProviderDocuments } from '@/lib/documents/actions'
 import {
@@ -10,9 +9,9 @@ import {
 } from '@/lib/service-requests/actions'
 import { getProviderPerformance, getNetworkBenchmark } from '@/lib/providers/performance-actions'
 
-import { CandidaturaTab } from './candidatura-tab'
+import { SubmissoesTab } from './submissoes-tab'
+import { PerfilTab } from './perfil-tab'
 import { OnboardingTab } from './onboarding-tab'
-import { PrecosTab } from './precos-tab'
 import { PricingSelectionTab } from '@/components/providers/pricing-selection-tab'
 import { NotasTab } from './notas-tab'
 import { HistoricoTab } from './historico-tab'
@@ -21,8 +20,8 @@ import { PerformanceTab } from './performance-tab'
 import { Card, CardContent } from '@/components/ui/card'
 import { FileText, BarChart3 } from 'lucide-react'
 
-// Async wrapper for Candidatura tab
-export async function CandidaturaTabAsync({
+// Async wrapper for Submissoes tab
+export async function SubmissoesTabAsync({
   providerId,
   provider,
 }: {
@@ -30,7 +29,124 @@ export async function CandidaturaTabAsync({
   provider: any
 }) {
   const applicationHistory = await getProviderApplicationHistory(providerId)
-  return <CandidaturaTab provider={provider} applicationHistory={applicationHistory} />
+
+  // Fetch ALL forms submissions (historical snapshots)
+  let submissions: any[] = []
+  let allServicesMap: Map<string, any> = new Map()
+
+  if (provider.forms_submitted_at) {
+    const { getAllProviderFormsSubmissions } = await import('@/lib/forms/services-actions')
+    const result = await getAllProviderFormsSubmissions(providerId)
+    submissions = result.success && result.submissions ? result.submissions : []
+
+    // Collect all unique service IDs across all submissions
+    const allServiceIds = new Set<string>()
+    submissions.forEach(sub => {
+      sub.selected_services?.forEach((id: string) => allServiceIds.add(id))
+    })
+
+    // Fetch service details for all services referenced in any submission
+    if (allServiceIds.size > 0) {
+      const { createAdminClient } = await import('@/lib/supabase/admin')
+      const adminClient = createAdminClient()
+
+      const { data: servicesData } = await adminClient
+        .from('service_prices')
+        .select('id, service_name, cluster, service_group, unit_description, typology')
+        .in('id', Array.from(allServiceIds))
+        .order('cluster')
+        .order('service_group')
+        .order('service_name')
+
+      if (servicesData) {
+        servicesData.forEach(service => {
+          allServicesMap.set(service.id, service)
+        })
+      }
+    }
+  }
+
+  return (
+    <SubmissoesTab
+      provider={provider}
+      applicationHistory={applicationHistory}
+      submissions={submissions}
+      allServicesMap={Object.fromEntries(allServicesMap)}
+    />
+  )
+}
+
+// Async wrapper for Perfil tab
+export async function PerfilTabAsync({
+  provider,
+}: {
+  provider: any
+}) {
+  // All forms data is now stored directly in providers table
+  // We only need to fetch services data for display and editing
+  let selectedServicesDetails = null
+  let allServicesData = null
+
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  const adminClient = createAdminClient()
+
+  // Fetch ALL services for the edit dialog
+  const { data: allServices } = await adminClient
+    .from('service_prices')
+    .select('id, service_name, cluster, service_group, unit_description, typology')
+    .eq('is_active', true)
+    .order('cluster')
+    .order('service_group')
+    .order('service_name')
+
+  if (allServices) {
+    // Group all services by cluster and service_group
+    allServicesData = allServices.reduce((acc: any, service: any) => {
+      if (!acc[service.cluster]) {
+        acc[service.cluster] = {}
+      }
+      const group = service.service_group || 'Outros'
+      if (!acc[service.cluster][group]) {
+        acc[service.cluster][group] = []
+      }
+      acc[service.cluster][group].push(service)
+      return acc
+    }, {})
+  }
+
+  // Fetch service details for the selected services (from provider.services)
+  if (provider.services && provider.services.length > 0) {
+    const { data: servicesData } = await adminClient
+      .from('service_prices')
+      .select('id, service_name, cluster, service_group, unit_description, typology')
+      .in('id', provider.services)
+      .order('cluster')
+      .order('service_group')
+      .order('service_name')
+
+    if (servicesData) {
+      // Group services by cluster and service_group
+      selectedServicesDetails = servicesData.reduce((acc: any, service: any) => {
+        if (!acc[service.cluster]) {
+          acc[service.cluster] = {}
+        }
+        const group = service.service_group || 'Outros'
+        if (!acc[service.cluster][group]) {
+          acc[service.cluster][group] = []
+        }
+        acc[service.cluster][group].push(service)
+        return acc
+      }, {})
+    }
+  }
+
+  return (
+    <PerfilTab
+      provider={provider}
+      selectedServicesDetails={selectedServicesDetails}
+      allServicesData={allServicesData}
+    />
+  )
 }
 
 // Async wrapper for Onboarding tab
@@ -68,12 +184,33 @@ export async function PrecosTabAsync({
   provider: any
 }) {
   const clusters = await getProviderPricingOptions(providerId)
+
+  // Get forms data to check selected services
+  let selectedServicesFromForms: string[] = []
+  if (provider.forms_submitted_at) {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const adminClient = createAdminClient()
+
+    const { data: formsData } = await adminClient
+      .from('provider_services_forms')
+      .select('selected_services')
+      .eq('provider_id', providerId)
+      .order('submitted_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (formsData?.selected_services) {
+      selectedServicesFromForms = formsData.selected_services
+    }
+  }
+
   return (
     <PricingSelectionTab
       providerId={providerId}
       providerName={provider.name}
       hasFormsSubmitted={!!provider.forms_submitted_at}
       clusters={clusters}
+      selectedServicesFromForms={selectedServicesFromForms}
     />
   )
 }

@@ -10,7 +10,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Search } from 'lucide-react'
+import { Search, ChevronDown } from 'lucide-react'
 import { PORTUGAL_DISTRICTS } from '@/lib/data/portugal-districts'
 
 interface CoverageSelectorProps {
@@ -22,7 +22,7 @@ export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageS
   const [search, setSearch] = useState('')
   const [filteredDistricts, setFilteredDistricts] = useState<Record<string, string[]>>(PORTUGAL_DISTRICTS)
 
-  // Filtrar concelhos por pesquisa
+  // Filtrar concelhos e distritos por pesquisa
   useEffect(() => {
     if (!search.trim()) {
       setFilteredDistricts(PORTUGAL_DISTRICTS)
@@ -33,10 +33,20 @@ export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageS
     const filtered: Record<string, string[]> = {}
 
     Object.entries(PORTUGAL_DISTRICTS).forEach(([district, municipalities]) => {
+      // Verificar se o distrito corresponde à pesquisa
+      const districtMatches = district.toLowerCase().includes(searchLower)
+
+      // Filtrar concelhos que correspondem à pesquisa
       const matchingMunicipalities = municipalities.filter((m) =>
         m.toLowerCase().includes(searchLower)
       )
-      if (matchingMunicipalities.length > 0) {
+
+      // Incluir distrito se o nome corresponder OU se houver concelhos correspondentes
+      if (districtMatches) {
+        // Se o distrito corresponder, mostrar todos os concelhos
+        filtered[district] = municipalities
+      } else if (matchingMunicipalities.length > 0) {
+        // Se só concelhos corresponderem, mostrar apenas esses
         filtered[district] = matchingMunicipalities
       }
     })
@@ -84,7 +94,7 @@ export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageS
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Pesquisar concelho..."
+          placeholder="Pesquisar distrito ou concelho..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-9"
@@ -103,20 +113,22 @@ export function CoverageSelector({ selectedMunicipalities, onChange }: CoverageS
           ).length
 
           return (
-            <AccordionItem key={districtName} value={districtName} className="border rounded-lg">
-              <AccordionTrigger className="px-4 hover:no-underline">
-                <div className="flex items-center gap-3 flex-1">
-                  <Checkbox
-                    checked={isFullySelected}
-                    onCheckedChange={() => toggleDistrict(districtName)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <span className="font-medium">{districtName}</span>
-                  <Badge variant="outline" className="text-xs">
-                    {selectedCount}/{municipalities.length}
-                  </Badge>
-                </div>
-              </AccordionTrigger>
+            <AccordionItem key={districtName} value={districtName} className="border rounded-lg transition-all duration-200">
+              <div className="px-4 py-4 flex items-center gap-3">
+                <Checkbox
+                  checked={isFullySelected}
+                  onCheckedChange={() => toggleDistrict(districtName)}
+                />
+                <AccordionTrigger className="flex-1 hover:no-underline py-0 [&>svg]:hidden group">
+                  <div className="flex items-center justify-between gap-3 w-full">
+                    <span className="font-medium text-left transition-colors">{districtName}</span>
+                    <Badge variant="outline" className="text-xs shrink-0 flex items-center gap-1.5 ml-auto transition-colors">
+                      {selectedCount}/{municipalities.length}
+                      <ChevronDown className="h-3 w-3 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                    </Badge>
+                  </div>
+                </AccordionTrigger>
+              </div>
               <AccordionContent className="px-4 pb-4">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 ml-6">
                   {municipalities.map((municipality) => (

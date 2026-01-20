@@ -32,10 +32,11 @@ export async function getCoverageSettings(): Promise<CoverageSettings> {
 
   const { data, error } = await admin
     .from('settings')
-    .select('coverage_requests_per_provider, coverage_capacity_good_min, coverage_capacity_low_min, coverage_analysis_period_months')
+    .select('value')
+    .eq('key', 'coverage_thresholds')
     .single()
 
-  if (error || !data) {
+  if (error || !data?.value) {
     return {
       coverage_requests_per_provider: 20,
       coverage_capacity_good_min: 100,
@@ -44,11 +45,13 @@ export async function getCoverageSettings(): Promise<CoverageSettings> {
     }
   }
 
+  const value = data.value as Record<string, number>
+
   return {
-    coverage_requests_per_provider: data.coverage_requests_per_provider || 20,
-    coverage_capacity_good_min: data.coverage_capacity_good_min || 100,
-    coverage_capacity_low_min: data.coverage_capacity_low_min || 50,
-    coverage_analysis_period_months: data.coverage_analysis_period_months || 1,
+    coverage_requests_per_provider: value.requests_per_provider || 20,
+    coverage_capacity_good_min: value.capacity_good_min || 100,
+    coverage_capacity_low_min: value.capacity_low_min || 50,
+    coverage_analysis_period_months: value.analysis_period_months || 1,
   }
 }
 
@@ -95,23 +98,23 @@ export async function updateCoverageSettings(
 
   const admin = createAdminClient()
 
-  console.log('[Coverage Settings] Updating with values:', {
-    coverage_requests_per_provider: requestsPerProvider,
-    coverage_capacity_good_min: capacityGoodMin,
-    coverage_capacity_low_min: capacityLowMin,
-    coverage_analysis_period_months: periodMonths,
-  })
+  const newValue = {
+    requests_per_provider: requestsPerProvider,
+    capacity_good_min: capacityGoodMin,
+    capacity_low_min: capacityLowMin,
+    analysis_period_months: periodMonths,
+  }
+
+  console.log('[Coverage Settings] Updating with values:', newValue)
 
   const { data, error } = await admin
     .from('settings')
     .update({
-      coverage_requests_per_provider: requestsPerProvider,
-      coverage_capacity_good_min: capacityGoodMin,
-      coverage_capacity_low_min: capacityLowMin,
-      coverage_analysis_period_months: periodMonths,
+      value: newValue,
+      updated_by: user.id,
       updated_at: new Date().toISOString(),
     })
-    .eq('id', '00000000-0000-0000-0000-000000000000')
+    .eq('key', 'coverage_thresholds')
     .select()
 
   if (error) {

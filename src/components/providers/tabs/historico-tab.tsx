@@ -34,6 +34,7 @@ import {
   Filter,
   X as XIcon,
   Clock,
+  ClipboardCheck,
   type LucideIcon,
 } from 'lucide-react'
 import { formatDateTime } from '@/lib/utils'
@@ -227,6 +228,13 @@ const eventConfig: Record<string, EventConfig> = {
     iconColor: 'text-indigo-600',
     badgeVariant: 'default',
   },
+  forms_submission: {
+    label: 'Formulário Submetido',
+    icon: ClipboardCheck,
+    bgColor: 'bg-teal-100 dark:bg-teal-950',
+    iconColor: 'text-teal-600',
+    badgeVariant: 'success',
+  },
 }
 
 const defaultConfig: EventConfig = {
@@ -244,6 +252,65 @@ function formatValue(value: unknown): string {
   if (typeof value === 'boolean') return value ? 'Sim' : 'Não'
   if (Array.isArray(value)) return value.join(', ')
   return JSON.stringify(value)
+}
+
+function FormsSubmissionDetails({ data }: { data: Record<string, unknown> }) {
+  return (
+    <div className="mt-3 grid grid-cols-2 gap-3 p-3 rounded-lg bg-muted/50 text-xs">
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Serviços</span>
+          <span className="font-medium">{String(data.services_count ?? '-')}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Concelhos</span>
+          <span className="font-medium">{String(data.municipalities_count ?? '-')}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Técnicos</span>
+          <span className="font-medium">{String(data.num_technicians ?? '-')}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Certificações</span>
+          <span className="font-medium">{String(data.certifications_count ?? '-')}</span>
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Declaração Atividade</span>
+          <span className="font-medium">{data.has_activity_declaration ? '✓' : '✗'}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Seguro RC</span>
+          <span className="font-medium">{data.has_liability_insurance ? '✓' : '✗'}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Seguro Acidentes</span>
+          <span className="font-medium">{data.has_work_accidents_insurance ? '✓' : '✗'}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Viatura/Computador</span>
+          <span className="font-medium">{data.has_transport ? '🚗' : ''} {data.has_computer ? '💻' : ''}</span>
+        </div>
+      </div>
+      {!!data.work_hours && (
+        <div className="col-span-2 pt-1.5 border-t">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Horário</span>
+            <span className="font-medium">{formatValue(data.work_hours)}</span>
+          </div>
+        </div>
+      )}
+      {!!data.available_weekdays && Array.isArray(data.available_weekdays) && (
+        <div className="col-span-2">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Dias disponíveis</span>
+            <span className="font-medium text-right">{(data.available_weekdays as string[]).join(', ')}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 function ValueChange({ oldValue, newValue }: { oldValue?: Record<string, unknown> | null; newValue?: Record<string, unknown> | null }) {
@@ -433,7 +500,11 @@ export function HistoricoTab({ history }: HistoricoTabProps) {
                         <p className="text-sm text-foreground mt-1">{item.description}</p>
                       )}
 
-                      <ValueChange oldValue={item.old_value} newValue={item.new_value} />
+                      {item.event_type === 'forms_submission' && item.new_value ? (
+                        <FormsSubmissionDetails data={item.new_value} />
+                      ) : (
+                        <ValueChange oldValue={item.old_value} newValue={item.new_value} />
+                      )}
 
                       {item.user && (
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-2">

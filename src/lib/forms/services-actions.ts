@@ -7,6 +7,12 @@ import type { Database } from '@/types/database'
 type ProviderFormsData = Database['public']['Tables']['provider_forms_data']['Insert']
 
 export interface FormsSubmissionData {
+  // Dados do Prestador (editáveis)
+  provider_name?: string
+  provider_email?: string
+  provider_phone?: string
+  provider_nif?: string
+
   // Documentação
   has_activity_declaration: boolean
   has_liability_insurance: boolean
@@ -25,7 +31,7 @@ export interface FormsSubmissionData {
   has_computer: boolean
   own_equipment: string[]
 
-  // Serviços (UUIDs de angariacao_reference_prices)
+  // Serviços (UUIDs de service_prices)
   selected_services: string[]
 
   // Cobertura
@@ -106,7 +112,7 @@ export async function getProviderByToken(token: string) {
 
     const { data, error: fetchError } = await adminClient
       .from('providers')
-      .select('id, name, email, phone, nif, location, services')
+      .select('id, name, email, phone, nif, services')
       .eq('id', providerId)
       .single()
 
@@ -136,18 +142,28 @@ export async function submitServicesForm(
 
     const adminClient = createAdminClient()
 
-    // Obter serviços antigos para histórico
+    // Obter dados do provider para fallback de campos editáveis
     const { data: provider } = await adminClient
       .from('providers')
-      .select('services')
+      .select('name, email, phone, nif')
       .eq('id', providerId)
       .single()
 
-    const servicesBefore = provider?.services || []
+    // Get the next submission number for this provider
+    const { data: lastSubmission } = await adminClient
+      .from('provider_forms_data')
+      .select('submission_number')
+      .eq('provider_id', providerId)
+      .order('submission_number', { ascending: false })
+      .limit(1)
+      .single()
 
-    // Inserir/atualizar dados do forms
+    const nextSubmissionNumber = (lastSubmission?.submission_number || 0) + 1
+
+    // Insert NEW submission (each submission is a historical snapshot)
     const formsData: ProviderFormsData = {
       provider_id: providerId,
+      submission_number: nextSubmissionNumber,
       has_activity_declaration: data.has_activity_declaration,
       has_liability_insurance: data.has_liability_insurance,
       has_work_accidents_insurance: data.has_work_accidents_insurance,
@@ -168,33 +184,77 @@ export async function submitServicesForm(
 
     const { error: formsError } = await adminClient
       .from('provider_forms_data')
-      .upsert(formsData, { onConflict: 'provider_id' })
+      .insert(formsData)
 
     if (formsError) throw formsError
 
-    // Atualizar providers.forms_submitted_at
+    // Atualizar providers com TODOS os dados do forms (override completo)
+    // provider_forms_data fica como snapshot read-only, providers é a versão editável
+    const providerUpdate: Record<string, unknown> = {
+      forms_submitted_at: new Date().toISOString(),
+      forms_response_id: token,
+      // Dados editáveis do prestador
+      name: data.provider_name || provider?.name,
+      email: data.provider_email || provider?.email,
+      phone: data.provider_phone || provider?.phone,
+      nif: data.provider_nif || provider?.nif,
+      // Serviços e cobertura
+      services: data.selected_services,
+      counties: data.coverage_municipalities,
+      // Documentação
+      has_activity_declaration: data.has_activity_declaration,
+      has_liability_insurance: data.has_liability_insurance,
+      has_work_accidents_insurance: data.has_work_accidents_insurance,
+      certifications: data.certifications,
+      works_with_platforms: data.works_with_platforms,
+      // Disponibilidade
+      available_weekdays: data.available_weekdays,
+      work_hours_start: data.work_hours_start,
+      work_hours_end: data.work_hours_end,
+      // Recursos
+      num_technicians: data.num_technicians,
+      has_own_transport: data.has_transport,
+      has_computer: data.has_computer,
+      own_equipment: data.own_equipment,
+    }
+
     const { error: providerError } = await adminClient
       .from('providers')
-      .update({
-        forms_submitted_at: new Date().toISOString(),
-        forms_response_id: token, // Usar token como ID de resposta
-      })
+      .update(providerUpdate)
       .eq('id', providerId)
 
     if (providerError) throw providerError
 
-    // Guardar histórico de alteração de serviços
-    const { error: historyError } = await adminClient
-      .from('provider_services_history')
+    // Adicionar entrada no histórico geral
+    const { error: logError } = await adminClient
+      .from('history_log')
       .insert({
         provider_id: providerId,
-        services_before: servicesBefore,
-        services_after: data.selected_services,
-        source: 'forms_submission',
-        changed_at: new Date().toISOString(),
+        event_type: 'forms_submission',
+        description: `Formulário de serviços submetido com ${data.selected_services.length} serviços e ${data.coverage_municipalities.length} concelhos`,
+        new_value: {
+          services_count: data.selected_services.length,
+          municipalities_count: data.coverage_municipalities.length,
+          num_technicians: data.num_technicians,
+          has_activity_declaration: data.has_activity_declaration,
+          has_liability_insurance: data.has_liability_insurance,
+          has_work_accidents_insurance: data.has_work_accidents_insurance,
+          certifications_count: data.certifications.length,
+          platforms_count: data.works_with_platforms.length,
+          equipment_count: data.own_equipment.length,
+          has_transport: data.has_transport,
+          has_computer: data.has_computer,
+          available_weekdays: data.available_weekdays,
+          work_hours: `${data.work_hours_start} - ${data.work_hours_end}`,
+        },
+        created_by: null, // Forms submission is done by the provider, not a user
+        created_at: new Date().toISOString(),
       })
 
-    if (historyError) throw historyError
+    if (logError) {
+      console.error('Error creating history log:', logError)
+      // Don't throw - this is not critical
+    }
 
     return { success: true }
   } catch (error) {
@@ -211,7 +271,7 @@ export async function getServicesForForms() {
     const adminClient = createAdminClient()
 
     const { data, error } = await adminClient
-      .from('angariacao_reference_prices')
+      .from('service_prices')
       .select('id, service_name, cluster, service_group, unit_description, typology')
       .eq('is_active', true)
       .order('cluster')
@@ -238,4 +298,162 @@ export async function getServicesForForms() {
     console.error('Error fetching services:', error)
     return { success: false, error: error instanceof Error ? error.message : 'Erro ao obter serviços' }
   }
+}
+
+/**
+ * Obter a última submissão do forms de um prestador (para compatibilidade)
+ */
+export async function getProviderFormsData(providerId: string) {
+  try {
+    const adminClient = createAdminClient()
+
+    const { data, error } = await adminClient
+      .from('provider_forms_data')
+      .select('*')
+      .eq('provider_id', providerId)
+      .order('submission_number', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // Não encontrado - retorna null
+        return { success: true, formsData: null }
+      }
+      throw error
+    }
+
+    return { success: true, formsData: data }
+  } catch (error) {
+    console.error('Error fetching forms data:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'Erro ao obter dados do formulário' }
+  }
+}
+
+/**
+ * Obter TODAS as submissões do forms de um prestador (para histórico)
+ */
+export async function getAllProviderFormsSubmissions(providerId: string) {
+  try {
+    const adminClient = createAdminClient()
+
+    const { data, error } = await adminClient
+      .from('provider_forms_data')
+      .select('*')
+      .eq('provider_id', providerId)
+      .order('submission_number', { ascending: false })
+
+    if (error) throw error
+
+    return { success: true, submissions: data || [] }
+  } catch (error) {
+    console.error('Error fetching all forms submissions:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'Erro ao obter submissões' }
+  }
+}
+
+// Field labels for history log descriptions
+const fieldLabels: Record<string, string> = {
+  has_activity_declaration: 'Declaração de Atividade',
+  has_liability_insurance: 'Seguro RC',
+  has_work_accidents_insurance: 'Seguro Acidentes',
+  certifications: 'Certificações',
+  works_with_platforms: 'Plataformas',
+  available_weekdays: 'Dias da semana',
+  work_hours_start: 'Horário início',
+  work_hours_end: 'Horário fim',
+  num_technicians: 'Número de técnicos',
+  has_transport: 'Viatura própria',
+  has_computer: 'Computador',
+  own_equipment: 'Equipamento próprio',
+}
+
+/**
+ * Update provider forms data (documentation, resources, availability)
+ * Tracks field-level changes with old and new values
+ */
+export async function updateProviderFormsData(
+  providerId: string,
+  data: Partial<{
+    has_activity_declaration: boolean
+    has_liability_insurance: boolean
+    has_work_accidents_insurance: boolean
+    certifications: string[]
+    works_with_platforms: string[]
+    available_weekdays: string[]
+    work_hours_start: string
+    work_hours_end: string
+    num_technicians: number
+    has_transport: boolean
+    has_computer: boolean
+    own_equipment: string[]
+  }>
+): Promise<{ error?: string }> {
+  const supabase = await createClient()
+
+  // Verify authentication
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Não autenticado' }
+  }
+
+  const adminClient = createAdminClient()
+
+  // Get current values for comparison
+  const { data: currentData } = await adminClient
+    .from('provider_forms_data')
+    .select('has_activity_declaration, has_liability_insurance, has_work_accidents_insurance, certifications, works_with_platforms, available_weekdays, work_hours_start, work_hours_end, num_technicians, has_transport, has_computer, own_equipment')
+    .eq('provider_id', providerId)
+    .single()
+
+  // Update provider_forms_data table
+  const { error: updateError } = await adminClient
+    .from('provider_forms_data')
+    .update({
+      ...data,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('provider_id', providerId)
+
+  if (updateError) {
+    console.error('Error updating forms data:', updateError)
+    return { error: 'Erro ao atualizar dados do formulário' }
+  }
+
+  // Build old_value and new_value with only changed fields
+  const oldValue: Record<string, unknown> = {}
+  const newValue: Record<string, unknown> = {}
+  const changedFields: string[] = []
+
+  for (const [key, value] of Object.entries(data)) {
+    const oldVal = currentData?.[key as keyof typeof currentData]
+
+    // Compare arrays properly
+    const isArray = Array.isArray(value)
+    const hasChanged = isArray
+      ? JSON.stringify(oldVal) !== JSON.stringify(value)
+      : oldVal !== value
+
+    if (hasChanged) {
+      oldValue[key] = oldVal
+      newValue[key] = value
+      changedFields.push(fieldLabels[key] || key)
+    }
+  }
+
+  // Log the change with field-level tracking
+  if (changedFields.length > 0) {
+    await adminClient.from('history_log').insert({
+      provider_id: providerId,
+      event_type: 'field_change',
+      description: `Campos alterados: ${changedFields.join(', ')}`,
+      old_value: oldValue,
+      new_value: newValue,
+      created_by: user.id,
+    })
+  }
+
+  return {}
 }

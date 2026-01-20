@@ -1,12 +1,17 @@
 'use client'
 
-import { useState, useActionState, useEffect } from 'react'
+import { useState, useActionState, useEffect, useTransition } from 'react'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -21,19 +26,25 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Search, FileText, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react'
+import { Search, FileText, AlertCircle, CheckCircle2, Loader2, ChevronDown } from 'lucide-react'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 import {
   toggleServiceSelection,
   updateCustomPrice,
   bulkToggleServices,
+  autoSelectServicesFromForms,
+  generateProposalPDFData,
   type PricingCluster,
 } from '@/lib/providers/pricing-actions'
+import { generateProposalPDFHTML } from '@/lib/providers/pdf-actions'
 
 interface PricingSelectionTabProps {
   providerId: string
   providerName: string
   hasFormsSubmitted: boolean
   clusters: PricingCluster[]
+  selectedServicesFromForms: string[]
 }
 
 export function PricingSelectionTab({
@@ -41,6 +52,7 @@ export function PricingSelectionTab({
   providerName,
   hasFormsSubmitted,
   clusters,
+  selectedServicesFromForms,
 }: PricingSelectionTabProps) {
   const [search, setSearch] = useState('')
   const [filteredClusters, setFilteredClusters] = useState(clusters)
@@ -48,6 +60,9 @@ export function PricingSelectionTab({
   const [priceValue, setPriceValue] = useState('')
   const [loadingServices, setLoadingServices] = useState<Set<string>>(new Set())
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [autoSelectTriggered, setAutoSelectTriggered] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   // Filter clusters by search
   useEffect(() => {
@@ -82,6 +97,35 @@ export function PricingSelectionTab({
     (sum, c) => sum + c.services.filter((s) => s.provider_price?.custom_price_without_vat !== null).length,
     0
   )
+
+  // Auto-select services from forms on first load
+  useEffect(() => {
+    // Only trigger once and only if there are services from forms AND no services are currently selected
+    if (
+      !autoSelectTriggered &&
+      selectedServicesFromForms.length > 0 &&
+      selectedServices === 0 &&
+      hasFormsSubmitted
+    ) {
+      setAutoSelectTriggered(true)
+      startTransition(async () => {
+        const result = await autoSelectServicesFromForms(providerId, selectedServicesFromForms)
+        if (result.error) {
+          toast.error(result.error)
+        } else {
+          toast.success(`${result.count} serviços pré-selecionados automaticamente`)
+          router.refresh()
+        }
+      })
+    }
+  }, [
+    autoSelectTriggered,
+    selectedServicesFromForms,
+    selectedServices,
+    hasFormsSubmitted,
+    providerId,
+    router,
+  ])
 
   // Show forms not submitted message
   if (!hasFormsSubmitted) {
@@ -132,6 +176,20 @@ export function PricingSelectionTab({
     }
   }
 
+  const handleToggleGroup = async (groupServices: typeof clusters[0]['services']) => {
+    const serviceIds = groupServices.map((s) => s.id)
+    const allSelected = groupServices.every((s) => s.provider_price?.is_selected_for_proposal)
+
+    const result = await bulkToggleServices(providerId, serviceIds, !allSelected)
+
+    if (result.error) {
+      alert(result.error)
+    } else {
+      setSuccessMessage('Grupo atualizado')
+      setTimeout(() => setSuccessMessage(null), 2000)
+    }
+  }
+
   const handleSavePrice = async (referencePriceId: string) => {
     const numValue = priceValue.trim() === '' ? null : parseFloat(priceValue.replace(',', '.'))
 
@@ -167,6 +225,39 @@ export function PricingSelectionTab({
     return `${price.toFixed(2)} €`
   }
 
+  const handleGeneratePDF = () => {
+    startTransition(async () => {
+      try {
+        const result = await generateProposalPDFData(providerId)
+
+        if (result.error || !result.data) {
+          toast.error(result.error || 'Erro ao gerar PDF')
+          return
+        }
+
+        const html = generateProposalPDFHTML(result.data)
+
+        // Create blob and open in new window
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
+        const url = URL.createObjectURL(blob)
+        const windowRef = window.open(url, '_blank')
+
+        if (windowRef) {
+          // Allow the window to load before printing
+          setTimeout(() => {
+            windowRef.print()
+          }, 500)
+          toast.success('PDF gerado com sucesso')
+        } else {
+          toast.error('Não foi possível abrir a janela de impressão')
+        }
+      } catch (error) {
+        console.error('Erro ao gerar PDF:', error)
+        toast.error('Erro ao gerar proposta em PDF')
+      }
+    })
+  }
+
   const getClusterColor = (c: string) => {
     switch (c) {
       case 'Casa':
@@ -194,9 +285,18 @@ export function PricingSelectionTab({
             Selecione os serviços e defina preços customizados para {providerName}
           </p>
         </div>
-        <Button disabled>
-          <FileText className="h-4 w-4 mr-2" />
-          Gerar PDF
+        <Button onClick={handleGeneratePDF} disabled={selectedServices === 0 || isPending}>
+          {isPending ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              A gerar...
+            </>
+          ) : (
+            <>
+              <FileText className="h-4 w-4 mr-2" />
+              Gerar PDF
+            </>
+          )}
         </Button>
       </div>
 
@@ -252,37 +352,76 @@ export function PricingSelectionTab({
 
           return (
             <AccordionItem key={cluster.cluster} value={cluster.cluster} className="border rounded-lg">
-              <AccordionTrigger className="px-4 hover:no-underline">
-                <div className="flex items-center gap-3 flex-1">
-                  <Checkbox
-                    checked={allSelected}
-                    onCheckedChange={() => handleToggleCluster(cluster.cluster)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <Badge variant="secondary" className={getClusterColor(cluster.cluster)}>
-                    {cluster.cluster}
-                  </Badge>
-                  <span className="text-sm text-muted-foreground">
-                    {clusterSelected} / {cluster.services.length} selecionados
-                  </span>
-                </div>
-              </AccordionTrigger>
+              <div className="px-4 flex items-center gap-3 py-4">
+                <Checkbox
+                  checked={allSelected}
+                  onCheckedChange={() => handleToggleCluster(cluster.cluster)}
+                />
+                <AccordionTrigger className="flex-1 hover:no-underline py-0">
+                  <div className="flex items-center gap-3 flex-1">
+                    <Badge variant="secondary" className={getClusterColor(cluster.cluster)}>
+                      {cluster.cluster}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      {clusterSelected} / {cluster.services.length} selecionados
+                    </span>
+                  </div>
+                </AccordionTrigger>
+              </div>
               <AccordionContent className="px-4 pb-4">
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[50px]">Sel.</TableHead>
-                        <TableHead>Serviço</TableHead>
-                        <TableHead>Grupo</TableHead>
-                        <TableHead>Unidade/Variante</TableHead>
-                        <TableHead className="text-right">IVA</TableHead>
-                        <TableHead className="text-right">Preço Ref.</TableHead>
-                        <TableHead className="text-right">Preço Custom</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {cluster.services.map((service) => {
+                {(() => {
+                  // Group services by service_group
+                  const servicesByGroup = cluster.services.reduce((acc: Record<string, typeof cluster.services>, service) => {
+                    const group = service.service_group || 'Outros'
+                    if (!acc[group]) acc[group] = []
+                    acc[group].push(service)
+                    return acc
+                  }, {})
+
+                  return (
+                    <div className="space-y-2">
+                      {Object.entries(servicesByGroup).map(([groupName, groupServices]) => {
+                        const groupSelectedCount = groupServices.filter(
+                          (s) => s.provider_price?.is_selected_for_proposal
+                        ).length
+
+                        const allGroupSelected = groupServices.every((s) => s.provider_price?.is_selected_for_proposal)
+
+                        return (
+                          <Collapsible key={groupName} defaultOpen>
+                            <div className="border rounded-lg">
+                              <div className="px-4 py-3 flex items-center gap-2">
+                                <Checkbox
+                                  checked={allGroupSelected}
+                                  onCheckedChange={() => handleToggleGroup(groupServices)}
+                                />
+                                <CollapsibleTrigger className="flex-1 flex items-center justify-between hover:bg-muted/50 transition-colors py-0">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="text-xs">
+                                      {groupName}
+                                    </Badge>
+                                    <span className="text-xs text-muted-foreground">
+                                      {groupSelectedCount} / {groupServices.length} selecionados
+                                    </span>
+                                  </div>
+                                  <ChevronDown className="h-4 w-4 transition-transform duration-200 data-[state=open]:rotate-180" />
+                                </CollapsibleTrigger>
+                              </div>
+                              <CollapsibleContent>
+                                <div className="border-t">
+                                  <Table>
+                                    <TableHeader>
+                                      <TableRow>
+                                        <TableHead className="w-[50px]">Sel.</TableHead>
+                                        <TableHead>Serviço</TableHead>
+                                        <TableHead>Unidade/Variante</TableHead>
+                                        <TableHead className="text-right">IVA</TableHead>
+                                        <TableHead className="text-right">Preço Ref.</TableHead>
+                                        <TableHead className="text-right">Preço Custom</TableHead>
+                                      </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                      {groupServices.map((service) => {
                         const isSelected = service.provider_price?.is_selected_for_proposal || false
                         const customPrice = service.provider_price?.custom_price_without_vat || null
                         const isEditing = editingPrice === service.id
@@ -306,9 +445,6 @@ export function PricingSelectionTab({
                             </TableCell>
                             <TableCell className="font-medium max-w-[250px]">
                               <div className="truncate">{service.service_name}</div>
-                            </TableCell>
-                            <TableCell className="text-sm text-muted-foreground max-w-[150px]">
-                              <div className="truncate">{service.service_group || '-'}</div>
                             </TableCell>
                             <TableCell className="text-sm max-w-[180px]">
                               <div className="truncate">
@@ -361,11 +497,19 @@ export function PricingSelectionTab({
                               )}
                             </TableCell>
                           </TableRow>
+                                        )
+                                      })}
+                                    </TableBody>
+                                  </Table>
+                                </div>
+                              </CollapsibleContent>
+                            </div>
+                          </Collapsible>
                         )
                       })}
-                    </TableBody>
-                  </Table>
-                </div>
+                    </div>
+                  )
+                })()}
               </AccordionContent>
             </AccordionItem>
           )

@@ -160,7 +160,7 @@ async function importReferencePrices(): Promise<number> {
 
   // Limpar tabela antes de inserir
   const { error: deleteError } = await supabase
-    .from('angariacao_reference_prices')
+    .from('service_prices')
     .delete()
     .neq('id', '00000000-0000-0000-0000-000000000000') // Delete all
 
@@ -175,7 +175,7 @@ async function importReferencePrices(): Promise<number> {
   for (let i = 0; i < records.length; i += batchSize) {
     const batch = records.slice(i, i + batchSize)
     const { error } = await supabase
-      .from('angariacao_reference_prices')
+      .from('service_prices')
       .insert(batch)
 
     if (error) {
@@ -183,7 +183,7 @@ async function importReferencePrices(): Promise<number> {
       // Tentar inserir um a um para identificar o problema
       for (const record of batch) {
         const { error: singleError } = await supabase
-          .from('angariacao_reference_prices')
+          .from('service_prices')
           .insert(record)
         if (singleError) {
           console.error(`      Falhou: ${record.service_name} | ${record.unit_description}`)
@@ -235,7 +235,7 @@ async function importMaterials(): Promise<number> {
 
   // Limpar tabela antes de inserir
   const { error: deleteError } = await supabase
-    .from('angariacao_materials')
+    .from('material_catalog')
     .delete()
     .neq('id', '00000000-0000-0000-0000-000000000000')
 
@@ -245,7 +245,7 @@ async function importMaterials(): Promise<number> {
 
   // Inserir todos de uma vez (são poucos)
   const { error, count } = await supabase
-    .from('angariacao_materials')
+    .from('material_catalog')
     .insert(records)
     .select()
 

@@ -10,7 +10,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Search } from 'lucide-react'
+import { Search, ChevronDown } from 'lucide-react'
 
 interface Service {
   id: string
@@ -142,42 +142,47 @@ export function ServicesSelector({ services, selectedServices, onChange }: Servi
           const clusterCount = Object.values(groups).flat().length
 
           return (
-            <AccordionItem key={cluster} value={cluster} className="border rounded-lg">
-              <AccordionTrigger className="px-4 hover:no-underline">
-                <div className="flex items-center gap-3 flex-1">
-                  <Checkbox
-                    checked={isFullySelected}
-                    onCheckedChange={() => toggleCluster(cluster)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <span className="font-medium">{cluster}</span>
-                  <Badge variant="outline" className="text-xs">
-                    {clusterCount} {clusterCount === 1 ? 'serviço' : 'serviços'}
-                  </Badge>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="px-4 pb-4">
-                <Accordion type="multiple" className="space-y-2 ml-6">
-                  {Object.entries(groups).map(([group, servicesList]) => {
-                    const isGroupSelected = isGroupFullySelected(cluster, group)
+            <AccordionItem key={cluster} value={cluster} className="border rounded-lg transition-all duration-200">
+              <div className="px-4 py-4 flex items-center gap-3">
+                <Checkbox
+                  checked={isFullySelected}
+                  onCheckedChange={() => toggleCluster(cluster)}
+                />
+                <AccordionTrigger className="flex-1 hover:no-underline py-0 [&>svg]:hidden group">
+                  <div className="flex items-center justify-between gap-3 w-full">
+                    <span className="font-medium text-left transition-colors">{cluster}</span>
+                    <Badge variant="outline" className="text-xs shrink-0 flex items-center gap-1.5 ml-auto transition-colors">
+                      {clusterCount} {clusterCount === 1 ? 'serviço' : 'serviços'}
+                      <ChevronDown className="h-3 w-3 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                    </Badge>
+                  </div>
+                </AccordionTrigger>
+              </div>
+              <AccordionContent className="px-4 pb-4 pt-2">
+                <div className="pl-6 border-l-2 border-muted/50">
+                  <Accordion type="multiple" className="space-y-2">
+                    {Object.entries(groups).map(([group, servicesList]) => {
+                      const isGroupSelected = isGroupFullySelected(cluster, group)
 
-                    return (
-                      <AccordionItem key={`${cluster}-${group}`} value={`${cluster}-${group}`} className="border-l-2 border-muted">
-                        <AccordionTrigger className="px-3 hover:no-underline text-sm">
-                          <div className="flex items-center gap-2 flex-1">
+                      return (
+                        <AccordionItem key={`${cluster}-${group}`} value={`${cluster}-${group}`} className="border rounded-md bg-muted/20 transition-all duration-200">
+                          <div className="px-3 py-3 flex items-center gap-2">
                             <Checkbox
                               checked={isGroupSelected}
                               onCheckedChange={() => toggleGroup(cluster, group)}
-                              onClick={(e) => e.stopPropagation()}
                             />
-                            <span>{group}</span>
-                            <Badge variant="secondary" className="text-xs">
-                              {servicesList.length}
-                            </Badge>
+                            <AccordionTrigger className="flex-1 hover:no-underline py-0 [&>svg]:hidden group">
+                              <div className="flex items-center justify-between gap-2 w-full">
+                                <span className="font-medium text-sm text-left transition-colors">{group}</span>
+                                <Badge variant="secondary" className="text-xs shrink-0 flex items-center gap-1.5 ml-auto transition-colors">
+                                  {servicesList.length}
+                                  <ChevronDown className="h-3 w-3 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                                </Badge>
+                              </div>
+                            </AccordionTrigger>
                           </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="px-3 pb-2">
-                          <div className="space-y-2 ml-6">
+                          <AccordionContent className="px-3 pb-3">
+                            <div className="space-y-2 pl-6 pt-2">
                             {servicesList.map((service) => (
                               <div key={service.id} className="flex items-start gap-2">
                                 <Checkbox
@@ -201,12 +206,13 @@ export function ServicesSelector({ services, selectedServices, onChange }: Servi
                                 </label>
                               </div>
                             ))}
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    )
-                  })}
-                </Accordion>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      )
+                    })}
+                  </Accordion>
+                </div>
               </AccordionContent>
             </AccordionItem>
           )

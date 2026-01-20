@@ -11,11 +11,11 @@ import {
 import { getCoverageSettings } from '@/lib/settings/coverage-actions'
 import { getPendingSuggestions, getMappingStats } from '@/lib/service-mapping/actions'
 import {
-  getAngariacaoStats,
-  getAngariacaoPrices,
-  getAngariacaoMaterials,
-  getAngariacaoClusters,
-} from '@/lib/angariacao/actions'
+  getCatalogStats,
+  getCatalogPrices,
+  getCatalogMaterials,
+  getCatalogClusters,
+} from '@/lib/service-catalog/actions'
 
 export default async function ConfiguracoesPage() {
   // Garantir que as configuracoes padrao existem
@@ -29,10 +29,10 @@ export default async function ConfiguracoesPage() {
     coverageSettings,
     mappingSuggestions,
     mappingStats,
-    angariacaoStats,
-    angariacaoPrices,
-    angariacaoMaterials,
-    angariacaoClusters,
+    catalogStats,
+    catalogPrices,
+    catalogMaterials,
+    catalogClusters,
   ] = await Promise.all([
     getTaskDefinitions(),
     getSettings(),
@@ -41,10 +41,10 @@ export default async function ConfiguracoesPage() {
     getCoverageSettings(),
     getPendingSuggestions(),
     getMappingStats(),
-    getAngariacaoStats(),
-    getAngariacaoPrices({ limit: 50 }),
-    getAngariacaoMaterials(),
-    getAngariacaoClusters(),
+    getCatalogStats(),
+    getCatalogPrices({ limit: 50 }),
+    getCatalogMaterials(),
+    getCatalogClusters(),
   ])
 
   return (
@@ -63,10 +63,10 @@ export default async function ConfiguracoesPage() {
             coverageSettings={coverageSettings}
             mappingSuggestions={mappingSuggestions.data}
             mappingStats={mappingStats}
-            angariacaoStats={angariacaoStats}
-            angariacaoPrices={angariacaoPrices.data}
-            angariacaoMaterials={angariacaoMaterials}
-            angariacaoClusters={angariacaoClusters}
+            catalogStats={catalogStats}
+            catalogPrices={catalogPrices.data}
+            catalogMaterials={catalogMaterials}
+            catalogClusters={catalogClusters}
           />
         </Suspense>
       </div>

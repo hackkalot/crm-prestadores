@@ -100,8 +100,7 @@ export async function getOnboardingCard(cardId: string) {
         task_definition:task_definitions(
           *,
           stage:stage_definitions(id, name, stage_number, display_order)
-        ),
-        task_owner:users!onboarding_tasks_owner_id_fkey(id, name, email)
+        )
       ),
       current_stage:stage_definitions(*)
     `)

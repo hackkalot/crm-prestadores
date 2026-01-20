@@ -10,13 +10,13 @@ import {
 } from '@/components/ui/table'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Package } from 'lucide-react'
-import type { AngariacaoMaterial } from '@/lib/angariacao/actions'
+import type { CatalogMaterial } from '@/lib/service-catalog/actions'
 
-interface AngariacaoMaterialsTableProps {
-  materials: AngariacaoMaterial[]
+interface CatalogMaterialsTableProps {
+  materials: CatalogMaterial[]
 }
 
-export function AngariacaoMaterialsTable({ materials }: AngariacaoMaterialsTableProps) {
+export function CatalogMaterialsTable({ materials }: CatalogMaterialsTableProps) {
   const formatPrice = (price: number) => `${price.toFixed(2)} €`
 
   const formatPriceWithVat = (price: number, vatRate: number) => {

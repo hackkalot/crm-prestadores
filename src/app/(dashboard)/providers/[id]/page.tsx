@@ -25,9 +25,9 @@ import {
 } from 'lucide-react'
 
 // Tab components
-import { PerfilTab } from '@/components/providers/tabs/perfil-tab'
 import {
-  CandidaturaTabAsync,
+  PerfilTabAsync,
+  SubmissoesTabAsync,
   OnboardingTabAsync,
   PrecosTabAsync,
   PedidosTabAsync,
@@ -73,16 +73,6 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
   arquivado: 'secondary',
 }
 
-// Async wrapper for Perfil tab (loads cached data for filters)
-async function PerfilTabAsync({ provider }: { provider: any }) {
-  const [users, districts, services] = await Promise.all([
-    getUsers(),
-    getDistinctDistricts(),
-    getDistinctServices(),
-  ])
-  return <PerfilTab provider={provider} users={users} districts={districts} services={services} />
-}
-
 export default async function ProviderPage({ params, searchParams }: ProviderPageProps) {
   const { id } = await params
   const { tab } = await searchParams
@@ -100,7 +90,6 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
 
   // Determinar tabs disponíveis
   const hasOnboarding = ['em_onboarding', 'ativo', 'suspenso', 'arquivado'].includes(provider.status) || onboardingCard
-  const hasPrices = !!provider.forms_submitted_at
 
   // Calcular stats do onboarding (se existir)
   const tasks = onboardingCard?.tasks || []
@@ -322,10 +311,10 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
         </Card>
 
         {/* Tabs */}
-        <Tabs defaultValue={defaultTab} className="space-y-4">
+        <Tabs defaultValue={defaultTab} className="space-y-4" id={`provider-${id}-tabs`}>
           <TabsList>
             <TabsTrigger value="perfil">Perfil</TabsTrigger>
-            <TabsTrigger value="candidatura">Candidatura</TabsTrigger>
+            <TabsTrigger value="submissoes">Submissões</TabsTrigger>
             <TabsTrigger value="onboarding" disabled={!hasOnboarding}>
               Onboarding
               {hasOnboarding && totalTasks > 0 && (
@@ -334,13 +323,13 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="precos" disabled={!hasPrices}>
+            <TabsTrigger value="precos">
               Preços
             </TabsTrigger>
-            <TabsTrigger value="pedidos" disabled={!hasPrices}>
+            <TabsTrigger value="pedidos">
               Pedidos
             </TabsTrigger>
-            <TabsTrigger value="performance" disabled={!hasPrices}>
+            <TabsTrigger value="performance">
               Performance
             </TabsTrigger>
             <TabsTrigger value="notas">
@@ -355,9 +344,9 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
             </Suspense>
           </TabsContent>
 
-          <TabsContent value="candidatura">
+          <TabsContent value="submissoes">
             <Suspense fallback={<div className="h-48" />}>
-              <CandidaturaTabAsync providerId={id} provider={provider} />
+              <SubmissoesTabAsync providerId={id} provider={provider} />
             </Suspense>
           </TabsContent>
 

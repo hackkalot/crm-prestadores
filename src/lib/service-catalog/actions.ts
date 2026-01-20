@@ -3,7 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 
-export type AngariacaoPrice = {
+export type CatalogPrice = {
   id: string
   service_name: string
   cluster: string
@@ -26,7 +26,7 @@ export type AngariacaoPrice = {
   updated_at: string | null
 }
 
-export type AngariacaoMaterial = {
+export type CatalogMaterial = {
   id: string
   material_name: string
   category: string | null
@@ -37,7 +37,7 @@ export type AngariacaoMaterial = {
   updated_at: string | null
 }
 
-export type AngariacaoStats = {
+export type CatalogStats = {
   totalPrices: number
   totalMaterials: number
   clusters: { cluster: string; count: number }[]
@@ -45,24 +45,24 @@ export type AngariacaoStats = {
 }
 
 // Obter estatísticas gerais
-export async function getAngariacaoStats(): Promise<AngariacaoStats> {
+export async function getCatalogStats(): Promise<CatalogStats> {
   const supabase = createAdminClient()
 
   // Total de preços
   const { count: totalPrices } = await supabase
-    .from('angariacao_reference_prices')
+    .from('service_prices')
     .select('*', { count: 'exact', head: true })
     .eq('is_active', true)
 
   // Total de materiais
   const { count: totalMaterials } = await supabase
-    .from('angariacao_materials')
+    .from('material_catalog')
     .select('*', { count: 'exact', head: true })
     .eq('is_active', true)
 
   // Contagem por cluster
   const { data: clusterData } = await supabase
-    .from('angariacao_reference_prices')
+    .from('service_prices')
     .select('cluster')
     .eq('is_active', true)
 
@@ -78,7 +78,7 @@ export async function getAngariacaoStats(): Promise<AngariacaoStats> {
 
   // Última atualização
   const { data: lastUpdatedData } = await supabase
-    .from('angariacao_reference_prices')
+    .from('service_prices')
     .select('updated_at')
     .order('updated_at', { ascending: false })
     .limit(1)
@@ -93,18 +93,18 @@ export async function getAngariacaoStats(): Promise<AngariacaoStats> {
 }
 
 // Obter preços com paginação e filtros
-export async function getAngariacaoPrices(params: {
+export async function getCatalogPrices(params: {
   cluster?: string
   serviceGroup?: string
   search?: string
   page?: number
   limit?: number
-}): Promise<{ data: AngariacaoPrice[]; total: number }> {
+}): Promise<{ data: CatalogPrice[]; total: number }> {
   const { cluster, serviceGroup, search, page = 1, limit = 50 } = params
   const offset = (page - 1) * limit
 
   let query = createAdminClient()
-    .from('angariacao_reference_prices')
+    .from('service_prices')
     .select('*', { count: 'exact' })
     .eq('is_active', true)
     .order('service_name')
@@ -127,7 +127,7 @@ export async function getAngariacaoPrices(params: {
   const { data, count, error } = await query
 
   if (error) {
-    console.error('Error fetching angariacao prices:', error)
+    console.error('Error fetching catalog prices:', error)
     return { data: [], total: 0 }
   }
 
@@ -138,15 +138,15 @@ export async function getAngariacaoPrices(params: {
 }
 
 // Obter materiais
-export async function getAngariacaoMaterials(): Promise<AngariacaoMaterial[]> {
+export async function getCatalogMaterials(): Promise<CatalogMaterial[]> {
   const { data, error } = await createAdminClient()
-    .from('angariacao_materials')
+    .from('material_catalog')
     .select('*')
     .eq('is_active', true)
     .order('material_name')
 
   if (error) {
-    console.error('Error fetching angariacao materials:', error)
+    console.error('Error fetching catalog materials:', error)
     return []
   }
 
@@ -154,9 +154,9 @@ export async function getAngariacaoMaterials(): Promise<AngariacaoMaterial[]> {
 }
 
 // Obter clusters únicos
-export async function getAngariacaoClusters(): Promise<string[]> {
+export async function getCatalogClusters(): Promise<string[]> {
   const { data } = await createAdminClient()
-    .from('angariacao_reference_prices')
+    .from('service_prices')
     .select('cluster')
     .eq('is_active', true)
 
@@ -169,9 +169,9 @@ export async function getAngariacaoClusters(): Promise<string[]> {
 }
 
 // Obter grupos de serviço únicos
-export async function getAngariacaoServiceGroups(cluster?: string): Promise<string[]> {
+export async function getCatalogServiceGroups(cluster?: string): Promise<string[]> {
   let query = createAdminClient()
-    .from('angariacao_reference_prices')
+    .from('service_prices')
     .select('service_group')
     .eq('is_active', true)
     .not('service_group', 'is', null)
@@ -193,6 +193,6 @@ export async function getAngariacaoServiceGroups(cluster?: string): Promise<stri
 }
 
 // Revalidar página após import
-export async function revalidateAngariacaoPage() {
+export async function revalidateCatalogPage() {
   revalidatePath('/configuracoes')
 }

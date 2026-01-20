@@ -22,7 +22,7 @@ import {
 import { Upload, FileSpreadsheet, Loader2, CheckCircle, XCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-export function AngariacaoUpload() {
+export function CatalogUpload() {
   const [file, setFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -63,7 +63,7 @@ export function AngariacaoUpload() {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await fetch('/api/angariacao/import', {
+      const response = await fetch('/api/service-catalog/import', {
         method: 'POST',
         body: formData,
       })

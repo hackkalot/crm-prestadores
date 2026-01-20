@@ -44,7 +44,8 @@ O comando `npm run db:generate` requer Docker a correr localmente. Em alternativ
 npm run db:generate
 
 # Sem Docker (remoto) - usa o project ID do Supabase
-npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs > src/types/database.ts
+# IMPORTANTE: Usar 2>/dev/null para filtrar mensagens do CLI
+npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs 2>/dev/null > src/types/database.ts
 ```
 
 Os tipos sao gerados para `src/types/database.ts` e devem ser regenerados sempre que o schema da base de dados mudar (novas tabelas, colunas, etc.).
@@ -53,9 +54,12 @@ Os tipos sao gerados para `src/types/database.ts` e devem ser regenerados sempre
 
 ### 1. **NUNCA modificar tipos de base de dados sem regenerar `database.ts`**
 - ❌ NÃO alterar interfaces locais (ServiceCategory, ProviderPrice, etc.) sem verificar o tipo gerado
+- ❌ **NUNCA editar `database.ts` manualmente** - é um ficheiro gerado automaticamente
 - ✅ SEMPRE importar tipos de `@/lib/*/actions.ts` ou `@/types/database.ts`
-- ✅ **CRÍTICO**: Quando criar novas tabelas, SEMPRE regenerar tipos: `npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs > src/types/database.ts`
-- ⚠️ Após regenerar, **remover** manualmente mensagens do CLI (últimas 2 linhas) se aparecerem no ficheiro
+- ✅ **CRÍTICO**: Quando criar novas tabelas, SEMPRE regenerar tipos com `2>/dev/null` para filtrar mensagens do CLI:
+  ```bash
+  npx supabase gen types typescript --project-id nyrnjltpyedfoommmbhs 2>/dev/null > src/types/database.ts
+  ```
 
 ### 2. **NUNCA usar `as any` sem eslint-disable (CAUSA ERROS DE BUILD)**
 - ❌ **NÃO** usar `as any` diretamente - causa erros ESLint que bloqueiam CI/CD

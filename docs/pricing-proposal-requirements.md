@@ -5,6 +5,14 @@
 
 ---
 
+> **⚠️ NOTA (20 Janeiro 2026):** Este documento foi o planeamento inicial. Algumas decisões mudaram durante a implementação:
+> - **`provider_services_history` foi eliminada** - O histórico de alterações de serviços é agora rastreado via:
+>   - `provider_forms_data` - snapshots completos de cada submissão
+>   - `history_log` com `event_type='forms_submission'` para auditoria
+> - Ver `02-FLUXOS-NEGOCIO.md` para a arquitectura actual implementada.
+
+---
+
 ## ✅ **DECISÕES TOMADAS**
 
 ### 1. **Fluxo Geral**

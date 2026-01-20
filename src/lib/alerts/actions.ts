@@ -200,12 +200,11 @@ export async function generateDeadlineAlerts(): Promise<number> {
     .select(`
       id,
       deadline_at,
-      owner_id,
       card_id,
       task_definition:task_definitions(name),
       onboarding_card:onboarding_cards(
         provider_id,
-        provider:providers(name)
+        provider:providers(name, relationship_owner_id)
       )
     `)
     .neq('status', 'concluida')
@@ -221,18 +220,6 @@ export async function generateDeadlineAlerts(): Promise<number> {
   let alertsCreated = 0
 
   for (const task of tasks) {
-    if (!task.owner_id) continue
-
-    // Verificar se ja existe alerta para esta tarefa
-    const { data: existingAlert } = await supabaseAdmin
-      .from('alerts')
-      .select('id')
-      .eq('task_id', task.id)
-      .eq('alert_type', 'deadline_approaching')
-      .single()
-
-    if (existingAlert) continue
-
     // Extrair dados das relacoes
     const taskDef = Array.isArray(task.task_definition)
       ? task.task_definition[0]
@@ -244,13 +231,28 @@ export async function generateDeadlineAlerts(): Promise<number> {
       ? (Array.isArray(card.provider) ? card.provider[0] : card.provider)
       : null
 
-    // Criar alerta
+    // Usar relationship_owner_id do provider como destinatario
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const relationshipOwnerId = (provider as any)?.relationship_owner_id
+    if (!relationshipOwnerId) continue
+
+    // Verificar se ja existe alerta para esta tarefa
+    const { data: existingAlert } = await supabaseAdmin
+      .from('alerts')
+      .select('id')
+      .eq('task_id', task.id)
+      .eq('alert_type', 'deadline_approaching')
+      .single()
+
+    if (existingAlert) continue
+
+    // Criar alerta para o Relationship Manager do provider
     const { error: insertError } = await supabaseAdmin
       .from('alerts')
       .insert({
         provider_id: card?.provider_id,
         task_id: task.id,
-        user_id: task.owner_id,
+        user_id: relationshipOwnerId,
         alert_type: 'deadline_approaching',
         title: 'Prazo a expirar',
         message: `A tarefa "${taskDef?.name || 'Tarefa'}" do prestador "${provider?.name || 'Desconhecido'}" expira em breve.`,
@@ -284,13 +286,12 @@ export async function generateStalledTaskAlerts(): Promise<number> {
     .from('onboarding_tasks')
     .select(`
       id,
-      owner_id,
       updated_at,
       card_id,
       task_definition:task_definitions(name),
       onboarding_card:onboarding_cards(
         provider_id,
-        provider:providers(name)
+        provider:providers(name, relationship_owner_id)
       )
     `)
     .neq('status', 'concluida')
@@ -304,7 +305,21 @@ export async function generateStalledTaskAlerts(): Promise<number> {
   let alertsCreated = 0
 
   for (const task of tasks) {
-    if (!task.owner_id) continue
+    // Extrair dados das relacoes
+    const taskDef = Array.isArray(task.task_definition)
+      ? task.task_definition[0]
+      : task.task_definition
+    const card = Array.isArray(task.onboarding_card)
+      ? task.onboarding_card[0]
+      : task.onboarding_card
+    const provider = card?.provider
+      ? (Array.isArray(card.provider) ? card.provider[0] : card.provider)
+      : null
+
+    // Usar relationship_owner_id do provider como destinatario
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const relationshipOwnerId = (provider as any)?.relationship_owner_id
+    if (!relationshipOwnerId) continue
 
     // Verificar se ja existe alerta recente para esta tarefa
     const recentAlertThreshold = new Date(Date.now() - stalledDays * 24 * 60 * 60 * 1000)
@@ -318,24 +333,13 @@ export async function generateStalledTaskAlerts(): Promise<number> {
 
     if (existingAlert) continue
 
-    // Extrair dados das relacoes
-    const taskDef = Array.isArray(task.task_definition)
-      ? task.task_definition[0]
-      : task.task_definition
-    const card = Array.isArray(task.onboarding_card)
-      ? task.onboarding_card[0]
-      : task.onboarding_card
-    const provider = card?.provider
-      ? (Array.isArray(card.provider) ? card.provider[0] : card.provider)
-      : null
-
-    // Criar alerta
+    // Criar alerta para o Relationship Manager do provider
     const { error: insertError } = await supabaseAdmin
       .from('alerts')
       .insert({
         provider_id: card?.provider_id,
         task_id: task.id,
-        user_id: task.owner_id,
+        user_id: relationshipOwnerId,
         alert_type: 'task_stalled',
         title: 'Tarefa parada',
         message: `A tarefa "${taskDef?.name || 'Tarefa'}" do prestador "${provider?.name || 'Desconhecido'}" nao tem alterações ha ${stalledDays} dias.`,

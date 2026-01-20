@@ -35,7 +35,6 @@ interface Provider {
   email: string
   phone: string | null
   nif: string | null
-  location: string | null
   services: string[] | null
 }
 
@@ -69,6 +68,7 @@ const PLATFORMS = [
   'Zaask',
   'Cronoshare',
   'GetNinjas',
+  'Oscar',
   'Outro',
 ]
 
@@ -97,8 +97,24 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
 
+  // Estados para inputs "Outro"
+  const [otherPlatform, setOtherPlatform] = useState('')
+  const [otherCertification, setOtherCertification] = useState('')
+  const [otherEquipment, setOtherEquipment] = useState('')
+
   // Form data
-  const [formData, setFormData] = useState<FormsSubmissionData>({
+  const [formData, setFormData] = useState<FormsSubmissionData & {
+    provider_name?: string
+    provider_email?: string
+    provider_phone?: string
+    provider_nif?: string
+  }>({
+    // Dados do Prestador
+    provider_name: provider.name,
+    provider_email: provider.email,
+    provider_phone: provider.phone || '',
+    provider_nif: provider.nif || '',
+
     // Documentação
     has_activity_declaration: false,
     has_liability_insurance: false,
@@ -142,7 +158,13 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
   const canProceed = () => {
     switch (currentStep) {
       case 1:
-        return true // Provider info is pre-filled
+        // Validate required provider fields
+        return !!(
+          (formData.provider_name || provider.name)?.trim() &&
+          (formData.provider_email || provider.email)?.trim() &&
+          (formData.provider_phone || provider.phone)?.trim() &&
+          (formData.provider_nif || provider.nif)?.trim()
+        )
       case 2:
         return true // Documentation is optional
       case 3:
@@ -188,7 +210,26 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
       console.error('Failed to get IP address:', error)
     }
 
-    const result = await submitServicesForm(token, formData, ipAddress)
+    // Preparar dados finais com valores "Outro"
+    const finalFormData = { ...formData }
+
+    // Adicionar valores "Outro" aos arrays se preenchidos
+    if (formData.works_with_platforms.includes('Outro') && otherPlatform.trim()) {
+      const filtered = finalFormData.works_with_platforms.filter(p => p !== 'Outro')
+      finalFormData.works_with_platforms = [...filtered, `Outro: ${otherPlatform.trim()}`]
+    }
+
+    if (formData.certifications.includes('Outro') && otherCertification.trim()) {
+      const filtered = finalFormData.certifications.filter(c => c !== 'Outro')
+      finalFormData.certifications = [...filtered, `Outro: ${otherCertification.trim()}`]
+    }
+
+    if (formData.own_equipment.includes('Outro') && otherEquipment.trim()) {
+      const filtered = finalFormData.own_equipment.filter(e => e !== 'Outro')
+      finalFormData.own_equipment = [...filtered, `Outro: ${otherEquipment.trim()}`]
+    }
+
+    const result = await submitServicesForm(token, finalFormData, ipAddress)
 
     if (result.success) {
       setIsSuccess(true)
@@ -323,31 +364,52 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Nome Completo</Label>
-                    <Input value={provider.name} disabled className="bg-muted" />
+                    <Label htmlFor="provider-name">Nome Completo *</Label>
+                    <Input
+                      id="provider-name"
+                      value={formData.provider_name || provider.name}
+                      onChange={(e) => updateFormData('provider_name', e.target.value)}
+                      placeholder="Nome completo"
+                      required
+                    />
                   </div>
                   <div>
-                    <Label>Email</Label>
-                    <Input value={provider.email} disabled className="bg-muted" />
+                    <Label htmlFor="provider-email">Email *</Label>
+                    <Input
+                      id="provider-email"
+                      type="email"
+                      value={formData.provider_email || provider.email}
+                      onChange={(e) => updateFormData('provider_email', e.target.value)}
+                      placeholder="email@exemplo.com"
+                      required
+                    />
                   </div>
                   <div>
-                    <Label>Telefone</Label>
-                    <Input value={provider.phone || 'Não informado'} disabled className="bg-muted" />
+                    <Label htmlFor="provider-phone">Telefone *</Label>
+                    <Input
+                      id="provider-phone"
+                      type="tel"
+                      value={formData.provider_phone || provider.phone || ''}
+                      onChange={(e) => updateFormData('provider_phone', e.target.value)}
+                      placeholder="+351 XXX XXX XXX"
+                      required
+                    />
                   </div>
                   <div>
-                    <Label>NIF</Label>
-                    <Input value={provider.nif || 'Não informado'} disabled className="bg-muted" />
+                    <Label htmlFor="provider-nif">NIF *</Label>
+                    <Input
+                      id="provider-nif"
+                      value={formData.provider_nif || provider.nif || ''}
+                      onChange={(e) => updateFormData('provider_nif', e.target.value)}
+                      placeholder="XXXXXXXXX"
+                      required
+                    />
                   </div>
-                </div>
-                <div>
-                  <Label>Localização</Label>
-                  <Input value={provider.location || 'Não informado'} disabled className="bg-muted" />
                 </div>
                 <Alert>
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    Estes dados foram importados do seu registo inicial. Se precisar de corrigir alguma
-                    informação, entre em contacto connosco.
+                    Por favor, confirme ou atualize os seus dados pessoais.
                   </AlertDescription>
                 </Alert>
               </div>
@@ -431,6 +493,18 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
                       </div>
                     ))}
                   </div>
+                  {formData.certifications.includes('Outro') && (
+                    <div className="mt-4">
+                      <Label htmlFor="other-certification">Especifique a certificação</Label>
+                      <Input
+                        id="other-certification"
+                        value={otherCertification}
+                        onChange={(e) => setOtherCertification(e.target.value)}
+                        placeholder="Nome da certificação"
+                        className="mt-2"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <Separator />
@@ -454,6 +528,18 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
                       </div>
                     ))}
                   </div>
+                  {formData.works_with_platforms.includes('Outro') && (
+                    <div className="mt-4">
+                      <Label htmlFor="other-platform">Especifique a plataforma</Label>
+                      <Input
+                        id="other-platform"
+                        value={otherPlatform}
+                        onChange={(e) => setOtherPlatform(e.target.value)}
+                        placeholder="Nome da plataforma"
+                        className="mt-2"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -590,6 +676,18 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
                       </div>
                     ))}
                   </div>
+                  {formData.own_equipment.includes('Outro') && (
+                    <div className="mt-4">
+                      <Label htmlFor="other-equipment">Especifique o equipamento</Label>
+                      <Input
+                        id="other-equipment"
+                        value={otherEquipment}
+                        onChange={(e) => setOtherEquipment(e.target.value)}
+                        placeholder="Descrição do equipamento"
+                        className="mt-2"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -651,21 +749,17 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
                     <h3 className="font-semibold mb-2">Dados do Prestador</h3>
                     <div className="bg-muted p-4 rounded-lg space-y-1 text-sm">
                       <p>
-                        <strong>Nome:</strong> {provider.name}
+                        <strong>Nome:</strong> {formData.provider_name || provider.name}
                       </p>
                       <p>
-                        <strong>Email:</strong> {provider.email}
+                        <strong>Email:</strong> {formData.provider_email || provider.email}
                       </p>
-                      {provider.phone && (
-                        <p>
-                          <strong>Telefone:</strong> {provider.phone}
-                        </p>
-                      )}
-                      {provider.nif && (
-                        <p>
-                          <strong>NIF:</strong> {provider.nif}
-                        </p>
-                      )}
+                      <p>
+                        <strong>Telefone:</strong> {formData.provider_phone || provider.phone || 'Não fornecido'}
+                      </p>
+                      <p>
+                        <strong>NIF:</strong> {formData.provider_nif || provider.nif || 'Não fornecido'}
+                      </p>
                     </div>
                   </div>
 
