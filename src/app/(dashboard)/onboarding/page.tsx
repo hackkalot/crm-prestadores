@@ -11,7 +11,6 @@ import {
   type OnboardingFilters as OnboardingFiltersType,
   type OnboardingType,
 } from '@/lib/onboarding/actions'
-import { getDistinctDistricts } from '@/lib/candidaturas/actions'
 import { getAlertConfig } from '@/lib/settings/actions'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -24,11 +23,8 @@ async function StatsSection() {
 
 // Async component for filters (loads cached data)
 async function FiltersSection() {
-  const [users, districts] = await Promise.all([
-    getUsers(),
-    getDistinctDistricts(),
-  ])
-  return <OnboardingFilters users={users} districts={districts} />
+  const users = await getUsers()
+  return <OnboardingFilters users={users} />
 }
 
 // Async component for kanban board
@@ -55,11 +51,15 @@ export default async function OnboardingPage({
 }) {
   const params = await searchParams
 
+  // Parse multi-select filter from comma-separated URL param
+  const countiesParam = params.counties as string | undefined
+  const counties = countiesParam ? countiesParam.split(',').filter(Boolean) : undefined
+
   const filters: OnboardingFiltersType = {
     ownerId: params.ownerId as string | undefined,
     onboardingType: params.onboardingType as OnboardingType | undefined,
     entityType: params.entityType as string | undefined,
-    district: params.district as string | undefined,
+    counties,
     search: params.search as string | undefined,
   }
 

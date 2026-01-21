@@ -130,6 +130,7 @@ crm-prestadores/
 | Ver fluxos de negócio e estados | [02-FLUXOS-NEGOCIO.md](./02-FLUXOS-NEGOCIO.md) |
 | Conhecer o schema da base de dados | [03-BASE-DADOS.md](./03-BASE-DADOS.md) |
 | Perceber integrações externas (Backoffice, GitHub Actions, Mapbox) | [04-INTEGRACOES.md](./04-INTEGRACOES.md) |
+| Consultar biblioteca de componentes UI e padrões | [05-COMPONENTES.md](./05-COMPONENTES.md) |
 
 ---
 

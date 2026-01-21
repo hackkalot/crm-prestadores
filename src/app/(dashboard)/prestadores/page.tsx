@@ -11,7 +11,6 @@ import { Copy } from 'lucide-react'
 import {
   getPrestadores,
   getPrestadoresStats,
-  getDistinctPrestadorDistricts,
   getDistinctPrestadorServices,
   getUsers,
   getProviderServiceRequestCounts,
@@ -44,12 +43,11 @@ async function PrestadoresListSection({ filters }: { filters: PrestadorFilters }
 
 // Async component for filters (loads cached data)
 async function FiltersSection() {
-  const [districts, services, users] = await Promise.all([
-    getDistinctPrestadorDistricts(),
+  const [services, users] = await Promise.all([
     getDistinctPrestadorServices(),
     getUsers(),
   ])
-  return <PrestadoresFilters districts={districts} services={services} users={users} />
+  return <PrestadoresFilters services={services} users={users} />
 }
 
 
@@ -70,7 +68,7 @@ export default async function PrestadoresPage({
   const filters: PrestadorFilters = {
     status: (params.status as ProviderStatus | 'all' | '_all') || '_all',
     entityType: params.entityType as string | undefined,
-    districts: parseMultiParam(params.districts),
+    counties: parseMultiParam(params.counties),
     services: parseMultiParam(params.services),
     ownerId: params.ownerId as string | undefined,
     search: params.search as string | undefined,

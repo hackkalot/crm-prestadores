@@ -37,20 +37,20 @@ O CRM utiliza 4 scrappers automatizados que extraem dados do backoffice FIXO (Ou
 
 ### Resumo dos Scrappers
 
-| Scrapper | Horário (PT) | Dados | Tabela Supabase | Página CRM |
-|----------|--------------|-------|-----------------|------------|
-| **Pedidos de Serviço** | 04:00 | Últimos 90 dias | `service_requests` | /pedidos |
-| **Faturação** | 05:00 | Todos os processos | `billing_processes` | /faturacao |
-| **Prestadores** | 06:00 | Todos os prestadores | `providers` | /prestadores |
-| **Histórico Alocação** | 04:00 | Mês corrente | `allocation_history` | /alocacoes |
+| Scrapper | Frequência | Horário (PT) | Dados | Tabela Supabase | Página CRM |
+|----------|------------|--------------|-------|-----------------|------------|
+| **Pedidos de Serviço** | Semanal (Seg) | 07:00 | Últimos 90 dias | `service_requests` | /pedidos |
+| **Faturação** | Semanal (Seg) | 07:30 | Todos os processos | `billing_processes` | /faturacao |
+| **Prestadores** | Semanal (Seg) | 08:00 | Todos os prestadores | `providers` | /prestadores |
+| **Histórico Alocação** | Semanal (Seg) | 08:30 | Mês corrente | `allocation_history` | /alocacoes |
 
-### Ordem de Execução (Automática)
+### Ordem de Execução (Automática - Segundas-feiras)
 
 ```
-03:00 UTC │ Pedidos de Serviço (90 dias)
-04:00 UTC │ Histórico de Alocação (mês corrente)
-04:00 UTC │ Faturação (todos)
-05:00 UTC │ Prestadores (todos)
+06:00 UTC (07:00 PT) │ Pedidos de Serviço (90 dias)
+06:30 UTC (07:30 PT) │ Faturação (todos)
+07:00 UTC (08:00 PT) │ Prestadores (todos)
+07:30 UTC (08:30 PT) │ Histórico de Alocação (mês corrente)
 ```
 
 Os prestadores correm por último para garantir que os dados relacionados já estão actualizados.
@@ -61,7 +61,7 @@ Os prestadores correm por último para garantir que os dados relacionados já es
 
 **Workflow:** `sync-backoffice.yml`
 **Script:** `scripts/sync-backoffice-github.ts`
-**Horário:** Diário às 04:00 (PT)
+**Horário:** Semanal às Segundas-feiras, 07:00 (PT) / 06:00 UTC
 **Timeout:** 30 minutos
 
 #### O que faz:
@@ -85,7 +85,7 @@ Os prestadores correm por último para garantir que os dados relacionados já es
 
 **Workflow:** `sync-billing.yml`
 **Script:** `scripts/sync-billing-github.ts`
-**Horário:** Diário às 05:00 (PT)
+**Horário:** Semanal às Segundas-feiras, 07:30 (PT) / 06:30 UTC
 **Timeout:** 30 minutos
 
 #### O que faz:
@@ -109,7 +109,7 @@ Os prestadores correm por último para garantir que os dados relacionados já es
 
 **Workflow:** `sync-providers.yml`
 **Script:** `scripts/sync-providers-github.ts`
-**Horário:** Diário às 06:00 (PT)
+**Horário:** Semanal às Segundas-feiras, 08:00 (PT) / 07:00 UTC
 **Timeout:** 15 minutos
 
 #### O que faz:
@@ -134,7 +134,7 @@ Os prestadores correm por último para garantir que os dados relacionados já es
 
 **Workflow:** `sync-allocation-history.yml`
 **Script:** `scripts/sync-allocation-history-github.ts`
-**Horário:** Diário às 04:00 (PT)
+**Horário:** Semanal às Segundas-feiras, 08:30 (PT) / 07:30 UTC
 **Timeout:** 15 minutos
 
 #### O que faz:
@@ -231,17 +231,17 @@ gh workflow run sync-backoffice.yml -f days_back="30"
 
 ### Agendamento Automático
 
-Para alterar o horário, edita o cron em `.github/workflows/*.yml`:
+Os scrappers correm semanalmente às segundas-feiras. Para alterar o horário, edita o cron em `.github/workflows/*.yml`:
 
 ```yaml
 schedule:
-  - cron: '0 6 * * *'  # 6:00 UTC = 7:00 Lisboa
+  - cron: '0 6 * * 1'  # 6:00 UTC às Segundas = 7:00 Lisboa
 ```
 
 Exemplos de cron:
+- `0 6 * * 1` - Semanalmente às Segundas, 6:00 UTC
 - `0 6 * * *` - Diariamente às 6:00 UTC
 - `0 6 * * 1-5` - Segunda a Sexta às 6:00 UTC
-- `0 6,18 * * *` - Duas vezes ao dia (6:00 e 18:00 UTC)
 
 ### Artifacts
 
@@ -259,7 +259,7 @@ Cada execução demora aproximadamente:
 - 2-5 minutos para períodos pequenos (1-7 dias)
 - 5-15 minutos para períodos grandes (30+ dias)
 
-Com execução diária, usarás ~150-300 minutos/mês.
+Com execução semanal (4 scrappers × ~5 min × 4 semanas), usarás ~80 minutos/mês.
 
 ---
 

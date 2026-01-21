@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { unstable_cache } from 'next/cache'
 import type { Database } from '@/types/database'
+import { getFullySelectedDistricts } from '@/lib/data/portugal-districts'
 
 type ProviderStatus = Database['public']['Enums']['provider_status']
 
@@ -13,7 +14,7 @@ export type PrestadorFilters = {
   entityType?: string
   district?: string      // Legacy single filter
   service?: string       // Legacy single filter
-  districts?: string[]   // Multi-select filter
+  counties?: string[]    // Multi-select filter for concelhos
   services?: string[]    // Multi-select filter
   ownerId?: string
   search?: string
@@ -50,10 +51,21 @@ function applyPrestadorFilters(query: any, filters: PrestadorFilters) {
     query = query.eq('entity_type', filters.entityType)
   }
 
-  // Multi-select district filter (new)
-  if (filters.districts && filters.districts.length > 0) {
-    query = query.overlaps('districts', filters.districts)
+  // Multi-select counties filter (concelhos)
+  // Search both 'counties' column AND 'districts' column (for providers that only have district-level data)
+  if (filters.counties && filters.counties.length > 0) {
+    // Get fully selected districts to also search in the 'districts' column
+    const fullySelectedDistricts = getFullySelectedDistricts(filters.counties)
+
+    if (fullySelectedDistricts.length > 0) {
+      // Search for providers that have matching counties OR matching districts
+      query = query.or(`counties.ov.{${filters.counties.join(',')}},districts.ov.{${fullySelectedDistricts.join(',')}}`)
+    } else {
+      // Only search in counties column
+      query = query.overlaps('counties', filters.counties)
+    }
   } else if (filters.district) {
+    // Legacy support for single district filter
     query = query.contains('districts', [filters.district])
   }
 

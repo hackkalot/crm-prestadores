@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { SearchableSelect } from '@/components/ui/searchable-select'
 import { SearchableMultiSelect } from '@/components/ui/searchable-multi-select'
+import { CoverageFilter } from '@/components/ui/coverage-filter'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Search, X, Filter, ChevronDown, ChevronUp, List, LayoutGrid } from 'lucide-react'
 import { useCallback, useMemo, useState, useTransition } from 'react'
@@ -25,11 +26,10 @@ const entityOptions = [
 ]
 
 interface CandidaturasFiltersProps {
-  districts: string[]
   services: string[]
 }
 
-export function CandidaturasFilters({ districts, services }: CandidaturasFiltersProps) {
+export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
@@ -44,8 +44,8 @@ export function CandidaturasFilters({ districts, services }: CandidaturasFilters
   const currentView = searchParams.get('view') || 'list'
 
   // Parse multi-select values from URL (comma-separated)
-  const currentDistricts = useMemo(() => {
-    const param = searchParams.get('districts')
+  const currentCounties = useMemo(() => {
+    const param = searchParams.get('counties')
     return param ? param.split(',') : []
   }, [searchParams])
 
@@ -53,11 +53,6 @@ export function CandidaturasFilters({ districts, services }: CandidaturasFilters
     const param = searchParams.get('services')
     return param ? param.split(',') : []
   }, [searchParams])
-
-  // Memoize options to avoid recalculating on every render
-  const districtOptions = useMemo(() =>
-    districts.map(d => ({ value: d, label: d }))
-  , [districts])
 
   const serviceOptions = useMemo(() =>
     services.map(s => ({ value: s, label: s }))
@@ -126,13 +121,13 @@ export function CandidaturasFilters({ districts, services }: CandidaturasFilters
 
   const hasFilters = currentStatus !== 'all' ||
     (currentEntity && currentEntity !== '_all') ||
-    currentDistricts.length > 0 ||
+    currentCounties.length > 0 ||
     currentServices.length > 0 ||
     currentDateFrom ||
     currentDateTo ||
     searchParams.get('search')
 
-  const hasAdvancedFilters = currentDistricts.length > 0 ||
+  const hasAdvancedFilters = currentCounties.length > 0 ||
     currentServices.length > 0 ||
     currentDateFrom ||
     currentDateTo
@@ -240,22 +235,20 @@ export function CandidaturasFilters({ districts, services }: CandidaturasFilters
       {/* Advanced Filters */}
       {showAdvanced && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-muted/50 rounded-lg">
-          {/* District Filter - Multi-select */}
+          {/* Coverage Filter - Hierarchical districts/counties */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Zona de atuacao</label>
-            <SearchableMultiSelect
-              options={districtOptions}
-              values={currentDistricts}
-              onValuesChange={(values) => updateMultiFilter('districts', values)}
-              placeholder="Selecionar distritos"
-              searchPlaceholder="Pesquisar distrito..."
+            <label className="text-sm font-medium">Zona de atuação</label>
+            <CoverageFilter
+              selected={currentCounties}
+              onChange={(values) => updateMultiFilter('counties', values)}
+              placeholder="Selecionar cobertura"
               disabled={isPending}
             />
           </div>
 
           {/* Service Filter - Multi-select */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Tipo de servico</label>
+            <label className="text-sm font-medium">Tipo de serviço</label>
             <SearchableMultiSelect
               options={serviceOptions}
               values={currentServices}

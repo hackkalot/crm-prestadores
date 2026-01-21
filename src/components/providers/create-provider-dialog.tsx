@@ -24,20 +24,39 @@ import { UserPlus, AlertCircle } from 'lucide-react'
 import { createProvider } from '@/lib/providers/create-actions'
 import { toast } from 'sonner'
 import { MultiSelect } from '@/components/ui/multi-select'
+import { CoverageMultiSelect } from '@/components/ui/coverage-multi-select'
 import { useMounted } from '@/hooks/use-mounted'
 
-interface CreateProviderDialogProps {
-  districts: string[]
-  services: string[]
+interface ServiceOption {
+  ids: string[]  // Múltiplos IDs agrupados pelo mesmo nome
+  name: string
 }
 
-export function CreateProviderDialog({ districts, services }: CreateProviderDialogProps) {
+interface CreateProviderDialogProps {
+  services: ServiceOption[]
+}
+
+export function CreateProviderDialog({ services }: CreateProviderDialogProps) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [state, formAction, isPending] = useActionState(createProvider, { success: false })
   const [entityType, setEntityType] = useState<'tecnico' | 'eni' | 'empresa'>('tecnico')
-  const [selectedServices, setSelectedServices] = useState<string[]>([])
-  const [selectedDistricts, setSelectedDistricts] = useState<string[]>([])
+  // Guardar nomes selecionados (para UI) - os IDs são calculados no submit
+  const [selectedServiceNames, setSelectedServiceNames] = useState<string[]>([])
+  // Concelhos selecionados (cobertura geográfica)
+  const [selectedCounties, setSelectedCounties] = useState<string[]>([])
+
+  // Converter nomes selecionados para todos os IDs correspondentes
+  const getAllServiceIds = () => {
+    const allIds: string[] = []
+    for (const name of selectedServiceNames) {
+      const service = services.find(s => s.name === name)
+      if (service) {
+        allIds.push(...service.ids)
+      }
+    }
+    return allIds
+  }
   const [hasAdminTeam, setHasAdminTeam] = useState<boolean | undefined>(undefined)
   const [hasOwnTransport, setHasOwnTransport] = useState<boolean | undefined>(undefined)
   const mounted = useMounted()
@@ -57,8 +76,8 @@ export function CreateProviderDialog({ districts, services }: CreateProviderDial
 
   const handleReset = () => {
     setEntityType('tecnico')
-    setSelectedServices([])
-    setSelectedDistricts([])
+    setSelectedServiceNames([])
+    setSelectedCounties([])
     setHasAdminTeam(undefined)
     setHasOwnTransport(undefined)
   }
@@ -208,33 +227,32 @@ export function CreateProviderDialog({ districts, services }: CreateProviderDial
           <div className="space-y-2">
             <Label htmlFor="services">Serviços</Label>
             <MultiSelect
-              options={services.map((s) => ({ label: s, value: s }))}
-              selected={selectedServices}
-              onChange={setSelectedServices}
+              options={services.map((s) => ({ label: s.name, value: s.name }))}
+              selected={selectedServiceNames}
+              onChange={setSelectedServiceNames}
               placeholder="Selecionar serviços..."
               disabled={isPending}
             />
             <input
               type="hidden"
               name="services"
-              value={JSON.stringify(selectedServices)}
+              value={JSON.stringify(getAllServiceIds())}
             />
           </div>
 
-          {/* Distritos */}
+          {/* Cobertura Geográfica */}
           <div className="space-y-2">
-            <Label htmlFor="districts">Distritos</Label>
-            <MultiSelect
-              options={districts.map((d) => ({ label: d, value: d }))}
-              selected={selectedDistricts}
-              onChange={setSelectedDistricts}
-              placeholder="Selecionar distritos..."
+            <Label htmlFor="counties">Cobertura Geográfica</Label>
+            <CoverageMultiSelect
+              selected={selectedCounties}
+              onChange={setSelectedCounties}
+              placeholder="Selecionar distritos ou concelhos..."
               disabled={isPending}
             />
             <input
               type="hidden"
-              name="districts"
-              value={JSON.stringify(selectedDistricts)}
+              name="counties"
+              value={JSON.stringify(selectedCounties)}
             />
           </div>
 

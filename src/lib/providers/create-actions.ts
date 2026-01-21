@@ -69,8 +69,9 @@ export async function createProvider(
     const servicesRaw = formData.get('services') as string
     const services = servicesRaw ? JSON.parse(servicesRaw) : null
 
-    const districtsRaw = formData.get('districts') as string
-    const districts = districtsRaw ? JSON.parse(districtsRaw) : null
+    // Concelhos (cobertura geográfica)
+    const countiesRaw = formData.get('counties') as string
+    const counties = countiesRaw ? JSON.parse(countiesRaw) : null
 
     // Parse numbers
     const num_technicians_raw = formData.get('num_technicians') as string
@@ -140,7 +141,7 @@ export async function createProvider(
       nif: nif?.trim() || null,
       website: website?.trim() || null,
       services,
-      districts,
+      counties,  // Concelhos selecionados
       num_technicians,
       has_admin_team,
       has_own_transport,

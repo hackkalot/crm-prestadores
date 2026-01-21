@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { SearchableSelect } from '@/components/ui/searchable-select'
 import { SearchableMultiSelect } from '@/components/ui/searchable-multi-select'
+import { CoverageFilter } from '@/components/ui/coverage-filter'
 import { Search, X, Filter, ChevronDown, ChevronUp } from 'lucide-react'
 import { useCallback, useMemo, useState, useTransition } from 'react'
 
@@ -33,12 +34,11 @@ const pedidosOptions = [
 ]
 
 interface PrestadoresFiltersProps {
-  districts: string[]
   services: string[]
   users: Array<{ id: string; name: string; email: string }>
 }
 
-export function PrestadoresFilters({ districts, services, users }: PrestadoresFiltersProps) {
+export function PrestadoresFilters({ services, users }: PrestadoresFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
@@ -52,8 +52,8 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
   const currentHasPedidos = searchParams.get('hasPedidos') || '_all'
 
   // Parse multi-select values from URL (comma-separated)
-  const currentDistricts = useMemo(() => {
-    const param = searchParams.get('districts')
+  const currentCounties = useMemo(() => {
+    const param = searchParams.get('counties')
     return param ? param.split(',') : []
   }, [searchParams])
 
@@ -61,11 +61,6 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
     const param = searchParams.get('services')
     return param ? param.split(',') : []
   }, [searchParams])
-
-  // Memoize options to avoid recalculating on every render
-  const districtOptions = useMemo(() =>
-    districts.map(d => ({ value: d, label: d }))
-  , [districts])
 
   const serviceOptions = useMemo(() =>
     services.map(s => ({ value: s, label: s }))
@@ -115,13 +110,13 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
 
   const hasFilters = (currentStatus !== 'all' && currentStatus !== '_all') ||
     (currentEntity && currentEntity !== '_all') ||
-    currentDistricts.length > 0 ||
+    currentCounties.length > 0 ||
     currentServices.length > 0 ||
     (currentOwnerId && currentOwnerId !== '_all') ||
     (currentHasPedidos && currentHasPedidos !== '_all') ||
     searchParams.get('search')
 
-  const hasAdvancedFilters = currentDistricts.length > 0 ||
+  const hasAdvancedFilters = currentCounties.length > 0 ||
     currentServices.length > 0 ||
     (currentOwnerId && currentOwnerId !== '_all')
 
@@ -217,14 +212,12 @@ export function PrestadoresFilters({ districts, services, users }: PrestadoresFi
       {/* Advanced Filters */}
       {showAdvanced && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
-          {/* District Filter - Multi-select */}
+          {/* Coverage Filter - Hierarchical districts/counties */}
           <div className="space-y-1.5">
-            <SearchableMultiSelect
-              options={districtOptions}
-              values={currentDistricts}
-              onValuesChange={(values) => updateMultiFilter('districts', values)}
+            <CoverageFilter
+              selected={currentCounties}
+              onChange={(values) => updateMultiFilter('counties', values)}
               placeholder="Zona de atuação"
-              searchPlaceholder="Pesquisar distrito..."
               disabled={isPending}
             />
           </div>

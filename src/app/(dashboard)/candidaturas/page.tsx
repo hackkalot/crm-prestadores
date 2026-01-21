@@ -9,10 +9,9 @@ import { StatsCardsSkeleton, FiltersSkeleton, CandidaturasListSkeleton } from '@
 import {
   getCandidaturas,
   getCandidaturasStats,
-  getDistinctDistricts,
   getDistinctServices,
+  getServicePricesForSelect,
   type CandidaturaFilters,
-  type PaginatedCandidaturas,
 } from '@/lib/candidaturas/actions'
 import type { Database } from '@/types/database'
 
@@ -33,20 +32,15 @@ async function CandidaturasListSection({ filters, viewMode }: { filters: Candida
 
 // Async component for filters (loads cached data)
 async function FiltersSection() {
-  const [districts, services] = await Promise.all([
-    getDistinctDistricts(),
-    getDistinctServices(),
-  ])
-  return <CandidaturasFilters districts={districts} services={services} />
+  const services = await getDistinctServices()
+  return <CandidaturasFilters services={services} />
 }
 
-// Async component for create dialog (loads cached data)
+// Async component for create dialog (loads service_prices for proper id/name selection)
+// Coverage is handled internally by CoverageMultiSelect using PORTUGAL_DISTRICTS
 async function CreateProviderDialogAsync() {
-  const [districts, services] = await Promise.all([
-    getDistinctDistricts(),
-    getDistinctServices(),
-  ])
-  return <CreateProviderDialog districts={districts} services={services} />
+  const services = await getServicePricesForSelect()
+  return <CreateProviderDialog services={services} />
 }
 
 export default async function CandidaturasPage({
@@ -68,7 +62,7 @@ export default async function CandidaturasPage({
   const filters: CandidaturaFilters = {
     status: (params.status as ProviderStatus | 'all') || 'all',
     entityType: params.entityType as string | undefined,
-    districts: parseMultiParam(params.districts),
+    counties: parseMultiParam(params.counties),
     services: parseMultiParam(params.services),
     dateFrom: params.dateFrom as string | undefined,
     dateTo: params.dateTo as string | undefined,

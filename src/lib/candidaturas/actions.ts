@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { unstable_cache } from 'next/cache'
 import type { Database } from '@/types/database'
+import { getFullySelectedDistricts } from '@/lib/data/portugal-districts'
 
 type ProviderStatus = Database['public']['Enums']['provider_status']
 type AbandonmentParty = Database['public']['Enums']['abandonment_party']
@@ -16,7 +17,7 @@ export type CandidaturaFilters = {
   entityType?: string
   district?: string      // Legacy single filter
   service?: string       // Legacy single filter
-  districts?: string[]   // Multi-select filter
+  counties?: string[]    // Multi-select filter for concelhos
   services?: string[]    // Multi-select filter
   dateFrom?: string
   dateTo?: string
@@ -46,10 +47,21 @@ function applyCandidaturaFilters(query: any, filters: CandidaturaFilters) {
     query = query.eq('entity_type', filters.entityType)
   }
 
-  // Multi-select district filter (new)
-  if (filters.districts && filters.districts.length > 0) {
-    query = query.overlaps('districts', filters.districts)
+  // Multi-select counties filter (concelhos)
+  // Search both 'counties' column AND 'districts' column (for candidaturas that only have district-level data)
+  if (filters.counties && filters.counties.length > 0) {
+    // Get fully selected districts to also search in the 'districts' column
+    const fullySelectedDistricts = getFullySelectedDistricts(filters.counties)
+
+    if (fullySelectedDistricts.length > 0) {
+      // Search for providers that have matching counties OR matching districts
+      query = query.or(`counties.ov.{${filters.counties.join(',')}},districts.ov.{${fullySelectedDistricts.join(',')}}`)
+    } else {
+      // Only search in counties column
+      query = query.overlaps('counties', filters.counties)
+    }
   } else if (filters.district) {
+    // Legacy support for single district filter
     query = query.contains('districts', [filters.district])
   }
 
@@ -452,7 +464,7 @@ export async function getDistinctDistricts() {
   )()
 }
 
-// Obter lista de servicos unicos
+// Obter lista de servicos unicos (dos providers existentes - para filtros)
 export async function getDistinctServices() {
   return unstable_cache(
     async () => {
@@ -477,6 +489,38 @@ export async function getDistinctServices() {
     },
     ['all-services'],
     { revalidate: 3600, tags: ['all-services'] }
+  )()
+}
+
+// Obter lista de serviços da tabela service_prices (para selects de criação/edição)
+// Agrupa por nome - ids contém todos os UUIDs com o mesmo nome
+export type ServiceOption = { ids: string[]; name: string }
+export async function getServicePricesForSelect(): Promise<ServiceOption[]> {
+  return unstable_cache(
+    async () => {
+      const { data, error } = await createAdminClient()
+        .from('service_prices')
+        .select('id, service_name')
+        .eq('is_active', true)
+        .order('service_name')
+
+      if (error || !data) return []
+
+      // Agrupar por nome - cada nome único contém array de IDs
+      const grouped = new Map<string, string[]>()
+      for (const s of data) {
+        const existing = grouped.get(s.service_name)
+        if (existing) {
+          existing.push(s.id)
+        } else {
+          grouped.set(s.service_name, [s.id])
+        }
+      }
+
+      return Array.from(grouped.entries()).map(([name, ids]) => ({ name, ids }))
+    },
+    ['service-prices-select'],
+    { revalidate: 3600, tags: ['service-prices'] }
   )()
 }
 

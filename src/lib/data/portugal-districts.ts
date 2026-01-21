@@ -376,3 +376,50 @@ export function getCountiesForDistricts(districts: string[]): string[] {
 
   return Array.from(counties).sort()
 }
+
+// Get districts from selected counties
+// Returns districts where ALL municipalities of that district are selected
+export function getFullySelectedDistricts(counties: string[]): string[] {
+  if (!counties || counties.length === 0) {
+    return []
+  }
+
+  const countySet = new Set(counties)
+  const fullySelectedDistricts: string[] = []
+
+  for (const [district, municipalities] of Object.entries(PORTUGAL_DISTRICTS)) {
+    const allSelected = municipalities.every(m => countySet.has(m))
+    if (allSelected) {
+      fullySelectedDistricts.push(district)
+    }
+  }
+
+  return fullySelectedDistricts
+}
+
+// Get district for a specific county
+export function getDistrictForCounty(county: string): string | null {
+  for (const [district, municipalities] of Object.entries(PORTUGAL_DISTRICTS)) {
+    if (municipalities.includes(county)) {
+      return district
+    }
+  }
+  return null
+}
+
+// Get all unique districts that contain any of the selected counties
+export function getDistrictsFromCounties(counties: string[]): string[] {
+  if (!counties || counties.length === 0) {
+    return []
+  }
+
+  const districts = new Set<string>()
+  for (const county of counties) {
+    const district = getDistrictForCounty(county)
+    if (district) {
+      districts.add(district)
+    }
+  }
+
+  return Array.from(districts)
+}

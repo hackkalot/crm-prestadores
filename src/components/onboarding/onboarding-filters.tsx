@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,6 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select'
+import { CoverageFilter } from '@/components/ui/coverage-filter'
 import { Search, X } from 'lucide-react'
 
 const entityOptions = [
@@ -21,10 +22,9 @@ const entityOptions = [
 
 interface OnboardingFiltersProps {
   users: Array<{ id: string; name: string | null; email?: string }>
-  districts: string[]
 }
 
-export function OnboardingFilters({ users, districts }: OnboardingFiltersProps) {
+export function OnboardingFilters({ users }: OnboardingFiltersProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -51,6 +51,17 @@ export function OnboardingFilters({ users, districts }: OnboardingFiltersProps) 
     router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
   }
 
+  const handleCountiesChange = (counties: string[]) => {
+    const newParams = new URLSearchParams(searchParams.toString())
+    if (counties.length > 0) {
+      newParams.set('counties', counties.join(','))
+    } else {
+      newParams.delete('counties')
+    }
+    const queryString = newParams.toString()
+    router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
+  }
+
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
@@ -62,12 +73,18 @@ export function OnboardingFilters({ users, districts }: OnboardingFiltersProps) 
     router.push(pathname)
   }
 
+  // Parse counties from URL
+  const currentCounties = useMemo(() => {
+    const param = searchParams.get('counties')
+    return param ? param.split(',') : []
+  }, [searchParams])
+
   const hasFilters =
     searchParams.has('search') ||
     searchParams.has('ownerId') ||
     searchParams.has('onboardingType') ||
     searchParams.has('entityType') ||
-    searchParams.has('district')
+    searchParams.has('counties')
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -117,7 +134,7 @@ export function OnboardingFilters({ users, districts }: OnboardingFiltersProps) 
         value={searchParams.get('onboardingType') || 'all'}
         onValueChange={(value) => handleFilterChange('onboardingType', value)}
       >
-        <SelectTrigger className="w-[120px]">
+        <SelectTrigger className="w-30">
           <span className="truncate">
             {(() => {
               const type = searchParams.get('onboardingType')
@@ -138,7 +155,7 @@ export function OnboardingFilters({ users, districts }: OnboardingFiltersProps) 
         value={searchParams.get('entityType') || 'all'}
         onValueChange={(value) => handleFilterChange('entityType', value)}
       >
-        <SelectTrigger className="w-[140px]">
+        <SelectTrigger className="w-35">
           <span className="truncate">
             {(() => {
               const type = searchParams.get('entityType')
@@ -156,25 +173,13 @@ export function OnboardingFilters({ users, districts }: OnboardingFiltersProps) 
         </SelectContent>
       </Select>
 
-      {/* District Filter */}
-      <Select
-        value={searchParams.get('district') || 'all'}
-        onValueChange={(value) => handleFilterChange('district', value)}
-      >
-        <SelectTrigger className="w-[140px]">
-          <span className="truncate">
-            {searchParams.get('district') || 'Distrito'}
-          </span>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Todos</SelectItem>
-          {districts.map((district) => (
-            <SelectItem key={district} value={district}>
-              {district}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {/* Coverage Filter - Hierarchical districts/counties */}
+      <CoverageFilter
+        selected={currentCounties}
+        onChange={handleCountiesChange}
+        placeholder="Zona de atuação"
+        className="w-44"
+      />
 
       {/* Clear Filters */}
       {hasFilters && (

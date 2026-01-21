@@ -1119,54 +1119,6 @@ export type Database = {
           },
         ]
       }
-      provider_services_history: {
-        Row: {
-          changed_at: string | null
-          changed_by: string | null
-          id: string
-          notes: string | null
-          provider_id: string
-          services_after: string[] | null
-          services_before: string[] | null
-          source: string
-        }
-        Insert: {
-          changed_at?: string | null
-          changed_by?: string | null
-          id?: string
-          notes?: string | null
-          provider_id: string
-          services_after?: string[] | null
-          services_before?: string[] | null
-          source: string
-        }
-        Update: {
-          changed_at?: string | null
-          changed_by?: string | null
-          id?: string
-          notes?: string | null
-          provider_id?: string
-          services_after?: string[] | null
-          services_before?: string[] | null
-          source?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "provider_services_history_changed_by_fkey"
-            columns: ["changed_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "provider_services_history_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "providers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       provider_sync_logs: {
         Row: {
           created_at: string | null
@@ -2383,6 +2335,8 @@ export type Database = {
         | "price_change"
         | "field_change"
         | "forms_submission"
+        | "document_uploaded"
+        | "document_deleted"
       onboarding_type: "normal" | "urgente"
       payment_status: "pending" | "captured" | "refunded" | "failed"
       priority_status: "ativa" | "concluida" | "cancelada"
@@ -2548,6 +2502,8 @@ export const Constants = {
         "price_change",
         "field_change",
         "forms_submission",
+        "document_uploaded",
+        "document_deleted",
       ],
       onboarding_type: ["normal", "urgente"],
       payment_status: ["pending", "captured", "refunded", "failed"],

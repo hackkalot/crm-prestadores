@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import type { Database } from '@/types/database'
+import { getFullySelectedDistricts } from '@/lib/data/portugal-districts'
 
 export type TaskStatus = Database['public']['Enums']['task_status']
 export type OnboardingType = Database['public']['Enums']['onboarding_type']
@@ -13,14 +14,16 @@ export type OnboardingFilters = {
   ownerId?: string
   onboardingType?: OnboardingType
   entityType?: string
-  district?: string
+  counties?: string[]  // Multi-select filter for concelhos
   search?: string
 }
 
 // Obter todas as etapas com cards
 export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
+  const adminClient = createAdminClient()
+
   // Obter etapas
-  const { data: stages, error: stagesError } = await createAdminClient()
+  const { data: stages, error: stagesError } = await adminClient
     .from('stage_definitions')
     .select('*')
     .eq('is_active', true)
@@ -32,7 +35,7 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
   }
 
   // Obter cards com providers e tarefas
-  let cardsQuery = createAdminClient()
+  let cardsQuery = adminClient
     .from('onboarding_cards')
     .select(`
       *,
@@ -56,33 +59,96 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
     return { stages, cards: [] }
   }
 
+  // Obter mapa de serviços (UUID -> nome) para traduzir os IDs
+  const allServiceIds = new Set<string>()
+  for (const card of cards || []) {
+    const provider = card.provider as { services?: string[] | null } | null
+    if (provider?.services) {
+      for (const serviceId of provider.services) {
+        allServiceIds.add(serviceId)
+      }
+    }
+  }
+
+  // Buscar nomes dos serviços se houver IDs
+  let serviceNamesMap: Record<string, string> = {}
+  if (allServiceIds.size > 0) {
+    const { data: services } = await adminClient
+      .from('service_prices')
+      .select('id, service_name')
+      .in('id', Array.from(allServiceIds))
+
+    if (services) {
+      serviceNamesMap = Object.fromEntries(
+        services.map(s => [s.id, s.service_name])
+      )
+    }
+  }
+
+  // Traduzir UUIDs de serviços para nomes nos cards
+  const cardsWithServiceNames = (cards || []).map(card => {
+    const provider = card.provider as { services?: string[] | null } | null
+    if (provider?.services) {
+      return {
+        ...card,
+        provider: {
+          ...provider,
+          services: provider.services.map(id => serviceNamesMap[id] || id)
+        }
+      }
+    }
+    return card
+  })
+
   // Filtrar cards em memória (pesquisa, ownerId, entityType, district)
-  let filteredCards = cards || []
+  let filteredCards = cardsWithServiceNames
 
   if (filters.search) {
     const searchLower = filters.search.toLowerCase()
-    filteredCards = filteredCards.filter((card: { provider?: { name?: string; email?: string } }) =>
+    filteredCards = filteredCards.filter((card: { provider?: { name?: string; email?: string } | null }) =>
       card.provider?.name?.toLowerCase().includes(searchLower) ||
       card.provider?.email?.toLowerCase().includes(searchLower)
     )
   }
 
   if (filters.ownerId) {
-    filteredCards = filteredCards.filter((card: { provider?: { relationship_owner_id?: string } }) =>
+    filteredCards = filteredCards.filter((card: { provider?: { relationship_owner_id?: string } | null }) =>
       card.provider?.relationship_owner_id === filters.ownerId
     )
   }
 
   if (filters.entityType) {
-    filteredCards = filteredCards.filter((card: { provider?: { entity_type?: string } }) =>
+    filteredCards = filteredCards.filter((card: { provider?: { entity_type?: string } | null }) =>
       card.provider?.entity_type === filters.entityType
     )
   }
 
-  if (filters.district) {
-    filteredCards = filteredCards.filter((card: { provider?: { districts?: string[] } }) =>
-      card.provider?.districts?.includes(filters.district!)
-    )
+  // Filter by counties (concelhos) - check both 'counties' and 'districts' columns
+  // (candidaturas may only have district-level data, not individual counties)
+  if (filters.counties && filters.counties.length > 0) {
+    const fullySelectedDistricts = getFullySelectedDistricts(filters.counties)
+
+    filteredCards = filteredCards.filter((card: { provider?: { counties?: string[]; districts?: string[] } | null }) => {
+      // Check if provider has matching counties
+      const providerCounties = card.provider?.counties
+      const hasMatchingCounty = providerCounties &&
+        Array.isArray(providerCounties) &&
+        filters.counties!.some(county => providerCounties.includes(county))
+
+      if (hasMatchingCounty) return true
+
+      // Check if provider has matching districts (for candidaturas with only district-level data)
+      if (fullySelectedDistricts.length > 0) {
+        const providerDistricts = card.provider?.districts
+        const hasMatchingDistrict = providerDistricts &&
+          Array.isArray(providerDistricts) &&
+          fullySelectedDistricts.some(district => providerDistricts.includes(district))
+
+        if (hasMatchingDistrict) return true
+      }
+
+      return false
+    })
   }
 
   return { stages, cards: filteredCards }
