@@ -16,8 +16,10 @@ import {
   getCatalogMaterials,
   getCatalogClusters,
 } from '@/lib/service-catalog/actions'
+import { requirePageAccess } from '@/lib/permissions/guard'
 
 export default async function ConfiguracoesPage() {
+  await requirePageAccess('configuracoes')
   // Garantir que as configuracoes padrao existem
   await ensureDefaultSettings()
 

@@ -18,6 +18,7 @@ import {
   getAvailableBillingPeriods,
   type BillingFilters,
 } from '@/lib/billing/actions'
+import { requirePageAccess } from '@/lib/permissions/guard'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
@@ -56,6 +57,7 @@ export default async function FaturacaoPage({
 }: {
   searchParams: SearchParams
 }) {
+  await requirePageAccess('faturacao')
   const params = await searchParams
 
   const filters: BillingFilters = {

@@ -662,6 +662,39 @@ export type Database = {
           },
         ]
       }
+      pages: {
+        Row: {
+          created_at: string | null
+          display_order: number
+          id: string
+          is_active: boolean | null
+          key: string
+          name: string
+          path: string
+          section: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_order: number
+          id?: string
+          is_active?: boolean | null
+          key: string
+          name: string
+          path: string
+          section?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean | null
+          key?: string
+          name?: string
+          path?: string
+          section?: string | null
+        }
+        Relationships: []
+      }
       priorities: {
         Row: {
           baseline_onboarding_count: number | null
@@ -1429,6 +1462,75 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      role_permissions: {
+        Row: {
+          can_access: boolean | null
+          created_at: string | null
+          id: string
+          page_id: string
+          role_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          can_access?: boolean | null
+          created_at?: string | null
+          id?: string
+          page_id: string
+          role_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          can_access?: boolean | null
+          created_at?: string | null
+          id?: string
+          page_id?: string
+          role_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "role_permissions_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roles: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_system: boolean | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       service_mapping: {
         Row: {
@@ -2301,6 +2403,10 @@ export type Database = {
       }
     }
     Functions: {
+      can_user_access_page: {
+        Args: { p_page_key: string; p_user_id: string }
+        Returns: boolean
+      }
       get_provider_coverage_by_service: {
         Args: { period_months?: number }
         Returns: {
@@ -2314,6 +2420,10 @@ export type Database = {
           service: string
           taxonomy_service_id: string
         }[]
+      }
+      get_user_accessible_pages: {
+        Args: { p_user_id: string }
+        Returns: string[]
       }
       is_user_admin: { Args: { user_id: string }; Returns: boolean }
       is_user_approved: { Args: { user_id: string }; Returns: boolean }

@@ -28,6 +28,7 @@ import {
   getTrends,
   type KpiFilters as KpiFiltersType,
 } from '@/lib/kpis/actions'
+import { requirePageAccess } from '@/lib/permissions/guard'
 import type { Database } from '@/types/database'
 
 type OnboardingType = Database['public']['Enums']['onboarding_type']
@@ -39,6 +40,7 @@ export default async function KpisPage({
 }: {
   searchParams: SearchParams
 }) {
+  await requirePageAccess('kpis')
   const params = await searchParams
 
   const filters: KpiFiltersType = {

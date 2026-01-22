@@ -12,6 +12,7 @@ import {
   type OnboardingType,
 } from '@/lib/onboarding/actions'
 import { getAlertConfig } from '@/lib/settings/actions'
+import { requirePageAccess } from '@/lib/permissions/guard'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
@@ -49,6 +50,7 @@ export default async function OnboardingPage({
 }: {
   searchParams: SearchParams
 }) {
+  await requirePageAccess('onboarding')
   const params = await searchParams
 
   // Parse multi-select filter from comma-separated URL param

@@ -4,29 +4,10 @@ import { getUsers } from '@/lib/providers/actions'
 import { getDistinctServices, getDistinctDistricts } from '@/lib/candidaturas/actions'
 import { CreatePriorityDialog } from '@/components/priorities/create-priority-dialog'
 import { PriorityListAdmin } from '@/components/priorities/priority-list-admin'
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { requirePageAccess } from '@/lib/permissions/guard'
 
 export default async function PrioridadesPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
-  // Check if user is manager or admin
-  const { data: userProfile } = await supabase
-    .from('users')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
-  if (!userProfile || !userProfile.role || !['admin', 'manager'].includes(userProfile.role)) {
-    redirect('/prestadores')
-  }
+  await requirePageAccess('prioridades')
 
   // Fetch data in parallel
   const [priorities, users, services, districts] = await Promise.all([

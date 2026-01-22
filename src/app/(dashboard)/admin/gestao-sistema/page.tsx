@@ -1,7 +1,7 @@
 import { Header } from '@/components/layout/header'
-import { UsersTable } from '@/components/admin/users-table'
-import { UserFilters } from '@/components/admin/user-filters'
+import { AdminTabs } from '@/components/admin/admin-tabs'
 import { getUsers, isCurrentUserAdmin } from '@/lib/users/actions'
+import { getPermissionMatrix } from '@/lib/permissions/actions'
 import { redirect } from 'next/navigation'
 import type { UserApprovalStatus, UserRole } from '@/lib/auth/actions'
 
@@ -25,10 +25,13 @@ export default async function AdminUsersPage({
     role: params.role as UserRole | undefined,
   }
 
-  const users = await getUsers(filters)
+  // Buscar dados em paralelo
+  const [users, allUsers, permissionMatrix] = await Promise.all([
+    getUsers(filters),
+    getUsers(),
+    getPermissionMatrix(),
+  ])
 
-  // Contar por status
-  const allUsers = await getUsers()
   const counts = {
     total: allUsers.length,
     pending: allUsers.filter(u => u.approval_status === 'pending').length,
@@ -40,11 +43,14 @@ export default async function AdminUsersPage({
     <div className="flex flex-col h-full">
       <Header
         title="Gestão de Utilizadores"
-        description="Aprovar registos e gerir permissões"
+        description="Aprovar registos, gerir roles e permissões"
       />
-      <div className="flex-1 p-6 space-y-6 overflow-auto">
-        <UserFilters counts={counts} />
-        <UsersTable users={users} />
+      <div className="flex-1 p-6 overflow-auto">
+        <AdminTabs
+          users={users}
+          counts={counts}
+          permissionMatrix={permissionMatrix}
+        />
       </div>
     </div>
   )

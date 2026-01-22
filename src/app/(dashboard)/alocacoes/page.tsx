@@ -7,6 +7,7 @@ import { SyncAllocationDialog } from '@/components/sync/sync-allocation-dialog'
 import { getAllocationHistory, getAllocationStats, getAvailablePeriods } from '@/lib/allocations/actions'
 import type { AllocationHistoryFilters, AllocationStatsFilters } from '@/lib/allocations/actions'
 import { Skeleton } from '@/components/ui/skeleton'
+import { requirePageAccess } from '@/lib/permissions/guard'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
@@ -137,6 +138,7 @@ export default async function AlocacoesPage({
 }: {
   searchParams: SearchParams
 }) {
+  await requirePageAccess('alocacoes')
   const params = await searchParams
 
   // Extract all filter params

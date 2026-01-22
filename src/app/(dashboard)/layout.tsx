@@ -1,6 +1,7 @@
 import { Sidebar } from '@/components/layout/sidebar'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getUserAccessiblePages } from '@/lib/permissions/actions'
 
 export default async function DashboardLayout({
   children,
@@ -13,6 +14,7 @@ export default async function DashboardLayout({
   // Buscar perfil com role da tabela users
   let userData = null
   let pendingUsersCount = 0
+  let accessiblePages: string[] = []
 
   if (user) {
     const { data: profile } = await supabase
@@ -21,13 +23,16 @@ export default async function DashboardLayout({
       .eq('id', user.id)
       .single()
 
-    const typedProfile = profile as { name: string; role: 'admin' | 'user' } | null
+    const typedProfile = profile as { name: string; role: 'admin' | 'user' | 'manager' | 'relationship_manager' } | null
 
     userData = {
       name: typedProfile?.name || user.user_metadata?.name || user.email?.split('@')[0] || 'User',
       email: user.email || '',
       role: typedProfile?.role,
     }
+
+    // Buscar paginas acessiveis para o user
+    accessiblePages = await getUserAccessiblePages(user.id)
 
     // Se é admin, buscar contagem de pendentes
     if (typedProfile?.role === 'admin') {
@@ -43,7 +48,11 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex h-screen">
-      <Sidebar user={userData} pendingUsersCount={pendingUsersCount} />
+      <Sidebar
+        user={userData}
+        pendingUsersCount={pendingUsersCount}
+        accessiblePages={accessiblePages}
+      />
       <main className="flex-1 overflow-auto bg-background">
         {children}
       </main>

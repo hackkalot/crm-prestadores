@@ -453,13 +453,123 @@ O sistema processa dados pessoais de cidadãos da União Europeia, pelo que est�
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Níveis de Acesso na Aplicação
+### Sistema de Permissões Dinâmico
+
+O CRM implementa um sistema de **permissões dinâmico** baseado em três tabelas na base de dados:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                ARQUITECTURA DE PERMISSÕES                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│    ┌─────────┐         ┌─────────────────┐         ┌─────────┐  │
+│    │  roles  │────────▶│ role_permissions│◀────────│  pages  │  │
+│    └─────────┘         └─────────────────┘         └─────────┘  │
+│                               │                                 │
+│                               ▼                                 │
+│                    ┌─────────────────┐                          │
+│                    │   can_access    │                          │
+│                    │  (true/false)   │                          │
+│                    └─────────────────┘                          │
+│                                                                 │
+│  Fluxo de verificação:                                          │
+│  1. Utilizador tenta aceder a /candidaturas                     │
+│  2. Guard verifica role do utilizador                           │
+│  3. Consulta role_permissions para page_key='candidaturas'      │
+│  4. Se can_access=true → permite; senão → redireciona           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Tabelas do Sistema de Permissões
+
+| Tabela | Descrição |
+|--------|-----------|
+| `roles` | Roles disponíveis (admin, user, manager, relationship_manager) |
+| `pages` | Páginas/rotas do sistema com key única e secção |
+| `role_permissions` | Matriz role × página com flag `can_access` |
+
+#### Roles e Permissões por Defeito
+
+| Role | Descrição | Páginas Bloqueadas |
+|------|-----------|-------------------|
+| **admin** | Acesso total ao sistema | Nenhuma |
+| **manager** | Gestor com acesso a prioridades | `admin_utilizadores` |
+| **relationship_manager** | RM para gestão de prestadores | `admin_utilizadores`, `prioridades` |
+| **user** | Utilizador base | `admin_utilizadores`, `prioridades` |
+
+#### Gestão de Permissões (UI Admin)
+
+Os administradores podem gerir permissões através da página `/admin/utilizadores`:
+
+- **Tab Roles**: Criar, editar e apagar roles (excepto roles de sistema)
+- **Tab Acessos**: Matriz visual para toggle de permissões por página/role
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  MATRIZ DE PERMISSÕES (UI Admin)                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Página           │ admin │ manager │ rm    │ user  │           │
+│  ─────────────────┼───────┼─────────┼───────┼───────┤           │
+│  Candidaturas     │  ✅   │   ✅    │  ✅   │  ✅   │           │
+│  Onboarding       │  ✅   │   ✅    │  ✅   │  ✅   │           │
+│  Prioridades      │  ✅   │   ✅    │  ❌   │  ❌   │           │
+│  Admin Utilizadores│ ✅   │   ❌    │  ❌   │  ❌   │           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Implementação Técnica
+
+**Guard em Server Components:**
+
+```typescript
+// src/lib/permissions/guard.ts
+export async function requirePageAccess(pageKey: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/login')
+  }
+
+  const canAccess = await canCurrentUserAccessPage(pageKey)
+  if (!canAccess) {
+    redirect('/sem-permissao')
+  }
+}
+```
+
+**Uso em páginas:**
+
+```typescript
+// src/app/(dashboard)/prioridades/page.tsx
+export default async function PrioridadesPage() {
+  await requirePageAccess('prioridades')
+  // ... resto da página
+}
+```
+
+#### RLS nas Tabelas de Permissões
+
+As tabelas de permissões estão protegidas por RLS:
+
+- **Leitura**: Utilizadores aprovados podem ver roles, pages e permissions
+- **Escrita**: Apenas administradores podem modificar
+
+Ver detalhes em [03-BASE-DADOS.md](./03-BASE-DADOS.md#rls-para-tabelas-de-permissões).
+
+---
+
+### Níveis de Acesso na Aplicação (Resumo)
 
 | Role | Permissões | Implementação |
 |------|------------|---------------|
-| **Admin** | Acesso total, gestão de utilizadores | Service Role Key (server-side) |
-| **Manager** | CRUD completo em prestadores | RLS policies + authenticated |
-| **Viewer** | Apenas leitura | RLS policies SELECT only |
+| **Admin** | Acesso total, gestão de utilizadores e permissões | `role_permissions` + Service Role Key |
+| **Manager** | Gestão completa excepto admin | `role_permissions` + RLS |
+| **RM** | Gestão de prestadores e onboarding | `role_permissions` + RLS |
+| **User** | Acesso básico | `role_permissions` + RLS |
 
 ---
 

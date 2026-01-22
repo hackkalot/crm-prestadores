@@ -22,8 +22,10 @@ import {
   Map,
   LayoutGrid,
 } from 'lucide-react'
+import { requirePageAccess } from '@/lib/permissions/guard'
 
 export default async function RedePage() {
+  await requirePageAccess('rede')
   const [stats, coverage, gaps, municipalityCoverage, municipalityGaps] = await Promise.all([
     getNetworkStats(),
     getNetworkCoverage(),

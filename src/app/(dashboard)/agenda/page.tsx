@@ -12,6 +12,7 @@ import {
   type AgendaView
 } from '@/lib/agenda/actions'
 import { format } from 'date-fns'
+import { requirePageAccess } from '@/lib/permissions/guard'
 
 interface AgendaPageProps {
   searchParams: Promise<{
@@ -21,6 +22,7 @@ interface AgendaPageProps {
 }
 
 export default async function AgendaPage({ searchParams }: AgendaPageProps) {
+  await requirePageAccess('agenda')
   const params = await searchParams
 
   const currentView = (params.view as AgendaView) || 'week'

@@ -17,6 +17,7 @@ import {
   getDistinctStatuses,
   type ServiceRequestFilters,
 } from '@/lib/service-requests/actions'
+import { requirePageAccess } from '@/lib/permissions/guard'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
@@ -68,6 +69,7 @@ export default async function PedidosPage({
 }: {
   searchParams: SearchParams
 }) {
+  await requirePageAccess('pedidos')
   const params = await searchParams
 
   const view = (params.view as string) || 'table'

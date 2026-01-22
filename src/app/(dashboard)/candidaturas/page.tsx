@@ -13,6 +13,7 @@ import {
   getServicePricesForSelect,
   type CandidaturaFilters,
 } from '@/lib/candidaturas/actions'
+import { requirePageAccess } from '@/lib/permissions/guard'
 import type { Database } from '@/types/database'
 
 type ProviderStatus = Database['public']['Enums']['provider_status']
@@ -48,6 +49,7 @@ export default async function CandidaturasPage({
 }: {
   searchParams: SearchParams
 }) {
+  await requirePageAccess('candidaturas')
   const params = await searchParams
 
   const viewMode = (params.view as 'list' | 'grid') || 'list'

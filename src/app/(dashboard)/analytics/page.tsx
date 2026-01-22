@@ -44,6 +44,7 @@ import {
   getCoverageGaps,
   getAnalyticsFilterOptions,
 } from '@/lib/analytics/actions'
+import { requirePageAccess } from '@/lib/permissions/guard'
 import type { AnalyticsFilters as AnalyticsFiltersType, RankingMetric } from '@/lib/analytics/types'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -53,6 +54,7 @@ export default async function AnalyticsPage({
 }: {
   searchParams: SearchParams
 }) {
+  await requirePageAccess('analytics')
   const params = await searchParams
 
   const filters: AnalyticsFiltersType = {

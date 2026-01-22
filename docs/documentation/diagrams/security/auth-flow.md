@@ -31,7 +31,7 @@ flowchart TB
     end
 
     subgraph admin_area ["👑 Área Admin"]
-        users_page["Gestão Utilizadores<br/>/admin/utilizadores"]
+        users_page["Gestão de Sistema<br/>/admin/gestao-sistema"]
         approve["Aprovar/Rejeitar"]
     end
 
@@ -146,41 +146,142 @@ stateDiagram-v2
 
 ---
 
-## Roles e Permissões
+## Sistema de Permissões Dinâmico
+
+O sistema usa permissões dinâmicas geridas em base de dados através de três tabelas: `roles`, `pages` e `role_permissions`.
+
+```mermaid
+flowchart TB
+    subgraph tables ["🗄️ Tabelas de Permissões"]
+        roles["roles<br/>admin, manager, user, rm"]
+        pages["pages<br/>candidaturas, onboarding..."]
+        perms["role_permissions<br/>can_access: true/false"]
+    end
+
+    subgraph flow ["🔄 Fluxo de Verificação"]
+        user_req["Utilizador acede<br/>a /prioridades"]
+        get_role["Obter role do<br/>utilizador"]
+        check_perm["Consultar<br/>role_permissions"]
+        decision{"can_access?"}
+        allow["✅ Permite<br/>acesso"]
+        deny["❌ Redireciona<br/>/sem-permissao"]
+    end
+
+    roles --> perms
+    pages --> perms
+
+    user_req --> get_role
+    get_role --> check_perm
+    check_perm --> decision
+    decision -->|"true"| allow
+    decision -->|"false"| deny
+
+    classDef tableStyle fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    classDef flowStyle fill:#fff3e0,stroke:#ef6c00,stroke-width:1px
+    classDef allowStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef denyStyle fill:#ffebee,stroke:#c62828,stroke-width:2px
+
+    class roles,pages,perms tableStyle
+    class user_req,get_role,check_perm,decision flowStyle
+    class allow allowStyle
+    class deny denyStyle
+```
+
+---
+
+## Roles e Permissões por Página
 
 ```mermaid
 flowchart TB
     subgraph roles ["👥 Roles do Sistema"]
         admin["👑 Admin"]
+        manager["📊 Manager"]
         rm["👔 Relationship Manager"]
+        user["👤 User"]
     end
 
-    subgraph permissions ["🔑 Permissões"]
-        p1["Gestão de Utilizadores"]
-        p2["Configurações Sistema"]
-        p3["CRUD Prestadores"]
-        p4["Gestão Onboarding"]
-        p5["Ver Dashboards"]
-        p6["Apenas Leitura"]
+    subgraph pages_onb ["📋 Onboarding"]
+        p_cand["Candidaturas"]
+        p_onb["Onboarding"]
+        p_kpis["KPIs"]
+        p_agenda["Agenda"]
     end
 
-    admin --> p1
-    admin --> p2
-    admin --> p3
-    admin --> p4
-    admin --> p5
+    subgraph pages_rede ["🌐 Rede"]
+        p_prest["Prestadores"]
+        p_rede["Mapa Rede"]
+        p_ped["Pedidos"]
+    end
 
-    rm --> p3
-    rm --> p4
-    rm --> p5
+    subgraph pages_admin ["🔒 Admin"]
+        p_prio["Prioridades"]
+        p_users["Gestão de Sistema"]
+    end
+
+    admin --> p_cand & p_onb & p_kpis & p_agenda
+    admin --> p_prest & p_rede & p_ped
+    admin --> p_prio & p_users
+
+    manager --> p_cand & p_onb & p_kpis & p_agenda
+    manager --> p_prest & p_rede & p_ped
+    manager --> p_prio
+
+    rm --> p_cand & p_onb & p_kpis & p_agenda
+    rm --> p_prest & p_rede & p_ped
+
+    user --> p_cand & p_onb & p_kpis & p_agenda
+    user --> p_prest & p_rede & p_ped
 
     classDef adminStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef managerStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
     classDef rmStyle fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
     classDef userStyle fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef pageStyle fill:#f5f5f5,stroke:#9e9e9e,stroke-width:1px
+    classDef adminPageStyle fill:#ffebee,stroke:#c62828,stroke-width:1px
 
     class admin adminStyle
+    class manager managerStyle
     class rm rmStyle
     class user userStyle
+    class p_cand,p_onb,p_kpis,p_agenda,p_prest,p_rede,p_ped pageStyle
+    class p_prio,p_users adminPageStyle
+```
+
+---
+
+## Gestão de Permissões (UI Admin)
+
+```mermaid
+flowchart LR
+    subgraph admin_page ["🔧 /admin/gestao-sistema"]
+        tab1["Tab: Utilizadores<br/>Aprovar/Rejeitar"]
+        tab2["Tab: Roles<br/>CRUD de roles"]
+        tab3["Tab: Acessos<br/>Matriz permissões"]
+    end
+
+    subgraph actions ["⚙️ Server Actions"]
+        a1["approveUser()"]
+        a2["createRole()<br/>updateRole()<br/>deleteRole()"]
+        a3["updatePermission()<br/>bulkUpdatePermissions()"]
+    end
+
+    subgraph db ["🗄️ Base de Dados"]
+        t1["users"]
+        t2["roles"]
+        t3["role_permissions"]
+    end
+
+    tab1 --> a1 --> t1
+    tab2 --> a2 --> t2
+    tab3 --> a3 --> t3
+
+    classDef tabStyle fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    classDef actionStyle fill:#fff3e0,stroke:#ef6c00,stroke-width:1px
+    classDef dbStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px
+
+    class tab1,tab2,tab3 tabStyle
+    class a1,a2,a3 actionStyle
+    class t1,t2,t3 dbStyle
 ```
 
 ---
@@ -227,8 +328,19 @@ sequenceDiagram
             M-->>B: Redirect /acesso-negado
             B-->>U: "O seu acesso foi rejeitado"
         else Status = approved
-            M-->>B: Permite acesso
-            B-->>U: Dashboard carregado ✅
+            M-->>B: Permite acesso (middleware OK)
+            B->>API: GET /prioridades
+            API->>API: requirePageAccess('prioridades')
+            API->>DB: SELECT can_access FROM role_permissions
+            DB-->>API: { can_access: true/false }
+
+            alt can_access = false
+                API-->>B: Redirect /sem-permissao
+                B-->>U: "Não tem permissão para esta página"
+            else can_access = true
+                API-->>B: Renderiza página
+                B-->>U: Página carregada ✅
+            end
         end
     end
 ```
@@ -287,6 +399,7 @@ flowchart TB
         jwt["JWT Validation"]
         approval["Verificação Aprovação"]
         role["Verificação Role"]
+        guard["Page Guard<br/>(role_permissions)"]
     end
 
     subgraph layer4 ["4️⃣ Database Layer"]
@@ -306,7 +419,7 @@ flowchart TB
 
     class https,tls,ddos l1Style
     class middleware,csrf l2Style
-    class jwt,approval,role l3Style
+    class jwt,approval,role,guard l3Style
     class rls,encrypt l4Style
 ```
 
@@ -326,11 +439,12 @@ flowchart TB
 
 | Ficheiro | Função |
 |----------|--------|
-| `middleware.ts` | Verificação de sessão e aprovação |
+| `lib/supabase/middleware.ts` | Verificação de sessão (JWT) |
+| `lib/permissions/guard.ts` | Verificação de permissões por página |
+| `lib/permissions/actions.ts` | CRUD de roles e permissões |
 | `app/(auth)/login/page.tsx` | Página de login |
 | `app/(auth)/registar/page.tsx` | Página de registo |
-| `app/admin/utilizadores/page.tsx` | Gestão de utilizadores |
-| `lib/auth/actions.ts` | Server actions de autenticação |
+| `app/admin/gestao-sistema/page.tsx` | Gestão de utilizadores, roles e permissões |
 
 ---
 

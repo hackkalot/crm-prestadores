@@ -49,15 +49,64 @@ Este documento descreve os fluxos de dados, estados e regras de negócio do CRM 
 
 ## Fluxo de Utilizadores e Autenticação
 
+### Sistema de Permissões Dinâmico
+
+O CRM implementa um sistema de **permissões dinâmico** gerido em base de dados. As permissões são definidas através de três tabelas:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              ARQUITECTURA DE PERMISSÕES                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│    ┌─────────┐         ┌─────────────────┐         ┌─────────┐  │
+│    │  roles  │────────▶│ role_permissions│◀────────│  pages  │  │
+│    └─────────┘         └─────────────────┘         └─────────┘  │
+│                               │                                 │
+│                    Matriz: role × página                        │
+│                    can_access = true/false                      │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ### Roles do Sistema
 
-O sistema tem 3 níveis de acesso:
+O sistema tem 4 níveis de acesso, geridos dinamicamente:
 
-| Role | Permissões | Descrição |
-|------|------------|-----------|
-| `admin` | Todas | Gestão completa do sistema |
-| `relationship_manager` | Gestão de prestadores | RM - responsável por prestadores |
-| `user` | Leitura | Acesso básico de consulta |
+| Role | Descrição | Páginas Bloqueadas |
+|------|-----------|-------------------|
+| `admin` | Gestão completa do sistema | Nenhuma |
+| `manager` | Gestor com acesso a prioridades | `admin_gestao_sistema` |
+| `relationship_manager` | RM - responsável por prestadores | `admin_gestao_sistema`, `prioridades` |
+| `user` | Acesso básico de consulta | `admin_gestao_sistema`, `prioridades` |
+
+### Gestão de Roles e Permissões
+
+Os administradores podem gerir permissões através da página `/admin/gestao-sistema`:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    PAINEL ADMIN (/admin/utilizadores)           │
+├─────────────────────────────────────────────────────────────────┤
+│  [Utilizadores]  [Roles]  [Acessos]                             │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Tab Utilizadores:** Aprovar/rejeitar utilizadores, atribuir roles
+**Tab Roles:** Criar, editar e apagar roles (excepto roles de sistema)
+**Tab Acessos:** Matriz visual para toggle de permissões por página/role
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  MATRIZ DE PERMISSÕES                                            │
+├─────────────────────────────────────────────────────────────────┤
+│  Página              │ admin │ manager │ rm    │ user  │         │
+│  ────────────────────┼───────┼─────────┼───────┼───────┤         │
+│  Candidaturas        │  ✅   │   ✅    │  ✅   │  ✅   │         │
+│  Onboarding          │  ✅   │   ✅    │  ✅   │  ✅   │         │
+│  Prioridades         │  ✅   │   ✅    │  ❌   │  ❌   │         │
+│  Gestão de Sistema   │  ✅   │   ❌    │  ❌   │  ❌   │         │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ### Fluxo de Registo e Aprovação
 
@@ -84,39 +133,88 @@ type ApprovalStatus = 'pending' | 'approved' | 'rejected'
 | Estado | Acesso | Acções Disponíveis |
 |--------|--------|-------------------|
 | `pending` | Nenhum | Aguarda aprovação |
-| `approved` | Completo | Acesso ao sistema |
+| `approved` | Conforme role | Acesso às páginas permitidas pelo role |
 | `rejected` | Nenhum | Conta bloqueada |
 
-### Fluxo de Aprovação (Admin)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    PAINEL ADMIN (/admin/utilizadores)           │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌───────────┬────────────────┬───────────┬────────────────────────┐
-│   Nome    │     Email      │   Role    │        Acções          │
-├───────────┼────────────────┼───────────┼────────────────────────┤
-│ João Silva│ joao@email.com │ user      │ [Aprovar] [Rejeitar]   │
-│ Maria...  │ maria@email.com│ RM        │ [Aprovar] [Rejeitar]   │
-└───────────┴────────────────┴───────────┴────────────────────────┘
-```
-
-### Autenticação
+### Fluxo de Autorização (Por Página)
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│     Login       │───>│  Verificar      │───>│   Dashboard     │
-│   (/login)      │    │  Aprovação      │    │   (se aprovado) │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                               │
-                               │ Se pendente/rejeitado
-                               ▼
-                       ┌─────────────────┐
-                       │  Erro: Aguarda  │
-                       │    aprovação    │
-                       └─────────────────┘
+│     Login       │───>│   Middleware    │───>│     Guard       │
+│   (/login)      │    │ (verifica JWT)  │    │ (verifica role) │
+└─────────────────┘    └─────────────────┘    └────────┬────────┘
+                                                       │
+                               ┌───────────────────────┴───────────────────────┐
+                               │                                               │
+                               ▼                                               ▼
+                       ┌─────────────────┐                           ┌─────────────────┐
+                       │  Tem permissão  │                           │  Sem permissão  │
+                       │  ✅ Acede       │                           │  ❌ Redireciona │
+                       └─────────────────┘                           └─────────────────┘
+```
+
+### Verificação de Permissões
+
+```typescript
+// Guard usado em cada página protegida
+// src/lib/permissions/guard.ts
+
+export async function requirePageAccess(pageKey: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/login')
+  }
+
+  const canAccess = await canCurrentUserAccessPage(pageKey)
+  if (!canAccess) {
+    redirect('/sem-permissao')
+  }
+}
+
+// Uso em páginas:
+export default async function PrioridadesPage() {
+  await requirePageAccess('prioridades')
+  // ... resto da página
+}
+```
+
+### Navegação Dinâmica (Sidebar)
+
+A sidebar adapta-se às permissões do utilizador:
+
+- Páginas sem acesso **não aparecem** na navegação
+- Secções vazias são **automaticamente escondidas**
+- Estado colapsado das secções é **persistido em localStorage**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  SIDEBAR (User com role 'user')                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ▼ Onboarding                                                   │
+│    - Candidaturas                                               │
+│    - Onboarding                                                 │
+│    - KPIs                                                       │
+│    - Agenda                                                     │
+│                                                                 │
+│  ▼ Rede                                                         │
+│    - Prestadores                                                │
+│    - Mapa de Cobertura                                          │
+│    - KPIs Operacionais                                          │
+│    - Pedidos                                                    │
+│    - ...                                                        │
+│                                                                 │
+│  ▼ Gestão                       ← Secção com Prioridades/Analyt.│
+│    - (conteúdo varia conforme role)                             │
+│                                                                 │
+│  Configurações                  ← Standalone, sem secção        │
+│                                                                 │
+│  (Prioridades não aparece)      ← Bloqueado para role 'user'    │
+│  (Gestão de Sistema não aparece)← Bloqueado para role 'user'    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---

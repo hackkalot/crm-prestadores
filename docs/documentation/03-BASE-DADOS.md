@@ -21,6 +21,9 @@
   - [provider_prices](#14-provider_prices---preços-acordados-com-cada-prestador)
   - [alerts](#15-alerts---alertas-e-notificações)
   - [settings](#16-settings---configurações-do-sistema)
+  - [roles](#19-roles---roles-dinâmicos-para-permissões)
+  - [pages](#20-pages---páginas-do-sistema-para-controlo-de-acesso)
+  - [role_permissions](#21-role_permissions---matriz-de-permissões-role-página)
 
 ---
 
@@ -765,9 +768,213 @@ INSERT INTO stage_definitions (stage_number, name, display_order) VALUES
 
 ---
 
+### 19. `roles` - Roles dinâmicos para permissões
+
+Sistema de roles dinâmicos que permite gerir permissões por página.
+
+```sql
+CREATE TABLE roles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  name VARCHAR(100) UNIQUE NOT NULL,   -- Nome do role (ex: 'admin', 'user')
+  description TEXT,                     -- Descrição do role
+  is_system BOOLEAN DEFAULT FALSE,      -- Roles de sistema não podem ser apagados
+
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices
+CREATE INDEX idx_roles_name ON roles(name);
+
+-- Dados iniciais
+INSERT INTO roles (name, description, is_system) VALUES
+  ('admin', 'Administrador com acesso total ao sistema', TRUE),
+  ('user', 'Utilizador base com acesso limitado', TRUE),
+  ('manager', 'Gestor com acesso a prioridades e gestão', TRUE),
+  ('relationship_manager', 'Relationship Manager para gestão de prestadores', TRUE);
+```
+
+---
+
+### 20. `pages` - Páginas do sistema para controlo de acesso
+
+Lista de todas as páginas/rotas disponíveis para controlo de permissões.
+
+```sql
+CREATE TABLE pages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  key VARCHAR(100) UNIQUE NOT NULL,    -- Identificador único (ex: 'candidaturas')
+  name VARCHAR(255) NOT NULL,          -- Nome de exibição
+  path VARCHAR(255) NOT NULL,          -- Caminho URL
+  section VARCHAR(100),                -- Secção para agrupamento (null = standalone)
+  display_order INTEGER NOT NULL,      -- Ordem na navegação
+  is_active BOOLEAN DEFAULT TRUE,
+
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices
+CREATE INDEX idx_pages_section ON pages(section);
+CREATE INDEX idx_pages_key ON pages(key);
+
+-- Dados iniciais (por secção)
+INSERT INTO pages (key, name, path, section, display_order) VALUES
+  -- Secção Onboarding
+  ('candidaturas', 'Candidaturas', '/candidaturas', 'onboarding', 1),
+  ('onboarding', 'Onboarding', '/onboarding', 'onboarding', 2),
+  ('kpis', 'KPIs', '/kpis', 'onboarding', 3),
+  ('agenda', 'Agenda', '/agenda', 'onboarding', 4),
+  -- Secção Rede
+  ('prestadores', 'Prestadores', '/prestadores', 'rede', 10),
+  ('rede', 'Rede', '/rede', 'rede', 11),
+  ('kpis_operacionais', 'KPIs Operacionais', '/kpis-operacionais', 'rede', 12),
+  ('pedidos', 'Pedidos', '/pedidos', 'rede', 13),
+  ('alocacoes', 'Alocações', '/alocacoes', 'rede', 14),
+  ('faturacao', 'Facturação', '/faturacao', 'rede', 15),
+  ('reports', 'Reports', '/reports', 'rede', 16),
+  -- Secção Gestão
+  ('prioridades', 'Prioridades', '/prioridades', 'gestao', 20),
+  ('analytics', 'Analytics', '/analytics', 'gestao', 21),
+  -- Standalone
+  ('configuracoes', 'Configurações', '/configuracoes', NULL, 30),
+  -- Secção Admin
+  ('admin_gestao_sistema', 'Gestão de Sistema', '/admin/gestao-sistema', 'admin', 40);
+```
+
+---
+
+### 21. `role_permissions` - Matriz de permissões role-página
+
+Matriz que define que roles podem aceder a que páginas.
+
+```sql
+CREATE TABLE role_permissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+  page_id UUID NOT NULL REFERENCES pages(id) ON DELETE CASCADE,
+  can_access BOOLEAN DEFAULT FALSE,
+
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+
+  UNIQUE(role_id, page_id)  -- Um role só pode ter uma permissão por página
+);
+
+-- Índices
+CREATE INDEX idx_role_permissions_role ON role_permissions(role_id);
+CREATE INDEX idx_role_permissions_page ON role_permissions(page_id);
+```
+
+#### Permissões por Role (por defeito)
+
+| Role | Páginas com Acesso | Páginas Bloqueadas |
+|------|-------------------|-------------------|
+| `admin` | Todas | Nenhuma |
+| `manager` | Todas excepto admin | `admin_utilizadores` |
+| `relationship_manager` | Maioria | `admin_utilizadores`, `prioridades` |
+| `user` | Maioria | `admin_utilizadores`, `prioridades` |
+
+---
+
+### Funções de Permissões
+
+Funções PostgreSQL para verificação de acesso:
+
+```sql
+-- Verificar se utilizador pode aceder a uma página
+CREATE OR REPLACE FUNCTION can_user_access_page(p_user_id UUID, p_page_key TEXT)
+RETURNS BOOLEAN AS $$
+DECLARE
+  v_user_role_name TEXT;
+  v_has_access BOOLEAN;
+BEGIN
+  -- Obter role do utilizador
+  SELECT role::text INTO v_user_role_name
+  FROM users
+  WHERE id = p_user_id AND approval_status = 'approved';
+
+  IF v_user_role_name IS NULL THEN
+    RETURN FALSE;
+  END IF;
+
+  -- Verificar permissão na matriz
+  SELECT rp.can_access INTO v_has_access
+  FROM role_permissions rp
+  JOIN roles r ON r.id = rp.role_id
+  JOIN pages p ON p.id = rp.page_id
+  WHERE r.name = v_user_role_name AND p.key = p_page_key;
+
+  RETURN COALESCE(v_has_access, FALSE);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Obter todas as páginas acessíveis por um utilizador
+CREATE OR REPLACE FUNCTION get_user_accessible_pages(p_user_id UUID)
+RETURNS TEXT[] AS $$
+DECLARE
+  v_user_role_name TEXT;
+  v_pages TEXT[];
+BEGIN
+  SELECT role::text INTO v_user_role_name
+  FROM users
+  WHERE id = p_user_id AND approval_status = 'approved';
+
+  IF v_user_role_name IS NULL THEN
+    RETURN ARRAY[]::TEXT[];
+  END IF;
+
+  SELECT ARRAY_AGG(p.key ORDER BY p.display_order) INTO v_pages
+  FROM role_permissions rp
+  JOIN roles r ON r.id = rp.role_id
+  JOIN pages p ON p.id = rp.page_id
+  WHERE r.name = v_user_role_name AND rp.can_access = TRUE AND p.is_active = TRUE;
+
+  RETURN COALESCE(v_pages, ARRAY[]::TEXT[]);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
+
+---
+
+### RLS para Tabelas de Permissões
+
+```sql
+-- Activar RLS
+ALTER TABLE roles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE role_permissions ENABLE ROW LEVEL SECURITY;
+
+-- Roles: utilizadores aprovados podem ler, apenas admins podem modificar
+CREATE POLICY "Approved users can view roles" ON roles
+  FOR SELECT TO authenticated USING (public.is_user_approved(auth.uid()));
+
+CREATE POLICY "Admins can manage roles" ON roles
+  FOR ALL TO authenticated USING (public.is_user_admin(auth.uid()));
+
+-- Pages: utilizadores aprovados podem ler, apenas admins podem modificar
+CREATE POLICY "Approved users can view pages" ON pages
+  FOR SELECT TO authenticated USING (public.is_user_approved(auth.uid()));
+
+CREATE POLICY "Admins can manage pages" ON pages
+  FOR ALL TO authenticated USING (public.is_user_admin(auth.uid()));
+
+-- Role permissions: utilizadores aprovados podem ler, apenas admins podem modificar
+CREATE POLICY "Approved users can view permissions" ON role_permissions
+  FOR SELECT TO authenticated USING (public.is_user_approved(auth.uid()));
+
+CREATE POLICY "Admins can manage permissions" ON role_permissions
+  FOR ALL TO authenticated USING (public.is_user_admin(auth.uid()));
+```
+
+---
+
 ## Notas de Implementação
 
 1. **Row Level Security (RLS)**: Ativar no Supabase para controlar acesso por utilizador
 2. **Realtime**: Ativar subscriptions nas tabelas `onboarding_cards`, `onboarding_tasks`, `alerts`
 3. **Storage**: Bucket para documentos dos prestadores (comprovativos, contratos, etc.)
 4. **Edge Functions**: Para webhook do HubSpot e cálculo de alertas
+5. **Permissões Dinâmicas**: Sistema de roles/pages/role_permissions para controlo de acesso flexível

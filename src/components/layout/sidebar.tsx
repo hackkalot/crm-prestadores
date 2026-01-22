@@ -1,12 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { cn } from '@/lib/utils'
 import { logout } from '@/lib/auth/actions'
-import { Badge } from '@/components/ui/badge'
-import { getOriginContext } from '@/hooks/use-navigation-state'
 import { useMounted } from '@/hooks/use-mounted'
+import { SidebarSection, StandaloneLink, type NavItem } from './sidebar-section'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +20,6 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  Network,
   Shield,
   Target,
   FileText,
@@ -31,28 +27,59 @@ import {
   GitBranch,
   ChevronUp,
   TrendingUp,
+  FileBarChart,
+  Map,
 } from 'lucide-react'
 
-const navigation = [
-  { name: 'Candidaturas', href: '/candidaturas', icon: Users, contextTab: 'candidatura', originKey: 'candidaturas' },
-  { name: 'Onboarding', href: '/onboarding', icon: Kanban, contextTab: 'onboarding', originKey: 'onboarding' },
-  { name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil', originKey: 'prestadores' },
-  { name: 'Pedidos', href: '/pedidos', icon: FileText, originKey: 'pedidos' },
-  { name: 'Alocações', href: '/alocacoes', icon: GitBranch, originKey: 'alocacoes' },
-  { name: 'Faturação', href: '/faturacao', icon: Receipt, originKey: 'faturacao' },
-  { name: 'Rede', href: '/rede', icon: Network },
-  { name: 'Agenda', href: '/agenda', icon: Calendar },
-  { name: 'KPIs', href: '/kpis', icon: BarChart3 },
-  { name: 'Analytics', href: '/analytics', icon: TrendingUp },
-  { name: 'Configurações', href: '/configuracoes', icon: Settings },
+// Define sections with their items
+const SIDEBAR_SECTIONS: Array<{
+  key: string
+  label: string
+  items: NavItem[]
+}> = [
+  {
+    key: 'onboarding',
+    label: 'Onboarding',
+    items: [
+      { key: 'candidaturas', name: 'Candidaturas', href: '/candidaturas', icon: Users, contextTab: 'candidatura', originKey: 'candidaturas' },
+      { key: 'onboarding', name: 'Onboarding', href: '/onboarding', icon: Kanban, contextTab: 'onboarding', originKey: 'onboarding' },
+      { key: 'kpis', name: "KPI's", href: '/kpis', icon: BarChart3 },
+      { key: 'agenda', name: 'Agenda', href: '/agenda', icon: Calendar },
+    ],
+  },
+  {
+    key: 'rede',
+    label: 'Rede',
+    items: [
+      { key: 'prestadores', name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil', originKey: 'prestadores' },
+      { key: 'rede', name: 'Rede', href: '/rede', icon: Map },
+      { key: 'kpis_operacionais', name: "KPI's Operacionais", href: '/kpis-operacionais', icon: TrendingUp },
+      { key: 'pedidos', name: 'Pedidos', href: '/pedidos', icon: FileText, originKey: 'pedidos' },
+      { key: 'alocacoes', name: 'Alocações', href: '/alocacoes', icon: GitBranch, originKey: 'alocacoes' },
+      { key: 'faturacao', name: 'Faturação', href: '/faturacao', icon: Receipt, originKey: 'faturacao' },
+      { key: 'reports', name: 'Reports', href: '/reports', icon: FileBarChart },
+    ],
+  },
+  {
+    key: 'gestao',
+    label: 'Gestão',
+    items: [
+      { key: 'analytics', name: 'Analytics', href: '/analytics', icon: BarChart3 },
+      { key: 'prioridades', name: 'Prioridades', href: '/prioridades', icon: Target },
+    ],
+  },
+  {
+    key: 'admin',
+    label: 'Admin',
+    items: [
+      { key: 'admin_utilizadores', name: 'Gestão de Sistema', href: '/admin/gestao-sistema', icon: Shield },
+    ],
+  },
 ]
 
-const managerNavigation = [
-  { name: 'Prioridades', href: '/prioridades', icon: Target },
-]
-
-const adminNavigation = [
-  { name: 'Utilizadores', href: '/admin/utilizadores', icon: Shield },
+// Standalone items (no section)
+const STANDALONE_ITEMS: NavItem[] = [
+  { key: 'configuracoes', name: 'Configurações', href: '/configuracoes', icon: Settings },
 ]
 
 interface SidebarProps {
@@ -62,22 +89,27 @@ interface SidebarProps {
     role?: 'admin' | 'user' | 'manager' | 'relationship_manager'
   } | null
   pendingUsersCount?: number
+  accessiblePages?: string[]
 }
 
-export function Sidebar({ user, pendingUsersCount = 0 }: SidebarProps) {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const currentTab = searchParams.get('tab')
-  const isAdmin = user?.role === 'admin'
-  const isManager = user?.role === 'manager' || user?.role === 'admin'
+export function Sidebar({ user, pendingUsersCount = 0, accessiblePages = [] }: SidebarProps) {
   const isMounted = useMounted()
 
-  // Check if we're on a detail page (provider or pedido)
-  const isProviderPage = pathname.startsWith('/providers/')
-  const isPedidoPage = pathname.startsWith('/pedidos/') && pathname !== '/pedidos'
-
-  // Get origin context from session storage (only on client)
-  const originContext = isMounted ? getOriginContext() : null
+  // Add badge to admin_utilizadores if there are pending users
+  const sectionsWithBadges = SIDEBAR_SECTIONS.map(section => {
+    if (section.key === 'admin') {
+      return {
+        ...section,
+        items: section.items.map(item => {
+          if (item.key === 'admin_utilizadores' && pendingUsersCount > 0) {
+            return { ...item, badge: pendingUsersCount }
+          }
+          return item
+        }),
+      }
+    }
+    return section
+  })
 
   return (
     <div className="flex h-full w-64 flex-col bg-card border-r">
@@ -92,98 +124,29 @@ export function Sidebar({ user, pendingUsersCount = 0 }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-4 space-y-1">
-        {navigation.map((item) => {
-          // Verificar se está ativo por pathname direto
-          const isActiveByPath = pathname.startsWith(item.href)
+      <nav className="flex-1 px-4 py-4 space-y-4 overflow-y-auto">
+        {/* Sections */}
+        {sectionsWithBadges.map((section) => (
+          <SidebarSection
+            key={section.key}
+            sectionKey={section.key}
+            label={section.label}
+            items={section.items}
+            accessiblePages={accessiblePages}
+          />
+        ))}
 
-          // Verificar se está ativo por contexto de tab em /providers/[id]
-          const isActiveByTab = isProviderPage && item.contextTab && currentTab === item.contextTab
+        {/* Divider before standalone items */}
+        <div className="border-t my-2" />
 
-          // Verificar se está ativo por contexto de origem (para navegação de alocações/faturação)
-          const isActiveByOrigin = isMounted && (isProviderPage || isPedidoPage) &&
-            item.originKey && originContext === item.originKey
-
-          const isActive = isActiveByTab || isActiveByPath || isActiveByOrigin
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-              )}
-            >
-              <item.icon className="h-5 w-5" />
-              {item.name}
-            </Link>
-          )
-        })}
-
-        {/* Manager Navigation */}
-        {isManager && (
-          <>
-            <div className="pt-4 pb-2">
-              <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Gestão
-              </p>
-            </div>
-            {managerNavigation.map((item) => {
-              const isActive = pathname.startsWith(item.href)
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.name}
-                </Link>
-              )
-            })}
-          </>
-        )}
-
-        {/* Admin Navigation */}
-        {isAdmin && (
-          <>
-            <div className="pt-4 pb-2">
-              <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Admin
-              </p>
-            </div>
-            {adminNavigation.map((item) => {
-              const isActive = pathname.startsWith(item.href)
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.name}
-                  {pendingUsersCount > 0 && (
-                    <Badge variant="secondary" className="ml-auto bg-amber-100 text-amber-700">
-                      {pendingUsersCount}
-                    </Badge>
-                  )}
-                </Link>
-              )
-            })}
-          </>
-        )}
+        {/* Standalone items */}
+        {STANDALONE_ITEMS.map((item) => (
+          <StandaloneLink
+            key={item.key}
+            item={item}
+            accessiblePages={accessiblePages}
+          />
+        ))}
       </nav>
 
       {/* User section */}
@@ -233,7 +196,7 @@ export function Sidebar({ user, pendingUsersCount = 0 }: SidebarProps) {
                 className="cursor-pointer text-destructive focus:text-destructive"
               >
                 <LogOut className="h-4 w-4 mr-2" />
-                Terminar Sessão
+                Terminar Sessao
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

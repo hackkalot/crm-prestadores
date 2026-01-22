@@ -179,10 +179,10 @@ export async function rejectUser(
   return { success: true }
 }
 
-// Alterar role do utilizador
+// Alterar role do utilizador (aceita string para roles dinâmicos)
 export async function updateUserRole(
   userId: string,
-  role: UserRole
+  role: string
 ): Promise<{ success: boolean; error?: string }> {
   const isAdmin = await isCurrentUserAdmin()
   if (!isAdmin) {

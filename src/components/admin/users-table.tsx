@@ -17,6 +17,9 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
@@ -34,7 +37,6 @@ import {
   X,
   MoreHorizontal,
   Shield,
-  ShieldOff,
   Clock,
   CheckCircle2,
   XCircle,
@@ -43,9 +45,11 @@ import { formatDistanceToNow } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import type { UserWithApprover } from '@/lib/users/actions'
 import { approveUser, rejectUser, updateUserRole } from '@/lib/users/actions'
+import type { Role } from '@/lib/permissions/actions'
 
 interface UsersTableProps {
   users: UserWithApprover[]
+  roles?: Role[]
 }
 
 const STATUS_CONFIG = {
@@ -69,7 +73,7 @@ const STATUS_CONFIG = {
   },
 }
 
-export function UsersTable({ users }: UsersTableProps) {
+export function UsersTable({ users, roles }: UsersTableProps) {
   const [isPending, startTransition] = useTransition()
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<UserWithApprover | null>(null)
@@ -102,8 +106,8 @@ export function UsersTable({ users }: UsersTableProps) {
     })
   }
 
-  const handleToggleAdmin = (user: UserWithApprover) => {
-    const newRole = user.role === 'admin' ? 'user' : 'admin'
+  const handleRoleChange = (user: UserWithApprover, newRole: string) => {
+    if (user.role === newRole) return
     startTransition(async () => {
       const result = await updateUserRole(user.id, newRole)
       if (!result.success) {
@@ -147,12 +151,15 @@ export function UsersTable({ users }: UsersTableProps) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
-                      {user.role === 'admin' ? (
-                        <Shield className="h-3 w-3 mr-1" />
-                      ) : null}
-                      {user.role === 'admin' ? 'Admin' : 'Utilizador'}
-                    </Badge>
+                    {(() => {
+                      const roleData = roles?.find(r => r.name === user.role)
+                      return (
+                        <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+                          {user.role === 'admin' && <Shield className="h-3 w-3 mr-1" />}
+                          {roleData?.name || user.role || 'user'}
+                        </Badge>
+                      )
+                    })()}
                   </TableCell>
                   <TableCell>
                     <div className="space-y-1">
@@ -225,20 +232,22 @@ export function UsersTable({ users }: UsersTableProps) {
                               Rejeitar
                             </DropdownMenuItem>
                           )}
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => handleToggleAdmin(user)}>
-                            {user.role === 'admin' ? (
-                              <>
-                                <ShieldOff className="h-4 w-4 mr-2" />
-                                Remover Admin
-                              </>
-                            ) : (
-                              <>
-                                <Shield className="h-4 w-4 mr-2" />
-                                Tornar Admin
-                              </>
-                            )}
-                          </DropdownMenuItem>
+                          {roles && roles.length > 0 && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuLabel>Alterar Role</DropdownMenuLabel>
+                              <DropdownMenuRadioGroup
+                                value={user.role || 'user'}
+                                onValueChange={(value) => handleRoleChange(user, value)}
+                              >
+                                {roles.map((role) => (
+                                  <DropdownMenuRadioItem key={role.id} value={role.name}>
+                                    {role.name}
+                                  </DropdownMenuRadioItem>
+                                ))}
+                              </DropdownMenuRadioGroup>
+                            </>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>

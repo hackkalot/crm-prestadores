@@ -79,7 +79,7 @@ flowchart TB
 ```mermaid
 flowchart LR
     subgraph trigger ["🖱️ Trigger"]
-        click["Admin clica<br/>'Copiar Link'"]
+        btn["Admin clica<br/>'Copiar Link'"]
     end
 
     subgraph generate ["⚙️ generateFormsToken()"]
@@ -93,7 +93,7 @@ flowchart LR
         clipboard["Copiar para<br/>Clipboard"]
     end
 
-    click --> create
+    btn --> create
     create --> encode
     encode --> store
     store --> url
@@ -103,7 +103,7 @@ flowchart LR
     classDef generateStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:1px
     classDef outputStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px
 
-    class click triggerStyle
+    class btn triggerStyle
     class create,encode,store generateStyle
     class url,clipboard outputStyle
 ```

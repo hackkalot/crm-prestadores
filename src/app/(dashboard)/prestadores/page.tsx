@@ -16,6 +16,7 @@ import {
   getProviderServiceRequestCounts,
   type PrestadorFilters,
 } from '@/lib/prestadores/actions'
+import { requirePageAccess } from '@/lib/permissions/guard'
 import type { Database } from '@/types/database'
 
 type ProviderStatus = Database['public']['Enums']['provider_status']
@@ -56,6 +57,7 @@ export default async function PrestadoresPage({
 }: {
   searchParams: SearchParams
 }) {
+  await requirePageAccess('prestadores')
   const params = await searchParams
 
   // Parse multi-select filters from comma-separated URL params
@@ -84,7 +86,7 @@ export default async function PrestadoresPage({
     <div className="flex flex-col h-full">
       <Header
         title="Prestadores"
-        description="Gestao de prestadores ativos na rede"
+        description="Gestão de prestadores ativos na rede"
         action={
           <div className="flex gap-2">
             <Link href="/prestadores/duplicados">

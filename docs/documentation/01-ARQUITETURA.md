@@ -137,38 +137,77 @@ C4Context
 
 ---
 
-### 3. Autenticação: Supabase Auth
+### 3. Autenticação e Autorização: Supabase Auth + Sistema de Permissões
 
 | Aspecto | Decisão | Alternativas Consideradas |
 |---------|---------|---------------------------|
-| **Escolha** | Supabase Auth | NextAuth, Clerk, Auth0 |
-| **Motivo** | Já usamos Supabase, integração nativa, menos dependências |
+| **Escolha** | Supabase Auth + Permissões dinâmicas em BD | NextAuth, Clerk, Auth0 |
+| **Motivo** | Já usamos Supabase, integração nativa, permissões flexíveis geridas em BD |
 
-**Fluxo de autenticação:**
+**Fluxo de autenticação e autorização:**
 
 ```
-┌──────────┐     ┌───────────┐     ┌───────────┐     ┌──────────┐
-│  Login   │────>│ Supabase  │────>│ Middleware│────>│ Dashboard│
-│  Form    │     │   Auth    │     │  (check)  │     │  Layout  │
-└──────────┘     └───────────┘     └───────────┘     └──────────┘
-                       │
-                       ▼
-                 ┌───────────┐
-                 │  Cookies  │
-                 │ (session) │
-                 └───────────┘
+┌──────────┐     ┌───────────┐     ┌───────────┐     ┌───────────┐     ┌──────────┐
+│  Login   │────>│ Supabase  │────>│ Middleware│────>│   Guard   │────>│ Dashboard│
+│  Form    │     │   Auth    │     │  (sessão) │     │(permissão)│     │  Layout  │
+└──────────┘     └───────────┘     └───────────┘     └───────────┘     └──────────┘
+                       │                                   │
+                       ▼                                   ▼
+                 ┌───────────┐                    ┌─────────────────┐
+                 │  Cookies  │                    │ role_permissions│
+                 │ (session) │                    │    (BD)         │
+                 └───────────┘                    └─────────────────┘
 ```
+
+**Camadas de autorização:**
+
+| Camada | Ficheiro | Responsabilidade |
+|--------|----------|------------------|
+| Middleware | `middleware.ts` | Verifica sessão activa (JWT) |
+| Guard | `guard.ts` | Verifica permissão por página |
+| RLS | PostgreSQL | Última linha de defesa nos dados |
+
+**Sistema de Permissões Dinâmico:**
+
+```
+┌─────────┐         ┌─────────────────┐         ┌─────────┐
+│  roles  │────────▶│ role_permissions│◀────────│  pages  │
+└─────────┘         └─────────────────┘         └─────────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │   can_access    │
+                  └─────────────────┘
+```
+
+- **roles**: admin, manager, user, relationship_manager
+- **pages**: candidaturas, onboarding, prioridades, etc.
+- **role_permissions**: matriz que define que role acede a que página
+
+Ver detalhes em [07-SEGURANCA.md](./07-SEGURANCA.md#sistema-de-permissões-dinâmico).
 
 **Implementação:**
 
 ```typescript
-// Middleware verifica sessão em todas as rotas
+// 1. Middleware - verifica sessão
 // src/lib/supabase/middleware.ts
-
-const publicRoutes = ['/login', '/registar', '/api/webhooks']
+const publicRoutes = ['/login', '/registar', '/api/webhooks', '/forms']
 
 if (!user && !isPublicRoute) {
   return NextResponse.redirect('/login')
+}
+
+// 2. Guard - verifica permissões por página
+// src/lib/permissions/guard.ts
+export async function requirePageAccess(pageKey: string) {
+  const canAccess = await canCurrentUserAccessPage(pageKey)
+  if (!canAccess) redirect('/sem-permissao')
+}
+
+// 3. Uso em Server Components
+export default async function PrioridadesPage() {
+  await requirePageAccess('prioridades')
+  // ...
 }
 ```
 
@@ -426,6 +465,12 @@ src/
 │   │   │   └── [id]/page.tsx     # Detalhe
 │   │   └── ...
 │   └── api/                      # API Routes (webhooks)
+│
+│
+├── lib/
+│   ├── permissions/              # Sistema de permissões dinâmico
+│   │   ├── actions.ts            # CRUD de roles e permissões
+│   │   └── guard.ts              # requirePageAccess()
 │
 ├── components/
 │   ├── ui/                       # shadcn/ui (não editar)
