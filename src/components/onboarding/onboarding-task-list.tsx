@@ -33,7 +33,9 @@ import {
   RotateCcw,
   CalendarClock,
   Loader2,
+  Mail,
 } from 'lucide-react'
+import { prepareTaskEmail } from '@/lib/email-templates/actions'
 
 interface Stage {
   id: string
@@ -49,10 +51,12 @@ interface Task {
   started_at: string | null
   completed_at: string | null
   task_definition?: {
+    id: string
     name: string
     task_number: number
     description?: string
     stage?: Stage | Stage[]
+    email_template_id?: string | null
   }
 }
 
@@ -60,6 +64,7 @@ interface OnboardingTaskListProps {
   tasks: Task[]
   cardId?: string // Mantido para compatibilidade, mas nao usado
   currentStageId?: string
+  providerId?: string // ID do prestador para gerar emails
 }
 
 const statusIcons = {
@@ -80,13 +85,14 @@ function getStage(stage: Stage | Stage[] | undefined): Stage | undefined {
   return Array.isArray(stage) ? stage[0] : stage
 }
 
-export function OnboardingTaskList({ tasks, currentStageId }: OnboardingTaskListProps) {
+export function OnboardingTaskList({ tasks, currentStageId, providerId }: OnboardingTaskListProps) {
   const [isPending, startTransition] = useTransition()
   const [rescheduleOpen, setRescheduleOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [newDeadline, setNewDeadline] = useState('')
   const [rescheduleReason, setRescheduleReason] = useState('')
   const [pendingTaskIds, setPendingTaskIds] = useState<Set<string>>(new Set())
+  const [emailPendingTaskId, setEmailPendingTaskId] = useState<string | null>(null)
   const router = useRouter()
 
   // Optimistic state for tasks
@@ -240,6 +246,33 @@ export function OnboardingTaskList({ tasks, currentStageId }: OnboardingTaskList
     })
   }
 
+  const handleSendEmail = useCallback(async (task: Task) => {
+    if (!providerId || !task.task_definition?.id) {
+      toast.error('Dados insuficientes para enviar email')
+      return
+    }
+
+    setEmailPendingTaskId(task.id)
+    try {
+      const baseUrl = window.location.origin
+      const result = await prepareTaskEmail(task.task_definition.id, providerId, baseUrl)
+
+      if (!result.success || !result.mailtoUrl) {
+        toast.error(result.error || 'Erro ao preparar email')
+        return
+      }
+
+      // Open mailto link
+      window.location.href = result.mailtoUrl
+      toast.success('A abrir cliente de email...')
+    } catch (error) {
+      console.error('Error preparing email:', error)
+      toast.error('Erro ao preparar email')
+    } finally {
+      setEmailPendingTaskId(null)
+    }
+  }, [providerId])
+
   if (tasks.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
@@ -386,6 +419,23 @@ export function OnboardingTaskList({ tasks, currentStageId }: OnboardingTaskList
 
                         {/* Actions */}
                         <div className="flex gap-1 shrink-0">
+                          {/* Email button - only show if task has email template configured */}
+                          {task.task_definition?.email_template_id && providerId && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleSendEmail(task)}
+                              disabled={emailPendingTaskId === task.id}
+                              title="Enviar email"
+                              className="text-blue-600 hover:text-blue-700"
+                            >
+                              {emailPendingTaskId === task.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Mail className="h-4 w-4" />
+                              )}
+                            </Button>
+                          )}
                           {task.status === 'por_fazer' && (
                             <Button
                               size="sm"

@@ -11,10 +11,12 @@ import { ServiceMappingStats } from '@/components/service-mapping/service-mappin
 import { CatalogStatsCards } from '@/components/service-catalog/catalog-stats'
 import { CatalogPricesTable } from '@/components/service-catalog/prices-table'
 import { CatalogMaterialsTable } from '@/components/service-catalog/materials-table'
-import { Settings, ListTodo, History, Network, MapPin, Euro } from 'lucide-react'
+import { EmailTemplatesSettings } from '@/components/settings/email-templates-settings'
+import { Settings, ListTodo, History, Network, MapPin, Euro, Mail } from 'lucide-react'
 import type { CatalogPrice, CatalogMaterial, CatalogStats } from '@/lib/service-catalog/actions'
 import type { TaskDefinitionWithStage, Setting, SettingsLog } from '@/lib/settings/actions'
 import type { CoverageSettings as CoverageSettingsType } from '@/lib/settings/coverage-actions'
+import type { EmailTemplateWithCreator } from '@/lib/email-templates/actions'
 
 interface ConfiguracoesTabsProps {
   tasks: TaskDefinitionWithStage[]
@@ -28,6 +30,7 @@ interface ConfiguracoesTabsProps {
   catalogPrices: CatalogPrice[]
   catalogMaterials: CatalogMaterial[]
   catalogClusters: string[]
+  emailTemplates: EmailTemplateWithCreator[]
 }
 
 export function ConfiguracoesTabs({
@@ -42,6 +45,7 @@ export function ConfiguracoesTabs({
   catalogPrices,
   catalogMaterials,
   catalogClusters,
+  emailTemplates,
 }: ConfiguracoesTabsProps) {
   const [activeTab, setActiveTab] = useState('tasks')
 
@@ -68,6 +72,10 @@ export function ConfiguracoesTabs({
           <Euro className="h-4 w-4" />
           Catálogo Serviços
         </TabsTrigger>
+        <TabsTrigger value="emails" className="gap-2">
+          <Mail className="h-4 w-4" />
+          Emails
+        </TabsTrigger>
         <TabsTrigger value="history" className="gap-2">
           <History className="h-4 w-4" />
           Histórico
@@ -82,7 +90,7 @@ export function ConfiguracoesTabs({
             Os prazos são definidos em horas e podem variar entre onboarding Normal e Urgente.
           </p>
         </div>
-        <TaskDefinitionsTable tasks={tasks} users={users} />
+        <TaskDefinitionsTable tasks={tasks} users={users} emailTemplates={emailTemplates} />
       </TabsContent>
 
       <TabsContent value="settings" className="space-y-4">
@@ -118,6 +126,10 @@ export function ConfiguracoesTabs({
           clusters={catalogClusters}
         />
         <CatalogMaterialsTable materials={catalogMaterials} />
+      </TabsContent>
+
+      <TabsContent value="emails" className="space-y-4">
+        <EmailTemplatesSettings templates={emailTemplates} />
       </TabsContent>
 
       <TabsContent value="history" className="space-y-4">

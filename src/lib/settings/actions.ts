@@ -15,6 +15,7 @@ export type TaskDefinitionWithStage = {
   alert_hours_before: number
   display_order: number
   is_active: boolean
+  email_template_id: string | null
   stage: {
     id: string
     stage_number: string
@@ -24,6 +25,11 @@ export type TaskDefinitionWithStage = {
     id: string
     name: string
     email: string
+  } | null
+  email_template: {
+    id: string
+    key: string
+    name: string
   } | null
 }
 
@@ -59,8 +65,10 @@ export async function getTaskDefinitions(): Promise<TaskDefinitionWithStage[]> {
       alert_hours_before,
       display_order,
       is_active,
+      email_template_id,
       stage:stage_definitions(id, stage_number, name),
-      default_owner:users(id, name, email)
+      default_owner:users(id, name, email),
+      email_template:email_templates(id, key, name)
     `)
     .order('display_order')
 
@@ -74,6 +82,7 @@ export async function getTaskDefinitions(): Promise<TaskDefinitionWithStage[]> {
     ...task,
     stage: Array.isArray(task.stage) ? task.stage[0] : task.stage,
     default_owner: Array.isArray(task.default_owner) ? task.default_owner[0] : task.default_owner,
+    email_template: Array.isArray(task.email_template) ? task.email_template[0] : task.email_template,
   })) as TaskDefinitionWithStage[]
 }
 
@@ -164,6 +173,7 @@ export async function updateTaskDefinition(
     default_deadline_hours_urgent?: number | null
     alert_hours_before?: number
     default_owner_id?: string | null
+    email_template_id?: string | null
   }
 ) {
   const supabase = await createClient()

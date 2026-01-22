@@ -266,6 +266,7 @@ export default async function OnboardingDetailPage({ params }: OnboardingDetailP
                   tasks={tasks}
                   cardId={card.id}
                   currentStageId={card.current_stage?.id}
+                  providerId={card.provider?.id}
                 />
               </CardContent>
             </Card>

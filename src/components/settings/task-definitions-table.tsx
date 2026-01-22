@@ -17,17 +17,25 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select'
-import { Pencil, Check, X, Clock, Bell } from 'lucide-react'
+import { Pencil, Check, X, Clock, Bell, Mail } from 'lucide-react'
 import { updateTaskDefinition, type TaskDefinitionWithStage } from '@/lib/settings/actions'
 import { toast } from 'sonner'
+
+interface EmailTemplateOption {
+  id: string
+  key: string
+  name: string
+}
 
 interface TaskDefinitionsTableProps {
   tasks: TaskDefinitionWithStage[]
   users: { id: string; name: string; email: string }[]
+  emailTemplates?: EmailTemplateOption[]
 }
 
-export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps) {
+export function TaskDefinitionsTable({ tasks, users, emailTemplates = [] }: TaskDefinitionsTableProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<{
     name: string
@@ -35,7 +43,8 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
     normal: string
     urgent: string
     alert: string
-  }>({ name: '', description: '', normal: '', urgent: '', alert: '' })
+    emailTemplateId: string | null
+  }>({ name: '', description: '', normal: '', urgent: '', alert: '', emailTemplateId: null })
 
   const startEditing = (task: TaskDefinitionWithStage) => {
     setEditingId(task.id)
@@ -45,12 +54,13 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
       normal: task.default_deadline_hours_normal?.toString() || '',
       urgent: task.default_deadline_hours_urgent?.toString() || '',
       alert: task.alert_hours_before?.toString() || '24',
+      emailTemplateId: task.email_template_id || null,
     })
   }
 
   const cancelEditing = () => {
     setEditingId(null)
-    setEditValues({ name: '', description: '', normal: '', urgent: '', alert: '' })
+    setEditValues({ name: '', description: '', normal: '', urgent: '', alert: '', emailTemplateId: null })
   }
 
   const saveEditing = async () => {
@@ -63,6 +73,7 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
         default_deadline_hours_normal: editValues.normal ? parseInt(editValues.normal) : null,
         default_deadline_hours_urgent: editValues.urgent ? parseInt(editValues.urgent) : null,
         alert_hours_before: editValues.alert ? parseInt(editValues.alert) : 24,
+        email_template_id: editValues.emailTemplateId,
       })
       toast.success('Tarefa atualizada com sucesso')
       cancelEditing()
@@ -123,6 +134,12 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
                   <div className="flex items-center gap-1">
                     <Bell className="h-4 w-4" />
                     Alerta
+                  </div>
+                </TableHead>
+                <TableHead className="w-[180px]">
+                  <div className="flex items-center gap-1">
+                    <Mail className="h-4 w-4" />
+                    Email Template
                   </div>
                 </TableHead>
                 <TableHead className="w-[100px]">Ações</TableHead>
@@ -198,6 +215,38 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
                       />
                     ) : (
                       formatHours(task.alert_hours_before)
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editingId === task.id ? (
+                      <Select
+                        value={editValues.emailTemplateId || 'none'}
+                        onValueChange={(value) => setEditValues({ ...editValues, emailTemplateId: value === 'none' ? null : value })}
+                      >
+                        <SelectTrigger className="h-8 w-40">
+                          <span className="truncate">
+                            {editValues.emailTemplateId
+                              ? emailTemplates.find(t => t.id === editValues.emailTemplateId)?.name || 'Selecionar...'
+                              : 'Nenhum'}
+                          </span>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">Nenhum</SelectItem>
+                          {emailTemplates.map((template) => (
+                            <SelectItem key={template.id} value={template.id}>
+                              {template.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      task.email_template ? (
+                        <Badge variant="secondary" className="font-normal">
+                          {task.email_template.name}
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">-</span>
+                      )
                     )}
                   </TableCell>
                   <TableCell>

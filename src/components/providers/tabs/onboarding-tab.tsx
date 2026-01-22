@@ -91,6 +91,7 @@ export function OnboardingTab({ provider, onboardingCard, users }: OnboardingTab
             tasks={tasks as never[]}
             cardId={onboardingCard.id}
             currentStageId={onboardingCard.current_stage?.id}
+            providerId={provider.id}
           />
         </CardContent>
       </Card>

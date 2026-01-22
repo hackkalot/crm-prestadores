@@ -391,6 +391,66 @@ export type Database = {
           },
         ]
       }
+      email_templates: {
+        Row: {
+          body: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          key: string
+          name: string
+          subject: string
+          updated_at: string | null
+          updated_by: string | null
+          variables: Json | null
+        }
+        Insert: {
+          body: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          key: string
+          name: string
+          subject: string
+          updated_at?: string | null
+          updated_by?: string | null
+          variables?: Json | null
+        }
+        Update: {
+          body?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          key?: string
+          name?: string
+          subject?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          variables?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_templates_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       history_log: {
         Row: {
           card_id: string | null
@@ -2265,6 +2325,7 @@ export type Database = {
           default_owner_id: string | null
           description: string | null
           display_order: number
+          email_template_id: string | null
           id: string
           is_active: boolean | null
           name: string
@@ -2280,6 +2341,7 @@ export type Database = {
           default_owner_id?: string | null
           description?: string | null
           display_order: number
+          email_template_id?: string | null
           id?: string
           is_active?: boolean | null
           name: string
@@ -2295,6 +2357,7 @@ export type Database = {
           default_owner_id?: string | null
           description?: string | null
           display_order?: number
+          email_template_id?: string | null
           id?: string
           is_active?: boolean | null
           name?: string
@@ -2308,6 +2371,13 @@ export type Database = {
             columns: ["default_owner_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_definitions_email_template_id_fkey"
+            columns: ["email_template_id"]
+            isOneToOne: false
+            referencedRelation: "email_templates"
             referencedColumns: ["id"]
           },
           {
