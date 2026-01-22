@@ -4,6 +4,7 @@ import { FaturacaoList } from '@/components/faturacao/faturacao-list'
 import { FaturacaoFilters } from '@/components/faturacao/faturacao-filters'
 import { FaturacaoStats } from '@/components/faturacao/faturacao-stats'
 import { SyncBillingDialog } from '@/components/sync/sync-billing-dialog'
+import { LastSyncBadge } from '@/components/sync/last-sync-badge'
 import {
   StatsCardsSkeleton,
   FiltersSkeleton,
@@ -18,6 +19,7 @@ import {
   getAvailableBillingPeriods,
   type BillingFilters,
 } from '@/lib/billing/actions'
+import { getLastSuccessfulSync } from '@/lib/sync/logs-actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -52,6 +54,12 @@ async function FiltersSection() {
   )
 }
 
+// Async component for sync info
+async function SyncInfoSection() {
+  const syncInfo = await getLastSuccessfulSync('billing')
+  return <LastSyncBadge syncInfo={syncInfo} label="Sync" />
+}
+
 export default async function FaturacaoPage({
   searchParams,
 }: {
@@ -79,6 +87,11 @@ export default async function FaturacaoPage({
         title="Faturação"
         description="Gestão de processos de faturação dos prestadores"
         action={<SyncBillingDialog />}
+        syncInfo={
+          <Suspense fallback={null}>
+            <SyncInfoSection />
+          </Suspense>
+        }
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         {/* Stats */}

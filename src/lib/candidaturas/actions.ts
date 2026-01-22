@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { unstable_cache } from 'next/cache'
 import type { Database } from '@/types/database'
 import { getFullySelectedDistricts } from '@/lib/data/portugal-districts'
+import { bulkResolveServiceNames } from '@/lib/providers/actions'
 
 type ProviderStatus = Database['public']['Enums']['provider_status']
 type AbandonmentParty = Database['public']['Enums']['abandonment_party']
@@ -19,6 +20,7 @@ export type CandidaturaFilters = {
   service?: string       // Legacy single filter
   counties?: string[]    // Multi-select filter for concelhos
   services?: string[]    // Multi-select filter
+  technicians?: string   // Filter for num_technicians range
   dateFrom?: string
   dateTo?: string
   search?: string
@@ -72,6 +74,24 @@ function applyCandidaturaFilters(query: any, filters: CandidaturaFilters) {
     query = query.contains('services', [filters.service])
   }
 
+  // Filter by number of technicians
+  if (filters.technicians && filters.technicians !== '_all') {
+    switch (filters.technicians) {
+      case '1':
+        query = query.eq('num_technicians', 1)
+        break
+      case '2-5':
+        query = query.gte('num_technicians', 2).lte('num_technicians', 5)
+        break
+      case '6-10':
+        query = query.gte('num_technicians', 6).lte('num_technicians', 10)
+        break
+      case '11+':
+        query = query.gte('num_technicians', 11)
+        break
+    }
+  }
+
   if (filters.dateFrom) {
     query = query.gte('first_application_at', filters.dateFrom)
   }
@@ -99,7 +119,7 @@ async function getCandidaturasInternal(filters: CandidaturaFilters = {}) {
   let query = createAdminClient()
     .from('providers')
     .select('*')
-    .in('status', ['novo', 'em_onboarding', 'abandonado'])
+    .in('status', ['novo', 'em_onboarding', 'on_hold', 'abandonado'])
     .order(sortBy, { ascending })
 
   query = applyCandidaturaFilters(query, filters)
@@ -128,7 +148,7 @@ export async function getCandidaturas(filters: CandidaturaFilters = {}): Promise
   let countQuery = createAdminClient()
     .from('providers')
     .select('*', { count: 'exact', head: true })
-    .in('status', ['novo', 'em_onboarding', 'abandonado'])
+    .in('status', ['novo', 'em_onboarding', 'on_hold', 'abandonado'])
 
   countQuery = applyCandidaturaFilters(countQuery, filters)
   const { count } = await countQuery
@@ -137,7 +157,7 @@ export async function getCandidaturas(filters: CandidaturaFilters = {}): Promise
   let query = createAdminClient()
     .from('providers')
     .select('*')
-    .in('status', ['novo', 'em_onboarding', 'abandonado'])
+    .in('status', ['novo', 'em_onboarding', 'on_hold', 'abandonado'])
 
   query = applyCandidaturaFilters(query, filters)
   query = query
@@ -157,12 +177,80 @@ export async function getCandidaturas(filters: CandidaturaFilters = {}): Promise
     }
   }
 
+  // Resolve service names (UUIDs to names)
+  const providers = data || []
+  const serviceNamesMap = await bulkResolveServiceNames(
+    providers.map(p => ({ id: p.id, services: p.services }))
+  )
+
+  // Replace services with resolved names
+  const dataWithResolvedServices = providers.map(p => ({
+    ...p,
+    services: serviceNamesMap.get(p.id) || p.services || [],
+  }))
+
   return {
-    data: data || [],
+    data: dataWithResolvedServices,
     total: count || 0,
     page,
     limit,
     totalPages: Math.ceil((count || 0) / limit),
+  }
+}
+
+/**
+ * Get all candidaturas for client-side filtering (no text search, no pagination)
+ * Filters like status, entityType, dates etc. are still applied server-side
+ * Text search is done client-side for instant fuzzy matching
+ * Note: Not cached server-side because data exceeds 2MB limit
+ */
+export async function getAllCandidaturasForClientSearch(filters: Omit<CandidaturaFilters, 'search' | 'page' | 'limit'> = {}): Promise<PaginatedCandidaturas> {
+  const sortBy = filters.sortBy || 'first_application_at'
+  const sortOrder = filters.sortOrder || 'desc'
+  const ascending = sortOrder === 'asc'
+
+  // Get all data without search filter (client will handle text search)
+  let query = createAdminClient()
+    .from('providers')
+    .select('*')
+    .in('status', ['novo', 'em_onboarding', 'on_hold', 'abandonado'])
+    .order(sortBy, { ascending })
+
+  // Apply all filters EXCEPT search (which will be done client-side)
+  const filtersWithoutSearch = { ...filters, search: undefined }
+  query = applyCandidaturaFilters(query, filtersWithoutSearch)
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Erro ao buscar candidaturas:', error)
+    return {
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 1000,
+      totalPages: 1,
+    }
+  }
+
+  // Resolve service names (UUIDs to names)
+  const providers = data || []
+  const serviceNamesMap = await bulkResolveServiceNames(
+    providers.map(p => ({ id: p.id, services: p.services }))
+  )
+
+  // Replace services with resolved names
+  const dataWithResolvedServices = providers.map(p => ({
+    ...p,
+    services: serviceNamesMap.get(p.id) || p.services || [],
+  }))
+
+  return {
+    data: dataWithResolvedServices,
+    total: dataWithResolvedServices.length,
+    page: 1,
+    limit: dataWithResolvedServices.length,
+    totalPages: 1,
   }
 }
 
@@ -176,6 +264,15 @@ export async function getCandidaturaById(id: string) {
   if (error) {
     console.error('Erro ao buscar candidatura:', error)
     return null
+  }
+
+  // Resolve service names
+  if (data && data.services) {
+    const serviceNamesMap = await bulkResolveServiceNames([{ id: data.id, services: data.services }])
+    return {
+      ...data,
+      services: serviceNamesMap.get(data.id) || data.services,
+    }
   }
 
   return data
@@ -335,14 +432,17 @@ export async function sendToOnboarding(
       return {
         card_id: card.id,
         task_definition_id: def.id,
-        owner_id: def.default_owner_id || user.id,
         deadline_at: deadlineAt,
         original_deadline_at: deadlineAt,
         status: 'por_fazer' as TaskStatus,
       }
     })
 
-    await adminClient.from('onboarding_tasks').insert(tasks)
+    const { error: tasksError } = await adminClient.from('onboarding_tasks').insert(tasks)
+    if (tasksError) {
+      console.error('Erro ao criar tarefas de onboarding:', tasksError)
+      // Continuar mesmo com erro nas tarefas para não bloquear o processo
+    }
   }
 
   // Atualizar estado do prestador
@@ -525,20 +625,27 @@ export async function getServicePricesForSelect(): Promise<ServiceOption[]> {
 }
 
 // Estatisticas rapidas - using count queries to avoid 1000 row limit
+// Cached for 30 seconds
 export async function getCandidaturasStats() {
-  const supabase = createAdminClient()
+  return unstable_cache(
+    async () => {
+      const supabase = createAdminClient()
 
-  const [novoResult, onboardingResult, abandonadoResult] = await Promise.all([
-    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'novo'),
-    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'em_onboarding'),
-    supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'abandonado'),
-  ])
+      const [novoResult, onboardingResult, abandonadoResult] = await Promise.all([
+        supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'novo'),
+        supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'em_onboarding'),
+        supabase.from('providers').select('*', { count: 'exact', head: true }).eq('status', 'abandonado'),
+      ])
 
-  return {
-    novo: novoResult.count || 0,
-    em_onboarding: onboardingResult.count || 0,
-    abandonado: abandonadoResult.count || 0,
-  }
+      return {
+        novo: novoResult.count || 0,
+        em_onboarding: onboardingResult.count || 0,
+        abandonado: abandonadoResult.count || 0,
+      }
+    },
+    ['candidaturas-stats'],
+    { revalidate: 30, tags: ['candidaturas'] }
+  )()
 }
 
 // Recuperar candidatura abandonada
@@ -689,6 +796,157 @@ export async function removeFromOnboarding(
       provider_id: providerId,
       event_type: 'removed_from_onboarding',
       description: reason ? `Removido do onboarding: ${reason}` : 'Removido do onboarding',
+      created_by: user.id,
+    })
+
+  revalidatePath('/candidaturas')
+  revalidatePath('/onboarding')
+  revalidatePath(`/providers/${providerId}`)
+
+  return { success: true }
+}
+
+/**
+ * Colocar prestador em On-Hold
+ * O card e tarefas de onboarding são preservados para retomar depois
+ */
+export type PutOnHoldState = {
+  error?: string
+  success?: boolean
+}
+
+export async function putOnHold(
+  prevState: PutOnHoldState,
+  formData: FormData
+): Promise<PutOnHoldState> {
+  const supabase = await createClient()
+
+  const providerId = formData.get('providerId') as string
+  const reason = formData.get('reason') as string
+
+  if (!providerId) {
+    return { error: 'Dados incompletos' }
+  }
+
+  // Obter utilizador atual
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Nao autenticado' }
+  }
+
+  // Verificar se o provider está em onboarding
+  const { data: provider } = await createAdminClient()
+    .from('providers')
+    .select('status')
+    .eq('id', providerId)
+    .single()
+
+  if (!provider || provider.status !== 'em_onboarding') {
+    return { error: 'Este prestador nao esta em onboarding' }
+  }
+
+  // Atualizar estado do prestador para on_hold
+  // O card e tarefas de onboarding são preservados
+  const { error } = await createAdminClient()
+    .from('providers')
+    .update({
+      status: 'on_hold' as ProviderStatus,
+    })
+    .eq('id', providerId)
+
+  if (error) {
+    console.error('Erro ao colocar on-hold:', error)
+    return { error: 'Erro ao colocar on-hold' }
+  }
+
+  // Registar no histórico
+  await createAdminClient()
+    .from('history_log')
+    .insert({
+      provider_id: providerId,
+      event_type: 'put_on_hold',
+      description: reason ? `Colocado em on-hold: ${reason}` : 'Colocado em on-hold',
+      created_by: user.id,
+    })
+
+  revalidatePath('/candidaturas')
+  revalidatePath('/onboarding')
+  revalidatePath(`/providers/${providerId}`)
+
+  return { success: true }
+}
+
+/**
+ * Retomar onboarding de um prestador que está em On-Hold
+ * O card e tarefas existentes são preservados, apenas muda o status
+ */
+export type ResumeFromOnHoldState = {
+  error?: string
+  success?: boolean
+}
+
+export async function resumeFromOnHold(
+  prevState: ResumeFromOnHoldState,
+  formData: FormData
+): Promise<ResumeFromOnHoldState> {
+  const supabase = await createClient()
+
+  const providerId = formData.get('providerId') as string
+
+  if (!providerId) {
+    return { error: 'Dados incompletos' }
+  }
+
+  // Obter utilizador atual
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Nao autenticado' }
+  }
+
+  const adminClient = createAdminClient()
+
+  // Verificar se o provider está em on_hold
+  const { data: provider } = await adminClient
+    .from('providers')
+    .select('status')
+    .eq('id', providerId)
+    .single()
+
+  if (!provider || provider.status !== 'on_hold') {
+    return { error: 'Este prestador nao esta em on-hold' }
+  }
+
+  // Verificar se existe card de onboarding preservado
+  const { data: card } = await adminClient
+    .from('onboarding_cards')
+    .select('id')
+    .eq('provider_id', providerId)
+    .single()
+
+  if (!card) {
+    return { error: 'Nao foi encontrado processo de onboarding para retomar' }
+  }
+
+  // Atualizar estado do prestador para em_onboarding
+  const { error } = await adminClient
+    .from('providers')
+    .update({
+      status: 'em_onboarding' as ProviderStatus,
+    })
+    .eq('id', providerId)
+
+  if (error) {
+    console.error('Erro ao retomar onboarding:', error)
+    return { error: 'Erro ao retomar onboarding' }
+  }
+
+  // Registar no histórico
+  await adminClient
+    .from('history_log')
+    .insert({
+      provider_id: providerId,
+      event_type: 'resumed_from_on_hold',
+      description: 'Onboarding retomado',
       created_by: user.id,
     })
 

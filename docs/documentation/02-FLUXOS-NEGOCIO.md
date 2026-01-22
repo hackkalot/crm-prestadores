@@ -35,6 +35,12 @@ Este documento descreve os fluxos de dados, estados e regras de negócio do CRM 
 - [Agenda](#agenda-agenda)
 - [KPIs](#kpis-kpis)
 - [Configurações](#configurações-configuracoes)
+  - [Tarefas](#tab-1-tarefas)
+  - [Alertas](#tab-2-alertas-configurações-globais)
+  - [Cobertura](#tab-3-cobertura)
+  - [Mapeamento de Serviços](#tab-4-mapeamento-de-serviços)
+  - [Catálogo de Serviços](#tab-5-catálogo-de-serviços)
+  - [Histórico](#tab-6-histórico)
 
 ### 2. Sistema
 - [Sistema de Prioridades](#sistema-de-prioridades)
@@ -1218,81 +1224,77 @@ Os campos editáveis incluem:
 
 ## Fluxo de Preços e Catálogo de Serviços
 
-### Estrutura do Catálogo
+### Fluxo de Geração de Propostas
 
-O catálogo de serviços é importado via Excel e contém preços de referência organizados por clusters:
+O objectivo final é gerar uma proposta comercial (PDF) para o prestador. Este processo depende dos dados geridos centralmente na Tab 5 "Catálogo de Serviços".
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ESTRUTURA DO CATÁLOGO                        │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph config ["⚙️ Configurações > Tab 5: Catálogo"]
+        direction TB
+        Excel["📥 Import Excel"]
+        Admin["👤 Admin Edita"]
+        DB1[("💾 service_prices")]
+        DB2[("💾 material_catalog")]
+        
+        Excel -->|"Upsert"| DB1
+        Excel -->|"Upsert"| DB2
+        Admin -->|"CRUD"| DB1
+    end
 
-┌───────────────────────────────────────────────────────────────────┐
-│ service_prices (preços de referência)                             │
-├───────────────────────────────────────────────────────────────────┤
-│ - service_name         │ Nome do serviço                          │
-│ - cluster              │ Agrupamento (Casa, Saúde, Empresas, etc) │
-│ - service_group        │ Grupo específico (Canalizador, etc)      │
-│ - unit_description     │ Unidade de medida                        │
-│ - typology             │ Variante do serviço                      │
-│ - vat_rate             │ Taxa de IVA (23%, 6%, etc)               │
-│ - price_base           │ Preço base s/ IVA                        │
-│ - price_hour_*         │ Preços por hora (com/sem materiais)      │
-│ - price_cleaning_*     │ Preços de limpeza (variantes)            │
-│ - is_active            │ Se o serviço está disponível             │
-└───────────────────────────────────────────────────────────────────┘
-                             │
-                             │ 1:N (por prestador)
-                             ▼
-┌───────────────────────────────────────────────────────────────────┐
-│ provider_prices (preços acordados)                                │
-├───────────────────────────────────────────────────────────────────┤
-│ - provider_id              │ ID do prestador                      │
-│ - reference_price_id       │ FK para service_prices               │
-│ - custom_price_without_vat │ Preço personalizado (opcional)       │
-│ - is_selected_for_proposal │ Seleccionado para proposta PDF       │
-│ - notes                    │ Observações                          │
-└───────────────────────────────────────────────────────────────────┘
+    subgraph provider ["👤 Prestador > Tab 4: Preços"]
+        direction TB
+        Selection["☑️ Selecção<br/>Serviços"]
+        Custom["💰 Preço<br/>Customizado"]
+        DB3[("💾 provider_prices")]
+        
+        Selection -->|"Override<br/>Opcional"| Custom
+        Custom -->|"Grava"| DB3
+    end
 
-┌───────────────────────────────────────────────────────────────────┐
-│ material_catalog (materiais)                                      │
-├───────────────────────────────────────────────────────────────────┤
-│ - material_name        │ Nome do material                         │
-│ - category             │ Categoria (ex: Canalizador)              │
-│ - price_without_vat    │ Preço s/ IVA                             │
-│ - vat_rate             │ Taxa de IVA                              │
-└───────────────────────────────────────────────────────────────────┘
-```
+    subgraph output ["📄 Output"]
+        PDF["📑 Gerar PDF<br/>Proposta"]
+    end
 
-### Importação do Catálogo
+    DB1 -.->|"Lê Preços Ref"| Selection
+    DB3 -->|"Dados"| PDF
+    DB1 -.->|"Dados Ref"| PDF
+    DB2 -.->|"Lista Materiais"| PDF
 
-```
-┌─────────────────┐     ┌──────────────────┐     ┌───────────────────┐
-│   Upload Excel  │────>│    Parse XLSX    │────>│   Upsert DB       │
-│  (Configurações)│     │  (api/service-   │     │ (service_prices   │
-│                 │     │   catalog/import)│     │  material_catalog)│
-└─────────────────┘     └──────────────────┘     └───────────────────┘
-         │                       │                       │
-         │ Ficheiro              │ Ler sheets:           │ Limpar tabela
-         │ .xlsx                 │ - DB (preços)         │ e inserir
-         ▼                       │ - Materiais_*         │ novos registos
-                                 ▼                       ▼
+    classDef configStyle fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef providerStyle fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    classDef outputStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef dbStyle fill:#f5f5f5,stroke:#616161,stroke-width:1px
+
+    class Excel,Admin,config configStyle
+    class Selection,Custom,provider providerStyle
+    class PDF,output outputStyle
+    class DB1,DB2,DB3 dbStyle
 ```
 
-### Fluxo de Definição de Preços por Prestador
+### 1. Fonte de Dados (Catálogo Global)
+O catálogo é gerido em **Configurações > Tab 5: Catálogo de Serviços**.
+- Define os preços de referência base.
+- Permite importação em massa via Excel.
+- Garante a uniformidade das descrições e unidades.
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  Seleccionar    │───>│  Personalizar   │───>│   Gerar PDF     │
-│  Serviços       │    │   Preços        │    │   Proposta      │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-      │                      │                       │
-      │                      │                       │
-      ▼                      ▼                       ▼
- Marcar checkbox      Definir preço           Apenas serviços
- is_selected_for_     custom_price ou         com is_selected
- proposal = true      usar referência         são incluídos
-```
+### 2. Selecção e Personalização (Por Prestador)
+Na página do prestador (**Tab 4: Preços**):
+1.  **Herança de Dados**: A lista de serviços disponíveis vem directamente do catálogo global activo.
+2.  **Selecção**: O RM selecciona quais os serviços que este prestador vai realizar (`is_selected_for_proposal`).
+3.  **Personalização**:
+    - Se o prestador aceitar o preço de tabela, o campo "Preço Custom" fica vazio (usa referência).
+    - Se houver negociação, define-se um valor específico em `custom_price_without_vat`.
+
+### 3. Geração de Proposta (PDF)
+A acção "Gerar PDF" compila:
+- **Cabeçalho**: Dados do prestador (Nome, NIF).
+- **Corpo**: Tabela com os serviços marcados como `seleccionados`.
+    - Coluna Preço: Usa valor customizado se existir, senão usa referência.
+    - Coluna IVA: Usa a taxa definida no serviço global.
+- **Anexos**: Lista de materiais da categoria "Canalizador" (vinda directamente de `material_catalog`).
+
+> **Nota**: O PDF é gerado em tempo real no browser (client-side) para garantir rapidez e privacidade, mas os dados base são sempre validados contra a base de dados.
 
 ### Clusters Disponíveis
 
@@ -1306,7 +1308,7 @@ O catálogo de serviços é importado via Excel e contém preços de referência
 
 ---
 
-## Import CSV
+## Import CSV de Prestadores
 
 ### Fluxo de Importação
 
@@ -1701,33 +1703,46 @@ Revisão de sugestões do algoritmo para mapear serviços de prestadores à taxo
 
 #### Tab 5: Catálogo de Serviços
 
-Gestão do catálogo de preços de referência e materiais.
+Gestão centralizada de preços de referência e materiais para angariação. Esta área permite a visualização, edição, e gestão em massa (import/export) dos dados base usados nas propostas comerciais.
 
-**Sub-secções:**
+**Funcionalidades Principais:**
 
-**Estatísticas:**
-- Total de preços de serviços activos
-- Total de materiais
-- Clusters disponíveis
-- Data da última importação
+**1. Visualização e Pesquisa**
+- **Dashboard de Estatísticas**: Cards com totais (preços, materiais), contagem por cluster, e métricas de atualização.
+- **Tabela de Preços**:
+  - Scroll horizontal e colunas redimensionáveis para melhor visualização.
+  - Paginação configurável (100, 200, 500, 1000 items) para melhor performance com grandes volumes de dados.
+  - Filtros avançados: Texto livre, Cluster e Grupo de Serviço.
+- **Tabela de Materiais**: Listagem de materiais da categoria "Canalizador".
 
-**Upload Excel:**
-- Aceita ficheiros `.xlsx` / `.xls`
-- Sheets esperadas: `DB` (preços), `Materiais_Canalizador` (materiais)
-- Substitui dados existentes (upsert)
+**2. Gestão de Preços**
+- **Edição Inline**: Clique para editar directamente na tabela.
+- **Autocomplete**: Sugestões inteligentes para campos de texto (Nome, Cluster, Grupo, Unidade).
+- **Adicionar Serviço**: Criação manual de novos serviços.
+- **Soft Delete**: Marcação de serviços como inactivos (eliminados da vista).
+- **Validação**: Garantia de unicidade composta por `serviço + unidade + tipologia`.
 
-**Tabela de Preços:**
-- Pesquisa por nome de serviço
-- Filtro por cluster (Casa, Saúde, Empresas, Luxo, Pete)
-- Filtro por grupo de serviço
-- Paginação (25 por página)
-- Colunas: Serviço, Cluster, Grupo, Unidade, IVA%, Preço Base, Preço/Hora
+**3. Importação e Exportação (Excel)**
+- **Export**: Download de `.xlsx` com filtros actuais aplicados.
+- **Import**: Upload de `.xlsx` (substituição total dos dados).
+  - Formato esperado: Sheets "DB" (preços) e "Materiais_Canalizador".
+  - **Atenção**: Requer confirmação explicita pois remove todos os dados existentes antes de inserir os novos.
 
-**Tabela de Materiais:**
-- Lista de materiais de canalizador
-- Preço sem IVA, taxa IVA, preço com IVA
+**Estrutura de Dados:**
 
-**Tabelas:** `service_prices`, `material_catalog`
+**Clusters:**
+- Casa (Azul)
+- Saúde e bem estar (Verde)
+- Empresas (Roxo)
+- Luxo (Âmbar)
+- Pete (Rosa)
+
+**Tipos de Preços (9 variantes):**
+- Base, Nova Visita, Extra Noite
+- Hora (c/ e s/ materiais)
+- Limpeza (Simples, Tratamentos, Imper., Imper.+Trat.)
+
+**Tabelas BD:** `service_prices`, `material_catalog`
 
 ---
 

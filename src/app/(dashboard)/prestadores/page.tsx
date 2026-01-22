@@ -1,15 +1,14 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { Header } from '@/components/layout/header'
-import { PrestadoresList } from '@/components/prestadores/prestadores-list'
-import { PrestadoresFilters } from '@/components/prestadores/prestadores-filters'
 import { PrestadoresStats } from '@/components/prestadores/prestadores-stats'
+import { PrestadoresClientView } from '@/components/prestadores/prestadores-client-view'
 import { SyncProvidersDialog } from '@/components/sync/sync-providers-dialog'
-import { StatsCardsSkeleton, FiltersSkeleton, PrestadoresTableSkeleton } from '@/components/skeletons/page-skeletons'
+import { StatsCardsSkeleton, PrestadoresTableSkeleton } from '@/components/skeletons/page-skeletons'
 import { Button } from '@/components/ui/button'
 import { Copy } from 'lucide-react'
 import {
-  getPrestadores,
+  getAllPrestadoresForClientSearch,
   getPrestadoresStats,
   getDistinctPrestadorServices,
   getUsers,
@@ -28,29 +27,31 @@ async function StatsSection() {
   return <PrestadoresStats stats={stats} />
 }
 
-// Async component for prestadores list
-async function PrestadoresListSection({ filters }: { filters: PrestadorFilters }) {
-  const prestadores = await getPrestadores(filters)
+// Async component for prestadores with client-side fuzzy search
+async function PrestadoresSection({ filters }: { filters: PrestadorFilters }) {
+  // Load all data for client-side filtering (text search done on client)
+  const [data, services, users] = await Promise.all([
+    getAllPrestadoresForClientSearch(filters),
+    getDistinctPrestadorServices(),
+    getUsers(),
+  ])
 
   // Get service request counts for providers that have backoffice_provider_id
-  const backofficeIds = prestadores.data
+  const backofficeIds = data.data
     .filter((p) => p.backoffice_provider_id !== null)
     .map((p) => p.backoffice_provider_id as number)
 
   const requestCounts = await getProviderServiceRequestCounts(backofficeIds)
 
-  return <PrestadoresList prestadores={prestadores} requestCounts={requestCounts} />
+  return (
+    <PrestadoresClientView
+      initialData={data}
+      services={services}
+      users={users}
+      requestCounts={requestCounts}
+    />
+  )
 }
-
-// Async component for filters (loads cached data)
-async function FiltersSection() {
-  const [services, users] = await Promise.all([
-    getDistinctPrestadorServices(),
-    getUsers(),
-  ])
-  return <PrestadoresFilters services={services} users={users} />
-}
-
 
 export default async function PrestadoresPage({
   searchParams,
@@ -73,10 +74,7 @@ export default async function PrestadoresPage({
     counties: parseMultiParam(params.counties),
     services: parseMultiParam(params.services),
     ownerId: params.ownerId as string | undefined,
-    search: params.search as string | undefined,
     hasPedidos: (params.hasPedidos as 'all' | 'with' | 'without') || undefined,
-    page: params.page ? parseInt(params.page as string) : 1,
-    limit: params.limit ? parseInt(params.limit as string) : 50,
     sortBy: params.sortBy as string | undefined,
     sortOrder: (params.sortOrder as 'asc' | 'desc') || undefined,
   }
@@ -105,14 +103,9 @@ export default async function PrestadoresPage({
           <StatsSection />
         </Suspense>
 
-        {/* Filters stream in with cached data (fast) */}
-        <Suspense fallback={<FiltersSkeleton />}>
-          <FiltersSection />
-        </Suspense>
-
-        {/* Table loads independently */}
+        {/* Prestadores with client-side fuzzy search */}
         <Suspense fallback={<PrestadoresTableSkeleton />}>
-          <PrestadoresListSection filters={filters} />
+          <PrestadoresSection filters={filters} />
         </Suspense>
       </div>
     </div>

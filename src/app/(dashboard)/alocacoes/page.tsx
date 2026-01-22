@@ -4,8 +4,10 @@ import { AlocacoesStats } from '@/components/alocacoes/alocacoes-stats'
 import { AlocacoesFilters } from '@/components/alocacoes/alocacoes-filters'
 import { AlocacoesList } from '@/components/alocacoes/alocacoes-list'
 import { SyncAllocationDialog } from '@/components/sync/sync-allocation-dialog'
+import { LastSyncBadge } from '@/components/sync/last-sync-badge'
 import { getAllocationHistory, getAllocationStats, getAvailablePeriods } from '@/lib/allocations/actions'
 import type { AllocationHistoryFilters, AllocationStatsFilters } from '@/lib/allocations/actions'
+import { getLastSuccessfulSync } from '@/lib/sync/logs-actions'
 import { Skeleton } from '@/components/ui/skeleton'
 import { requirePageAccess } from '@/lib/permissions/guard'
 
@@ -57,6 +59,12 @@ async function AlocacoesStatsSection({ filters }: { filters: AllocationStatsFilt
 async function AlocacoesFiltersSection() {
   const availablePeriods = await getAvailablePeriods()
   return <AlocacoesFilters availablePeriods={availablePeriods} />
+}
+
+// Async component for sync info
+async function SyncInfoSection() {
+  const syncInfo = await getLastSuccessfulSync('allocations')
+  return <LastSyncBadge syncInfo={syncInfo} label="Sync" />
 }
 
 async function AlocacoesListSection({
@@ -164,6 +172,11 @@ export default async function AlocacoesPage({
         title="Histórico de Alocação"
         description="Métricas de alocação de pedidos por prestador"
         action={<SyncAllocationDialog />}
+        syncInfo={
+          <Suspense fallback={null}>
+            <SyncInfoSection />
+          </Suspense>
+        }
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
         <Suspense fallback={<StatsLoading />}>

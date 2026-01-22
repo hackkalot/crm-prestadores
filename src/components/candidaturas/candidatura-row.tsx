@@ -37,6 +37,7 @@ const entityTypeIcons: Record<string, typeof User> = {
 const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info'> = {
   novo: 'info',
   em_onboarding: 'warning',
+  on_hold: 'warning',
   abandonado: 'destructive',
   arquivado: 'secondary',
 }
@@ -44,6 +45,7 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
 const statusLabels: Record<string, string> = {
   novo: 'Novo',
   em_onboarding: 'Em Onboarding',
+  on_hold: 'On-Hold',
   abandonado: 'Abandonado',
   arquivado: 'Arquivado',
 }

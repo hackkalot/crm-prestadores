@@ -22,6 +22,7 @@ import { CompletionByCategoryChart } from '@/components/analytics/quality/comple
 import { RatingByCategoryChart } from '@/components/analytics/quality/rating-by-category-chart'
 import { CompletionTrendChart } from '@/components/analytics/quality/completion-trend-chart'
 import { LowRatingAlerts } from '@/components/analytics/quality/low-rating-alerts'
+import { LastSyncBadge } from '@/components/sync/last-sync-badge'
 import {
   getOperationalSummary,
   getNetworkHealthData,
@@ -44,8 +45,32 @@ import {
   getCoverageGaps,
   getAnalyticsFilterOptions,
 } from '@/lib/analytics/actions'
+import { getLastSyncInfoBatch, type LastSyncInfo } from '@/lib/sync/logs-actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
 import type { AnalyticsFilters as AnalyticsFiltersType, RankingMetric } from '@/lib/analytics/types'
+
+// Get the oldest sync date among multiple sync types
+function getOldestSyncInfo(syncInfos: Record<string, LastSyncInfo>): LastSyncInfo {
+  const infos = Object.values(syncInfos).filter(info => info.lastSuccessfulSync)
+
+  if (infos.length === 0) {
+    return { type: 'service_requests', lastSuccessfulSync: null, status: null }
+  }
+
+  // Find the oldest sync (earliest date)
+  return infos.reduce((oldest, current) => {
+    if (!oldest.lastSuccessfulSync) return current
+    if (!current.lastSuccessfulSync) return oldest
+    return new Date(current.lastSuccessfulSync) < new Date(oldest.lastSuccessfulSync) ? current : oldest
+  })
+}
+
+// Async component for sync info
+async function SyncInfoSection() {
+  const syncInfos = await getLastSyncInfoBatch(['service_requests', 'billing', 'allocations'])
+  const oldestSync = getOldestSyncInfo(syncInfos)
+  return <LastSyncBadge syncInfo={oldestSync} label="Dados" />
+}
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
@@ -125,6 +150,11 @@ export default async function AnalyticsPage({
       <Header
         title="Analytics"
         description="Dashboard operacional e metricas da rede"
+        syncInfo={
+          <Suspense fallback={null}>
+            <SyncInfoSection />
+          </Suspense>
+        }
       />
 
       <div className="flex-1 p-6 space-y-6 overflow-auto">

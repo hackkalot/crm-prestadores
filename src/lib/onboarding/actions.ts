@@ -35,17 +35,19 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
   }
 
   // Obter cards com providers e tarefas
+  // Filtrar apenas providers em_onboarding (não on_hold)
   let cardsQuery = adminClient
     .from('onboarding_cards')
     .select(`
       *,
-      provider:providers(*, relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email)),
+      provider:providers!inner(*, relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email)),
       tasks:onboarding_tasks(
         *,
         task_definition:task_definitions(*)
       )
     `)
     .is('completed_at', null)
+    .eq('provider.status', 'em_onboarding')
     .order('created_at', { ascending: false })
 
   if (filters.onboardingType) {
@@ -59,13 +61,19 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
     return { stages, cards: [] }
   }
 
+  // UUID regex pattern for identifying service UUIDs
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
   // Obter mapa de serviços (UUID -> nome) para traduzir os IDs
   const allServiceIds = new Set<string>()
   for (const card of cards || []) {
     const provider = card.provider as { services?: string[] | null } | null
     if (provider?.services) {
       for (const serviceId of provider.services) {
-        allServiceIds.add(serviceId)
+        // Only add if it looks like a UUID
+        if (UUID_REGEX.test(serviceId)) {
+          allServiceIds.add(serviceId)
+        }
       }
     }
   }
@@ -85,15 +93,19 @@ export async function getOnboardingKanban(filters: OnboardingFilters = {}) {
     }
   }
 
-  // Traduzir UUIDs de serviços para nomes nos cards
+  // Traduzir UUIDs de serviços para nomes nos cards e deduplicar
   const cardsWithServiceNames = (cards || []).map(card => {
     const provider = card.provider as { services?: string[] | null } | null
     if (provider?.services) {
+      // Translate and deduplicate services
+      const resolvedServices = provider.services.map(id =>
+        UUID_REGEX.test(id) ? (serviceNamesMap[id] || id) : id
+      )
       return {
         ...card,
         provider: {
           ...provider,
-          services: provider.services.map(id => serviceNamesMap[id] || id)
+          services: [...new Set(resolvedServices)]
         }
       }
     }

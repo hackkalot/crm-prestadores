@@ -5,6 +5,7 @@ import { PedidosFilters } from '@/components/pedidos/pedidos-filters'
 import { PedidosStats } from '@/components/pedidos/pedidos-stats'
 import { PedidosMap } from '@/components/pedidos/pedidos-map'
 import { SyncBackofficeDialog } from '@/components/sync/sync-backoffice-dialog'
+import { LastSyncBadge } from '@/components/sync/last-sync-badge'
 import { StatsCardsSkeleton, FiltersSkeleton, PrestadoresTableSkeleton } from '@/components/skeletons/page-skeletons'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
@@ -17,6 +18,7 @@ import {
   getDistinctStatuses,
   type ServiceRequestFilters,
 } from '@/lib/service-requests/actions'
+import { getLastSuccessfulSync } from '@/lib/sync/logs-actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -64,6 +66,12 @@ async function FiltersSection() {
   )
 }
 
+// Async component for sync info
+async function SyncInfoSection() {
+  const syncInfo = await getLastSuccessfulSync('service_requests')
+  return <LastSyncBadge syncInfo={syncInfo} label="Sync" />
+}
+
 export default async function PedidosPage({
   searchParams,
 }: {
@@ -94,6 +102,11 @@ export default async function PedidosPage({
         title="Pedidos de Servico"
         description="Gestao de pedidos de servico importados do backoffice FIXO"
         action={<SyncBackofficeDialog />}
+        syncInfo={
+          <Suspense fallback={null}>
+            <SyncInfoSection />
+          </Suspense>
+        }
       />
       <div className={`flex-1 p-6 ${view === 'map' ? 'flex flex-col gap-6 overflow-hidden' : 'space-y-6 overflow-auto'}`}>
         {/* Stats */}

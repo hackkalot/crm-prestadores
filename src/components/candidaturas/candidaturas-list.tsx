@@ -43,6 +43,7 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  Users,
 } from 'lucide-react'
 
 interface CandidaturasListProps {
@@ -65,6 +66,7 @@ const entityTypeIcons: Record<string, typeof User> = {
 const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info'> = {
   novo: 'info',
   em_onboarding: 'warning',
+  on_hold: 'warning',
   abandonado: 'destructive',
   arquivado: 'secondary',
 }
@@ -72,6 +74,7 @@ const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | '
 const statusLabels: Record<string, string> = {
   novo: 'Novo',
   em_onboarding: 'Em Onboarding',
+  on_hold: 'On-Hold',
   abandonado: 'Abandonado',
   arquivado: 'Arquivado',
 }
@@ -154,7 +157,7 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
               <span className="font-medium text-foreground">{total}</span> candidaturas
             </p>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Itens por pagina:</span>
+              <span className="text-sm text-muted-foreground">Candidaturas por página:</span>
               <Select value={limit.toString()} onValueChange={handleLimitChange}>
                 <SelectTrigger className="w-20">
                   <SelectValue />
@@ -181,7 +184,7 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
               Anterior
             </Button>
             <span className="text-sm text-muted-foreground">
-              Pagina <span className="font-medium text-foreground">{page}</span> de{' '}
+              Página <span className="font-medium text-foreground">{page}</span> de{' '}
               <span className="font-medium text-foreground">{totalPages || 1}</span>
             </span>
             <Button
@@ -221,6 +224,16 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
                     </button>
                   </TableHead>
                   <TableHead>Servicos</TableHead>
+                  <TableHead>
+                    <button
+                      onClick={() => handleSort('num_technicians')}
+                      className="flex items-center hover:text-foreground transition-colors"
+                    >
+                      <Users className="h-4 w-4 mr-1" />
+                      Técnicos
+                      {getSortIcon('num_technicians')}
+                    </button>
+                  </TableHead>
                   <TableHead>Zonas</TableHead>
                   <TableHead>
                     <button
@@ -240,7 +253,7 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
                       {getSortIcon('status')}
                     </button>
                   </TableHead>
-                  <TableHead>Acoes</TableHead>
+                  <TableHead>Ações</TableHead>
                   <TableHead className="w-10"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -305,6 +318,11 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
                             <span className="text-sm text-muted-foreground">-</span>
                           )}
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {provider.num_technicians ?? '-'}
+                        </span>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">

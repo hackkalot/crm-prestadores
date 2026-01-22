@@ -7,15 +7,19 @@ interface HeaderProps {
   description?: string
   backButton?: React.ReactNode
   action?: React.ReactNode
+  syncInfo?: React.ReactNode
 }
 
-export async function Header({ title, description, backButton, action }: HeaderProps) {
+export async function Header({ title, description, backButton, action, syncInfo }: HeaderProps) {
   return (
     <header className="flex h-16 items-center justify-between border-b bg-card px-6">
       <div className="flex items-center gap-3">
         {backButton}
         <div>
-          <h1 className="text-xl font-semibold">{title}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-semibold">{title}</h1>
+            {syncInfo}
+          </div>
           {description && (
             <p className="text-sm text-muted-foreground">{description}</p>
           )}

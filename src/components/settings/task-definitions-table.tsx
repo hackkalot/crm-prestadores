@@ -30,14 +30,18 @@ interface TaskDefinitionsTableProps {
 export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<{
+    name: string
+    description: string
     normal: string
     urgent: string
     alert: string
-  }>({ normal: '', urgent: '', alert: '' })
+  }>({ name: '', description: '', normal: '', urgent: '', alert: '' })
 
   const startEditing = (task: TaskDefinitionWithStage) => {
     setEditingId(task.id)
     setEditValues({
+      name: task.name,
+      description: task.description || '',
       normal: task.default_deadline_hours_normal?.toString() || '',
       urgent: task.default_deadline_hours_urgent?.toString() || '',
       alert: task.alert_hours_before?.toString() || '24',
@@ -46,7 +50,7 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
 
   const cancelEditing = () => {
     setEditingId(null)
-    setEditValues({ normal: '', urgent: '', alert: '' })
+    setEditValues({ name: '', description: '', normal: '', urgent: '', alert: '' })
   }
 
   const saveEditing = async () => {
@@ -54,6 +58,8 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
 
     try {
       await updateTaskDefinition(editingId, {
+        name: editValues.name.trim() || undefined,
+        description: editValues.description.trim() || null,
         default_deadline_hours_normal: editValues.normal ? parseInt(editValues.normal) : null,
         default_deadline_hours_urgent: editValues.urgent ? parseInt(editValues.urgent) : null,
         alert_hours_before: editValues.alert ? parseInt(editValues.alert) : 24,
@@ -129,14 +135,31 @@ export function TaskDefinitionsTable({ tasks, users }: TaskDefinitionsTableProps
                     <Badge variant="outline">{task.task_number}</Badge>
                   </TableCell>
                   <TableCell>
-                    <div>
-                      <p className="font-medium">{task.name}</p>
-                      {task.description && (
-                        <p className="text-sm text-muted-foreground truncate max-w-[300px]">
-                          {task.description}
-                        </p>
-                      )}
-                    </div>
+                    {editingId === task.id ? (
+                      <div className="space-y-2">
+                        <Input
+                          value={editValues.name}
+                          onChange={(e) => setEditValues({ ...editValues, name: e.target.value })}
+                          placeholder="Nome da tarefa"
+                          className="h-8"
+                        />
+                        <Input
+                          value={editValues.description}
+                          onChange={(e) => setEditValues({ ...editValues, description: e.target.value })}
+                          placeholder="Descrição (opcional)"
+                          className="h-8 text-sm"
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="font-medium">{task.name}</p>
+                        {task.description && (
+                          <p className="text-sm text-muted-foreground truncate max-w-[300px]">
+                            {task.description}
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell>
                     {editingId === task.id ? (

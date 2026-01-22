@@ -22,7 +22,8 @@ import {
   RotateCcw,
 } from 'lucide-react'
 import { useCallback, useTransition } from 'react'
-import { format, parseISO, subDays, subMonths, startOfMonth, endOfMonth, startOfYear } from 'date-fns'
+import { format, parseISO, subDays, subWeeks, subMonths, startOfMonth, endOfMonth, startOfYear, startOfWeek, endOfWeek } from 'date-fns'
+import { User } from 'lucide-react'
 
 const entityOptions = [
   { value: '_all', label: 'Todos os tipos' },
@@ -40,6 +41,7 @@ const onboardingTypeOptions = [
 // Presets de periodo
 const periodPresets = [
   { label: 'Últimos 7 dias', getValue: () => ({ from: subDays(new Date(), 7), to: new Date() }) },
+  { label: 'Semana passada', getValue: () => ({ from: startOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }), to: endOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }) }) },
   { label: 'Últimos 30 dias', getValue: () => ({ from: subDays(new Date(), 30), to: new Date() }) },
   { label: 'Este mês', getValue: () => ({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) }) },
   { label: 'Mês anterior', getValue: () => ({ from: startOfMonth(subMonths(new Date(), 1)), to: endOfMonth(subMonths(new Date(), 1)) }) },
@@ -48,9 +50,10 @@ const periodPresets = [
 
 interface KpiFiltersProps {
   districts: string[]
+  users: { id: string; name: string; email: string }[]
 }
 
-export function KpiFilters({ districts }: KpiFiltersProps) {
+export function KpiFilters({ districts, users }: KpiFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
@@ -60,6 +63,7 @@ export function KpiFilters({ districts }: KpiFiltersProps) {
   const currentOnboardingType = searchParams.get('onboardingType') || ''
   const currentDateFrom = searchParams.get('dateFrom') || ''
   const currentDateTo = searchParams.get('dateTo') || ''
+  const currentUserId = searchParams.get('userId') || ''
 
   const updateFilter = useCallback((key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -102,13 +106,14 @@ export function KpiFilters({ districts }: KpiFiltersProps) {
   }
 
   const hasFilters = currentEntity || currentDistrict || currentOnboardingType ||
-    currentDateFrom || currentDateTo
+    currentDateFrom || currentDateTo || currentUserId
 
   const activeFilterCount = [
     currentEntity,
     currentDistrict,
     currentOnboardingType,
     currentDateFrom || currentDateTo ? 'date' : '',
+    currentUserId,
   ].filter(Boolean).length
 
   return (
@@ -156,7 +161,7 @@ export function KpiFilters({ districts }: KpiFiltersProps) {
         </div>
 
         {/* Filters Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
           {/* Date Range */}
           <div className="space-y-1.5 sm:col-span-2 lg:col-span-2">
             <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
@@ -256,6 +261,31 @@ export function KpiFilters({ districts }: KpiFiltersProps) {
               </SelectContent>
             </Select>
           </div>
+
+          {/* User Filter */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+              <User className="h-3 w-3" />
+              Utilizador
+            </label>
+            <Select
+              value={currentUserId || '_all'}
+              onValueChange={(value) => updateFilter('userId', value)}
+              disabled={isPending}
+            >
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="_all">Todos</SelectItem>
+                {users.map((user) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Active Filters Summary */}
@@ -341,6 +371,20 @@ export function KpiFilters({ districts }: KpiFiltersProps) {
                   size="sm"
                   className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
                   onClick={() => updateFilter('onboardingType', '')}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            )}
+            {currentUserId && (
+              <Badge variant="secondary" className="gap-1 pr-1">
+                <User className="h-3 w-3" />
+                {users.find(u => u.id === currentUserId)?.name || 'Utilizador'}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
+                  onClick={() => updateFilter('userId', '')}
                 >
                   <X className="h-3 w-3" />
                 </Button>

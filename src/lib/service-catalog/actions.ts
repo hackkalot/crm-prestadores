@@ -196,3 +196,188 @@ export async function getCatalogServiceGroups(cluster?: string): Promise<string[
 export async function revalidateCatalogPage() {
   revalidatePath('/configuracoes')
 }
+
+// Tipo para criar/atualizar preço
+export type CatalogPriceInput = Omit<CatalogPrice, 'id' | 'created_at' | 'updated_at'>
+
+// Criar novo preço no catálogo
+export async function createCatalogPrice(
+  data: CatalogPriceInput
+): Promise<{ success: boolean; id?: string; error?: string }> {
+  const supabase = createAdminClient()
+
+  // Verificar se já existe um serviço com a mesma combinação
+  const typologyValue = data.typology || ''
+  const { data: existing } = await supabase
+    .from('service_prices')
+    .select('id')
+    .eq('service_name', data.service_name)
+    .eq('unit_description', data.unit_description)
+    .or(`typology.eq.${typologyValue},typology.is.null`)
+    .eq('is_active', true)
+    .limit(1)
+
+  if (existing && existing.length > 0) {
+    return {
+      success: false,
+      error: `Já existe um serviço "${data.service_name}" com a mesma unidade "${data.unit_description}"${data.typology ? ` e tipologia "${data.typology}"` : ''}. A combinação de serviço + unidade + tipologia deve ser única.`,
+    }
+  }
+
+  const { data: result, error } = await supabase
+    .from('service_prices')
+    .insert({
+      ...data,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('Error creating catalog price:', error)
+    // Mensagem mais amigável para erro de duplicado
+    if (error.message.includes('unique') || error.code === '23505') {
+      return {
+        success: false,
+        error: `Já existe um serviço "${data.service_name}" com a mesma unidade "${data.unit_description}". A combinação de serviço + unidade + tipologia deve ser única.`,
+      }
+    }
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/configuracoes')
+  return { success: true, id: result.id }
+}
+
+// Atualizar preço existente no catálogo
+export async function updateCatalogPrice(
+  id: string,
+  data: Partial<CatalogPriceInput>
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = createAdminClient()
+
+  const { error } = await supabase
+    .from('service_prices')
+    .update({
+      ...data,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+
+  if (error) {
+    console.error('Error updating catalog price:', error)
+    // Mensagem mais amigável para erro de duplicado
+    if (error.message.includes('unique') || error.code === '23505') {
+      return {
+        success: false,
+        error: `Já existe um serviço com a mesma combinação de nome, unidade e tipologia. A combinação deve ser única.`,
+      }
+    }
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/configuracoes')
+  return { success: true }
+}
+
+// Eliminar (soft delete) preço do catálogo
+export async function deleteCatalogPrice(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = createAdminClient()
+
+  const { error } = await supabase
+    .from('service_prices')
+    .update({
+      is_active: false,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+
+  if (error) {
+    console.error('Error deleting catalog price:', error)
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/configuracoes')
+  return { success: true }
+}
+
+// Obter sugestões de service_name (fuzzy)
+export async function getServiceNameSuggestions(search: string): Promise<string[]> {
+  if (!search || search.length < 2) return []
+
+  const { data } = await createAdminClient()
+    .from('service_prices')
+    .select('service_name')
+    .eq('is_active', true)
+    .ilike('service_name', `%${search}%`)
+    .limit(10)
+
+  const names = new Set<string>()
+  for (const item of data || []) {
+    names.add(item.service_name)
+  }
+
+  return Array.from(names).sort()
+}
+
+// Obter sugestões de unit_description (fuzzy)
+export async function getUnitDescriptionSuggestions(search: string): Promise<string[]> {
+  if (!search || search.length < 2) return []
+
+  const { data } = await createAdminClient()
+    .from('service_prices')
+    .select('unit_description')
+    .eq('is_active', true)
+    .ilike('unit_description', `%${search}%`)
+    .limit(10)
+
+  const descriptions = new Set<string>()
+  for (const item of data || []) {
+    descriptions.add(item.unit_description)
+  }
+
+  return Array.from(descriptions).sort()
+}
+
+// Obter todos os preços para export (sem paginação, respeitando filtros)
+export async function getCatalogPricesForExport(params: {
+  cluster?: string
+  serviceGroup?: string
+  search?: string
+}): Promise<CatalogPrice[]> {
+  const { cluster, serviceGroup, search } = params
+
+  let query = createAdminClient()
+    .from('service_prices')
+    .select('*')
+    .eq('is_active', true)
+    .order('cluster')
+    .order('service_group')
+    .order('service_name')
+    .order('unit_description')
+
+  if (cluster) {
+    query = query.eq('cluster', cluster)
+  }
+
+  if (serviceGroup) {
+    query = query.eq('service_group', serviceGroup)
+  }
+
+  if (search) {
+    query = query.or(`service_name.ilike.%${search}%,unit_description.ilike.%${search}%`)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching catalog prices for export:', error)
+    return []
+  }
+
+  return data || []
+}

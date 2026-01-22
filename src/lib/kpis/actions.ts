@@ -11,6 +11,7 @@ export type KpiFilters = {
   entityType?: string
   district?: string
   onboardingType?: OnboardingType
+  userId?: string // Filtrar por RM (relationship_owner_id ou completed_by)
 }
 
 // KPI: Prestadores por etapa do Kanban
@@ -32,7 +33,7 @@ export async function getProvidersPerStage(filters: KpiFilters = {}) {
       current_stage_id,
       onboarding_type,
       started_at,
-      provider:providers(entity_type, districts)
+      provider:providers(entity_type, districts, relationship_owner_id)
     `)
     .is('completed_at', null)
 
@@ -55,13 +56,13 @@ export async function getProvidersPerStage(filters: KpiFilters = {}) {
   if (!cards) return stages.map(s => ({ ...s, count: 0 }))
 
   // Helper para obter provider de relação (Supabase retorna array)
-  type ProviderRelation = { entity_type: string; districts: string[] } | { entity_type: string; districts: string[] }[] | null
+  type ProviderRelation = { entity_type: string; districts: string[]; relationship_owner_id: string | null } | { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
   const getProvider = (rel: ProviderRelation) => {
     if (!rel) return null
     return Array.isArray(rel) ? rel[0] : rel
   }
 
-  // Filtrar por entity_type e district se necessario
+  // Filtrar por entity_type, district e userId
   let filteredCards = cards
   if (filters.entityType) {
     filteredCards = filteredCards.filter((c) => {
@@ -74,6 +75,13 @@ export async function getProvidersPerStage(filters: KpiFilters = {}) {
     filteredCards = filteredCards.filter((c) => {
       const provider = getProvider(c.provider as ProviderRelation)
       return provider?.districts?.includes(filters.district!)
+    })
+  }
+
+  if (filters.userId) {
+    filteredCards = filteredCards.filter((c) => {
+      const provider = getProvider(c.provider as ProviderRelation)
+      return provider?.relationship_owner_id === filters.userId
     })
   }
 
@@ -104,7 +112,7 @@ export async function getAverageOnboardingTime(filters: KpiFilters = {}) {
       onboarding_type,
       started_at,
       completed_at,
-      provider:providers(entity_type, districts)
+      provider:providers(entity_type, districts, relationship_owner_id)
     `)
     .not('completed_at', 'is', null)
 
@@ -135,13 +143,13 @@ export async function getAverageOnboardingTime(filters: KpiFilters = {}) {
   }
 
   // Helper para obter provider de relação
-  type ProviderRelation = { entity_type: string; districts: string[] } | { entity_type: string; districts: string[] }[] | null
+  type ProviderRelation = { entity_type: string; districts: string[]; relationship_owner_id: string | null } | { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
   const getProvider = (rel: ProviderRelation) => {
     if (!rel) return null
     return Array.isArray(rel) ? rel[0] : rel
   }
 
-  // Filtrar por entity_type e district
+  // Filtrar por entity_type, district e userId
   let filteredCards = cards
   if (filters.entityType) {
     filteredCards = filteredCards.filter((c) => {
@@ -154,6 +162,13 @@ export async function getAverageOnboardingTime(filters: KpiFilters = {}) {
     filteredCards = filteredCards.filter((c) => {
       const provider = getProvider(c.provider as ProviderRelation)
       return provider?.districts?.includes(filters.district!)
+    })
+  }
+
+  if (filters.userId) {
+    filteredCards = filteredCards.filter((c) => {
+      const provider = getProvider(c.provider as ProviderRelation)
+      return provider?.relationship_owner_id === filters.userId
     })
   }
 
@@ -225,7 +240,7 @@ export async function getOnboardingTotals(filters: KpiFilters = {}) {
       id,
       onboarding_type,
       started_at,
-      provider:providers(entity_type, districts)
+      provider:providers(entity_type, districts, relationship_owner_id)
     `)
     .is('completed_at', null)
 
@@ -248,7 +263,7 @@ export async function getOnboardingTotals(filters: KpiFilters = {}) {
   if (!cards) return { total: 0, normal: 0, urgente: 0 }
 
   // Helper para obter provider de relação
-  type ProviderRelation = { entity_type: string; districts: string[] } | { entity_type: string; districts: string[] }[] | null
+  type ProviderRelation = { entity_type: string; districts: string[]; relationship_owner_id: string | null } | { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
   const getProvider = (rel: ProviderRelation) => {
     if (!rel) return null
     return Array.isArray(rel) ? rel[0] : rel
@@ -270,6 +285,13 @@ export async function getOnboardingTotals(filters: KpiFilters = {}) {
     })
   }
 
+  if (filters.userId) {
+    filteredCards = filteredCards.filter((c) => {
+      const provider = getProvider(c.provider as ProviderRelation)
+      return provider?.relationship_owner_id === filters.userId
+    })
+  }
+
   const normal = filteredCards.filter((c) => c.onboarding_type === 'normal').length
   const urgente = filteredCards.filter((c) => c.onboarding_type === 'urgente').length
 
@@ -284,7 +306,7 @@ export async function getOnboardingTotals(filters: KpiFilters = {}) {
 export async function getCandidaturasPending(filters: KpiFilters = {}) {
   let query = createAdminClient()
     .from('providers')
-    .select('id, entity_type, districts, first_application_at')
+    .select('id, entity_type, districts, first_application_at, relationship_owner_id')
     .eq('status', 'novo')
 
   if (filters.entityType) {
@@ -305,6 +327,10 @@ export async function getCandidaturasPending(filters: KpiFilters = {}) {
     query = query.lt('first_application_at', endDate.toISOString().split('T')[0])
   }
 
+  if (filters.userId) {
+    query = query.eq('relationship_owner_id', filters.userId)
+  }
+
   const { data } = await query
 
   return data?.length || 0
@@ -315,7 +341,7 @@ export async function getConversionFunnel(filters: KpiFilters = {}) {
   // Total candidaturas (todos os status exceto abandonado)
   let candidaturasQuery = createAdminClient()
     .from('providers')
-    .select('id, status, entity_type, districts, first_application_at')
+    .select('id, status, entity_type, districts, first_application_at, relationship_owner_id')
 
   if (filters.entityType) {
     candidaturasQuery = candidaturasQuery.eq('entity_type', filters.entityType)
@@ -333,6 +359,10 @@ export async function getConversionFunnel(filters: KpiFilters = {}) {
     const endDate = new Date(filters.dateTo)
     endDate.setDate(endDate.getDate() + 1)
     candidaturasQuery = candidaturasQuery.lt('first_application_at', endDate.toISOString().split('T')[0])
+  }
+
+  if (filters.userId) {
+    candidaturasQuery = candidaturasQuery.eq('relationship_owner_id', filters.userId)
   }
 
   const { data: providers } = await candidaturasQuery
@@ -1066,7 +1096,7 @@ export async function getHealthIndicators(filters: KpiFilters = {}) {
       started_at,
       current_stage_id,
       current_stage:stage_definitions!onboarding_cards_current_stage_id_fkey(stage_number),
-      provider:providers(entity_type, districts)
+      provider:providers(entity_type, districts, relationship_owner_id)
     `)
     .is('completed_at', null)
 
@@ -1096,15 +1126,9 @@ export async function getHealthIndicators(filters: KpiFilters = {}) {
   }
 
   // Helper para obter provider de relação
-  type ProviderRelation = { entity_type: string; districts: string[] } | { entity_type: string; districts: string[] }[] | null
-  type StageRelation = { stage_number: number } | { stage_number: number }[] | null
+  type ProviderRelation = { entity_type: string; districts: string[]; relationship_owner_id: string | null } | { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
 
   const getProvider = (rel: ProviderRelation) => {
-    if (!rel) return null
-    return Array.isArray(rel) ? rel[0] : rel
-  }
-
-  const getStage = (rel: StageRelation) => {
     if (!rel) return null
     return Array.isArray(rel) ? rel[0] : rel
   }
@@ -1122,6 +1146,13 @@ export async function getHealthIndicators(filters: KpiFilters = {}) {
     filteredCards = filteredCards.filter((c) => {
       const provider = getProvider(c.provider as ProviderRelation)
       return provider?.districts?.includes(filters.district!)
+    })
+  }
+
+  if (filters.userId) {
+    filteredCards = filteredCards.filter((c) => {
+      const provider = getProvider(c.provider as ProviderRelation)
+      return provider?.relationship_owner_id === filters.userId
     })
   }
 
@@ -1158,7 +1189,7 @@ export async function getHealthIndicators(filters: KpiFilters = {}) {
   }
 }
 
-// KPI: Motivos de abandono
+// KPI: Motivos de abandono (com party - quem abandonou)
 export async function getAbandonmentReasons(filters: KpiFilters = {}) {
   let query = createAdminClient()
     .from('providers')
@@ -1166,7 +1197,9 @@ export async function getAbandonmentReasons(filters: KpiFilters = {}) {
       id,
       entity_type,
       districts,
+      relationship_owner_id,
       abandonment_reason,
+      abandonment_party,
       updated_at,
       onboarding_card:onboarding_cards(onboarding_type)
     `)
@@ -1191,6 +1224,10 @@ export async function getAbandonmentReasons(filters: KpiFilters = {}) {
     query = query.lt('updated_at', endDate.toISOString().split('T')[0])
   }
 
+  if (filters.userId) {
+    query = query.eq('relationship_owner_id', filters.userId)
+  }
+
   const { data } = await query
 
   if (!data || data.length === 0) return []
@@ -1210,15 +1247,31 @@ export async function getAbandonmentReasons(filters: KpiFilters = {}) {
     })
   }
 
-  // Agrupar por motivo
-  const reasonCounts = new Map<string, number>()
+  // Agrupar por motivo E party
+  const reasonCounts = new Map<string, { prestador: number; fixo: number; total: number }>()
   for (const provider of filteredData) {
     const reason = provider.abandonment_reason || 'Não especificado'
-    reasonCounts.set(reason, (reasonCounts.get(reason) || 0) + 1)
+    const party = provider.abandonment_party || 'prestador'
+
+    if (!reasonCounts.has(reason)) {
+      reasonCounts.set(reason, { prestador: 0, fixo: 0, total: 0 })
+    }
+    const counts = reasonCounts.get(reason)!
+    if (party === 'prestador') {
+      counts.prestador++
+    } else {
+      counts.fixo++
+    }
+    counts.total++
   }
 
   return Array.from(reasonCounts.entries())
-    .map(([reason, count]) => ({ reason, count }))
+    .map(([reason, counts]) => ({
+      reason,
+      count: counts.total,
+      prestador: counts.prestador,
+      fixo: counts.fixo,
+    }))
     .sort((a, b) => b.count - a.count)
 }
 
@@ -1240,6 +1293,7 @@ export async function getAbandonmentByStage(filters: KpiFilters = {}) {
       id,
       entity_type,
       districts,
+      relationship_owner_id,
       updated_at,
       onboarding_card:onboarding_cards(current_stage_id, onboarding_type)
     `)
@@ -1261,6 +1315,10 @@ export async function getAbandonmentByStage(filters: KpiFilters = {}) {
     const endDate = new Date(filters.dateTo)
     endDate.setDate(endDate.getDate() + 1)
     query = query.lt('updated_at', endDate.toISOString().split('T')[0])
+  }
+
+  if (filters.userId) {
+    query = query.eq('relationship_owner_id', filters.userId)
   }
 
   const { data: providers } = await query
@@ -1421,7 +1479,7 @@ export async function getTrends(filters: KpiFilters = {}) {
   // Candidaturas
   let candidaturasQuery = createAdminClient()
     .from('providers')
-    .select('id, first_application_at, entity_type, districts')
+    .select('id, first_application_at, entity_type, districts, relationship_owner_id')
     .not('first_application_at', 'is', null)
     .gte('first_application_at', queryStartDate)
 
@@ -1433,6 +1491,10 @@ export async function getTrends(filters: KpiFilters = {}) {
     candidaturasQuery = candidaturasQuery.contains('districts', [filters.district])
   }
 
+  if (filters.userId) {
+    candidaturasQuery = candidaturasQuery.eq('relationship_owner_id', filters.userId)
+  }
+
   const { data: candidaturas } = await candidaturasQuery
 
   // Ativações
@@ -1441,7 +1503,7 @@ export async function getTrends(filters: KpiFilters = {}) {
     .select(`
       id,
       completed_at,
-      provider:providers(entity_type, districts)
+      provider:providers(entity_type, districts, relationship_owner_id)
     `)
     .not('completed_at', 'is', null)
     .gte('completed_at', queryStartDate)
@@ -1453,13 +1515,13 @@ export async function getTrends(filters: KpiFilters = {}) {
   const { data: ativacoes } = await ativacoesQuery
 
   // Helper para obter provider
-  type ProviderRelation = { entity_type: string; districts: string[] } | { entity_type: string; districts: string[] }[] | null
+  type ProviderRelation = { entity_type: string; districts: string[]; relationship_owner_id: string | null } | { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
   const getProvider = (rel: ProviderRelation) => {
     if (!rel) return null
     return Array.isArray(rel) ? rel[0] : rel
   }
 
-  // Filtrar ativações por entity_type e district
+  // Filtrar ativações por entity_type, district e userId
   let filteredAtivacoes = ativacoes || []
   if (filters.entityType) {
     filteredAtivacoes = filteredAtivacoes.filter((a) => {
@@ -1472,6 +1534,13 @@ export async function getTrends(filters: KpiFilters = {}) {
     filteredAtivacoes = filteredAtivacoes.filter((a) => {
       const provider = getProvider(a.provider as ProviderRelation)
       return provider?.districts?.includes(filters.district!)
+    })
+  }
+
+  if (filters.userId) {
+    filteredAtivacoes = filteredAtivacoes.filter((a) => {
+      const provider = getProvider(a.provider as ProviderRelation)
+      return provider?.relationship_owner_id === filters.userId
     })
   }
 
@@ -1501,4 +1570,701 @@ export async function getTrends(filters: KpiFilters = {}) {
   })
 
   return { aggregationType, data }
+}
+
+// KPI: Contactos feitos (tarefa "Ligar" = task_number 2 da etapa 1)
+export async function getContactsMade(filters: KpiFilters = {}) {
+  // Primeiro obter o ID da task_definition "Ligar" (task_number=2, stage_number='1')
+  const { data: taskDef } = await createAdminClient()
+    .from('task_definitions')
+    .select(`
+      id,
+      stage:stage_definitions!inner(stage_number)
+    `)
+    .eq('task_number', 2)
+    .single()
+
+  if (!taskDef) return 0
+
+  // Verificar se é etapa 1
+  const stage = Array.isArray(taskDef.stage) ? taskDef.stage[0] : taskDef.stage
+  if (stage?.stage_number !== '1') return 0
+
+  // Obter tarefas "Ligar" concluídas
+  let query = createAdminClient()
+    .from('onboarding_tasks')
+    .select(`
+      id,
+      completed_at,
+      completed_by,
+      card:onboarding_cards!inner(
+        id,
+        onboarding_type,
+        provider:providers!inner(entity_type, districts, relationship_owner_id)
+      )
+    `)
+    .eq('task_definition_id', taskDef.id)
+    .eq('status', 'concluida')
+    .not('completed_at', 'is', null)
+
+  if (filters.dateFrom) {
+    query = query.gte('completed_at', filters.dateFrom)
+  }
+
+  if (filters.dateTo) {
+    const endDate = new Date(filters.dateTo)
+    endDate.setDate(endDate.getDate() + 1)
+    query = query.lt('completed_at', endDate.toISOString().split('T')[0])
+  }
+
+  const { data: tasks } = await query
+
+  if (!tasks || tasks.length === 0) return 0
+
+  // Helper para extrair provider
+  type CardRelation = {
+    id: string
+    onboarding_type: string
+    provider: { entity_type: string; districts: string[]; relationship_owner_id: string | null } |
+              { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
+  }
+
+  const getCard = (rel: CardRelation | CardRelation[] | null): CardRelation | null => {
+    if (!rel) return null
+    return Array.isArray(rel) ? rel[0] : rel
+  }
+
+  const getProvider = (card: CardRelation | null) => {
+    if (!card?.provider) return null
+    return Array.isArray(card.provider) ? card.provider[0] : card.provider
+  }
+
+  // Filtrar por tipo, distrito, onboarding type e userId
+  let filteredTasks = tasks
+
+  if (filters.onboardingType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      return card?.onboarding_type === filters.onboardingType
+    })
+  }
+
+  if (filters.entityType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.entity_type === filters.entityType
+    })
+  }
+
+  if (filters.district) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.districts?.includes(filters.district!)
+    })
+  }
+
+  // Filtrar por userId - quem completou a tarefa
+  if (filters.userId) {
+    filteredTasks = filteredTasks.filter((t) => t.completed_by === filters.userId)
+  }
+
+  return filteredTasks.length
+}
+
+// KPI: Prestadores trabalhados (únicos com pelo menos 1 tarefa concluída no período)
+export async function getProvidersWorked(filters: KpiFilters = {}) {
+  // Obter tarefas concluídas no período
+  let query = createAdminClient()
+    .from('onboarding_tasks')
+    .select(`
+      id,
+      completed_at,
+      completed_by,
+      card:onboarding_cards!inner(
+        id,
+        provider_id,
+        onboarding_type,
+        provider:providers!inner(entity_type, districts, relationship_owner_id)
+      )
+    `)
+    .eq('status', 'concluida')
+    .not('completed_at', 'is', null)
+
+  if (filters.dateFrom) {
+    query = query.gte('completed_at', filters.dateFrom)
+  }
+
+  if (filters.dateTo) {
+    const endDate = new Date(filters.dateTo)
+    endDate.setDate(endDate.getDate() + 1)
+    query = query.lt('completed_at', endDate.toISOString().split('T')[0])
+  }
+
+  const { data: tasks } = await query
+
+  if (!tasks || tasks.length === 0) return 0
+
+  // Helper para extrair dados
+  type CardRelation = {
+    id: string
+    provider_id: string
+    onboarding_type: string
+    provider: { entity_type: string; districts: string[]; relationship_owner_id: string | null } |
+              { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
+  }
+
+  const getCard = (rel: CardRelation | CardRelation[] | null): CardRelation | null => {
+    if (!rel) return null
+    return Array.isArray(rel) ? rel[0] : rel
+  }
+
+  const getProvider = (card: CardRelation | null) => {
+    if (!card?.provider) return null
+    return Array.isArray(card.provider) ? card.provider[0] : card.provider
+  }
+
+  // Filtrar
+  let filteredTasks = tasks
+
+  if (filters.onboardingType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      return card?.onboarding_type === filters.onboardingType
+    })
+  }
+
+  if (filters.entityType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.entity_type === filters.entityType
+    })
+  }
+
+  if (filters.district) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.districts?.includes(filters.district!)
+    })
+  }
+
+  // Filtrar por userId - relationship_owner OU completed_by
+  if (filters.userId) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.relationship_owner_id === filters.userId || t.completed_by === filters.userId
+    })
+  }
+
+  // Contar prestadores únicos
+  const uniqueProviderIds = new Set(
+    filteredTasks.map((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      return card?.provider_id
+    }).filter(Boolean)
+  )
+
+  return uniqueProviderIds.size
+}
+
+// KPI: Tempo médio de entrada na rede (apenas os que entraram no período)
+export async function getAverageTimeToNetwork(filters: KpiFilters = {}) {
+  // Obter providers que foram activados no período
+  let query = createAdminClient()
+    .from('providers')
+    .select('id, onboarding_started_at, activated_at, entity_type, districts, relationship_owner_id')
+    .eq('status', 'ativo')
+    .not('onboarding_started_at', 'is', null)
+    .not('activated_at', 'is', null)
+
+  if (filters.dateFrom) {
+    query = query.gte('activated_at', filters.dateFrom)
+  }
+
+  if (filters.dateTo) {
+    const endDate = new Date(filters.dateTo)
+    endDate.setDate(endDate.getDate() + 1)
+    query = query.lt('activated_at', endDate.toISOString().split('T')[0])
+  }
+
+  if (filters.entityType) {
+    query = query.eq('entity_type', filters.entityType)
+  }
+
+  if (filters.district) {
+    query = query.contains('districts', [filters.district])
+  }
+
+  if (filters.userId) {
+    query = query.eq('relationship_owner_id', filters.userId)
+  }
+
+  const { data: providers } = await query
+
+  if (!providers || providers.length === 0) {
+    return { days: 0, count: 0 }
+  }
+
+  // Calcular tempo médio
+  const durations = providers.map((p) => {
+    const started = new Date(p.onboarding_started_at!)
+    const activated = new Date(p.activated_at!)
+    return (activated.getTime() - started.getTime()) / (1000 * 60 * 60 * 24) // dias
+  })
+
+  const averageDays = Math.round((durations.reduce((a, b) => a + b, 0) / durations.length) * 10) / 10
+
+  return { days: averageDays, count: providers.length }
+}
+
+// Gráfico: Cadência semanal (entrada/saída do funil)
+export async function getWeeklyCadence(filters: KpiFilters = {}) {
+  // Determinar período
+  const now = new Date()
+  const dateFrom = filters.dateFrom ? new Date(filters.dateFrom) : new Date(now.getFullYear(), now.getMonth() - 3, 1)
+  const dateTo = filters.dateTo ? new Date(filters.dateTo) : now
+
+  // Gerar semanas
+  const weeks: { key: string; label: string; start: Date; end: Date }[] = []
+  const current = new Date(dateFrom)
+  // Ajustar para segunda-feira
+  const dayOfWeek = current.getDay()
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
+  current.setDate(current.getDate() + diff)
+
+  while (current <= dateTo) {
+    const weekStart = new Date(current)
+    const weekEnd = new Date(current)
+    weekEnd.setDate(weekEnd.getDate() + 6)
+    weekEnd.setHours(23, 59, 59, 999)
+
+    const weekNum = getWeekNumber(weekStart)
+    weeks.push({
+      key: `${weekStart.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`,
+      label: `Sem ${weekNum}`,
+      start: weekStart,
+      end: weekEnd,
+    })
+    current.setDate(current.getDate() + 7)
+  }
+
+  // Limitar a 12 semanas
+  const limitedWeeks = weeks.slice(-12)
+
+  if (limitedWeeks.length === 0) return []
+
+  const queryStartDate = limitedWeeks[0].start.toISOString().split('T')[0]
+
+  // Entradas: providers que começaram onboarding
+  let entradasQuery = createAdminClient()
+    .from('providers')
+    .select('id, onboarding_started_at, entity_type, districts, relationship_owner_id')
+    .not('onboarding_started_at', 'is', null)
+    .gte('onboarding_started_at', queryStartDate)
+
+  if (filters.entityType) {
+    entradasQuery = entradasQuery.eq('entity_type', filters.entityType)
+  }
+  if (filters.district) {
+    entradasQuery = entradasQuery.contains('districts', [filters.district])
+  }
+  if (filters.userId) {
+    entradasQuery = entradasQuery.eq('relationship_owner_id', filters.userId)
+  }
+
+  const { data: entradas } = await entradasQuery
+
+  // Saídas: providers que foram activados
+  let saidasQuery = createAdminClient()
+    .from('providers')
+    .select('id, activated_at, entity_type, districts, relationship_owner_id')
+    .not('activated_at', 'is', null)
+    .gte('activated_at', queryStartDate)
+
+  if (filters.entityType) {
+    saidasQuery = saidasQuery.eq('entity_type', filters.entityType)
+  }
+  if (filters.district) {
+    saidasQuery = saidasQuery.contains('districts', [filters.district])
+  }
+  if (filters.userId) {
+    saidasQuery = saidasQuery.eq('relationship_owner_id', filters.userId)
+  }
+
+  const { data: saidas } = await saidasQuery
+
+  // Agrupar por semana
+  return limitedWeeks.map((week) => {
+    const entradasCount = (entradas || []).filter((p) => {
+      const date = new Date(p.onboarding_started_at!)
+      return date >= week.start && date <= week.end
+    }).length
+
+    const saidasCount = (saidas || []).filter((p) => {
+      const date = new Date(p.activated_at!)
+      return date >= week.start && date <= week.end
+    }).length
+
+    return {
+      week: week.label,
+      entradas: entradasCount,
+      saidas: saidasCount,
+    }
+  })
+}
+
+// Gráfico: Contactos por semana
+export async function getContactsTrend(filters: KpiFilters = {}) {
+  // Obter task definition "Ligar"
+  const { data: taskDef } = await createAdminClient()
+    .from('task_definitions')
+    .select(`
+      id,
+      stage:stage_definitions!inner(stage_number)
+    `)
+    .eq('task_number', 2)
+    .single()
+
+  if (!taskDef) return []
+
+  const stage = Array.isArray(taskDef.stage) ? taskDef.stage[0] : taskDef.stage
+  if (stage?.stage_number !== '1') return []
+
+  // Determinar período
+  const now = new Date()
+  const dateFrom = filters.dateFrom ? new Date(filters.dateFrom) : new Date(now.getFullYear(), now.getMonth() - 3, 1)
+  const dateTo = filters.dateTo ? new Date(filters.dateTo) : now
+
+  // Gerar semanas
+  const weeks: { key: string; label: string; start: Date; end: Date }[] = []
+  const current = new Date(dateFrom)
+  const dayOfWeek = current.getDay()
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
+  current.setDate(current.getDate() + diff)
+
+  while (current <= dateTo) {
+    const weekStart = new Date(current)
+    const weekEnd = new Date(current)
+    weekEnd.setDate(weekEnd.getDate() + 6)
+    weekEnd.setHours(23, 59, 59, 999)
+
+    const weekNum = getWeekNumber(weekStart)
+    weeks.push({
+      key: `${weekStart.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`,
+      label: `Sem ${weekNum}`,
+      start: weekStart,
+      end: weekEnd,
+    })
+    current.setDate(current.getDate() + 7)
+  }
+
+  const limitedWeeks = weeks.slice(-12)
+  if (limitedWeeks.length === 0) return []
+
+  const queryStartDate = limitedWeeks[0].start.toISOString().split('T')[0]
+
+  // Obter tarefas concluídas
+  const { data: tasks } = await createAdminClient()
+    .from('onboarding_tasks')
+    .select(`
+      id,
+      completed_at,
+      completed_by,
+      card:onboarding_cards!inner(
+        onboarding_type,
+        provider:providers!inner(entity_type, districts, relationship_owner_id)
+      )
+    `)
+    .eq('task_definition_id', taskDef.id)
+    .eq('status', 'concluida')
+    .not('completed_at', 'is', null)
+    .gte('completed_at', queryStartDate)
+
+  if (!tasks) return limitedWeeks.map((w) => ({ week: w.label, count: 0 }))
+
+  // Helper
+  type CardRelation = {
+    onboarding_type: string
+    provider: { entity_type: string; districts: string[]; relationship_owner_id: string | null } |
+              { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
+  }
+
+  const getCard = (rel: CardRelation | CardRelation[] | null): CardRelation | null => {
+    if (!rel) return null
+    return Array.isArray(rel) ? rel[0] : rel
+  }
+
+  const getProvider = (card: CardRelation | null) => {
+    if (!card?.provider) return null
+    return Array.isArray(card.provider) ? card.provider[0] : card.provider
+  }
+
+  // Filtrar
+  let filteredTasks = tasks
+
+  if (filters.onboardingType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      return card?.onboarding_type === filters.onboardingType
+    })
+  }
+
+  if (filters.entityType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.entity_type === filters.entityType
+    })
+  }
+
+  if (filters.district) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.districts?.includes(filters.district!)
+    })
+  }
+
+  if (filters.userId) {
+    filteredTasks = filteredTasks.filter((t) => t.completed_by === filters.userId)
+  }
+
+  // Agrupar por semana
+  return limitedWeeks.map((week) => {
+    const count = filteredTasks.filter((t) => {
+      const date = new Date(t.completed_at!)
+      return date >= week.start && date <= week.end
+    }).length
+
+    return { week: week.label, count }
+  })
+}
+
+// Gráfico: Prestadores trabalhados por semana
+export async function getWorkedProvidersTrend(filters: KpiFilters = {}) {
+  // Determinar período
+  const now = new Date()
+  const dateFrom = filters.dateFrom ? new Date(filters.dateFrom) : new Date(now.getFullYear(), now.getMonth() - 3, 1)
+  const dateTo = filters.dateTo ? new Date(filters.dateTo) : now
+
+  // Gerar semanas
+  const weeks: { key: string; label: string; start: Date; end: Date }[] = []
+  const current = new Date(dateFrom)
+  const dayOfWeek = current.getDay()
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
+  current.setDate(current.getDate() + diff)
+
+  while (current <= dateTo) {
+    const weekStart = new Date(current)
+    const weekEnd = new Date(current)
+    weekEnd.setDate(weekEnd.getDate() + 6)
+    weekEnd.setHours(23, 59, 59, 999)
+
+    const weekNum = getWeekNumber(weekStart)
+    weeks.push({
+      key: `${weekStart.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`,
+      label: `Sem ${weekNum}`,
+      start: weekStart,
+      end: weekEnd,
+    })
+    current.setDate(current.getDate() + 7)
+  }
+
+  const limitedWeeks = weeks.slice(-12)
+  if (limitedWeeks.length === 0) return []
+
+  const queryStartDate = limitedWeeks[0].start.toISOString().split('T')[0]
+
+  // Obter tarefas concluídas
+  const { data: tasks } = await createAdminClient()
+    .from('onboarding_tasks')
+    .select(`
+      id,
+      completed_at,
+      completed_by,
+      card:onboarding_cards!inner(
+        provider_id,
+        onboarding_type,
+        provider:providers!inner(entity_type, districts, relationship_owner_id)
+      )
+    `)
+    .eq('status', 'concluida')
+    .not('completed_at', 'is', null)
+    .gte('completed_at', queryStartDate)
+
+  if (!tasks) return limitedWeeks.map((w) => ({ week: w.label, count: 0 }))
+
+  // Helper
+  type CardRelation = {
+    provider_id: string
+    onboarding_type: string
+    provider: { entity_type: string; districts: string[]; relationship_owner_id: string | null } |
+              { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
+  }
+
+  const getCard = (rel: CardRelation | CardRelation[] | null): CardRelation | null => {
+    if (!rel) return null
+    return Array.isArray(rel) ? rel[0] : rel
+  }
+
+  const getProvider = (card: CardRelation | null) => {
+    if (!card?.provider) return null
+    return Array.isArray(card.provider) ? card.provider[0] : card.provider
+  }
+
+  // Filtrar
+  let filteredTasks = tasks
+
+  if (filters.onboardingType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      return card?.onboarding_type === filters.onboardingType
+    })
+  }
+
+  if (filters.entityType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.entity_type === filters.entityType
+    })
+  }
+
+  if (filters.district) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.districts?.includes(filters.district!)
+    })
+  }
+
+  if (filters.userId) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.relationship_owner_id === filters.userId || t.completed_by === filters.userId
+    })
+  }
+
+  // Agrupar por semana - contar prestadores únicos
+  return limitedWeeks.map((week) => {
+    const tasksInWeek = filteredTasks.filter((t) => {
+      const date = new Date(t.completed_at!)
+      return date >= week.start && date <= week.end
+    })
+
+    const uniqueProviders = new Set(
+      tasksInWeek.map((t) => {
+        const card = getCard(t.card as CardRelation | CardRelation[] | null)
+        return card?.provider_id
+      }).filter(Boolean)
+    )
+
+    return { week: week.label, count: uniqueProviders.size }
+  })
+}
+
+// Helper: Obter número da semana ISO
+function getWeekNumber(date: Date): number {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+  const dayNum = d.getUTCDay() || 7
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum)
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+}
+
+// Obter lista de RMs para o filtro
+export async function getRelationshipManagers() {
+  const { data } = await createAdminClient()
+    .from('users')
+    .select('id, name, email')
+    .eq('role', 'relationship_manager')
+    .eq('approval_status', 'approved')
+    .order('name')
+
+  return data || []
+}
+
+// KPI: Total de tarefas concluídas no período
+export async function getTasksCompleted(filters: KpiFilters = {}) {
+  let query = createAdminClient()
+    .from('onboarding_tasks')
+    .select(`
+      id,
+      completed_at,
+      completed_by,
+      card:onboarding_cards!inner(
+        onboarding_type,
+        provider:providers!inner(entity_type, districts, relationship_owner_id)
+      )
+    `)
+    .eq('status', 'concluida')
+    .not('completed_at', 'is', null)
+
+  if (filters.dateFrom) {
+    query = query.gte('completed_at', filters.dateFrom)
+  }
+
+  if (filters.dateTo) {
+    const endDate = new Date(filters.dateTo)
+    endDate.setDate(endDate.getDate() + 1)
+    query = query.lt('completed_at', endDate.toISOString().split('T')[0])
+  }
+
+  const { data: tasks } = await query
+
+  if (!tasks) return 0
+
+  // Helper
+  type CardRelation = {
+    onboarding_type: string
+    provider: { entity_type: string; districts: string[]; relationship_owner_id: string | null } |
+              { entity_type: string; districts: string[]; relationship_owner_id: string | null }[] | null
+  }
+
+  const getCard = (rel: CardRelation | CardRelation[] | null): CardRelation | null => {
+    if (!rel) return null
+    return Array.isArray(rel) ? rel[0] : rel
+  }
+
+  const getProvider = (card: CardRelation | null) => {
+    if (!card?.provider) return null
+    return Array.isArray(card.provider) ? card.provider[0] : card.provider
+  }
+
+  // Filtrar
+  let filteredTasks = tasks
+
+  if (filters.onboardingType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      return card?.onboarding_type === filters.onboardingType
+    })
+  }
+
+  if (filters.entityType) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.entity_type === filters.entityType
+    })
+  }
+
+  if (filters.district) {
+    filteredTasks = filteredTasks.filter((t) => {
+      const card = getCard(t.card as CardRelation | CardRelation[] | null)
+      const provider = getProvider(card)
+      return provider?.districts?.includes(filters.district!)
+    })
+  }
+
+  if (filters.userId) {
+    filteredTasks = filteredTasks.filter((t) => t.completed_by === filters.userId)
+  }
+
+  return filteredTasks.length
 }

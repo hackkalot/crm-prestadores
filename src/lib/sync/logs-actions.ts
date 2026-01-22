@@ -480,3 +480,63 @@ export async function getAllocationSyncStats(): Promise<AllocationSyncStats> {
     totalRecordsProcessed: totalProcessedAlloc,
   }
 }
+
+// Types for sync info
+export type SyncType = 'service_requests' | 'billing' | 'providers' | 'allocations'
+
+export interface LastSyncInfo {
+  type: SyncType
+  lastSuccessfulSync: string | null
+  status: 'success' | 'error' | 'in_progress' | 'pending' | null
+}
+
+/**
+ * Get the last successful sync date for a specific type
+ */
+export async function getLastSuccessfulSync(type: SyncType): Promise<LastSyncInfo> {
+  const supabase = createAdminClient()
+
+  const tableMap: Record<SyncType, string> = {
+    service_requests: 'sync_logs',
+    billing: 'billing_sync_logs',
+    providers: 'provider_sync_logs',
+    allocations: 'allocation_sync_logs',
+  }
+
+  const table = tableMap[type]
+
+  // Get the last successful sync
+  const { data: lastSuccess } = await supabase
+    .from(table)
+    .select('updated_at, status')
+    .eq('status', 'success')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  // Get the current/latest sync status (might be in_progress)
+  const { data: latestSync } = await supabase
+    .from(table)
+    .select('status')
+    .order('triggered_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  return {
+    type,
+    lastSuccessfulSync: lastSuccess?.updated_at || null,
+    status: latestSync?.status as LastSyncInfo['status'] || null,
+  }
+}
+
+/**
+ * Get last sync info for multiple types at once
+ */
+export async function getLastSyncInfoBatch(types: SyncType[]): Promise<Record<SyncType, LastSyncInfo>> {
+  const results = await Promise.all(types.map(type => getLastSuccessfulSync(type)))
+
+  return results.reduce((acc, info) => {
+    acc[info.type] = info
+    return acc
+  }, {} as Record<SyncType, LastSyncInfo>)
+}

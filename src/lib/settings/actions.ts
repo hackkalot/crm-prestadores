@@ -158,6 +158,8 @@ export async function getSettingsLog(): Promise<SettingsLog[]> {
 export async function updateTaskDefinition(
   taskId: string,
   updates: {
+    name?: string
+    description?: string | null
     default_deadline_hours_normal?: number | null
     default_deadline_hours_urgent?: number | null
     alert_hours_before?: number

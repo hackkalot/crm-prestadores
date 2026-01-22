@@ -8,7 +8,6 @@ import { SettingsLogList } from '@/components/settings/settings-log'
 import { CoverageSettings } from '@/components/settings/coverage-settings'
 import { ServiceMappingReview } from '@/components/service-mapping/service-mapping-review'
 import { ServiceMappingStats } from '@/components/service-mapping/service-mapping-stats'
-import { CatalogUpload } from '@/components/service-catalog/catalog-upload'
 import { CatalogStatsCards } from '@/components/service-catalog/catalog-stats'
 import { CatalogPricesTable } from '@/components/service-catalog/prices-table'
 import { CatalogMaterialsTable } from '@/components/service-catalog/materials-table'
@@ -114,7 +113,6 @@ export function ConfiguracoesTabs({
 
       <TabsContent value="catalog" className="space-y-4">
         <CatalogStatsCards stats={catalogStats} />
-        <CatalogUpload />
         <CatalogPricesTable
           prices={catalogPrices}
           clusters={catalogClusters}

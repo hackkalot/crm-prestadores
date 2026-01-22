@@ -59,6 +59,7 @@ const entityTypeIcons: Record<string, typeof User> = {
 const statusLabels: Record<string, string> = {
   novo: 'Nova Candidatura',
   em_onboarding: 'Em Onboarding',
+  on_hold: 'On-Hold',
   ativo: 'Ativo',
   suspenso: 'Suspenso',
   abandonado: 'Abandonado',
@@ -68,6 +69,7 @@ const statusLabels: Record<string, string> = {
 const statusVariants: Record<string, 'info' | 'warning' | 'success' | 'destructive' | 'secondary'> = {
   novo: 'info',
   em_onboarding: 'warning',
+  on_hold: 'warning',
   ativo: 'success',
   suspenso: 'destructive',
   abandonado: 'secondary',

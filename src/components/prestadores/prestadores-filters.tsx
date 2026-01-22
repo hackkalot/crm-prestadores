@@ -6,14 +6,18 @@ import { Button } from '@/components/ui/button'
 import { SearchableSelect } from '@/components/ui/searchable-select'
 import { SearchableMultiSelect } from '@/components/ui/searchable-multi-select'
 import { CoverageFilter } from '@/components/ui/coverage-filter'
-import { Search, X, Filter, ChevronDown, ChevronUp } from 'lucide-react'
-import { useCallback, useMemo, useState, useTransition } from 'react'
+import { Search, X, Filter, ChevronDown, ChevronUp, Loader2 } from 'lucide-react'
+import { useCallback, useMemo, useState, useTransition, useEffect, useRef } from 'react'
+
+// Debounce delay for search (ms)
+const SEARCH_DEBOUNCE_MS = 300
 
 const statusOptions = [
   { value: '_all', label: 'Todos' },
   { value: 'all', label: 'Rede Ativa (Ativo + Suspenso)' },
   { value: 'novo', label: 'Novos' },
   { value: 'em_onboarding', label: 'Em Onboarding' },
+  { value: 'on_hold', label: 'On-Hold' },
   { value: 'ativo', label: 'Ativos' },
   { value: 'suspenso', label: 'Suspensos' },
   { value: 'abandonado', label: 'Abandonados' },
@@ -45,6 +49,8 @@ export function PrestadoresFilters({ services, users }: PrestadoresFiltersProps)
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   const [search, setSearch] = useState(searchParams.get('search') || '')
+  const [isSearching, setIsSearching] = useState(false)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const currentStatus = searchParams.get('status') || '_all'
   const currentEntity = searchParams.get('entityType') || '_all'
@@ -97,16 +103,68 @@ export function PrestadoresFilters({ services, users }: PrestadoresFiltersProps)
     })
   }, [router, searchParams])
 
-  const handleSearch = () => {
-    updateFilter('search', search)
-  }
+  // Debounced search - triggers automatically as user types
+  const triggerSearch = useCallback((searchValue: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (searchValue && searchValue !== '_all') {
+      params.set('search', searchValue)
+    } else {
+      params.delete('search')
+    }
+    startTransition(() => {
+      router.push(`/prestadores?${params.toString()}`)
+    })
+  }, [router, searchParams])
 
-  const clearFilters = () => {
+  // Handle search input change with debounce
+  const handleSearchChange = useCallback((value: string) => {
+    setSearch(value)
+
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+
+    // Show searching indicator
+    setIsSearching(true)
+
+    // Debounce the search
+    searchTimeoutRef.current = setTimeout(() => {
+      setIsSearching(false)
+      triggerSearch(value)
+    }, SEARCH_DEBOUNCE_MS)
+  }, [triggerSearch])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  // Immediate search (for Enter key or button click)
+  const handleSearch = useCallback(() => {
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    setIsSearching(false)
+    triggerSearch(search)
+  }, [search, triggerSearch])
+
+  const clearFilters = useCallback(() => {
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
     setSearch('')
+    setIsSearching(false)
     startTransition(() => {
       router.push('/prestadores')
     })
-  }
+  }, [router])
 
   const hasFilters = (currentStatus !== 'all' && currentStatus !== '_all') ||
     (currentEntity && currentEntity !== '_all') ||
@@ -125,17 +183,21 @@ export function PrestadoresFilters({ services, users }: PrestadoresFiltersProps)
       {/* Search */}
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          {isSearching ? (
+            <Loader2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground animate-spin" />
+          ) : (
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          )}
           <Input
             placeholder="Pesquisar por nome, email ou NIF..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             className="pl-9"
           />
         </div>
-        <Button onClick={handleSearch} disabled={isPending}>
-          Pesquisar
+        <Button onClick={handleSearch} disabled={isPending || isSearching}>
+          {isPending ? 'A pesquisar...' : 'Pesquisar'}
         </Button>
         {hasFilters && (
           <Button variant="ghost" onClick={clearFilters} disabled={isPending}>

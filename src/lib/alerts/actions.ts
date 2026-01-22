@@ -195,6 +195,7 @@ export async function generateDeadlineAlerts(): Promise<number> {
   const alertThreshold = new Date(Date.now() + hoursBeforeDeadline * 60 * 60 * 1000)
 
   // Buscar tarefas com prazo proximo e que ainda nao tem alerta
+  // Excluir providers em on_hold (alertas ficam pausados)
   const { data: tasks, error } = await supabaseAdmin
     .from('onboarding_tasks')
     .select(`
@@ -202,15 +203,16 @@ export async function generateDeadlineAlerts(): Promise<number> {
       deadline_at,
       card_id,
       task_definition:task_definitions(name),
-      onboarding_card:onboarding_cards(
+      onboarding_card:onboarding_cards!inner(
         provider_id,
-        provider:providers(name, relationship_owner_id)
+        provider:providers!inner(name, relationship_owner_id, status)
       )
     `)
     .neq('status', 'concluida')
     .not('deadline_at', 'is', null)
     .lte('deadline_at', alertThreshold.toISOString())
     .gt('deadline_at', new Date().toISOString())
+    .eq('onboarding_card.provider.status', 'em_onboarding')
 
   if (error || !tasks) {
     console.error('Error fetching tasks for alerts:', error)
@@ -282,6 +284,7 @@ export async function generateStalledTaskAlerts(): Promise<number> {
   const stalledThreshold = new Date(Date.now() - stalledDays * 24 * 60 * 60 * 1000)
 
   // Buscar tarefas sem alteracoes ha mais de X dias
+  // Excluir providers em on_hold (alertas ficam pausados)
   const { data: tasks, error } = await supabaseAdmin
     .from('onboarding_tasks')
     .select(`
@@ -289,13 +292,14 @@ export async function generateStalledTaskAlerts(): Promise<number> {
       updated_at,
       card_id,
       task_definition:task_definitions(name),
-      onboarding_card:onboarding_cards(
+      onboarding_card:onboarding_cards!inner(
         provider_id,
-        provider:providers(name, relationship_owner_id)
+        provider:providers!inner(name, relationship_owner_id, status)
       )
     `)
     .neq('status', 'concluida')
     .lt('updated_at', stalledThreshold.toISOString())
+    .eq('onboarding_card.provider.status', 'em_onboarding')
 
   if (error || !tasks) {
     console.error('Error fetching stalled tasks:', error)

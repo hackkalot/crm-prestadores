@@ -7,14 +7,18 @@ import { SearchableSelect } from '@/components/ui/searchable-select'
 import { SearchableMultiSelect } from '@/components/ui/searchable-multi-select'
 import { CoverageFilter } from '@/components/ui/coverage-filter'
 import { DatePicker } from '@/components/ui/date-picker'
-import { Search, X, Filter, ChevronDown, ChevronUp, List, LayoutGrid } from 'lucide-react'
-import { useCallback, useMemo, useState, useTransition } from 'react'
+import { Search, X, Filter, ChevronDown, ChevronUp, List, LayoutGrid, Users, Loader2 } from 'lucide-react'
+import { useCallback, useMemo, useState, useTransition, useEffect, useRef } from 'react'
 import { format, parseISO } from 'date-fns'
+
+// Debounce delay for search (ms)
+const SEARCH_DEBOUNCE_MS = 300
 
 const statusOptions = [
   { value: 'all', label: 'Todos' },
   { value: 'novo', label: 'Novos' },
   { value: 'em_onboarding', label: 'Em Onboarding' },
+  { value: 'on_hold', label: 'On-Hold' },
   { value: 'abandonado', label: 'Abandonados' },
 ]
 
@@ -23,6 +27,14 @@ const entityOptions = [
   { value: 'tecnico', label: 'Tecnico' },
   { value: 'eni', label: 'ENI' },
   { value: 'empresa', label: 'Empresa' },
+]
+
+const techniciansOptions = [
+  { value: '_all', label: 'Todos' },
+  { value: '1', label: '1 técnico' },
+  { value: '2-5', label: '2-5 técnicos' },
+  { value: '6-10', label: '6-10 técnicos' },
+  { value: '11+', label: '11+ técnicos' },
 ]
 
 interface CandidaturasFiltersProps {
@@ -36,9 +48,12 @@ export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   const [search, setSearch] = useState(searchParams.get('search') || '')
+  const [isSearching, setIsSearching] = useState(false)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const currentStatus = searchParams.get('status') || 'all'
   const currentEntity = searchParams.get('entityType') || '_all'
+  const currentTechnicians = searchParams.get('technicians') || '_all'
   const currentDateFrom = searchParams.get('dateFrom') || ''
   const currentDateTo = searchParams.get('dateTo') || ''
   const currentView = searchParams.get('view') || 'list'
@@ -98,10 +113,11 @@ export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
     })
   }
 
-  const handleSearch = () => {
+  // Debounced search - triggers automatically as user types
+  const triggerSearch = useCallback((searchValue: string) => {
     const params = new URLSearchParams(searchParams.toString())
-    if (search) {
-      params.set('search', search)
+    if (searchValue) {
+      params.set('search', searchValue)
     } else {
       params.delete('search')
     }
@@ -110,17 +126,61 @@ export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
     startTransition(() => {
       router.push(`/candidaturas?${params.toString()}`)
     })
-  }
+  }, [router, searchParams])
 
-  const clearFilters = () => {
+  // Handle search input change with debounce
+  const handleSearchChange = useCallback((value: string) => {
+    setSearch(value)
+
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+
+    // Show searching indicator
+    setIsSearching(true)
+
+    // Debounce the search
+    searchTimeoutRef.current = setTimeout(() => {
+      setIsSearching(false)
+      triggerSearch(value)
+    }, SEARCH_DEBOUNCE_MS)
+  }, [triggerSearch])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  // Immediate search (for Enter key or button click)
+  const handleSearch = useCallback(() => {
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    setIsSearching(false)
+    triggerSearch(search)
+  }, [search, triggerSearch])
+
+  const clearFilters = useCallback(() => {
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
     setSearch('')
+    setIsSearching(false)
     startTransition(() => {
       router.push('/candidaturas')
     })
-  }
+  }, [router])
 
   const hasFilters = currentStatus !== 'all' ||
     (currentEntity && currentEntity !== '_all') ||
+    (currentTechnicians && currentTechnicians !== '_all') ||
     currentCounties.length > 0 ||
     currentServices.length > 0 ||
     currentDateFrom ||
@@ -129,6 +189,7 @@ export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
 
   const hasAdvancedFilters = currentCounties.length > 0 ||
     currentServices.length > 0 ||
+    (currentTechnicians && currentTechnicians !== '_all') ||
     currentDateFrom ||
     currentDateTo
 
@@ -137,17 +198,21 @@ export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
       {/* Search */}
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          {isSearching ? (
+            <Loader2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground animate-spin" />
+          ) : (
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          )}
           <Input
             placeholder="Pesquisar por nome, email ou NIF..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             className="pl-9"
           />
         </div>
-        <Button onClick={handleSearch} disabled={isPending}>
-          Pesquisar
+        <Button onClick={handleSearch} disabled={isPending || isSearching}>
+          {isPending ? 'A pesquisar...' : 'Pesquisar'}
         </Button>
         {hasFilters && (
           <Button variant="ghost" onClick={clearFilters} disabled={isPending}>
@@ -196,7 +261,7 @@ export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
           className={hasAdvancedFilters ? 'border-primary text-primary' : ''}
         >
           <Filter className="h-4 w-4 mr-1" />
-          Filtros avancados
+          Filtros avançados
           {showAdvanced ? (
             <ChevronUp className="h-4 w-4 ml-1" />
           ) : (
@@ -234,7 +299,7 @@ export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
 
       {/* Advanced Filters */}
       {showAdvanced && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-muted/50 rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 p-4 bg-muted/50 rounded-lg">
           {/* Coverage Filter - Hierarchical districts/counties */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Zona de atuação</label>
@@ -259,6 +324,23 @@ export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
             />
           </div>
 
+          {/* Technicians Filter */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium flex items-center gap-1.5">
+              <Users className="h-3.5 w-3.5" />
+              Nº de técnicos
+            </label>
+            <SearchableSelect
+              options={techniciansOptions}
+              value={currentTechnicians}
+              onValueChange={(value) => updateFilter('technicians', value)}
+              placeholder="Todos"
+              searchPlaceholder="Pesquisar..."
+              disabled={isPending}
+              className="w-full h-8"
+            />
+          </div>
+
           {/* Date From */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Data de candidatura (desde)</label>
@@ -272,7 +354,7 @@ export function CandidaturasFilters({ services }: CandidaturasFiltersProps) {
 
           {/* Date To */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Data de candidatura (ate)</label>
+            <label className="text-sm font-medium">Data de candidatura (até)</label>
             <DatePicker
               value={currentDateTo ? parseISO(currentDateTo) : null}
               onChange={(date) => updateFilter('dateTo', date ? format(date, 'yyyy-MM-dd') : '')}

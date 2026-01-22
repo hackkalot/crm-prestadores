@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PORTUGAL_DISTRICTS, BASE_SERVICES, DISTRICT_ADJACENCY } from './constants'
+import { bulkResolveServiceNames } from '@/lib/providers/actions'
 
 // Tipos
 export type CoverageData = {
@@ -174,11 +175,16 @@ export async function findProvidersForGap(
     return []
   }
 
+  // Resolve service names (UUIDs to names)
+  const serviceNamesMap = await bulkResolveServiceNames(
+    providers.map(p => ({ id: p.id, services: p.services }))
+  )
+
   const matches: ProviderMatch[] = []
 
   for (const provider of providers) {
     const providerDistricts = provider.districts || []
-    const providerServices = provider.services || []
+    const providerServices = serviceNamesMap.get(provider.id) || provider.services || []
 
     const hasDistrict = providerDistricts.includes(district)
     const hasService = providerServices.includes(service)
@@ -389,19 +395,27 @@ export async function searchAvailableProviders(filters: {
     return []
   }
 
-  let results = providers.map((provider) => ({
-    id: provider.id,
-    name: provider.name,
-    email: provider.email,
-    phone: provider.phone,
-    entityType: provider.entity_type,
-    districts: provider.districts || [],
-    services: provider.services || [],
-    status: provider.status,
-    matchScore: 100,
-    matchingDistricts: provider.districts || [],
-    matchingServices: provider.services || [],
-  }))
+  // Resolve service names (UUIDs to names)
+  const serviceNamesMap = await bulkResolveServiceNames(
+    providers.map(p => ({ id: p.id, services: p.services }))
+  )
+
+  let results = providers.map((provider) => {
+    const resolvedServices = serviceNamesMap.get(provider.id) || provider.services || []
+    return {
+      id: provider.id,
+      name: provider.name,
+      email: provider.email,
+      phone: provider.phone,
+      entityType: provider.entity_type,
+      districts: provider.districts || [],
+      services: resolvedServices,
+      status: provider.status,
+      matchScore: 100,
+      matchingDistricts: provider.districts || [],
+      matchingServices: resolvedServices,
+    }
+  })
 
   // Filtrar por distrito
   if (filters.district) {

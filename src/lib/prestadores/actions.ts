@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { unstable_cache } from 'next/cache'
 import type { Database } from '@/types/database'
 import { getFullySelectedDistricts } from '@/lib/data/portugal-districts'
+import { bulkResolveServiceNames } from '@/lib/providers/actions'
 
 type ProviderStatus = Database['public']['Enums']['provider_status']
 
@@ -172,12 +173,100 @@ export async function getPrestadores(filters: PrestadorFilters = {}): Promise<Pa
   const to = from + limit
   const paginatedData = filteredData.slice(from, to)
 
+  // Resolve service names (UUIDs to names)
+  const serviceNamesMap = await bulkResolveServiceNames(
+    paginatedData.map(p => ({ id: p.id, services: p.services }))
+  )
+
+  // Replace services with resolved names
+  const dataWithResolvedServices = paginatedData.map(p => ({
+    ...p,
+    services: serviceNamesMap.get(p.id) || p.services || [],
+  }))
+
   return {
-    data: paginatedData,
+    data: dataWithResolvedServices,
     total,
     page,
     limit,
     totalPages: Math.ceil(total / limit),
+  }
+}
+
+/**
+ * Get all prestadores for client-side filtering (no text search, no pagination)
+ * Filters like status, entityType, etc. are still applied server-side
+ * Text search is done client-side for instant fuzzy matching
+ */
+export async function getAllPrestadoresForClientSearch(filters: Omit<PrestadorFilters, 'search' | 'page' | 'limit'> = {}): Promise<PaginatedPrestadores> {
+  const sortBy = filters.sortBy || 'name'
+  const sortOrder = filters.sortOrder || 'asc'
+  const ascending = sortOrder === 'asc'
+
+  // Get providers with service requests if filtering by hasPedidos
+  let providersWithRequests: Set<number> | null = null
+  if (filters.hasPedidos === 'with' || filters.hasPedidos === 'without') {
+    const idsWithRequests = await getProvidersWithServiceRequests()
+    providersWithRequests = new Set(idsWithRequests)
+  }
+
+  // Build base query
+  let query = createAdminClient()
+    .from('providers')
+    .select(`
+      *,
+      relationship_owner:users!providers_relationship_owner_id_fkey(id, name, email)
+    `)
+
+  // Apply all filters EXCEPT search (which will be done client-side)
+  const filtersWithoutSearch = { ...filters, search: undefined }
+  query = applyPrestadorFilters(query, filtersWithoutSearch)
+  query = query.order(sortBy, { ascending })
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Erro ao buscar prestadores:', error)
+    return {
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 1000,
+      totalPages: 1,
+    }
+  }
+
+  // Apply hasPedidos filter in-memory (requires cross-referencing)
+  let filteredData = data || []
+  if (providersWithRequests !== null) {
+    if (filters.hasPedidos === 'with') {
+      filteredData = filteredData.filter(p =>
+        p.backoffice_provider_id !== null && providersWithRequests!.has(p.backoffice_provider_id)
+      )
+    } else if (filters.hasPedidos === 'without') {
+      filteredData = filteredData.filter(p =>
+        p.backoffice_provider_id === null || !providersWithRequests!.has(p.backoffice_provider_id)
+      )
+    }
+  }
+
+  // Resolve service names (UUIDs to names)
+  const serviceNamesMap = await bulkResolveServiceNames(
+    filteredData.map(p => ({ id: p.id, services: p.services }))
+  )
+
+  // Replace services with resolved names
+  const dataWithResolvedServices = filteredData.map(p => ({
+    ...p,
+    services: serviceNamesMap.get(p.id) || p.services || [],
+  }))
+
+  return {
+    data: dataWithResolvedServices,
+    total: dataWithResolvedServices.length,
+    page: 1,
+    limit: dataWithResolvedServices.length,
+    totalPages: 1,
   }
 }
 

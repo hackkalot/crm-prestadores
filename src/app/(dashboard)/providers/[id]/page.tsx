@@ -22,6 +22,7 @@ import {
   Lock,
   XCircle,
   Archive,
+  PauseCircle,
 } from 'lucide-react'
 
 // Tab components
@@ -37,6 +38,7 @@ import {
 } from '@/components/providers/tabs/async-tab-wrappers'
 import { CandidaturaActions } from '@/components/providers/candidatura-actions'
 import { OnboardingActions } from '@/components/providers/onboarding-actions'
+import { OnHoldActions } from '@/components/providers/on-hold-actions'
 
 interface ProviderPageProps {
   params: Promise<{ id: string }>
@@ -58,6 +60,7 @@ const entityTypeIcons: Record<string, typeof User> = {
 const statusLabels: Record<string, string> = {
   novo: 'Nova Candidatura',
   em_onboarding: 'Em Onboarding',
+  on_hold: 'On-Hold',
   ativo: 'Ativo',
   suspenso: 'Suspenso',
   abandonado: 'Abandonado',
@@ -67,6 +70,7 @@ const statusLabels: Record<string, string> = {
 const statusVariants: Record<string, 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info'> = {
   novo: 'info',
   em_onboarding: 'warning',
+  on_hold: 'warning',
   ativo: 'success',
   suspenso: 'destructive',
   abandonado: 'secondary',
@@ -241,6 +245,24 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
                     </div>
                   </div>
                   <OnboardingActions providerId={provider.id} providerName={provider.name} />
+                </div>
+              )}
+
+              {/* Right: Status info for on_hold */}
+              {provider.status === 'on_hold' && (
+                <div className="flex flex-col gap-4 lg:border-l lg:pl-6">
+                  <div className="flex items-center gap-4">
+                    <div className="h-16 w-16 rounded-full flex items-center justify-center bg-amber-100 dark:bg-amber-950">
+                      <PauseCircle className="h-8 w-8 text-amber-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Processo Pausado</p>
+                      <p className="text-sm text-muted-foreground">
+                        O onboarding deste prestador esta em espera
+                      </p>
+                    </div>
+                  </div>
+                  <OnHoldActions providerId={provider.id} providerName={provider.name} />
                 </div>
               )}
 

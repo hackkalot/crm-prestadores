@@ -11,11 +11,12 @@ import { HealthIndicators } from '@/components/kpis/health-indicators'
 import { AbandonmentReasonsChart } from '@/components/kpis/abandonment-reasons-chart'
 import { TrendsChart } from '@/components/kpis/trends-chart'
 import { AbandonmentByStageChart } from '@/components/kpis/abandonment-by-stage-chart'
+import { CadenceChart } from '@/components/kpis/cadence-chart'
+import { ContactsTrendChart } from '@/components/kpis/contacts-trend-chart'
+import { WorkedProvidersChart } from '@/components/kpis/worked-providers-chart'
 import {
   getProvidersPerStage,
-  getAverageOnboardingTime,
   getOnboardingTotals,
-  getCandidaturasPending,
   getConversionFunnel,
   getAverageTimePerStageByType,
   getPerformanceByOwner,
@@ -26,6 +27,14 @@ import {
   getAbandonmentReasons,
   getAbandonmentByStage,
   getTrends,
+  getContactsMade,
+  getProvidersWorked,
+  getAverageTimeToNetwork,
+  getWeeklyCadence,
+  getContactsTrend,
+  getWorkedProvidersTrend,
+  getRelationshipManagers,
+  getTasksCompleted,
   type KpiFilters as KpiFiltersType,
 } from '@/lib/kpis/actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
@@ -49,13 +58,12 @@ export default async function KpisPage({
     entityType: params.entityType as string | undefined,
     district: params.district as string | undefined,
     onboardingType: params.onboardingType as OnboardingType | undefined,
+    userId: params.userId as string | undefined,
   }
 
   const [
     stages,
-    averageTime,
     onboardingTotals,
-    candidaturasPending,
     conversionFunnel,
     stageTimeByType,
     ownerPerformance,
@@ -66,11 +74,17 @@ export default async function KpisPage({
     abandonmentReasons,
     abandonmentByStage,
     trends,
+    contactsMade,
+    providersWorked,
+    avgTimeToNetwork,
+    weeklyCadence,
+    contactsTrend,
+    workedProvidersTrend,
+    users,
+    tasksCompleted,
   ] = await Promise.all([
     getProvidersPerStage(filters),
-    getAverageOnboardingTime(filters),
     getOnboardingTotals(filters),
-    getCandidaturasPending(filters),
     getConversionFunnel(filters),
     getAverageTimePerStageByType(filters),
     getPerformanceByOwner(filters),
@@ -81,6 +95,14 @@ export default async function KpisPage({
     getAbandonmentReasons(filters),
     getAbandonmentByStage(filters),
     getTrends(filters),
+    getContactsMade(filters),
+    getProvidersWorked(filters),
+    getAverageTimeToNetwork(filters),
+    getWeeklyCadence(filters),
+    getContactsTrend(filters),
+    getWorkedProvidersTrend(filters),
+    getRelationshipManagers(),
+    getTasksCompleted(filters),
   ])
 
   return (
@@ -90,52 +112,62 @@ export default async function KpisPage({
         description="Métricas e indicadores de desempenho"
       />
       <div className="flex-1 p-6 space-y-6 overflow-auto">
-        {/* Filtros */}
-        <KpiFilters districts={districts} />
+        {/* 1. Filtros */}
+        <KpiFilters districts={districts} users={users} />
 
-        {/* Cards de Resumo */}
+        {/* 2. KPI Cards (5 em linha) */}
         <KpiCards
           onboardingTotals={onboardingTotals}
-          candidaturasPending={candidaturasPending}
-          averageTime={averageTime}
-          conversionFunnel={conversionFunnel}
+          tasksCompleted={tasksCompleted}
+          contactsMade={contactsMade}
+          providersWorked={providersWorked}
+          avgTimeToNetwork={avgTimeToNetwork}
         />
 
-        {/* Saúde e Tendências */}
+        {/* 3. Funil + Etapas */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <FunnelChart data={conversionFunnel} />
+          <StagesChart stages={stages} />
+        </div>
+
+        {/* 4. Saúde + Cadência */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <HealthIndicators data={healthIndicators} />
           <div className="lg:col-span-2">
-            <TrendsChart aggregationType={trends.aggregationType} data={trends.data} />
+            <CadenceChart data={weeklyCadence} />
           </div>
         </div>
 
-        {/* Pipeline */}
+        {/* 5. Contactos + Trabalhados */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ContactsTrendChart data={contactsTrend} />
+          <WorkedProvidersChart data={workedProvidersTrend} />
+        </div>
+
+        {/* 6. Pipeline Distribution + Tendências */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <PipelineDistributionChart
             candidaturas={pipelineDistribution.candidaturas}
             onboarding={pipelineDistribution.onboarding}
           />
           <div className="lg:col-span-2">
-            <StagesChart stages={stages} />
+            <TrendsChart aggregationType={trends.aggregationType} data={trends.data} />
           </div>
         </div>
 
-        {/* Conversão */}
-        <FunnelChart data={conversionFunnel} />
-
-        {/* Tempos */}
+        {/* 7. Tempos por etapa e por owner */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <StageTimeChart data={stageTimeByType} />
           <OwnerTimeChart data={ownerTime} />
         </div>
 
-        {/* Abandonos */}
+        {/* 8. Abandonos */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <AbandonmentByStageChart data={abandonmentByStage} />
           <AbandonmentReasonsChart data={abandonmentReasons} />
         </div>
 
-        {/* Performance da Equipa */}
+        {/* 9. Performance da Equipa (Gamification) */}
         <OwnerPerformanceTable data={ownerPerformance} />
       </div>
     </div>

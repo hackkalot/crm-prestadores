@@ -2455,6 +2455,7 @@ export type Database = {
       provider_status:
         | "novo"
         | "em_onboarding"
+        | "on_hold"
         | "ativo"
         | "suspenso"
         | "abandonado"
@@ -2623,6 +2624,7 @@ export const Constants = {
       provider_status: [
         "novo",
         "em_onboarding",
+        "on_hold",
         "ativo",
         "suspenso",
         "abandonado",

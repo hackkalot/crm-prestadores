@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,7 +11,10 @@ import {
   SelectTrigger,
 } from '@/components/ui/select'
 import { CoverageFilter } from '@/components/ui/coverage-filter'
-import { Search, X } from 'lucide-react'
+import { Search, X, Loader2 } from 'lucide-react'
+
+// Debounce delay for search (ms)
+const SEARCH_DEBOUNCE_MS = 300
 
 const entityOptions = [
   { value: 'all', label: 'Todos os tipos' },
@@ -28,6 +31,10 @@ export function OnboardingFilters({ users }: OnboardingFiltersProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+
+  const [search, setSearch] = useState(searchParams.get('search') || '')
+  const [isSearching, setIsSearching] = useState(false)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const createQueryString = useCallback(
     (params: Record<string, string | null>) => {
@@ -46,12 +53,12 @@ export function OnboardingFilters({ users }: OnboardingFiltersProps) {
     [searchParams]
   )
 
-  const handleFilterChange = (key: string, value: string | null) => {
+  const handleFilterChange = useCallback((key: string, value: string | null) => {
     const queryString = createQueryString({ [key]: value })
     router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
-  }
+  }, [createQueryString, pathname, router])
 
-  const handleCountiesChange = (counties: string[]) => {
+  const handleCountiesChange = useCallback((counties: string[]) => {
     const newParams = new URLSearchParams(searchParams.toString())
     if (counties.length > 0) {
       newParams.set('counties', counties.join(','))
@@ -60,18 +67,61 @@ export function OnboardingFilters({ users }: OnboardingFiltersProps) {
     }
     const queryString = newParams.toString()
     router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
-  }
+  }, [pathname, router, searchParams])
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  // Debounced search - triggers automatically as user types
+  const triggerSearch = useCallback((searchValue: string) => {
+    handleFilterChange('search', searchValue || null)
+  }, [handleFilterChange])
+
+  // Handle search input change with debounce
+  const handleSearchChange = useCallback((value: string) => {
+    setSearch(value)
+
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+
+    // Show searching indicator
+    setIsSearching(true)
+
+    // Debounce the search
+    searchTimeoutRef.current = setTimeout(() => {
+      setIsSearching(false)
+      triggerSearch(value)
+    }, SEARCH_DEBOUNCE_MS)
+  }, [triggerSearch])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  // Immediate search (for Enter key)
+  const handleSearchSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const search = formData.get('search') as string
-    handleFilterChange('search', search || null)
-  }
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    setIsSearching(false)
+    triggerSearch(search)
+  }, [search, triggerSearch])
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    setSearch('')
+    setIsSearching(false)
     router.push(pathname)
-  }
+  }, [pathname, router])
 
   // Parse counties from URL
   const currentCounties = useMemo(() => {
@@ -89,17 +139,22 @@ export function OnboardingFilters({ users }: OnboardingFiltersProps) {
   return (
     <div className="flex flex-wrap items-center gap-3">
       {/* Search */}
-      <form onSubmit={handleSearch} className="flex gap-2">
+      <form onSubmit={handleSearchSubmit} className="flex gap-2">
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          {isSearching ? (
+            <Loader2 className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
+          ) : (
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          )}
           <Input
             name="search"
             placeholder="Pesquisar prestador..."
-            defaultValue={searchParams.get('search') || ''}
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-9 w-[200px]"
           />
         </div>
-        <Button type="submit" variant="secondary" size="sm">
+        <Button type="submit" variant="secondary" size="sm" disabled={isSearching}>
           Pesquisar
         </Button>
       </form>

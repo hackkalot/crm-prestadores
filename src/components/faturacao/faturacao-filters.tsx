@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -17,11 +17,14 @@ import {
 } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
-import { Search, X, CalendarIcon } from 'lucide-react'
+import { Search, X, CalendarIcon, Loader2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import type { DateRange } from 'react-day-picker'
 import type { AvailableBillingPeriod } from '@/lib/billing/actions'
+
+// Debounce delay for search (ms)
+const SEARCH_DEBOUNCE_MS = 300
 
 interface FaturacaoFiltersProps {
   providers: string[]
@@ -46,6 +49,8 @@ export function FaturacaoFilters({
 
   // Local state for search input
   const [searchInput, setSearchInput] = useState(search)
+  const [isSearching, setIsSearching] = useState(false)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Date range state for calendar
   const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
@@ -75,9 +80,48 @@ export function FaturacaoFilters({
     router.push(`/faturacao?${params.toString()}`)
   }, [router, searchParams])
 
-  const handleSearch = () => {
-    updateParams({ search: searchInput || null })
-  }
+  // Debounced search - triggers automatically as user types
+  const triggerSearch = useCallback((searchValue: string) => {
+    updateParams({ search: searchValue || null })
+  }, [updateParams])
+
+  // Handle search input change with debounce
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchInput(value)
+
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+
+    // Show searching indicator
+    setIsSearching(true)
+
+    // Debounce the search
+    searchTimeoutRef.current = setTimeout(() => {
+      setIsSearching(false)
+      triggerSearch(value)
+    }, SEARCH_DEBOUNCE_MS)
+  }, [triggerSearch])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  // Immediate search (for Enter key or button click)
+  const handleSearch = useCallback(() => {
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    setIsSearching(false)
+    triggerSearch(searchInput)
+  }, [searchInput, triggerSearch])
 
   const handlePeriodSelect = (periodKey: string) => {
     if (periodKey === 'all') {
@@ -108,11 +152,16 @@ export function FaturacaoFilters({
     }
   }
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
     setDateRange(undefined)
     setSearchInput('')
+    setIsSearching(false)
     router.push('/faturacao?page=1')
-  }
+  }, [router])
 
   const hasActiveFilters =
     searchParams.get('status') ||
@@ -142,17 +191,27 @@ export function FaturacaoFilters({
       {/* Search */}
       <div className="flex items-center gap-2">
         <div className="relative">
+          {isSearching ? (
+            <Loader2 className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
+          ) : (
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          )}
           <Input
             placeholder="Pesquisar codigo, prestador..."
             value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="w-[250px] pr-8"
+            className="w-[250px] pl-9 pr-8"
           />
           {searchInput && (
             <button
               onClick={() => {
+                // Clear any pending debounced search
+                if (searchTimeoutRef.current) {
+                  clearTimeout(searchTimeoutRef.current)
+                }
                 setSearchInput('')
+                setIsSearching(false)
                 updateParams({ search: null })
               }}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
@@ -161,7 +220,7 @@ export function FaturacaoFilters({
             </button>
           )}
         </div>
-        <Button variant="outline" size="icon" onClick={handleSearch}>
+        <Button variant="outline" size="icon" onClick={handleSearch} disabled={isSearching}>
           <Search className="h-4 w-4" />
         </Button>
       </div>

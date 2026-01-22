@@ -5,6 +5,121 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { unstable_cache } from 'next/cache'
 
+// UUID regex pattern
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/**
+ * Resolve service names from UUIDs or return original text
+ * Services can be either UUIDs (from form submission) or plain text (from HubSpot import)
+ */
+export async function resolveServiceNames(services: string[]): Promise<string[]> {
+  if (!services || services.length === 0) return []
+
+  // Separate UUIDs from plain text
+  const uuids: string[] = []
+  const textServices: string[] = []
+
+  for (const service of services) {
+    if (UUID_REGEX.test(service)) {
+      uuids.push(service)
+    } else {
+      textServices.push(service)
+    }
+  }
+
+  // If no UUIDs, return original services
+  if (uuids.length === 0) return services
+
+  // Fetch service names for UUIDs
+  const { data: serviceData } = await createAdminClient()
+    .from('service_prices')
+    .select('id, service_name')
+    .in('id', uuids)
+
+  // Create a map of UUID -> service_name
+  const serviceMap = new Map<string, string>()
+  if (serviceData) {
+    for (const service of serviceData) {
+      serviceMap.set(service.id, service.service_name)
+    }
+  }
+
+  // Resolve all services and deduplicate
+  const resolvedServices = services.map(service => {
+    if (UUID_REGEX.test(service)) {
+      return serviceMap.get(service) || service // Return name or original UUID if not found
+    }
+    return service
+  })
+
+  // Return unique services only
+  return [...new Set(resolvedServices)]
+}
+
+/**
+ * Cached version of resolveServiceNames for better performance
+ * Cache is revalidated every 5 minutes
+ */
+export const resolveServiceNamesCached = unstable_cache(
+  async (services: string[]) => resolveServiceNames(services),
+  ['resolve-service-names'],
+  { revalidate: 300 }
+)
+
+/**
+ * Bulk resolve service names for multiple providers
+ * More efficient when loading lists
+ */
+export async function bulkResolveServiceNames(
+  providers: Array<{ id: string; services: string[] | null }>
+): Promise<Map<string, string[]>> {
+  // Collect all unique UUIDs
+  const allUuids = new Set<string>()
+  for (const provider of providers) {
+    if (provider.services) {
+      for (const service of provider.services) {
+        if (UUID_REGEX.test(service)) {
+          allUuids.add(service)
+        }
+      }
+    }
+  }
+
+  // Fetch all service names at once
+  const serviceMap = new Map<string, string>()
+  if (allUuids.size > 0) {
+    const { data: serviceData } = await createAdminClient()
+      .from('service_prices')
+      .select('id, service_name')
+      .in('id', Array.from(allUuids))
+
+    if (serviceData) {
+      for (const service of serviceData) {
+        serviceMap.set(service.id, service.service_name)
+      }
+    }
+  }
+
+  // Build result map with unique services
+  const result = new Map<string, string[]>()
+  for (const provider of providers) {
+    if (provider.services) {
+      const resolvedServices = provider.services.map(service => {
+        if (UUID_REGEX.test(service)) {
+          return serviceMap.get(service) || service
+        }
+        return service
+      })
+      // Deduplicate services
+      result.set(provider.id, [...new Set(resolvedServices)])
+    } else {
+      result.set(provider.id, [])
+    }
+  }
+
+  return result
+}
+
 // Get provider basic info + onboarding card (for header display)
 export async function getProviderBasicInfo(id: string) {
   const supabaseAdmin = createAdminClient()

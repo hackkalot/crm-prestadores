@@ -3,23 +3,15 @@ import {
   Users,
   Clock,
   TrendingUp,
-  FileText,
-  Zap,
-  AlertTriangle,
+  Phone,
+  CheckCircle,
+  UserCheck,
 } from 'lucide-react'
 
 interface OnboardingTotals {
   total: number
   normal: number
   urgente: number
-}
-
-interface AverageTime {
-  averageDays: number
-  medianDays: number
-  count: number
-  normalAverage: number
-  urgenteAverage: number
 }
 
 interface ConversionFunnel {
@@ -30,22 +22,29 @@ interface ConversionFunnel {
   taxaConversao: number
 }
 
+interface AvgTimeToNetwork {
+  days: number
+  count: number
+}
+
 interface KpiCardsProps {
   onboardingTotals: OnboardingTotals
-  candidaturasPending: number
-  averageTime: AverageTime
-  conversionFunnel: ConversionFunnel
+  tasksCompleted: number
+  contactsMade: number
+  providersWorked: number
+  avgTimeToNetwork: AvgTimeToNetwork
 }
 
 export function KpiCards({
   onboardingTotals,
-  candidaturasPending,
-  averageTime,
-  conversionFunnel,
+  tasksCompleted,
+  contactsMade,
+  providersWorked,
+  avgTimeToNetwork,
 }: KpiCardsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {/* Em Onboarding */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* 1. Prestadores enviados para Onboarding */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -56,146 +55,113 @@ export function KpiCards({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl font-bold">{onboardingTotals.total}</p>
-              <div className="flex gap-3 mt-1 text-xs text-muted-foreground">
+              <div className="flex gap-2 mt-1 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-blue-500" />
-                  Normal: {onboardingTotals.normal}
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                  {onboardingTotals.normal}
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-orange-500" />
-                  Urgente: {onboardingTotals.urgente}
+                  <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
+                  {onboardingTotals.urgente}
                 </span>
               </div>
             </div>
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <Users className="h-6 w-6 text-primary" />
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Users className="h-5 w-5 text-primary" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Candidaturas por Tratar */}
+      {/* 2. Tarefas Concluidas */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
-            Candidaturas por Tratar
+            Tarefas Concluidas
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-3xl font-bold">{candidaturasPending}</p>
+              <p className="text-3xl font-bold">{tasksCompleted}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Aguardam decisão
+                No periodo
               </p>
             </div>
-            <div className="h-12 w-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-              <FileText className="h-6 w-6 text-amber-600" />
+            <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+              <CheckCircle className="h-5 w-5 text-green-600" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Tempo Medio */}
+      {/* 3. Contactos Feitos */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
-            Tempo Médio Onboarding
+            Contactos Feitos
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-3xl font-bold">{contactsMade}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Tarefas &quot;Ligar&quot;
+              </p>
+            </div>
+            <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+              <Phone className="h-5 w-5 text-blue-600" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 4. Prestadores Trabalhados */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            Prestadores Trabalhados
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-3xl font-bold">{providersWorked}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Com atividade
+              </p>
+            </div>
+            <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+              <UserCheck className="h-5 w-5 text-purple-600" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 5. Tempo Medio Entrada na Rede */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            Tempo Medio Rede
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl font-bold">
-                {averageTime.averageDays > 0 ? `${averageTime.averageDays}d` : '-'}
+                {avgTimeToNetwork.days > 0 ? `${avgTimeToNetwork.days}d` : '-'}
               </p>
-              <div className="flex gap-3 mt-1 text-xs text-muted-foreground">
-                <span>Mediana: {averageTime.medianDays > 0 ? `${averageTime.medianDays}d` : '-'}</span>
-              </div>
-            </div>
-            <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <Clock className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Taxa de Conversao */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Taxa de Conversão
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-3xl font-bold">{conversionFunnel.taxaConversao}%</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {conversionFunnel.ativos} ativos de {conversionFunnel.candidaturas}
+                {avgTimeToNetwork.count > 0 ? `${avgTimeToNetwork.count} entradas` : 'Sem dados'}
               </p>
             </div>
-            <div className="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              <TrendingUp className="h-6 w-6 text-green-600" />
+            <div className="h-10 w-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-amber-600" />
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
-}
-
-// Componente separado para comparacao Normal vs Urgente
-export function TimeComparisonCard({ averageTime }: { averageTime: AverageTime }) {
-  if (averageTime.count === 0) {
-    return null
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">Comparação Normal vs Urgente</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-blue-500" />
-              <span className="text-sm font-medium">Onboarding Normal</span>
-            </div>
-            <p className="text-2xl font-bold">
-              {averageTime.normalAverage > 0 ? `${averageTime.normalAverage} dias` : '-'}
-            </p>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-orange-500" />
-              <span className="text-sm font-medium">Onboarding Urgente</span>
-            </div>
-            <p className="text-2xl font-bold">
-              {averageTime.urgenteAverage > 0 ? `${averageTime.urgenteAverage} dias` : '-'}
-            </p>
-          </div>
-        </div>
-        {averageTime.normalAverage > 0 && averageTime.urgenteAverage > 0 && (
-          <div className="mt-4 pt-4 border-t">
-            <p className="text-sm text-muted-foreground">
-              {averageTime.urgenteAverage < averageTime.normalAverage ? (
-                <span className="text-green-600">
-                  Urgente e {Math.round(((averageTime.normalAverage - averageTime.urgenteAverage) / averageTime.normalAverage) * 100)}% mais rapido
-                </span>
-              ) : averageTime.urgenteAverage > averageTime.normalAverage ? (
-                <span className="text-orange-600 flex items-center gap-1">
-                  <AlertTriangle className="h-4 w-4" />
-                  Urgente está mais lento que normal
-                </span>
-              ) : (
-                <span>Tempos iguais</span>
-              )}
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
   )
 }

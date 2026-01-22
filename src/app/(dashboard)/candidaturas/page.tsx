@@ -1,13 +1,12 @@
 import { Suspense } from 'react'
 import { Header } from '@/components/layout/header'
-import { CandidaturasList } from '@/components/candidaturas/candidaturas-list'
-import { CandidaturasFilters } from '@/components/candidaturas/candidaturas-filters'
 import { StatsCards } from '@/components/candidaturas/stats-cards'
+import { CandidaturasClientView } from '@/components/candidaturas/candidaturas-client-view'
 import { ImportProvidersDialog } from '@/components/import/import-providers-dialog'
 import { CreateProviderDialog } from '@/components/providers/create-provider-dialog'
-import { StatsCardsSkeleton, FiltersSkeleton, CandidaturasListSkeleton } from '@/components/skeletons/page-skeletons'
+import { StatsCardsSkeleton, CandidaturasListSkeleton } from '@/components/skeletons/page-skeletons'
 import {
-  getCandidaturas,
+  getAllCandidaturasForClientSearch,
   getCandidaturasStats,
   getDistinctServices,
   getServicePricesForSelect,
@@ -25,16 +24,14 @@ async function StatsSection() {
   return <StatsCards stats={stats} />
 }
 
-// Async component for candidaturas list
-async function CandidaturasListSection({ filters, viewMode }: { filters: CandidaturaFilters; viewMode: 'list' | 'grid' }) {
-  const candidaturas = await getCandidaturas(filters)
-  return <CandidaturasList candidaturas={candidaturas} viewMode={viewMode} />
-}
-
-// Async component for filters (loads cached data)
-async function FiltersSection() {
-  const services = await getDistinctServices()
-  return <CandidaturasFilters services={services} />
+// Async component for candidaturas with client-side fuzzy search
+async function CandidaturasSection({ filters }: { filters: CandidaturaFilters }) {
+  // Load all data for client-side filtering (text search done on client)
+  const [data, services] = await Promise.all([
+    getAllCandidaturasForClientSearch(filters),
+    getDistinctServices(),
+  ])
+  return <CandidaturasClientView initialData={data} services={services} />
 }
 
 // Async component for create dialog (loads service_prices for proper id/name selection)
@@ -52,8 +49,6 @@ export default async function CandidaturasPage({
   await requirePageAccess('candidaturas')
   const params = await searchParams
 
-  const viewMode = (params.view as 'list' | 'grid') || 'list'
-
   // Parse multi-select filters from comma-separated URL params
   const parseMultiParam = (param: string | string[] | undefined): string[] | undefined => {
     if (!param) return undefined
@@ -66,6 +61,7 @@ export default async function CandidaturasPage({
     entityType: params.entityType as string | undefined,
     counties: parseMultiParam(params.counties),
     services: parseMultiParam(params.services),
+    technicians: params.technicians as string | undefined,
     dateFrom: params.dateFrom as string | undefined,
     dateTo: params.dateTo as string | undefined,
     search: params.search as string | undefined,
@@ -96,14 +92,9 @@ export default async function CandidaturasPage({
           <StatsSection />
         </Suspense>
 
-        {/* Filters stream in with cached data (fast) */}
-        <Suspense fallback={<FiltersSkeleton />}>
-          <FiltersSection />
-        </Suspense>
-
-        {/* List loads independently */}
+        {/* Candidaturas with client-side fuzzy search */}
         <Suspense fallback={<CandidaturasListSkeleton rows={6} />}>
-          <CandidaturasListSection filters={filters} viewMode={viewMode} />
+          <CandidaturasSection filters={filters} />
         </Suspense>
       </div>
     </div>

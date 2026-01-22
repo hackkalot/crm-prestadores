@@ -11,9 +11,12 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
-import { Search, X } from 'lucide-react'
+import { Search, X, Loader2 } from 'lucide-react'
 import { ViewToggle } from './view-toggle'
-import { useCallback, useState, useTransition } from 'react'
+import { useCallback, useState, useTransition, useEffect, useRef } from 'react'
+
+// Debounce delay for search (ms)
+const SEARCH_DEBOUNCE_MS = 300
 
 interface PedidosFiltersProps {
   categories: string[]
@@ -32,6 +35,8 @@ export function PedidosFilters({
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
   const [search, setSearch] = useState(searchParams.get('search') || '')
+  const [isSearching, setIsSearching] = useState(false)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [dateFrom, setDateFrom] = useState<Date | undefined>(
     searchParams.get('dateFrom') ? new Date(searchParams.get('dateFrom')!) : undefined
   )
@@ -54,9 +59,48 @@ export function PedidosFilters({
     [router, searchParams]
   )
 
+  // Debounced search - triggers automatically as user types
+  const triggerSearch = useCallback((searchValue: string) => {
+    updateFilters('search', searchValue)
+  }, [updateFilters])
+
+  // Handle search input change with debounce
+  const handleSearchChange = useCallback((value: string) => {
+    setSearch(value)
+
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+
+    // Show searching indicator
+    setIsSearching(true)
+
+    // Debounce the search
+    searchTimeoutRef.current = setTimeout(() => {
+      setIsSearching(false)
+      triggerSearch(value)
+    }, SEARCH_DEBOUNCE_MS)
+  }, [triggerSearch])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  // Immediate search (for Enter key or button click)
   const handleSearch = useCallback(() => {
-    updateFilters('search', search)
-  }, [search, updateFilters])
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    setIsSearching(false)
+    triggerSearch(search)
+  }, [search, triggerSearch])
 
   const handleDateFilter = useCallback(() => {
     startTransition(() => {
@@ -76,7 +120,12 @@ export function PedidosFilters({
   }, [dateFrom, dateTo, router, searchParams])
 
   const clearFilters = useCallback(() => {
+    // Clear any pending debounced search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
     setSearch('')
+    setIsSearching(false)
     setDateFrom(undefined)
     setDateTo(undefined)
     router.push('/pedidos')
@@ -88,14 +137,21 @@ export function PedidosFilters({
     <div className="flex flex-wrap gap-2 items-center">
       {/* Search */}
       <div className="flex gap-2">
-        <Input
-          placeholder="Pesquisar prestador..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          className="w-[200px]"
-        />
-        <Button variant="outline" size="icon" onClick={handleSearch}>
+        <div className="relative">
+          {isSearching ? (
+            <Loader2 className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
+          ) : (
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          )}
+          <Input
+            placeholder="Pesquisar prestador..."
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            className="w-[200px] pl-9"
+          />
+        </div>
+        <Button variant="outline" size="icon" onClick={handleSearch} disabled={isSearching}>
           <Search className="h-4 w-4" />
         </Button>
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -87,7 +87,7 @@ const STEPS = [
   { id: 3, title: 'Disponibilidade', icon: Calendar },
   { id: 4, title: 'Recursos', icon: Wrench },
   { id: 5, title: 'Serviços', icon: Briefcase },
-  { id: 6, title: 'Cobertura', icon: MapPin },
+  { id: 6, title: 'Zonas de Atuação', icon: MapPin },
   { id: 7, title: 'Revisão', icon: ClipboardCheck },
 ]
 
@@ -246,63 +246,85 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
-        <Card className="max-w-2xl w-full">
-          <CardContent className="p-12">
-            <div className="flex flex-col items-center gap-6 text-center">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                <CheckCircle2 className="h-10 w-10 text-green-600" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold mb-3">Formulário Submetido com Sucesso!</h1>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Obrigado por preencher o formulário de serviços, <strong>{provider.name}</strong>.
-                </p>
-                <p className="text-muted-foreground">
-                  A nossa equipa irá analisar as suas informações e entrará em contacto em breve.
-                </p>
-              </div>
-              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200 w-full">
-                <p className="text-sm text-blue-900">
-                  <strong>Resumo da submissão:</strong>
-                </p>
-                <div className="mt-2 space-y-1 text-sm text-blue-800">
-                  <p>{formData.selected_services.length} serviços selecionados</p>
-                  <p>{formData.coverage_municipalities.length} concelhos de cobertura</p>
-                  <p>{formData.num_technicians} técnico{formData.num_technicians > 1 ? 's' : ''}</p>
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        {/* Header */}
+        <header className="w-full py-4 px-4 bg-red-600">
+          <div className="max-w-4xl mx-auto flex items-center justify-center">
+            <img
+              src="https://nyrnjltpyedfoommmbhs.supabase.co/storage/v1/object/public/Public_images/fixo-logo.png"
+              alt="FIXO"
+              className="h-10 object-contain brightness-0 invert"
+            />
+          </div>
+        </header>
+
+        <div className="flex-1 flex items-center justify-center p-6">
+          <Card className="max-w-2xl w-full shadow-2xl">
+            <CardContent className="p-12">
+              <div className="flex flex-col items-center gap-6 text-center">
+                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+                  <CheckCircle2 className="h-10 w-10 text-green-600" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold mb-3">Formulário Submetido com Sucesso!</h1>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    Obrigado por preencher o formulário de serviços, <strong>{provider.name}</strong>.
+                  </p>
+                  <p className="text-muted-foreground">
+                    A nossa equipa irá analisar as suas informações e entrará em contacto em breve.
+                  </p>
+                </div>
+                <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200 w-full">
+                  <p className="text-sm text-red-600">
+                    <strong>Resumo da submissão:</strong>
+                  </p>
+                  <div className="mt-2 space-y-1 text-sm text-red-600/80">
+                    <p>{formData.selected_services.length} serviços selecionados</p>
+                    <p>{formData.coverage_municipalities.length} concelhos de cobertura</p>
+                    <p>{formData.num_technicians} técnico{formData.num_technicians > 1 ? 's' : ''}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">Formulário de Serviços</h1>
-          <p className="text-lg text-muted-foreground">
-            Preencha as informações sobre os seus serviços e áreas de cobertura
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="w-full py-4 px-4 bg-red-600">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+          <img
+            src="https://nyrnjltpyedfoommmbhs.supabase.co/storage/v1/object/public/Public_images/fixo-logo.png"
+            alt="FIXO"
+            className="h-10 object-contain brightness-0 invert"
+          />
+          <div className="text-right text-white">
+            <h1 className="text-lg md:text-xl font-semibold">Recolha de Informações</h1>
+            <p className="text-white/80 text-xs md:text-sm">
+              Dados tratados exclusivamente pela Fidelidade
+            </p>
+          </div>
         </div>
+      </header>
 
+      <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Progress Bar */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium text-gray-700">
               Passo {currentStep} de {STEPS.length}
             </span>
-            <span className="text-sm text-muted-foreground">{Math.round(progress)}% completo</span>
+            <span className="text-sm text-gray-500">{Math.round(progress)}% completo</span>
           </div>
           <Progress value={progress} className="h-2" />
         </div>
 
         {/* Steps Navigation */}
-        <div className="mb-8 overflow-x-auto pb-4">
+        <div className="mb-6 overflow-x-auto pb-2">
           <div className="flex gap-2 min-w-max">
             {STEPS.map((step) => {
               const Icon = step.icon
@@ -315,10 +337,10 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
                   onClick={() => setCurrentStep(step.id)}
                   disabled={isSubmitting}
                   className={cn(
-                    'flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-all',
-                    isActive && 'bg-primary text-primary-foreground border-primary',
+                    'flex items-center gap-2 px-4 py-2 rounded-lg border transition-all',
+                    isActive && 'bg-red-600 text-white border-red-600',
                     isCompleted && 'bg-green-50 text-green-700 border-green-200',
-                    !isActive && !isCompleted && 'bg-white border-gray-200 hover:border-gray-300'
+                    !isActive && !isCompleted && 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -339,7 +361,7 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
         )}
 
         {/* Form Content */}
-        <Card>
+        <Card className="shadow-2xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {(() => {
@@ -364,7 +386,7 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="provider-name">Nome Completo *</Label>
+                    <Label htmlFor="provider-name">Designação da empresa ou ENI (empresário em nome individual*</Label>
                     <Input
                       id="provider-name"
                       value={formData.provider_name || provider.name}
@@ -374,7 +396,7 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
                     />
                   </div>
                   <div>
-                    <Label htmlFor="provider-email">Email *</Label>
+                    <Label htmlFor="provider-email">Email institucional *</Label>
                     <Input
                       id="provider-email"
                       type="email"
@@ -887,7 +909,7 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
         </Card>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between items-center mt-8 gap-4">
+        <div className="flex justify-between items-center mt-6 gap-4">
           <Button
             variant="outline"
             onClick={handlePrevious}
@@ -898,14 +920,20 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
             Anterior
           </Button>
 
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm">
             {!canProceed() && currentStep !== 7 && (
-              <span className="text-destructive">Preencha os campos obrigatórios (*)</span>
+              <span className="text-gray-500 text-xs">
+                Preencha os campos obrigatórios (*)
+              </span>
             )}
           </div>
 
           {currentStep < STEPS.length ? (
-            <Button onClick={handleNext} disabled={!canProceed() || isSubmitting} className="min-w-32">
+            <Button
+              onClick={handleNext}
+              disabled={!canProceed() || isSubmitting}
+              className="min-w-32 bg-red-600 hover:bg-red-700"
+            >
               Seguinte
               <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
@@ -913,7 +941,7 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
             <Button
               onClick={handleSubmit}
               disabled={!canProceed() || isSubmitting}
-              className="min-w-32"
+              className="min-w-32 bg-red-600 hover:bg-red-700"
             >
               {isSubmitting ? (
                 <>
