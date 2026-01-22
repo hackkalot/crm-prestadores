@@ -16,6 +16,7 @@ import {
   getCatalogMaterials,
   getCatalogClusters,
 } from '@/lib/service-catalog/actions'
+import { getEmailTemplates } from '@/lib/email-templates/actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
 
 export default async function ConfiguracoesPage() {
@@ -35,6 +36,7 @@ export default async function ConfiguracoesPage() {
     catalogPrices,
     catalogMaterials,
     catalogClusters,
+    emailTemplates,
   ] = await Promise.all([
     getTaskDefinitions(),
     getSettings(),
@@ -47,6 +49,7 @@ export default async function ConfiguracoesPage() {
     getCatalogPrices({ limit: 50 }),
     getCatalogMaterials(),
     getCatalogClusters(),
+    getEmailTemplates(),
   ])
 
   return (
@@ -69,6 +72,7 @@ export default async function ConfiguracoesPage() {
             catalogPrices={catalogPrices.data}
             catalogMaterials={catalogMaterials}
             catalogClusters={catalogClusters}
+            emailTemplates={emailTemplates}
           />
         </Suspense>
       </div>

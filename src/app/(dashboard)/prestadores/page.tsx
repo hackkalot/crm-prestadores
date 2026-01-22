@@ -8,18 +8,11 @@ import { StatsCardsSkeleton, PrestadoresTableSkeleton } from '@/components/skele
 import { Button } from '@/components/ui/button'
 import { Copy } from 'lucide-react'
 import {
-  getAllPrestadoresForClientSearch,
   getPrestadoresStats,
   getDistinctPrestadorServices,
   getUsers,
-  getProviderServiceRequestCounts,
-  type PrestadorFilters,
 } from '@/lib/prestadores/actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
-import type { Database } from '@/types/database'
-
-type ProviderStatus = Database['public']['Enums']['provider_status']
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
 // Async component for stats
 async function StatsSection() {
@@ -27,57 +20,24 @@ async function StatsSection() {
   return <PrestadoresStats stats={stats} />
 }
 
-// Async component for prestadores with client-side fuzzy search
-async function PrestadoresSection({ filters }: { filters: PrestadorFilters }) {
-  // Load all data for client-side filtering (text search done on client)
-  const [data, services, users] = await Promise.all([
-    getAllPrestadoresForClientSearch(filters),
+// Async component that loads only lightweight data (services, users for filters)
+// Main data is loaded client-side via SWR for instant page load
+async function PrestadoresSection() {
+  const [services, users] = await Promise.all([
     getDistinctPrestadorServices(),
     getUsers(),
   ])
 
-  // Get service request counts for providers that have backoffice_provider_id
-  const backofficeIds = data.data
-    .filter((p) => p.backoffice_provider_id !== null)
-    .map((p) => p.backoffice_provider_id as number)
-
-  const requestCounts = await getProviderServiceRequestCounts(backofficeIds)
-
   return (
     <PrestadoresClientView
-      initialData={data}
       services={services}
       users={users}
-      requestCounts={requestCounts}
     />
   )
 }
 
-export default async function PrestadoresPage({
-  searchParams,
-}: {
-  searchParams: SearchParams
-}) {
+export default async function PrestadoresPage() {
   await requirePageAccess('prestadores')
-  const params = await searchParams
-
-  // Parse multi-select filters from comma-separated URL params
-  const parseMultiParam = (param: string | string[] | undefined): string[] | undefined => {
-    if (!param) return undefined
-    if (Array.isArray(param)) return param
-    return param.split(',').filter(Boolean)
-  }
-
-  const filters: PrestadorFilters = {
-    status: (params.status as ProviderStatus | 'all' | '_all') || '_all',
-    entityType: params.entityType as string | undefined,
-    counties: parseMultiParam(params.counties),
-    services: parseMultiParam(params.services),
-    ownerId: params.ownerId as string | undefined,
-    hasPedidos: (params.hasPedidos as 'all' | 'with' | 'without') || undefined,
-    sortBy: params.sortBy as string | undefined,
-    sortOrder: (params.sortOrder as 'asc' | 'desc') || undefined,
-  }
 
   // No awaits here - header appears instantly!
   return (
@@ -103,9 +63,9 @@ export default async function PrestadoresPage({
           <StatsSection />
         </Suspense>
 
-        {/* Prestadores with client-side fuzzy search */}
+        {/* Prestadores - data loaded client-side via SWR */}
         <Suspense fallback={<PrestadoresTableSkeleton />}>
-          <PrestadoresSection filters={filters} />
+          <PrestadoresSection />
         </Suspense>
       </div>
     </div>

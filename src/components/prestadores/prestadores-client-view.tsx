@@ -56,10 +56,8 @@ import type { PaginatedPrestadores } from '@/lib/prestadores/actions'
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 interface PrestadoresClientViewProps {
-  initialData: PaginatedPrestadores
   services: string[]
   users: Array<{ id: string; name: string; email: string }>
-  requestCounts: Record<number, number>
 }
 
 const statusOptions = [
@@ -119,7 +117,7 @@ const statusVariants: Record<string, 'info' | 'warning' | 'success' | 'destructi
   arquivado: 'secondary',
 }
 
-export function PrestadoresClientView({ initialData, services, users, requestCounts }: PrestadoresClientViewProps) {
+export function PrestadoresClientView({ services, users }: PrestadoresClientViewProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -146,6 +144,7 @@ export function PrestadoresClientView({ initialData, services, users, requestCou
   }, [searchParams])
 
   // Build SWR cache key from URL filters (excluding text search which is client-side)
+  // Note: 'pedidos' sorting is client-side only, so we use 'name' as default for API
   const swrKey = useMemo(() => {
     const params = new URLSearchParams()
     if (currentStatus !== '_all') params.set('status', currentStatus)
@@ -154,25 +153,52 @@ export function PrestadoresClientView({ initialData, services, users, requestCou
     if (currentHasPedidos !== '_all') params.set('hasPedidos', currentHasPedidos)
     if (currentCounties.length > 0) params.set('counties', currentCounties.join(','))
     if (currentServices.length > 0) params.set('services', currentServices.join(','))
-    params.set('sortBy', sortBy)
+    // Don't send 'pedidos' to API - it's a virtual column sorted client-side
+    const apiSortBy = sortBy === 'pedidos' ? 'name' : sortBy
+    params.set('sortBy', apiSortBy)
     params.set('sortOrder', sortOrder)
     return `/api/prestadores?${params.toString()}`
   }, [currentStatus, currentEntity, currentOwnerId, currentHasPedidos, currentCounties, currentServices, sortBy, sortOrder])
 
-  // SWR with stale-while-revalidate - uses initialData from server, caches in browser
-  const { data: swrData, isValidating } = useSWR<PaginatedPrestadores>(
+  // SWR loads data client-side - no SSR blocking
+  const { data: swrData, isLoading, isValidating } = useSWR<PaginatedPrestadores>(
     swrKey,
     fetcher,
     {
-      fallbackData: initialData,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       dedupingInterval: 60000,
     }
   )
 
-  // Use SWR data (falls back to initialData on first render)
-  const prestadoresData = swrData || initialData
+  // Empty state while loading - ensure data is always an array
+  const prestadoresData = {
+    data: swrData?.data || [],
+    total: swrData?.total || 0,
+    page: swrData?.page || 1,
+    limit: swrData?.limit || 50,
+    totalPages: swrData?.totalPages || 0,
+  }
+
+  // Extract backoffice IDs for request counts lazy load
+  const backofficeIds = useMemo(() => {
+    if (!prestadoresData.data || !Array.isArray(prestadoresData.data)) return []
+    return prestadoresData.data
+      .filter((p) => p.backoffice_provider_id !== null)
+      .map((p) => p.backoffice_provider_id as number)
+  }, [prestadoresData.data])
+
+  // Lazy load request counts
+  const requestCountsKey = backofficeIds.length > 0
+    ? `/api/prestadores/request-counts?ids=${backofficeIds.join(',')}`
+    : null
+  const { data: requestCountsData, isLoading: isLoadingCounts } = useSWR<{ counts: Record<number, number> }>(
+    requestCountsKey,
+    fetcher,
+    { revalidateOnFocus: false, dedupingInterval: 60000 }
+  )
+  const requestCounts = requestCountsData?.counts || {}
+  const countsLoaded = requestCountsData !== undefined
 
   const serviceOptions = useMemo(() =>
     services.map(s => ({ value: s, label: s }))
@@ -227,6 +253,11 @@ export function PrestadoresClientView({ initialData, services, users, requestCou
         case 'status':
           comparison = (a.status || '').localeCompare(b.status || '')
           break
+        case 'pedidos':
+          const countA = a.backoffice_provider_id ? (requestCounts[a.backoffice_provider_id] || 0) : -1
+          const countB = b.backoffice_provider_id ? (requestCounts[b.backoffice_provider_id] || 0) : -1
+          comparison = countA - countB
+          break
         default:
           comparison = 0
       }
@@ -235,7 +266,7 @@ export function PrestadoresClientView({ initialData, services, users, requestCou
     })
 
     return sorted
-  }, [filteredData, sortBy, sortOrder])
+  }, [filteredData, sortBy, sortOrder, requestCounts])
 
   // Client-side pagination
   const page = parseInt(searchParams.get('page') || '1')
@@ -499,8 +530,16 @@ export function PrestadoresClientView({ initialData, services, users, requestCou
           </div>
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="rounded-lg border bg-card p-8 text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
+            <p className="text-muted-foreground mt-2">A carregar prestadores...</p>
+          </div>
+        )}
+
         {/* Empty State */}
-        {paginatedData.length === 0 && (
+        {!isLoading && paginatedData.length === 0 && (
           <div className="rounded-lg border bg-card p-8 text-center">
             <p className="text-muted-foreground">
               {searchQuery
@@ -511,7 +550,7 @@ export function PrestadoresClientView({ initialData, services, users, requestCou
         )}
 
         {/* Table */}
-        {paginatedData.length > 0 && (
+        {!isLoading && paginatedData.length > 0 && (
           <div className="rounded-lg border bg-card">
             <Table>
               <TableHeader>
@@ -536,7 +575,15 @@ export function PrestadoresClientView({ initialData, services, users, requestCou
                   </TableHead>
                   <TableHead>Zonas</TableHead>
                   <TableHead>Serviços</TableHead>
-                  <TableHead className="text-center">Pedidos</TableHead>
+                  <TableHead className="text-center">
+                    <button
+                      onClick={() => handleSort('pedidos')}
+                      className="flex items-center justify-center w-full hover:text-foreground transition-colors"
+                    >
+                      Pedidos
+                      {getSortIcon('pedidos')}
+                    </button>
+                  </TableHead>
                   <TableHead>
                     <button
                       onClick={() => handleSort('status')}
@@ -622,7 +669,10 @@ export function PrestadoresClientView({ initialData, services, users, requestCou
                                 >
                                   <FileText className="h-3.5 w-3.5" />
                                   <span className="font-medium">
-                                    {requestCounts[prestador.backoffice_provider_id] || 0}
+                                    {countsLoaded
+                                      ? (requestCounts[prestador.backoffice_provider_id] || 0)
+                                      : <Loader2 className="h-3 w-3 animate-spin" />
+                                    }
                                   </span>
                                 </ProviderLink>
                               </TooltipTrigger>

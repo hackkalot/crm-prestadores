@@ -97,6 +97,21 @@ Os tipos sao gerados para `src/types/database.ts` e devem ser regenerados sempre
 - ❌ NÃO mudar `||` para `??` sem motivo
 - ✅ APENAS corrigir erros de compilação reais, não potenciais
 
+### 9. **SEMPRE consultar `database.ts` ANTES de fazer queries**
+- ❌ **NUNCA** inventar nomes de colunas ou tabelas - verificar SEMPRE o schema real
+- ❌ **NUNCA** assumir que uma coluna existe sem confirmar em `src/types/database.ts`
+- ✅ **OBRIGATÓRIO**: Antes de escrever qualquer query Supabase, ler a definição da tabela em `database.ts`
+- ✅ Prestar atenção aos tipos das colunas (ex: `assigned_provider_id` é `string`, não `number`)
+- ✅ Verificar nomes exactos das colunas (ex: `assigned_provider_id` vs `provider_id`)
+
+```typescript
+// ❌ ERRADO - inventar coluna
+.from('service_requests').select('provider_id')  // provider_id NÃO EXISTE!
+
+// ✅ CORRETO - verificar database.ts primeiro
+.from('service_requests').select('assigned_provider_id')  // coluna real
+```
+
 ### Exemplos de Abordagem CORRETA:
 
 #### 1. Tipos de Base de Dados

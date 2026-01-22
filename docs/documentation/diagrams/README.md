@@ -28,6 +28,7 @@ Esta pasta contém diagramas visuais do CRM Prestadores organizados por categori
 - [Candidaturas e Duplicados](./flows/candidaturas-flow.md)
 - [Formulários de Prestadores](./flows/provider-forms-flow.md)
 - [Sincronização com Backoffice](./flows/sync-backoffice.md)
+- [Catálogo de Serviços](./flows/catalogo-servicos.md)
 
 ### Segurança
 - [Fluxo de Autenticação](./security/auth-flow.md)

@@ -229,7 +229,6 @@ export function CandidaturasList({ candidaturas, viewMode = 'list' }: Candidatur
                       onClick={() => handleSort('num_technicians')}
                       className="flex items-center hover:text-foreground transition-colors"
                     >
-                      <Users className="h-4 w-4 mr-1" />
                       Técnicos
                       {getSortIcon('num_technicians')}
                     </button>

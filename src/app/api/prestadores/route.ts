@@ -1,18 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { bulkResolveServiceNames } from '@/lib/providers/actions'
 import { getFullySelectedDistricts } from '@/lib/data/portugal-districts'
+import { bulkResolveServiceNames } from '@/lib/providers/actions'
 
 // Get providers with service requests (for hasPedidos filter)
 async function getProvidersWithServiceRequests(): Promise<number[]> {
   const { data, error } = await createAdminClient()
     .from('service_requests')
-    .select('provider_id')
+    .select('assigned_provider_id')
+    .not('assigned_provider_id', 'is', null)
 
   if (error || !data) return []
 
-  const uniqueIds = new Set(data.map((r) => r.provider_id).filter((id): id is number => id !== null))
+  // assigned_provider_id is a string in the database, convert to number
+  const uniqueIds = new Set(
+    data
+      .map((r) => r.assigned_provider_id ? parseInt(r.assigned_provider_id, 10) : null)
+      .filter((id): id is number => id !== null && !isNaN(id))
+  )
   return Array.from(uniqueIds)
 }
 

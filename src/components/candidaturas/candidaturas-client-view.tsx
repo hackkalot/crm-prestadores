@@ -607,13 +607,12 @@ export function CandidaturasClientView({ initialData, services }: CandidaturasCl
                         {getSortIcon('entity_type')}
                       </button>
                     </TableHead>
-                    <TableHead>Servicos</TableHead>
+                    <TableHead>Serviços</TableHead>
                     <TableHead>
                       <button
                         onClick={() => handleSort('num_technicians')}
                         className="flex items-center hover:text-foreground transition-colors"
                       >
-                        <Users className="h-4 w-4 mr-1" />
                         Técnicos
                         {getSortIcon('num_technicians')}
                       </button>

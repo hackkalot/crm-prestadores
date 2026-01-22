@@ -85,6 +85,7 @@ export async function getAgendaTasks(filters: AgendaFilters): Promise<AgendaTask
   }
 
   // Buscar tarefas do utilizador
+  // Note: owner_id is on providers table (relationship_owner_id), not on onboarding_tasks
   const supabaseAdmin = createAdminClient()
   let query = supabaseAdmin
     .from('onboarding_tasks')
@@ -97,13 +98,13 @@ export async function getAgendaTasks(filters: AgendaFilters): Promise<AgendaTask
         name,
         stage:stage_definitions(id, name, stage_number)
       ),
-      onboarding_card:onboarding_cards(
+      onboarding_card:onboarding_cards!inner(
         id,
         onboarding_type,
-        provider:providers(id, name, entity_type)
+        provider:providers!inner(id, name, entity_type, relationship_owner_id)
       )
     `)
-    .eq('owner_id', userId)
+    .eq('onboarding_card.provider.relationship_owner_id', userId)
 
   // Filtrar por status
   if (!filters.showCompleted) {
