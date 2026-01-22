@@ -8,13 +8,39 @@ Este documento descreve a arquitectura técnica do CRM Prestadores, as decisões
 - [Decisões Arquitecturais](#decisões-arquitecturais)
 - [Padrões de Código](#padrões-de-código)
 - [Fluxo de Dados](#fluxo-de-dados)
-- [Segurança](#segurança)
 - [Performance](#performance)
-- [Próximos Documentos](#próximos-documentos)
+- [Documentos Relacionados](#documentos-relacionados)
 
 ---
 
 ## Visão Geral
+
+### Diagrama de Contexto (C4 Level 1)
+
+```mermaid
+C4Context
+    title Sistema CRM Prestadores - Diagrama de Contexto
+
+    Person(user, "Utilizador CRM", "Gestor de prestadores")
+
+    System(crm, "CRM Prestadores", "Sistema de gestão do ciclo de vida de prestadores")
+
+    System_Ext(supabase, "Supabase", "Base de dados PostgreSQL + Auth")
+    System_Ext(backoffice, "Backoffice FIXO", "Sistema legado de pedidos de serviço")
+    System_Ext(hubspot, "HubSpot", "CRM de vendas (webhooks)")
+    System_Ext(mapbox, "Mapbox", "Serviço de mapas")
+    System_Ext(github, "GitHub Actions", "Execução de scripts de sync")
+
+    Rel(user, crm, "Usa", "HTTPS")
+    Rel(crm, supabase, "Lê/Escreve dados", "PostgreSQL")
+    Rel(hubspot, crm, "Envia candidaturas", "Webhook")
+    Rel(crm, github, "Dispara sync", "API")
+    Rel(github, backoffice, "Scraping", "Puppeteer")
+    Rel(github, supabase, "Insere dados", "PostgreSQL")
+    Rel(crm, mapbox, "Renderiza mapas", "API")
+```
+
+### Arquitectura de Alto Nível
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -468,66 +494,6 @@ src/
 ```
 
 ---
-
-## Segurança
-
-### Camadas de Protecção
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ 1. MIDDLEWARE                                                   │
-│    - Verifica sessão válida                                     │
-│    - Redireciona para /login se não autenticado                 │
-│    - Permite rotas públicas (/login, /api/webhooks)             │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 2. SERVER ACTIONS                                               │
-│    - Verificam supabase.auth.getUser()                          │
-│    - Retornam erro se não autenticado                           │
-│    - Usam adminClient apenas quando necessário                  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 3. ROW LEVEL SECURITY (Supabase)                                │
-│    - Políticas por tabela                                       │
-│    - Controlo de leitura/escrita por role                       │
-│    - Última linha de defesa                                     │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Validação de Dados
-
-```typescript
-// Usar Zod para validar inputs
-import { z } from 'zod'
-
-const CandidaturaSchema = z.object({
-  name: z.string().min(2).max(100),
-  email: z.string().email(),
-  nif: z.string().regex(/^\d{9}$/),
-  phone: z.string().optional(),
-})
-
-export async function createCandidatura(formData: FormData) {
-  const parsed = CandidaturaSchema.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    // ...
-  })
-
-  if (!parsed.success) {
-    return { error: parsed.error.flatten() }
-  }
-
-  // Continuar com dados validados
-}
-```
-
----
-
 ## Performance
 
 ### Estratégias Utilizadas
@@ -554,11 +520,14 @@ export async function createCandidatura(formData: FormData) {
 
 ---
 
-## Próximos Documentos
+## Documentos Relacionados
 
 - [02-FLUXOS-NEGOCIO.md](./02-FLUXOS-NEGOCIO.md) - Estados e transições
 - [03-BASE-DADOS.md](./03-BASE-DADOS.md) - Schema detalhado
 - [04-INTEGRACOES.md](./04-INTEGRACOES.md) - Backoffice, HubSpot, Mapbox
+- [05-COMPONENTES.md](./05-COMPONENTES.md) - Padrões UI e componentes
+- [06-DEPLOY.md](./06-DEPLOY.md) - Deploy e configuração
+- [07-SEGURANCA.md](./07-SEGURANCA.md) - Segurança e protecção de dados
 
 ---
 

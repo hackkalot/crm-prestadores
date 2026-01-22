@@ -220,13 +220,37 @@ export function SubmissoesTab({ provider, submissions, allServicesMap }: Submiss
   const startXRef = useRef(0)
   const startWidthRef = useRef(0)
 
-  const handleCopyFormsLink = () => {
+  const handleCopyFormsLink = async () => {
     startTransition(async () => {
       const result = await generateFormsToken(provider.id)
       if (result.success && result.token) {
         const link = `${window.location.origin}/forms/services/${result.token}`
-        await navigator.clipboard.writeText(link)
-        toast.success('Link copiado para a área de transferência!')
+
+        // Try modern clipboard API first, with fallback for when document loses focus
+        try {
+          await navigator.clipboard.writeText(link)
+          toast.success('Link copiado para a área de transferência!')
+        } catch {
+          // Fallback: create a temporary textarea and use execCommand
+          const textArea = document.createElement('textarea')
+          textArea.value = link
+          textArea.style.position = 'fixed'
+          textArea.style.left = '-9999px'
+          textArea.style.top = '-9999px'
+          document.body.appendChild(textArea)
+          textArea.focus()
+          textArea.select()
+
+          try {
+            document.execCommand('copy')
+            toast.success('Link copiado para a área de transferência!')
+          } catch {
+            // Last resort: show the link for manual copy
+            toast.error('Não foi possível copiar. Link: ' + link)
+          } finally {
+            document.body.removeChild(textArea)
+          }
+        }
       } else {
         toast.error(result.error || 'Erro ao gerar link')
       }

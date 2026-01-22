@@ -131,6 +131,8 @@ crm-prestadores/
 | Conhecer o schema da base de dados | [03-BASE-DADOS.md](./03-BASE-DADOS.md) |
 | Perceber integrações externas (Backoffice, GitHub Actions, Mapbox) | [04-INTEGRACOES.md](./04-INTEGRACOES.md) |
 | Consultar biblioteca de componentes UI e padrões | [05-COMPONENTES.md](./05-COMPONENTES.md) |
+| Configurar ambientes e fazer deploy | [06-DEPLOY.md](./06-DEPLOY.md) |
+| **Compreender segurança e protecção de dados** | [07-SEGURANCA.md](./07-SEGURANCA.md) |
 
 ---
 
