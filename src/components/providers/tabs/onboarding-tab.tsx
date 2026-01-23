@@ -6,6 +6,7 @@ import { OnboardingTaskList } from '@/components/onboarding/onboarding-task-list
 import { OnboardingActions } from '@/components/onboarding/onboarding-actions'
 import { formatDateTime } from '@/lib/utils'
 import { ListTodo, Clock, User as UserIcon } from 'lucide-react'
+import type { PricingCluster } from '@/lib/providers/pricing-actions'
 
 interface OnboardingTabProps {
   provider: {
@@ -31,9 +32,13 @@ interface OnboardingTabProps {
     }>
   }
   users: Array<{ id: string; name: string; email: string }>
+  pricingData?: {
+    clusters: PricingCluster[]
+    providerServices: string[]
+  } | null
 }
 
-export function OnboardingTab({ provider, onboardingCard, users }: OnboardingTabProps) {
+export function OnboardingTab({ provider, onboardingCard, users, pricingData }: OnboardingTabProps) {
   const tasks = onboardingCard.tasks || []
   const totalTasks = tasks.length
   const completedTasks = tasks.filter(t => t.status === 'concluida').length
@@ -92,6 +97,8 @@ export function OnboardingTab({ provider, onboardingCard, users }: OnboardingTab
             cardId={onboardingCard.id}
             currentStageId={onboardingCard.current_stage?.id}
             providerId={provider.id}
+            providerName={provider.name}
+            pricingData={pricingData}
           />
         </CardContent>
       </Card>

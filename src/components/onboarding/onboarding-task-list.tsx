@@ -21,6 +21,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import { updateTaskStatus, rescheduleTaskDeadline } from '@/lib/onboarding/actions'
 import { formatDate } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -34,8 +39,12 @@ import {
   CalendarClock,
   Loader2,
   Mail,
+  ChevronDown,
+  Euro,
 } from 'lucide-react'
 import { prepareTaskEmail } from '@/lib/email-templates/actions'
+import { TaskPricingPanel } from './task-pricing-panel'
+import type { PricingCluster } from '@/lib/providers/pricing-actions'
 
 interface Stage {
   id: string
@@ -65,6 +74,11 @@ interface OnboardingTaskListProps {
   cardId?: string // Mantido para compatibilidade, mas nao usado
   currentStageId?: string
   providerId?: string // ID do prestador para gerar emails
+  providerName?: string // Nome do prestador para exibição
+  pricingData?: {
+    clusters: PricingCluster[]
+    providerServices: string[]
+  } | null
 }
 
 const statusIcons = {
@@ -85,7 +99,13 @@ function getStage(stage: Stage | Stage[] | undefined): Stage | undefined {
   return Array.isArray(stage) ? stage[0] : stage
 }
 
-export function OnboardingTaskList({ tasks, currentStageId, providerId }: OnboardingTaskListProps) {
+// Helper para verificar se é a tarefa #4 da Etapa 2 (Enviar preçário)
+function isPricingTask(task: Task): boolean {
+  const stage = getStage(task.task_definition?.stage)
+  return stage?.stage_number === '2' && task.task_definition?.task_number === 4
+}
+
+export function OnboardingTaskList({ tasks, currentStageId, providerId, providerName, pricingData }: OnboardingTaskListProps) {
   const [isPending, startTransition] = useTransition()
   const [rescheduleOpen, setRescheduleOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
@@ -93,6 +113,7 @@ export function OnboardingTaskList({ tasks, currentStageId, providerId }: Onboar
   const [rescheduleReason, setRescheduleReason] = useState('')
   const [pendingTaskIds, setPendingTaskIds] = useState<Set<string>>(new Set())
   const [emailPendingTaskId, setEmailPendingTaskId] = useState<string | null>(null)
+  const [expandedPricingTaskId, setExpandedPricingTaskId] = useState<string | null>(null)
   const router = useRouter()
 
   // Optimistic state for tasks
@@ -334,7 +355,221 @@ export function OnboardingTaskList({ tasks, currentStageId, providerId }: Onboar
                   {stageTasks.map((task) => {
                     const StatusIcon = statusIcons[task.status as keyof typeof statusIcons] || Circle
                     const isOverdue = task.status !== 'concluida' && task.deadline_at && new Date(task.deadline_at) < now
+                    const showPricingExpansion = isPricingTask(task) && pricingData && task.status !== 'concluida'
+                    const isPricingExpanded = expandedPricingTaskId === task.id
 
+                    // Wrapper for pricing task (expandable)
+                    if (showPricingExpansion) {
+                      return (
+                        <Collapsible
+                          key={task.id}
+                          open={isPricingExpanded}
+                          onOpenChange={(open) => setExpandedPricingTaskId(open ? task.id : null)}
+                        >
+                          <div
+                            className={`rounded-lg border transition-colors ${
+                              task.status === 'concluida'
+                                ? 'border-green-200 dark:border-green-900'
+                                : isOverdue
+                                  ? 'border-red-200 dark:border-red-900'
+                                  : task.status === 'em_curso'
+                                    ? 'border-blue-200 dark:border-blue-900'
+                                    : ''
+                            } ${isPricingExpanded ? 'ring-2 ring-primary/50' : ''}`}
+                          >
+                            {/* Task Header - only this part gets the background color */}
+                            <div className={`flex items-center gap-4 p-3 rounded-t-lg ${
+                              task.status === 'concluida'
+                                ? 'bg-green-50 dark:bg-green-950/30'
+                                : isOverdue
+                                  ? 'bg-red-50 dark:bg-red-950/30'
+                                  : task.status === 'em_curso'
+                                    ? 'bg-blue-50 dark:bg-blue-950/30'
+                                    : 'bg-card'
+                            }`}>
+                              {/* Status Icon */}
+                              <div className={`shrink-0 ${
+                                task.status === 'concluida'
+                                  ? 'text-green-500'
+                                  : isOverdue
+                                    ? 'text-red-500'
+                                    : task.status === 'em_curso'
+                                      ? 'text-blue-500'
+                                      : 'text-muted-foreground'
+                              }`}>
+                                {isOverdue && task.status !== 'concluida' ? (
+                                  <AlertTriangle className="h-5 w-5" />
+                                ) : (
+                                  <StatusIcon className="h-5 w-5" />
+                                )}
+                              </div>
+
+                              {/* Task Info */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-muted-foreground font-mono">
+                                    #{task.task_definition?.task_number}
+                                  </span>
+                                  <span className={`font-medium ${task.status === 'concluida' ? 'line-through text-muted-foreground' : ''}`}>
+                                    {task.task_definition?.name}
+                                  </span>
+                                  <Badge variant="outline" className="text-xs gap-1">
+                                    <Euro className="h-3 w-3" />
+                                    Preçário
+                                  </Badge>
+                                </div>
+                                {task.task_definition?.description && (
+                                  <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                                    {task.task_definition.description}
+                                  </p>
+                                )}
+                              </div>
+
+                              {/* Deadline with reschedule button */}
+                              <div className="flex items-center gap-1 shrink-0">
+                                {task.deadline_at && (
+                                  <div className={`text-xs ${isOverdue ? 'text-red-500 font-medium' : 'text-muted-foreground'}`}>
+                                    {isOverdue && <AlertTriangle className="h-3 w-3 inline mr-1" />}
+                                    {formatDate(task.deadline_at)}
+                                  </div>
+                                )}
+                                {task.status !== 'concluida' && (
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-6 w-6 p-0"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      openRescheduleDialog(task)
+                                    }}
+                                    title="Reagendar prazo"
+                                  >
+                                    <CalendarClock className="h-3 w-3" />
+                                  </Button>
+                                )}
+                              </div>
+
+                              {/* Status Badge */}
+                              <Badge
+                                variant={
+                                  task.status === 'concluida'
+                                    ? 'success'
+                                    : task.status === 'em_curso'
+                                      ? 'info'
+                                      : 'secondary'
+                                }
+                                className="shrink-0"
+                              >
+                                {statusLabels[task.status as keyof typeof statusLabels] || task.status}
+                              </Badge>
+
+                              {/* Actions */}
+                              <div className="flex gap-1 shrink-0">
+                                {/* Email button */}
+                                {task.task_definition?.email_template_id && providerId && (
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleSendEmail(task)
+                                    }}
+                                    disabled={emailPendingTaskId === task.id}
+                                    title="Enviar email"
+                                    className="text-blue-600 hover:text-blue-700"
+                                  >
+                                    {emailPendingTaskId === task.id ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      <Mail className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                )}
+                                {task.status === 'por_fazer' && (
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleStatusChange(task.id, 'em_curso', task.task_definition?.name)
+                                    }}
+                                    disabled={pendingTaskIds.has(task.id)}
+                                    title="Iniciar tarefa"
+                                  >
+                                    {pendingTaskIds.has(task.id) ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      <Play className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                )}
+                                {task.status === 'em_curso' && (
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleStatusChange(task.id, 'concluida', task.task_definition?.name)
+                                    }}
+                                    disabled={pendingTaskIds.has(task.id)}
+                                    title="Marcar como concluida"
+                                    className="text-green-600 hover:text-green-700"
+                                  >
+                                    {pendingTaskIds.has(task.id) ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      <CheckCircle2 className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                )}
+                                {task.status === 'concluida' && (
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleStatusChange(task.id, 'em_curso', task.task_definition?.name)
+                                    }}
+                                    disabled={pendingTaskIds.has(task.id)}
+                                    title="Reabrir tarefa"
+                                  >
+                                    {pendingTaskIds.has(task.id) ? (
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                      <RotateCcw className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                )}
+                                {/* Expand/Collapse button for pricing */}
+                                <CollapsibleTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    title={isPricingExpanded ? 'Recolher preçário' : 'Expandir preçário'}
+                                  >
+                                    <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isPricingExpanded ? 'rotate-180' : ''}`} />
+                                  </Button>
+                                </CollapsibleTrigger>
+                              </div>
+                            </div>
+
+                            {/* Expandable Pricing Content - always white background */}
+                            <CollapsibleContent>
+                              <div className="border-t px-3 py-4 bg-white dark:bg-card rounded-b-lg">
+                                <TaskPricingPanel
+                                  providerId={providerId!}
+                                  providerName={providerName || ''}
+                                  clusters={pricingData.clusters}
+                                  providerServices={pricingData.providerServices}
+                                />
+                              </div>
+                            </CollapsibleContent>
+                          </div>
+                        </Collapsible>
+                      )
+                    }
+
+                    // Regular task (non-expandable)
                     return (
                       <div
                         key={task.id}

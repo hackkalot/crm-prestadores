@@ -489,33 +489,42 @@ export async function autoSelectServicesFromForms(
   return { count: selectedServiceIds.length }
 }
 
+// Tipo para os dados do PDF (compatível com CatalogPrice do service-catalog)
+export type ProposalPDFPrice = {
+  id: string
+  service_name: string
+  cluster: string
+  service_group: string | null
+  unit_description: string
+  typology: string | null
+  vat_rate: number
+  launch_date: string | null
+  price_base: number | null
+  price_new_visit: number | null
+  price_extra_night: number | null
+  price_hour_no_materials: number | null
+  price_hour_with_materials: number | null
+  price_cleaning: number | null
+  price_cleaning_treatments: number | null
+  price_cleaning_imper: number | null
+  price_cleaning_imper_treatments: number | null
+  is_active: boolean | null
+  created_at: string | null
+  updated_at: string | null
+}
+
 /**
- * Generate PDF HTML for selected services only
+ * Generate PDF data for selected services (returns format compatible with generateCatalogPricePDFHTML)
  */
 export async function generateProposalPDFData(providerId: string): Promise<{
   error?: string
   data?: {
     provider: {
-      id: string
       name: string
       nif: string | null
       email: string
     }
-    pricingTable: Array<{
-      category: {
-        id: string
-        name: string
-        cluster: string
-        vat_rate: number
-      }
-      services: Array<{
-        id: string
-        name: string
-        unit: string | null
-        provider_price: number
-        variant_name: string | null
-      }>
-    }>
+    prices: ProposalPDFPrice[]
   }
 }> {
   const supabase = createAdminClient()
@@ -531,7 +540,7 @@ export async function generateProposalPDFData(providerId: string): Promise<{
     return { error: 'Prestador não encontrado' }
   }
 
-  // Get all selected services with their prices
+  // Get all selected services with ALL their price fields
   const { data: selectedPrices, error: pricesError } = await supabase
     .from('provider_prices')
     .select(
@@ -543,12 +552,24 @@ export async function generateProposalPDFData(providerId: string): Promise<{
       service_prices (
         id,
         service_name,
-        unit_description,
         cluster,
-        vat_rate,
+        service_group,
+        unit_description,
         typology,
+        vat_rate,
+        launch_date,
         price_base,
-        price_hour_with_materials
+        price_new_visit,
+        price_extra_night,
+        price_hour_no_materials,
+        price_hour_with_materials,
+        price_cleaning,
+        price_cleaning_treatments,
+        price_cleaning_imper,
+        price_cleaning_imper_treatments,
+        is_active,
+        created_at,
+        updated_at
       )
     `
     )
@@ -564,63 +585,207 @@ export async function generateProposalPDFData(providerId: string): Promise<{
     return { error: 'Nenhum serviço selecionado para gerar PDF' }
   }
 
-  // Group by cluster
-  const clusterMap = new Map<
-    string,
-    Array<{
-      id: string
-      name: string
-      unit: string | null
-      provider_price: number
-      variant_name: string | null
-      vat_rate: number
-    }>
-  >()
+  // Transform to ProposalPDFPrice format, applying custom prices where set
+  const prices: ProposalPDFPrice[] = []
 
   for (const priceRecord of selectedPrices) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const refPrice = (priceRecord as any).service_prices
     if (!refPrice) continue
 
-    const cluster = refPrice.cluster || 'Sem Cluster'
-    const finalPrice =
-      priceRecord.custom_price_without_vat ?? refPrice.price_base ?? refPrice.price_hour_with_materials ?? 0
+    // Apply custom price to price_base if set
+    const finalPriceBase = priceRecord.custom_price_without_vat ?? refPrice.price_base
 
-    const serviceData = {
+    prices.push({
       id: refPrice.id,
-      name: refPrice.service_name,
-      unit: refPrice.unit_description,
-      provider_price: finalPrice,
-      variant_name: refPrice.typology,
+      service_name: refPrice.service_name,
+      cluster: refPrice.cluster || 'Outros',
+      service_group: refPrice.service_group,
+      unit_description: refPrice.unit_description,
+      typology: refPrice.typology,
       vat_rate: refPrice.vat_rate,
-    }
-
-    if (!clusterMap.has(cluster)) {
-      clusterMap.set(cluster, [])
-    }
-    clusterMap.get(cluster)!.push(serviceData)
+      launch_date: refPrice.launch_date,
+      price_base: finalPriceBase,
+      price_new_visit: refPrice.price_new_visit,
+      price_extra_night: refPrice.price_extra_night,
+      price_hour_no_materials: refPrice.price_hour_no_materials,
+      price_hour_with_materials: refPrice.price_hour_with_materials,
+      price_cleaning: refPrice.price_cleaning,
+      price_cleaning_treatments: refPrice.price_cleaning_treatments,
+      price_cleaning_imper: refPrice.price_cleaning_imper,
+      price_cleaning_imper_treatments: refPrice.price_cleaning_imper_treatments,
+      is_active: refPrice.is_active,
+      created_at: refPrice.created_at,
+      updated_at: refPrice.updated_at,
+    })
   }
-
-  // Convert to array structure
-  const pricingTable = Array.from(clusterMap.entries()).map(([cluster, services]) => ({
-    category: {
-      id: cluster,
-      name: cluster,
-      cluster,
-      vat_rate: services[0].vat_rate, // Use first service's VAT
-    },
-    services,
-  }))
 
   return {
     data: {
       provider: {
-        id: provider.id,
         name: provider.name,
         nif: provider.nif,
         email: provider.email || '',
       },
-      pricingTable,
+      prices,
+    },
+  }
+}
+
+// Tipo para os snapshots de preços
+export type PricingSnapshot = {
+  id: string
+  provider_id: string
+  snapshot_name: string | null
+  snapshot_data: {
+    provider: {
+      name: string
+      nif: string | null
+      email: string
+    }
+    prices: ProposalPDFPrice[]
+    generated_at: string
+    services_count: number
+  }
+  created_at: string
+  created_by: string | null
+  created_by_user?: {
+    name: string
+    email: string
+  } | null
+}
+
+/**
+ * Save a pricing snapshot when generating PDF
+ */
+export async function savePricingSnapshot(
+  providerId: string,
+  snapshotData: {
+    provider: { name: string; nif: string | null; email: string }
+    prices: ProposalPDFPrice[]
+  }
+): Promise<{ error?: string; snapshotId?: string }> {
+  const supabase = await createClient()
+
+  // Verify authentication
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Não autenticado' }
+  }
+
+  const adminClient = createAdminClient()
+
+  // Create snapshot with timestamp
+  const now = new Date()
+  const snapshotName = `Proposta ${now.toLocaleDateString('pt-PT')} ${now.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}`
+
+  const { data: snapshot, error } = await adminClient
+    .from('provider_price_snapshots')
+    .insert({
+      provider_id: providerId,
+      snapshot_name: snapshotName,
+      snapshot_data: {
+        provider: snapshotData.provider,
+        prices: snapshotData.prices,
+        generated_at: now.toISOString(),
+        services_count: snapshotData.prices.length,
+      },
+      created_by: user.id,
+    })
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('Error saving pricing snapshot:', error)
+    return { error: 'Erro ao guardar snapshot' }
+  }
+
+  // Log the snapshot creation
+  await logPriceChange(
+    adminClient,
+    providerId,
+    user.id,
+    'price_change',
+    `Proposta de preços gerada com ${snapshotData.prices.length} serviços`,
+    null,
+    { snapshot_id: snapshot.id, services_count: snapshotData.prices.length }
+  )
+
+  revalidatePath(`/providers/${providerId}`)
+  return { snapshotId: snapshot.id }
+}
+
+/**
+ * Get pricing snapshots history for a provider
+ */
+export async function getPricingSnapshots(providerId: string): Promise<PricingSnapshot[]> {
+  const adminClient = createAdminClient()
+
+  const { data: snapshots, error } = await adminClient
+    .from('provider_price_snapshots')
+    .select(`
+      id,
+      provider_id,
+      snapshot_name,
+      snapshot_data,
+      created_at,
+      created_by,
+      users:created_by (
+        name,
+        email
+      )
+    `)
+    .eq('provider_id', providerId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching pricing snapshots:', error)
+    return []
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (snapshots || []).map((s: any) => ({
+    id: s.id,
+    provider_id: s.provider_id,
+    snapshot_name: s.snapshot_name,
+    snapshot_data: s.snapshot_data as PricingSnapshot['snapshot_data'],
+    created_at: s.created_at,
+    created_by: s.created_by,
+    created_by_user: s.users ? { name: s.users.name, email: s.users.email } : null,
+  }))
+}
+
+/**
+ * Generate PDF data from a saved snapshot
+ */
+export async function getSnapshotPDFData(snapshotId: string): Promise<{
+  error?: string
+  data?: {
+    provider: { name: string; nif: string | null; email: string }
+    prices: ProposalPDFPrice[]
+  }
+}> {
+  const adminClient = createAdminClient()
+
+  const { data: snapshot, error } = await adminClient
+    .from('provider_price_snapshots')
+    .select('snapshot_data')
+    .eq('id', snapshotId)
+    .single()
+
+  if (error || !snapshot) {
+    return { error: 'Snapshot não encontrado' }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const snapshotData = snapshot.snapshot_data as any
+
+  return {
+    data: {
+      provider: snapshotData.provider,
+      prices: snapshotData.prices,
     },
   }
 }

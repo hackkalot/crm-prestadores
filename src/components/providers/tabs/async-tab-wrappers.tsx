@@ -1,5 +1,5 @@
 import { getProviderApplicationHistory, getProviderOnboarding, getProviderNotes, getProviderHistory } from '@/lib/providers/actions'
-import { getProviderPricingOptions } from '@/lib/providers/pricing-actions'
+import { getProviderPricingOptions, getPricingSnapshots } from '@/lib/providers/pricing-actions'
 import { getProviderDocuments } from '@/lib/documents/actions'
 import {
   getProviderServiceRequests,
@@ -172,10 +172,31 @@ export async function OnboardingTabAsync({
     )
   }
 
-  return <OnboardingTab provider={provider} onboardingCard={onboardingCard} users={loadedUsers} />
+  // Check if we're on stage 2 (need pricing data for task #4)
+  // stage_number is a string in the database
+  const currentStageNumber = onboardingCard.current_stage?.stage_number
+  let pricingData = null
+
+  if (currentStageNumber === '2' && provider.forms_submitted_at) {
+    // Load pricing data for task #4
+    const clusters = await getProviderPricingOptions(providerId)
+    pricingData = {
+      clusters,
+      providerServices: provider.services || [],
+    }
+  }
+
+  return (
+    <OnboardingTab
+      provider={provider}
+      onboardingCard={onboardingCard}
+      users={loadedUsers}
+      pricingData={pricingData}
+    />
+  )
 }
 
-// Async wrapper for Preços tab
+// Async wrapper for Preços tab (now shows only proposal history)
 export async function PrecosTabAsync({
   providerId,
   provider,
@@ -183,34 +204,15 @@ export async function PrecosTabAsync({
   providerId: string
   provider: any
 }) {
-  const clusters = await getProviderPricingOptions(providerId)
-
-  // Get forms data to check selected services
-  let selectedServicesFromForms: string[] = []
-  if (provider.forms_submitted_at) {
-    const { createAdminClient } = await import('@/lib/supabase/admin')
-    const adminClient = createAdminClient()
-
-    const { data: formsData } = await adminClient
-      .from('provider_services_forms')
-      .select('selected_services')
-      .eq('provider_id', providerId)
-      .order('submitted_at', { ascending: false })
-      .limit(1)
-      .single()
-
-    if (formsData?.selected_services) {
-      selectedServicesFromForms = formsData.selected_services
-    }
-  }
+  // Only load snapshots - pricing selection is now in the onboarding task
+  const snapshots = await getPricingSnapshots(providerId)
 
   return (
     <PricingSelectionTab
       providerId={providerId}
       providerName={provider.name}
       hasFormsSubmitted={!!provider.forms_submitted_at}
-      clusters={clusters}
-      selectedServicesFromForms={selectedServicesFromForms}
+      snapshots={snapshots}
     />
   )
 }

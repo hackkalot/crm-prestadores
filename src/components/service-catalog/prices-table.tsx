@@ -32,6 +32,7 @@ import {
   Download,
   Upload,
   Trash2,
+  FileText,
 } from 'lucide-react'
 import {
   AlertDialog,
@@ -55,6 +56,7 @@ import {
   getUnitDescriptionSuggestions,
 } from '@/lib/service-catalog/actions'
 import type { CatalogPrice, CatalogPriceInput } from '@/lib/service-catalog/actions'
+import { generateCatalogPricePDFHTML } from '@/lib/service-catalog/pdf-generator'
 import { toast } from 'sonner'
 import * as XLSX from 'xlsx'
 
@@ -277,6 +279,7 @@ export function CatalogPricesTable({ prices, clusters }: CatalogPricesTableProps
 
   // Estado de export
   const [isExporting, setIsExporting] = useState(false)
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
 
   // Estado de import
   const [isImporting, setIsImporting] = useState(false)
@@ -580,6 +583,47 @@ export function CatalogPricesTable({ prices, clusters }: CatalogPricesTableProps
       toast.error('Erro ao exportar dados')
     }
     setIsExporting(false)
+  }
+
+  // Export PDF
+  const handleExportPDF = async () => {
+    setIsGeneratingPDF(true)
+    try {
+      // Buscar todos os dados (sem paginação) respeitando filtros
+      const exportData = await getCatalogPricesForExport({
+        cluster: cluster || undefined,
+        serviceGroup: serviceGroup || undefined,
+        search: search || undefined,
+      })
+
+      if (exportData.length === 0) {
+        toast.error('Nenhum serviço encontrado para exportar')
+        setIsGeneratingPDF(false)
+        return
+      }
+
+      // Gerar HTML do PDF
+      const html = generateCatalogPricePDFHTML(exportData)
+
+      // Criar blob e abrir em nova janela
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const windowRef = window.open(url, '_blank')
+
+      if (windowRef) {
+        // Permitir que a janela carregue antes de imprimir
+        setTimeout(() => {
+          windowRef.print()
+        }, 500)
+        toast.success('PDF gerado com sucesso')
+      } else {
+        toast.error('Não foi possível abrir a janela de impressão')
+      }
+    } catch (error) {
+      console.error('PDF export error:', error)
+      toast.error('Erro ao gerar PDF')
+    }
+    setIsGeneratingPDF(false)
   }
 
   // Clusters para autocomplete
