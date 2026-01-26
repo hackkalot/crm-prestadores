@@ -30,6 +30,7 @@ interface ConfiguracoesTabsProps {
   catalogPrices: CatalogPrice[]
   catalogMaterials: CatalogMaterial[]
   catalogClusters: string[]
+  catalogMaterialCategories: string[]
   emailTemplates: EmailTemplateWithCreator[]
 }
 
@@ -45,6 +46,7 @@ export function ConfiguracoesTabs({
   catalogPrices,
   catalogMaterials,
   catalogClusters,
+  catalogMaterialCategories,
   emailTemplates,
 }: ConfiguracoesTabsProps) {
   const [activeTab, setActiveTab] = useState('tasks')
@@ -125,7 +127,7 @@ export function ConfiguracoesTabs({
           prices={catalogPrices}
           clusters={catalogClusters}
         />
-        <CatalogMaterialsTable materials={catalogMaterials} />
+        <CatalogMaterialsTable materials={catalogMaterials} categories={catalogMaterialCategories} />
       </TabsContent>
 
       <TabsContent value="emails" className="space-y-4">

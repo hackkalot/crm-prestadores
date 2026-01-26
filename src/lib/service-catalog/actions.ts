@@ -381,3 +381,221 @@ export async function getCatalogPricesForExport(params: {
 
   return data || []
 }
+
+// ============================================
+// MATERIAL CATALOG CRUD
+// ============================================
+
+// Tipo para criar/atualizar material
+export type CatalogMaterialInput = Omit<CatalogMaterial, 'id' | 'created_at' | 'updated_at'>
+
+// Obter materiais com paginação e filtros
+export async function getCatalogMaterialsWithPagination(params: {
+  category?: string
+  search?: string
+  page?: number
+  limit?: number
+}): Promise<{ data: CatalogMaterial[]; total: number }> {
+  const { category, search, page = 1, limit = 50 } = params
+  const offset = (page - 1) * limit
+
+  let query = createAdminClient()
+    .from('material_catalog')
+    .select('*', { count: 'exact' })
+    .eq('is_active', true)
+    .order('material_name')
+
+  if (category) {
+    query = query.eq('category', category)
+  }
+
+  if (search) {
+    query = query.ilike('material_name', `%${search}%`)
+  }
+
+  query = query.range(offset, offset + limit - 1)
+
+  const { data, count, error } = await query
+
+  if (error) {
+    console.error('Error fetching catalog materials:', error)
+    return { data: [], total: 0 }
+  }
+
+  return {
+    data: data || [],
+    total: count || 0,
+  }
+}
+
+// Obter categorias únicas de materiais
+export async function getCatalogMaterialCategories(): Promise<string[]> {
+  const { data } = await createAdminClient()
+    .from('material_catalog')
+    .select('category')
+    .eq('is_active', true)
+    .not('category', 'is', null)
+
+  const categories = new Set<string>()
+  for (const item of data || []) {
+    if (item.category) {
+      categories.add(item.category)
+    }
+  }
+
+  return Array.from(categories).sort()
+}
+
+// Criar novo material no catálogo
+export async function createCatalogMaterial(
+  data: CatalogMaterialInput
+): Promise<{ success: boolean; id?: string; error?: string }> {
+  const supabase = createAdminClient()
+
+  // Verificar se já existe um material com o mesmo nome
+  const { data: existing } = await supabase
+    .from('material_catalog')
+    .select('id')
+    .eq('material_name', data.material_name)
+    .eq('is_active', true)
+    .limit(1)
+
+  if (existing && existing.length > 0) {
+    return {
+      success: false,
+      error: `Já existe um material "${data.material_name}". O nome do material deve ser único.`,
+    }
+  }
+
+  const { data: result, error } = await supabase
+    .from('material_catalog')
+    .insert({
+      ...data,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('Error creating catalog material:', error)
+    if (error.message.includes('unique') || error.code === '23505') {
+      return {
+        success: false,
+        error: `Já existe um material "${data.material_name}". O nome do material deve ser único.`,
+      }
+    }
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/configuracoes')
+  return { success: true, id: result.id }
+}
+
+// Atualizar material existente no catálogo
+export async function updateCatalogMaterial(
+  id: string,
+  data: Partial<CatalogMaterialInput>
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = createAdminClient()
+
+  const { error } = await supabase
+    .from('material_catalog')
+    .update({
+      ...data,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+
+  if (error) {
+    console.error('Error updating catalog material:', error)
+    if (error.message.includes('unique') || error.code === '23505') {
+      return {
+        success: false,
+        error: `Já existe um material com o mesmo nome. O nome deve ser único.`,
+      }
+    }
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/configuracoes')
+  return { success: true }
+}
+
+// Eliminar (soft delete) material do catálogo
+export async function deleteCatalogMaterial(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = createAdminClient()
+
+  const { error } = await supabase
+    .from('material_catalog')
+    .update({
+      is_active: false,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+
+  if (error) {
+    console.error('Error deleting catalog material:', error)
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/configuracoes')
+  return { success: true }
+}
+
+// Obter sugestões de categoria de material (fuzzy)
+export async function getMaterialCategorySuggestions(search: string): Promise<string[]> {
+  if (!search || search.length < 1) return []
+
+  const { data } = await createAdminClient()
+    .from('material_catalog')
+    .select('category')
+    .eq('is_active', true)
+    .not('category', 'is', null)
+    .ilike('category', `%${search}%`)
+    .limit(10)
+
+  const categories = new Set<string>()
+  for (const item of data || []) {
+    if (item.category) {
+      categories.add(item.category)
+    }
+  }
+
+  return Array.from(categories).sort()
+}
+
+// Obter todos os materiais para export (sem paginação, respeitando filtros)
+export async function getCatalogMaterialsForExport(params: {
+  category?: string
+  search?: string
+}): Promise<CatalogMaterial[]> {
+  const { category, search } = params
+
+  let query = createAdminClient()
+    .from('material_catalog')
+    .select('*')
+    .eq('is_active', true)
+    .order('category')
+    .order('material_name')
+
+  if (category) {
+    query = query.eq('category', category)
+  }
+
+  if (search) {
+    query = query.ilike('material_name', `%${search}%`)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching catalog materials for export:', error)
+    return []
+  }
+
+  return data || []
+}

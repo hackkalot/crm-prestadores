@@ -495,7 +495,6 @@ function generateTablesHTML(grouped: Map<string, Map<string, CatalogPrice[]>>): 
             : `<th>${col.label}</th>`
         ),
         '<th class="text-right">Preço s/IVA</th>',
-        '<th class="text-right">IVA</th>',
       ]
 
       // Agrupar serviços por nome para fazer merge
@@ -515,7 +514,6 @@ function generateTablesHTML(grouped: Map<string, Map<string, CatalogPrice[]>>): 
 
         serviceVariants.forEach((service, index) => {
           const basePrice = service.price_base || 0
-          const vatRate = service.vat_rate || 0
 
           const optionalCells = optionalCols.map((col) => {
             const value = service[col.key as keyof CatalogPrice]
@@ -533,7 +531,6 @@ function generateTablesHTML(grouped: Map<string, Map<string, CatalogPrice[]>>): 
                 <td>${escapeHTML(service.unit_description)}</td>
                 ${optionalCells.join('')}
                 <td class="text-right"><span class="price-value">${formatPrice(basePrice)}</span></td>
-                <td class="text-right"><span class="vat-rate">${vatRate}%</span></td>
               </tr>
             `)
           } else {
@@ -543,7 +540,6 @@ function generateTablesHTML(grouped: Map<string, Map<string, CatalogPrice[]>>): 
                 <td>${escapeHTML(service.unit_description)}</td>
                 ${optionalCells.join('')}
                 <td class="text-right"><span class="price-value">${formatPrice(basePrice)}</span></td>
-                <td class="text-right"><span class="vat-rate">${vatRate}%</span></td>
               </tr>
             `)
           }
@@ -610,13 +606,11 @@ function generateMaterialsTableHTML(materials: Material[]): string {
 
   const rows = sortedMaterials.map((material) => {
     const price = material.price_without_vat || 0
-    const vatRate = material.vat_rate || 0
 
     return `
       <tr>
         <td><span class="service-name">${escapeHTML(material.material_name)}</span></td>
         <td class="text-right"><span class="price-value">${formatPrice(price)}</span></td>
-        <td class="text-right"><span class="vat-rate">${vatRate}%</span></td>
       </tr>
     `
   }).join('')
@@ -631,7 +625,6 @@ function generateMaterialsTableHTML(materials: Material[]): string {
               <tr>
                 <th>Material</th>
                 <th class="text-right">Preço s/IVA</th>
-                <th class="text-right">IVA</th>
               </tr>
             </thead>
             <tbody>
