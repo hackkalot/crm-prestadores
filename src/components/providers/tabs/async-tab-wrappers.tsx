@@ -1,6 +1,7 @@
-import { getProviderApplicationHistory, getProviderOnboarding, getProviderNotes, getProviderHistory } from '@/lib/providers/actions'
+import { getProviderApplicationHistory, getProviderOnboarding, getProviderHistory } from '@/lib/providers/actions'
 import { getProviderPricingOptions, getPricingSnapshots } from '@/lib/providers/pricing-actions'
 import { getProviderDocuments } from '@/lib/documents/actions'
+import { getProviderNotesWithFiles, getProviderInProgressTasks } from '@/lib/notes/actions'
 import {
   getProviderServiceRequests,
   getDistinctCategories,
@@ -8,12 +9,13 @@ import {
   getDistinctStatuses,
 } from '@/lib/service-requests/actions'
 import { getProviderPerformance, getNetworkBenchmark } from '@/lib/providers/performance-actions'
+import { createClient } from '@/lib/supabase/server'
 
 import { SubmissoesTab } from './submissoes-tab'
 import { PerfilTab } from './perfil-tab'
 import { OnboardingTab } from './onboarding-tab'
 import { PricingSelectionTab } from '@/components/providers/pricing-selection-tab'
-import { NotasTab } from './notas-tab'
+import { ChatNotesTab } from './chat-notes-tab'
 import { HistoricoTab } from './historico-tab'
 import { PedidosTab } from './pedidos-tab'
 import { PerformanceTab } from './performance-tab'
@@ -217,18 +219,30 @@ export async function PrecosTabAsync({
   )
 }
 
-// Async wrapper for Notas tab
+// Async wrapper for Notas tab (Chat-style with rich text and attachments)
 export async function NotasTabAsync({
   providerId,
 }: {
   providerId: string
 }) {
-  const [notes, documents] = await Promise.all([
-    getProviderNotes(providerId),
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const [notes, inProgressTasks, documents] = await Promise.all([
+    getProviderNotesWithFiles(providerId),
+    getProviderInProgressTasks(providerId),
     getProviderDocuments(providerId),
   ])
 
-  return <NotasTab providerId={providerId} notes={notes} documents={documents} />
+  return (
+    <ChatNotesTab
+      providerId={providerId}
+      notes={notes}
+      currentUserId={user?.id || ''}
+      inProgressTasks={inProgressTasks}
+      documents={documents}
+    />
+  )
 }
 
 // Async wrapper for Historico tab

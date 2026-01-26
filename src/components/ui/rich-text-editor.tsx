@@ -21,8 +21,6 @@ import {
   ListOrdered,
   Link as LinkIcon,
   Unlink,
-  Undo,
-  Redo,
   Variable,
 } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
@@ -159,26 +157,6 @@ function MenuBar({
         </PopoverContent>
       </Popover>
 
-      <div className="w-px h-6 bg-border mx-1" />
-
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => editor.chain().focus().undo().run()}
-        disabled={!editor.can().undo()}
-      >
-        <Undo className="h-4 w-4" />
-      </Button>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => editor.chain().focus().redo().run()}
-        disabled={!editor.can().redo()}
-      >
-        <Redo className="h-4 w-4" />
-      </Button>
-
       {variables && variables.length > 0 && (
         <>
           <div className="w-px h-6 bg-border mx-1" />
@@ -230,6 +208,22 @@ export function RichTextEditor({
         code: false,
         blockquote: false,
         horizontalRule: false,
+        // Ensure lists are enabled
+        bulletList: {
+          HTMLAttributes: {
+            class: 'list-disc ml-4',
+          },
+        },
+        orderedList: {
+          HTMLAttributes: {
+            class: 'list-decimal ml-4',
+          },
+        },
+        listItem: {
+          HTMLAttributes: {
+            class: 'my-0',
+          },
+        },
       }),
       Link.configure({
         openOnClick: false,
@@ -247,7 +241,8 @@ export function RichTextEditor({
       attributes: {
         class: cn(
           'prose prose-sm max-w-none focus:outline-none p-3',
-          'prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0'
+          'prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0',
+          '[&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4'
         ),
         style: `min-height: ${minHeight}`,
       },

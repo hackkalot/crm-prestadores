@@ -560,6 +560,7 @@ export type Database = {
           content: string
           created_at: string | null
           created_by: string
+          files: Json | null
           id: string
           note_type: string | null
           provider_id: string
@@ -570,6 +571,7 @@ export type Database = {
           content: string
           created_at?: string | null
           created_by: string
+          files?: Json | null
           id?: string
           note_type?: string | null
           provider_id: string
@@ -580,6 +582,7 @@ export type Database = {
           content?: string
           created_at?: string | null
           created_by?: string
+          files?: Json | null
           id?: string
           note_type?: string | null
           provider_id?: string
