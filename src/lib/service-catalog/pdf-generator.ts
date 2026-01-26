@@ -24,14 +24,25 @@ interface ProviderInfo {
   email: string
 }
 
+export interface Material {
+  id: string
+  material_name: string
+  category: string | null
+  price_without_vat: number
+  vat_rate: number
+  is_active: boolean | null
+}
+
 /**
  * Gera HTML para PDF de proposta de preços com tabelas agrupadas por cluster/service_group
  * @param prices Lista de preços do catálogo
  * @param provider Informações do prestador (opcional - se não fornecido, gera catálogo geral)
+ * @param materials Lista de materiais (opcional - apenas se canalizador estiver selecionado)
  */
 export function generateCatalogPricePDFHTML(
   prices: CatalogPrice[],
-  provider?: ProviderInfo
+  provider?: ProviderInfo,
+  materials?: Material[]
 ): string {
   const currentDate = new Date().toLocaleDateString('pt-PT', {
     year: 'numeric',
@@ -44,6 +55,9 @@ export function generateCatalogPricePDFHTML(
 
   // Gerar conteúdo das tabelas
   const tablesHTML = generateTablesHTML(grouped)
+
+  // Gerar tabela de materiais (se houver)
+  const materialsHTML = materials && materials.length > 0 ? generateMaterialsTableHTML(materials) : ''
 
   return `
     <!DOCTYPE html>
@@ -355,6 +369,7 @@ export function generateCatalogPricePDFHTML(
         <!-- Body Content -->
         <div class="body-content">
           ${tablesHTML}
+          ${materialsHTML}
         </div>
 
         <!-- Footer -->
@@ -481,7 +496,6 @@ function generateTablesHTML(grouped: Map<string, Map<string, CatalogPrice[]>>): 
         ),
         '<th class="text-right">Preço s/IVA</th>',
         '<th class="text-right">IVA</th>',
-        '<th class="text-right">Total c/IVA</th>',
       ]
 
       // Agrupar serviços por nome para fazer merge
@@ -502,7 +516,6 @@ function generateTablesHTML(grouped: Map<string, Map<string, CatalogPrice[]>>): 
         serviceVariants.forEach((service, index) => {
           const basePrice = service.price_base || 0
           const vatRate = service.vat_rate || 0
-          const totalWithVat = basePrice * (1 + vatRate / 100)
 
           const optionalCells = optionalCols.map((col) => {
             const value = service[col.key as keyof CatalogPrice]
@@ -521,7 +534,6 @@ function generateTablesHTML(grouped: Map<string, Map<string, CatalogPrice[]>>): 
                 ${optionalCells.join('')}
                 <td class="text-right"><span class="price-value">${formatPrice(basePrice)}</span></td>
                 <td class="text-right"><span class="vat-rate">${vatRate}%</span></td>
-                <td class="text-right"><span class="price-value">${formatPrice(totalWithVat)}</span></td>
               </tr>
             `)
           } else {
@@ -532,7 +544,6 @@ function generateTablesHTML(grouped: Map<string, Map<string, CatalogPrice[]>>): 
                 ${optionalCells.join('')}
                 <td class="text-right"><span class="price-value">${formatPrice(basePrice)}</span></td>
                 <td class="text-right"><span class="vat-rate">${vatRate}%</span></td>
-                <td class="text-right"><span class="price-value">${formatPrice(totalWithVat)}</span></td>
               </tr>
             `)
           }
@@ -584,4 +595,51 @@ function escapeHTML(str: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;')
+}
+
+/**
+ * Gera o HTML da tabela de materiais de canalizador
+ */
+function generateMaterialsTableHTML(materials: Material[]): string {
+  if (materials.length === 0) return ''
+
+  // Ordenar materiais alfabeticamente
+  const sortedMaterials = [...materials].sort((a, b) =>
+    a.material_name.localeCompare(b.material_name, 'pt')
+  )
+
+  const rows = sortedMaterials.map((material) => {
+    const price = material.price_without_vat || 0
+    const vatRate = material.vat_rate || 0
+
+    return `
+      <tr>
+        <td><span class="service-name">${escapeHTML(material.material_name)}</span></td>
+        <td class="text-right"><span class="price-value">${formatPrice(price)}</span></td>
+        <td class="text-right"><span class="vat-rate">${vatRate}%</span></td>
+      </tr>
+    `
+  }).join('')
+
+  return `
+    <div class="cluster-section">
+      <div class="cluster-title">Materiais de Canalizador</div>
+      <div class="service-group">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Material</th>
+                <th class="text-right">Preço s/IVA</th>
+                <th class="text-right">IVA</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `
 }

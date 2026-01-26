@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useTransition, useMemo } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import {
   Accordion,
   AccordionContent,
@@ -30,13 +30,11 @@ import { Search, FileText, CheckCircle2, Loader2, ChevronDown } from 'lucide-rea
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import {
-  toggleServiceSelection,
   updateCustomPrice,
-  bulkToggleServices,
-  autoSelectServicesFromForms,
   generateProposalPDFData,
   savePricingSnapshot,
   type PricingCluster,
+  type PricingService,
 } from '@/lib/providers/pricing-actions'
 import { generateCatalogPricePDFHTML } from '@/lib/service-catalog/pdf-generator'
 
@@ -44,7 +42,7 @@ interface TaskPricingPanelProps {
   providerId: string
   providerName: string
   clusters: PricingCluster[]
-  providerServices: string[] // UUIDs dos serviços do provider.services
+  providerServices: string[] // UUIDs dos serviços do provider.services (pre-selected)
 }
 
 export function TaskPricingPanel({
@@ -57,11 +55,26 @@ export function TaskPricingPanel({
   const [filteredClusters, setFilteredClusters] = useState(clusters)
   const [editingPrice, setEditingPrice] = useState<string | null>(null)
   const [priceValue, setPriceValue] = useState('')
-  const [loadingServices, setLoadingServices] = useState<Set<string>>(new Set())
+  const [savingPriceId, setSavingPriceId] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
-  const [autoSelectTriggered, setAutoSelectTriggered] = useState(false)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
+
+  // Local state for selected services (initialized from provider.services)
+  const [selectedServiceIds, setSelectedServiceIds] = useState<Set<string>>(() => new Set(providerServices))
+
+  // Local state for custom prices (track changes before saving)
+  const [localCustomPrices, setLocalCustomPrices] = useState<Map<string, number | null>>(() => {
+    const map = new Map<string, number | null>()
+    for (const cluster of clusters) {
+      for (const service of cluster.services) {
+        if (service.custom_price != null) {
+          map.set(service.id, service.custom_price)
+        }
+      }
+    }
+    return map
+  })
 
   // Filter clusters by search
   useEffect(() => {
@@ -88,94 +101,66 @@ export function TaskPricingPanel({
 
   // Calculate statistics
   const totalServices = clusters.reduce((sum, c) => sum + c.services.length, 0)
-  const selectedServices = clusters.reduce(
-    (sum, c) => sum + c.services.filter((s) => s.provider_price?.is_selected_for_proposal).length,
-    0
-  )
-  const customPrices = clusters.reduce(
-    (sum, c) => sum + c.services.filter((s) => s.provider_price?.custom_price_without_vat != null).length,
-    0
-  )
+  const selectedCount = selectedServiceIds.size
+  const customPricesCount = localCustomPrices.size
 
-  // Services that should be pre-selected (from provider.services)
-  const preSelectedServiceIds = useMemo(() => new Set(providerServices), [providerServices])
-
-  // Auto-select services from provider.services on first load
-  useEffect(() => {
-    // Only trigger once and only if there are services from provider AND no services are currently selected
-    if (
-      !autoSelectTriggered &&
-      providerServices.length > 0 &&
-      selectedServices === 0
-    ) {
-      setAutoSelectTriggered(true)
-      startTransition(async () => {
-        const result = await autoSelectServicesFromForms(providerId, providerServices)
-        if (result.error) {
-          toast.error(result.error)
-        } else if (result.count && result.count > 0) {
-          toast.success(`${result.count} serviços pré-selecionados automaticamente`)
-          router.refresh()
-        }
-      })
-    }
-  }, [
-    autoSelectTriggered,
-    providerServices,
-    selectedServices,
-    providerId,
-    router,
-  ])
-
-  const handleToggleService = async (referencePriceId: string, currentState: boolean) => {
-    setLoadingServices((prev) => new Set(prev).add(referencePriceId))
-    const result = await toggleServiceSelection(providerId, referencePriceId, !currentState)
-    setLoadingServices((prev) => {
+  // Toggle single service selection (local state only)
+  const handleToggleService = (serviceId: string) => {
+    setSelectedServiceIds((prev) => {
       const next = new Set(prev)
-      next.delete(referencePriceId)
+      if (next.has(serviceId)) {
+        next.delete(serviceId)
+      } else {
+        next.add(serviceId)
+      }
       return next
     })
-
-    if (result.error) {
-      toast.error(result.error)
-    } else {
-      setSuccessMessage('Seleção atualizada')
-      setTimeout(() => setSuccessMessage(null), 2000)
-    }
   }
 
-  const handleToggleCluster = async (cluster: string) => {
-    const clusterData = clusters.find((c) => c.cluster === cluster)
-    if (!clusterData) return
+  // Toggle all services in a cluster (local state only)
+  const handleToggleCluster = (cluster: PricingCluster) => {
+    const clusterServiceIds = cluster.services.map((s) => s.id)
+    const allSelected = clusterServiceIds.every((id) => selectedServiceIds.has(id))
 
-    const serviceIds = clusterData.services.map((s) => s.id)
-    const allSelected = clusterData.services.every((s) => s.provider_price?.is_selected_for_proposal)
-
-    const result = await bulkToggleServices(providerId, serviceIds, !allSelected)
-
-    if (result.error) {
-      toast.error(result.error)
-    } else {
-      setSuccessMessage(`Cluster "${cluster}" atualizado`)
-      setTimeout(() => setSuccessMessage(null), 2000)
-    }
+    setSelectedServiceIds((prev) => {
+      const next = new Set(prev)
+      if (allSelected) {
+        // Deselect all in cluster
+        for (const id of clusterServiceIds) {
+          next.delete(id)
+        }
+      } else {
+        // Select all in cluster
+        for (const id of clusterServiceIds) {
+          next.add(id)
+        }
+      }
+      return next
+    })
   }
 
-  const handleToggleGroup = async (groupServices: typeof clusters[0]['services']) => {
-    const serviceIds = groupServices.map((s) => s.id)
-    const allSelected = groupServices.every((s) => s.provider_price?.is_selected_for_proposal)
+  // Toggle all services in a group (local state only)
+  const handleToggleGroup = (groupServices: PricingService[]) => {
+    const groupServiceIds = groupServices.map((s) => s.id)
+    const allSelected = groupServiceIds.every((id) => selectedServiceIds.has(id))
 
-    const result = await bulkToggleServices(providerId, serviceIds, !allSelected)
-
-    if (result.error) {
-      toast.error(result.error)
-    } else {
-      setSuccessMessage('Grupo atualizado')
-      setTimeout(() => setSuccessMessage(null), 2000)
-    }
+    setSelectedServiceIds((prev) => {
+      const next = new Set(prev)
+      if (allSelected) {
+        for (const id of groupServiceIds) {
+          next.delete(id)
+        }
+      } else {
+        for (const id of groupServiceIds) {
+          next.add(id)
+        }
+      }
+      return next
+    })
   }
 
-  const handleSavePrice = async (referencePriceId: string) => {
+  // Save custom price to DB
+  const handleSavePrice = async (serviceId: string) => {
     const numValue = priceValue.trim() === '' ? null : parseFloat(priceValue.replace(',', '.'))
 
     if (numValue !== null && (isNaN(numValue) || numValue < 0)) {
@@ -183,11 +168,23 @@ export function TaskPricingPanel({
       return
     }
 
-    const result = await updateCustomPrice(providerId, referencePriceId, numValue)
+    setSavingPriceId(serviceId)
+    const result = await updateCustomPrice(providerId, serviceId, numValue)
+    setSavingPriceId(null)
 
     if (result.error) {
       toast.error(result.error)
     } else {
+      // Update local state
+      if (numValue === null) {
+        setLocalCustomPrices((prev) => {
+          const next = new Map(prev)
+          next.delete(serviceId)
+          return next
+        })
+      } else {
+        setLocalCustomPrices((prev) => new Map(prev).set(serviceId, numValue))
+      }
       setEditingPrice(null)
       setPriceValue('')
       setSuccessMessage('Preço atualizado')
@@ -195,9 +192,11 @@ export function TaskPricingPanel({
     }
   }
 
-  const startEditingPrice = (referencePriceId: string, currentPrice: number | null) => {
-    setEditingPrice(referencePriceId)
-    setPriceValue(currentPrice !== null ? currentPrice.toFixed(2) : '')
+  const startEditingPrice = (serviceId: string, currentCustomPrice: number | null, referencePrice: number | null) => {
+    setEditingPrice(serviceId)
+    // Show custom price if exists, otherwise show reference price for editing
+    const priceToEdit = currentCustomPrice ?? referencePrice
+    setPriceValue(priceToEdit !== null ? priceToEdit.toFixed(2) : '')
   }
 
   const cancelEditingPrice = () => {
@@ -211,9 +210,11 @@ export function TaskPricingPanel({
   }
 
   const handleGeneratePDF = () => {
+    const selectedIds = Array.from(selectedServiceIds)
+
     startTransition(async () => {
       try {
-        const result = await generateProposalPDFData(providerId)
+        const result = await generateProposalPDFData(providerId, selectedIds)
 
         if (result.error || !result.data) {
           toast.error(result.error || 'Erro ao gerar PDF')
@@ -228,7 +229,8 @@ export function TaskPricingPanel({
         }
 
         // Use the new PDF generator with grouped tables
-        const html = generateCatalogPricePDFHTML(result.data.prices, result.data.provider)
+        // Pass materials if present (when Canalizador is selected)
+        const html = generateCatalogPricePDFHTML(result.data.prices, result.data.provider, result.data.materials)
 
         // Open in new tab and trigger print
         const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
@@ -284,14 +286,14 @@ export function TaskPricingPanel({
           </div>
           <div className="text-sm">
             <span className="text-muted-foreground">Selecionados:</span>{' '}
-            <span className="font-medium text-green-600">{selectedServices}</span>
+            <span className="font-medium text-green-600">{selectedCount}</span>
           </div>
           <div className="text-sm">
             <span className="text-muted-foreground">Preços Custom:</span>{' '}
-            <span className="font-medium text-blue-600">{customPrices}</span>
+            <span className="font-medium text-blue-600">{customPricesCount}</span>
           </div>
         </div>
-        <Button onClick={handleGeneratePDF} disabled={selectedServices === 0 || isPending} size="sm">
+        <Button onClick={handleGeneratePDF} disabled={selectedCount === 0 || isPending} size="sm">
           {isPending ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -328,18 +330,16 @@ export function TaskPricingPanel({
       {/* Clusters Accordion */}
       <Accordion type="multiple" className="space-y-2">
         {filteredClusters.map((cluster) => {
-          const clusterSelected = cluster.services.filter((s) => s.provider_price?.is_selected_for_proposal)
-            .length
-          const allSelected =
-            cluster.services.length > 0 &&
-            cluster.services.every((s) => s.provider_price?.is_selected_for_proposal)
+          const clusterServiceIds = cluster.services.map((s) => s.id)
+          const clusterSelectedCount = clusterServiceIds.filter((id) => selectedServiceIds.has(id)).length
+          const allClusterSelected = clusterServiceIds.length > 0 && clusterServiceIds.every((id) => selectedServiceIds.has(id))
 
           return (
             <AccordionItem key={cluster.cluster} value={cluster.cluster} className="border rounded-lg">
               <div className="px-3 flex items-center gap-2 py-3">
                 <Checkbox
-                  checked={allSelected}
-                  onCheckedChange={() => handleToggleCluster(cluster.cluster)}
+                  checked={allClusterSelected}
+                  onCheckedChange={() => handleToggleCluster(cluster)}
                 />
                 <AccordionTrigger className="flex-1 hover:no-underline py-0">
                   <div className="flex items-center gap-2 flex-1">
@@ -347,7 +347,7 @@ export function TaskPricingPanel({
                       {cluster.cluster}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
-                      {clusterSelected} / {cluster.services.length}
+                      {clusterSelectedCount} / {cluster.services.length}
                     </span>
                   </div>
                 </AccordionTrigger>
@@ -355,7 +355,7 @@ export function TaskPricingPanel({
               <AccordionContent className="px-3 pb-3">
                 {(() => {
                   // Group services by service_group
-                  const servicesByGroup = cluster.services.reduce((acc: Record<string, typeof cluster.services>, service) => {
+                  const servicesByGroup = cluster.services.reduce((acc: Record<string, PricingService[]>, service) => {
                     const group = service.service_group || 'Outros'
                     if (!acc[group]) acc[group] = []
                     acc[group].push(service)
@@ -365,11 +365,9 @@ export function TaskPricingPanel({
                   return (
                     <div className="space-y-2">
                       {Object.entries(servicesByGroup).map(([groupName, groupServices]) => {
-                        const groupSelectedCount = groupServices.filter(
-                          (s) => s.provider_price?.is_selected_for_proposal
-                        ).length
-
-                        const allGroupSelected = groupServices.every((s) => s.provider_price?.is_selected_for_proposal)
+                        const groupServiceIds = groupServices.map((s) => s.id)
+                        const groupSelectedCount = groupServiceIds.filter((id) => selectedServiceIds.has(id)).length
+                        const allGroupSelected = groupServices.every((s) => selectedServiceIds.has(s.id))
 
                         return (
                           <Collapsible key={groupName} defaultOpen>
@@ -406,11 +404,11 @@ export function TaskPricingPanel({
                                     </TableHeader>
                                     <TableBody>
                                       {groupServices.map((service) => {
-                                        const isSelected = service.provider_price?.is_selected_for_proposal || false
-                                        const customPrice = service.provider_price?.custom_price_without_vat || null
+                                        const isSelected = selectedServiceIds.has(service.id)
+                                        const customPrice = localCustomPrices.get(service.id) ?? null
                                         const isEditing = editingPrice === service.id
-                                        const isLoading = loadingServices.has(service.id)
-                                        const isFromProviderServices = preSelectedServiceIds.has(service.id)
+                                        const isSaving = savingPriceId === service.id
+                                        const isFromProviderServices = providerServices.includes(service.id)
 
                                         // Determine which price to use
                                         const referencePrice = service.price_base || service.price_hour_with_materials
@@ -422,14 +420,10 @@ export function TaskPricingPanel({
                                             className={isFromProviderServices && !isSelected ? 'bg-yellow-50/50 dark:bg-yellow-950/10' : ''}
                                           >
                                             <TableCell>
-                                              {isLoading ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                              ) : (
-                                                <Checkbox
-                                                  checked={isSelected}
-                                                  onCheckedChange={() => handleToggleService(service.id, isSelected)}
-                                                />
-                                              )}
+                                              <Checkbox
+                                                checked={isSelected}
+                                                onCheckedChange={() => handleToggleService(service.id)}
+                                              />
                                             </TableCell>
                                             <TableCell className="font-medium max-w-[180px]">
                                               <div className="truncate text-sm">{service.service_name}</div>
@@ -464,8 +458,13 @@ export function TaskPricingPanel({
                                                       }
                                                     }}
                                                   />
-                                                  <Button size="sm" className="h-7 text-xs px-2" onClick={() => handleSavePrice(service.id)}>
-                                                    OK
+                                                  <Button
+                                                    size="sm"
+                                                    className="h-7 text-xs px-2"
+                                                    onClick={() => handleSavePrice(service.id)}
+                                                    disabled={isSaving}
+                                                  >
+                                                    {isSaving ? <Loader2 className="h-3 w-3 animate-spin" /> : 'OK'}
                                                   </Button>
                                                   <Button size="sm" variant="outline" className="h-7 text-xs px-2" onClick={cancelEditingPrice}>
                                                     X
@@ -478,7 +477,7 @@ export function TaskPricingPanel({
                                                   className={`h-7 text-xs ${
                                                     customPrice !== null ? 'font-medium text-blue-600' : 'text-muted-foreground'
                                                   }`}
-                                                  onClick={() => startEditingPrice(service.id, customPrice)}
+                                                  onClick={() => startEditingPrice(service.id, customPrice, referencePrice)}
                                                 >
                                                   {formatPrice(finalPrice)}
                                                 </Button>

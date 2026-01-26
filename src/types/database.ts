@@ -965,6 +965,71 @@ export type Database = {
           },
         ]
       }
+      provider_custom_prices: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          custom_price_without_vat: number
+          id: string
+          notes: string | null
+          provider_id: string
+          reference_price_id: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          custom_price_without_vat: number
+          id?: string
+          notes?: string | null
+          provider_id: string
+          reference_price_id: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          custom_price_without_vat?: number
+          id?: string
+          notes?: string | null
+          provider_id?: string
+          reference_price_id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_custom_prices_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_custom_prices_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_custom_prices_reference_price_id_fkey"
+            columns: ["reference_price_id"]
+            isOneToOne: false
+            referencedRelation: "service_prices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_custom_prices_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_documents: {
         Row: {
           created_at: string | null
@@ -1140,74 +1205,6 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "providers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      provider_prices: {
-        Row: {
-          created_at: string | null
-          created_by: string | null
-          custom_price_without_vat: number | null
-          id: string
-          is_selected_for_proposal: boolean | null
-          notes: string | null
-          provider_id: string
-          reference_price_id: string
-          updated_at: string | null
-          updated_by: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          created_by?: string | null
-          custom_price_without_vat?: number | null
-          id?: string
-          is_selected_for_proposal?: boolean | null
-          notes?: string | null
-          provider_id: string
-          reference_price_id: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          created_by?: string | null
-          custom_price_without_vat?: number | null
-          id?: string
-          is_selected_for_proposal?: boolean | null
-          notes?: string | null
-          provider_id?: string
-          reference_price_id?: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "provider_prices_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "provider_prices_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "providers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "provider_prices_reference_price_id_fkey"
-            columns: ["reference_price_id"]
-            isOneToOne: false
-            referencedRelation: "service_prices"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "provider_prices_updated_by_fkey"
-            columns: ["updated_by"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]

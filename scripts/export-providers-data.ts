@@ -8,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // CONFIGURACOES
+const LOGIN_URL = 'https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/Login';
 const PROVIDERS_URL = 'https://fidelidadep10.outsystemsenterprise.com/FixoBackoffice/Providers';
 const USERNAME = process.env.BACKOFFICE_USERNAME || 'sofia.amaral.brites@fidelidade.pt';
 const PASSWORD = process.env.BACKOFFICE_PASSWORD || '12345678';
@@ -103,28 +104,24 @@ export async function runProvidersScrapper(options: ProviderScrapperOptions = {}
         // ============================================
         // PASSO 1: LOGIN
         // ============================================
-        log('PASSO 1/4: Navegando para pagina de providers...');
+        log('PASSO 1/4: Navegando para pagina de login...');
+        await page.goto(LOGIN_URL, { waitUntil: 'networkidle2', timeout: 60000 });
+
+        log('Preenchendo credenciais...');
+        await page.type('input[type="text"], input[name="username"]', USERNAME);
+        await page.type('input[type="password"], input[name="password"]', PASSWORD);
+
+        log('A fazer login...');
+        await page.click('button[type="submit"], input[type="submit"]');
+        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
+        await wait(1000, 'Login concluido');
+
+        // Navegar para pagina de providers
+        log('Navegando para pagina de providers...');
         await page.goto(PROVIDERS_URL, { waitUntil: 'networkidle2', timeout: 60000 });
 
-        // Verificar se precisa fazer login (se foi redirecionado para login)
         const currentUrl = page.url();
         log(`URL atual: ${currentUrl}`);
-
-        if (currentUrl.includes('Login') || currentUrl.includes('login')) {
-            log('Preenchendo credenciais...');
-            await page.type('input[type="text"], input[name="username"]', USERNAME);
-            await page.type('input[type="password"], input[name="password"]', PASSWORD);
-
-            log('A fazer login...');
-            await page.click('button[type="submit"], input[type="submit"]');
-            await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
-
-            // Navegar para providers se nao foi redirecionado automaticamente
-            if (!page.url().includes('Providers')) {
-                log('Navegando para pagina de providers...');
-                await page.goto(PROVIDERS_URL, { waitUntil: 'networkidle2', timeout: 60000 });
-            }
-        }
 
         await wait(500, 'Pagina carregada');
 

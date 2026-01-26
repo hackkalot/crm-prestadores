@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache'
 import type { Database } from '@/types/database'
 
 type ServicePrice = Database['public']['Tables']['service_prices']['Row']
-type ProviderPrice = Database['public']['Tables']['provider_prices']['Row']
+type ProviderCustomPrice = Database['public']['Tables']['provider_custom_prices']['Row']
 
 // Helper para registar alterações de preços no history_log
 async function logPriceChange(
@@ -33,12 +33,7 @@ async function logPriceChange(
 }
 
 export type PricingService = ServicePrice & {
-  provider_price?: {
-    id: string
-    custom_price_without_vat: number | null
-    is_selected_for_proposal: boolean | null
-    notes: string | null
-  } | null
+  custom_price?: number | null // Custom price if exists
 }
 
 export type PricingCluster = {
@@ -66,38 +61,28 @@ export async function getProviderPricingOptions(providerId: string): Promise<Pri
   }
 
   // Get provider's custom prices
-  const { data: providerPrices, error: provError } = await supabase
-    .from('provider_prices')
+  const { data: customPrices, error: customError } = await supabase
+    .from('provider_custom_prices')
     .select('*')
     .eq('provider_id', providerId)
 
-  if (provError) {
-    console.error('Error fetching provider prices:', provError)
+  if (customError) {
+    console.error('Error fetching custom prices:', customError)
   }
 
-  // Create a map of reference_price_id -> provider_price
-  const priceMap = new Map<string, ProviderPrice>()
-  if (providerPrices) {
-    for (const price of providerPrices) {
-      priceMap.set(price.reference_price_id, price)
+  // Create a map of reference_price_id -> custom_price
+  const customPriceMap = new Map<string, number>()
+  if (customPrices) {
+    for (const price of customPrices) {
+      customPriceMap.set(price.reference_price_id, price.custom_price_without_vat)
     }
   }
 
-  // Merge reference prices with provider prices
-  const servicesWithPrices: PricingService[] = referencePrices.map((refPrice) => {
-    const provPrice = priceMap.get(refPrice.id)
-    return {
-      ...refPrice,
-      provider_price: provPrice
-        ? {
-            id: provPrice.id,
-            custom_price_without_vat: provPrice.custom_price_without_vat,
-            is_selected_for_proposal: provPrice.is_selected_for_proposal,
-            notes: provPrice.notes,
-          }
-        : null,
-    }
-  })
+  // Merge reference prices with custom prices
+  const servicesWithPrices: PricingService[] = referencePrices.map((refPrice) => ({
+    ...refPrice,
+    custom_price: customPriceMap.get(refPrice.id) ?? null,
+  }))
 
   // Group by cluster
   const clusterMap = new Map<string, PricingService[]>()
@@ -120,105 +105,9 @@ export async function getProviderPricingOptions(providerId: string): Promise<Pri
 }
 
 /**
- * Toggle service selection for proposal
- */
-export async function toggleServiceSelection(
-  providerId: string,
-  referencePriceId: string,
-  isSelected: boolean
-): Promise<{ error?: string }> {
-  const supabase = await createClient()
-
-  // Verify authentication
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) {
-    return { error: 'Não autenticado' }
-  }
-
-  const adminClient = createAdminClient()
-
-  // Get service name for logging
-  const { data: servicePrice } = await adminClient
-    .from('service_prices')
-    .select('service_name')
-    .eq('id', referencePriceId)
-    .single()
-
-  const serviceName = servicePrice?.service_name || 'Serviço'
-
-  // Check if provider_price record exists
-  const { data: existing } = await adminClient
-    .from('provider_prices')
-    .select('id, is_selected_for_proposal')
-    .eq('provider_id', providerId)
-    .eq('reference_price_id', referencePriceId)
-    .single()
-
-  const oldSelected = existing?.is_selected_for_proposal ?? false
-
-  if (existing) {
-    // Update existing record
-    const { error } = await adminClient
-      .from('provider_prices')
-      .update({
-        is_selected_for_proposal: isSelected,
-        updated_at: new Date().toISOString(),
-        updated_by: user.id,
-      })
-      .eq('id', existing.id)
-
-    if (error) {
-      console.error('Error updating provider price:', error)
-      return { error: 'Erro ao atualizar seleção' }
-    }
-
-    // Log the change
-    await logPriceChange(
-      adminClient,
-      providerId,
-      user.id,
-      'price_change',
-      `Serviço "${serviceName}" ${isSelected ? 'selecionado' : 'desselecionado'} para proposta`,
-      { service: serviceName, is_selected: oldSelected },
-      { service: serviceName, is_selected: isSelected }
-    )
-  } else {
-    // Create new record
-    const { error } = await adminClient.from('provider_prices').insert({
-      provider_id: providerId,
-      reference_price_id: referencePriceId,
-      is_selected_for_proposal: isSelected,
-      created_by: user.id,
-      updated_by: user.id,
-    })
-
-    // Log new service added
-    if (!error) {
-      await logPriceChange(
-        adminClient,
-        providerId,
-        user.id,
-        'price_change',
-        `Serviço "${serviceName}" adicionado ${isSelected ? 'e selecionado' : ''} para proposta`,
-        null,
-        { service: serviceName, is_selected: isSelected }
-      )
-    }
-
-    if (error) {
-      console.error('Error creating provider price:', error)
-      return { error: 'Erro ao criar seleção' }
-    }
-  }
-
-  revalidatePath(`/providers/${providerId}`)
-  return {}
-}
-
-/**
- * Update custom price for a service
+ * Update or delete custom price for a service
+ * - If customPrice is provided: create or update the record
+ * - If customPrice is null: delete the record (use reference price)
  */
 export async function updateCustomPrice(
   providerId: string,
@@ -246,20 +135,44 @@ export async function updateCustomPrice(
 
   const serviceName = servicePrice?.service_name || 'Serviço'
 
-  // Check if provider_price record exists
+  // Check if custom price record exists
   const { data: existing } = await adminClient
-    .from('provider_prices')
+    .from('provider_custom_prices')
     .select('id, custom_price_without_vat')
     .eq('provider_id', providerId)
     .eq('reference_price_id', referencePriceId)
     .single()
 
-  const oldPrice = existing?.custom_price_without_vat
+  const oldPrice = existing?.custom_price_without_vat ?? null
 
-  if (existing) {
+  if (customPrice === null) {
+    // Delete the record if it exists (revert to reference price)
+    if (existing) {
+      const { error } = await adminClient
+        .from('provider_custom_prices')
+        .delete()
+        .eq('id', existing.id)
+
+      if (error) {
+        console.error('Error deleting custom price:', error)
+        return { error: 'Erro ao remover preço personalizado' }
+      }
+
+      // Log the removal
+      await logPriceChange(
+        adminClient,
+        providerId,
+        user.id,
+        'price_change',
+        `Preço personalizado de "${serviceName}" removido (revertido para referência ${servicePrice?.price_base}€)`,
+        { service: serviceName, custom_price: oldPrice },
+        { service: serviceName, custom_price: null, reference_price: servicePrice?.price_base }
+      )
+    }
+  } else if (existing) {
     // Update existing record
     const { error } = await adminClient
-      .from('provider_prices')
+      .from('provider_custom_prices')
       .update({
         custom_price_without_vat: customPrice,
         updated_at: new Date().toISOString(),
@@ -278,13 +191,13 @@ export async function updateCustomPrice(
       providerId,
       user.id,
       'price_change',
-      `Preço personalizado de "${serviceName}" alterado de ${oldPrice ?? 'referência'}€ para ${customPrice ?? 'referência'}€`,
+      `Preço personalizado de "${serviceName}" alterado de ${oldPrice}€ para ${customPrice}€`,
       { service: serviceName, custom_price: oldPrice, reference_price: servicePrice?.price_base },
       { service: serviceName, custom_price: customPrice, reference_price: servicePrice?.price_base }
     )
   } else {
     // Create new record
-    const { error } = await adminClient.from('provider_prices').insert({
+    const { error } = await adminClient.from('provider_custom_prices').insert({
       provider_id: providerId,
       reference_price_id: referencePriceId,
       custom_price_without_vat: customPrice,
@@ -292,201 +205,25 @@ export async function updateCustomPrice(
       updated_by: user.id,
     })
 
-    if (!error && customPrice !== null) {
-      await logPriceChange(
-        adminClient,
-        providerId,
-        user.id,
-        'price_change',
-        `Preço personalizado de "${serviceName}" definido como ${customPrice}€`,
-        null,
-        { service: serviceName, custom_price: customPrice, reference_price: servicePrice?.price_base }
-      )
-    }
-
     if (error) {
-      console.error('Error creating provider price:', error)
-      return { error: 'Erro ao criar preço' }
+      console.error('Error creating custom price:', error)
+      return { error: 'Erro ao criar preço personalizado' }
     }
+
+    // Log new custom price
+    await logPriceChange(
+      adminClient,
+      providerId,
+      user.id,
+      'price_change',
+      `Preço personalizado de "${serviceName}" definido como ${customPrice}€ (referência: ${servicePrice?.price_base}€)`,
+      null,
+      { service: serviceName, custom_price: customPrice, reference_price: servicePrice?.price_base }
+    )
   }
 
   revalidatePath(`/providers/${providerId}`)
   return {}
-}
-
-/**
- * Bulk update service selections
- */
-export async function bulkToggleServices(
-  providerId: string,
-  referencePriceIds: string[],
-  isSelected: boolean
-): Promise<{ error?: string }> {
-  const supabase = await createClient()
-
-  // Verify authentication
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) {
-    return { error: 'Não autenticado' }
-  }
-
-  const adminClient = createAdminClient()
-
-  // Get existing records
-  const { data: existing } = await adminClient
-    .from('provider_prices')
-    .select('id, reference_price_id')
-    .eq('provider_id', providerId)
-    .in('reference_price_id', referencePriceIds)
-
-  const existingMap = new Map<string, string>()
-  if (existing) {
-    for (const record of existing) {
-      existingMap.set(record.reference_price_id, record.id)
-    }
-  }
-
-  // Update existing records
-  const updateIds = Array.from(existingMap.values())
-  if (updateIds.length > 0) {
-    const { error: updateError } = await adminClient
-      .from('provider_prices')
-      .update({
-        is_selected_for_proposal: isSelected,
-        updated_at: new Date().toISOString(),
-        updated_by: user.id,
-      })
-      .in('id', updateIds)
-
-    if (updateError) {
-      console.error('Error updating provider prices:', updateError)
-      return { error: 'Erro ao atualizar seleções' }
-    }
-  }
-
-  // Create new records for non-existing ones
-  const newRecords = referencePriceIds
-    .filter((refId) => !existingMap.has(refId))
-    .map((refId) => ({
-      provider_id: providerId,
-      reference_price_id: refId,
-      is_selected_for_proposal: isSelected,
-      created_by: user.id,
-      updated_by: user.id,
-    }))
-
-  if (newRecords.length > 0) {
-    const { error: insertError } = await adminClient.from('provider_prices').insert(newRecords)
-
-    if (insertError) {
-      console.error('Error creating provider prices:', insertError)
-      return { error: 'Erro ao criar seleções' }
-    }
-  }
-
-  // Log bulk change
-  const totalCount = referencePriceIds.length
-  await logPriceChange(
-    adminClient,
-    providerId,
-    user.id,
-    'price_change',
-    `${totalCount} serviços ${isSelected ? 'selecionados' : 'desselecionados'} em massa`,
-    { services_count: totalCount, action: isSelected ? 'select' : 'deselect' },
-    { services_count: totalCount, is_selected: isSelected }
-  )
-
-  revalidatePath(`/providers/${providerId}`)
-  return {}
-}
-
-/**
- * Auto-select services based on forms submission
- */
-export async function autoSelectServicesFromForms(
-  providerId: string,
-  selectedServiceIds: string[]
-): Promise<{ error?: string; count?: number }> {
-  const supabase = await createClient()
-
-  // Verify authentication
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) {
-    return { error: 'Não autenticado' }
-  }
-
-  const adminClient = createAdminClient()
-
-  // Get existing records
-  const { data: existing } = await adminClient
-    .from('provider_prices')
-    .select('id, reference_price_id')
-    .eq('provider_id', providerId)
-    .in('reference_price_id', selectedServiceIds)
-
-  const existingMap = new Map<string, string>()
-  if (existing) {
-    for (const record of existing) {
-      existingMap.set(record.reference_price_id, record.id)
-    }
-  }
-
-  // Update existing records
-  const updateIds = Array.from(existingMap.values())
-  if (updateIds.length > 0) {
-    const { error: updateError } = await adminClient
-      .from('provider_prices')
-      .update({
-        is_selected_for_proposal: true,
-        updated_at: new Date().toISOString(),
-        updated_by: user.id,
-      })
-      .in('id', updateIds)
-
-    if (updateError) {
-      console.error('Error updating provider prices:', updateError)
-      return { error: 'Erro ao atualizar seleções' }
-    }
-  }
-
-  // Create new records for non-existing ones
-  const newRecords = selectedServiceIds
-    .filter((refId) => !existingMap.has(refId))
-    .map((refId) => ({
-      provider_id: providerId,
-      reference_price_id: refId,
-      is_selected_for_proposal: true,
-      created_by: user.id,
-      updated_by: user.id,
-    }))
-
-  if (newRecords.length > 0) {
-    const { error: insertError } = await adminClient.from('provider_prices').insert(newRecords)
-
-    if (insertError) {
-      console.error('Error creating provider prices:', insertError)
-      return { error: 'Erro ao criar seleções' }
-    }
-  }
-
-  // Log auto-selection from forms
-  const totalCount = selectedServiceIds.length
-  await logPriceChange(
-    adminClient,
-    providerId,
-    user.id,
-    'price_change',
-    `${totalCount} serviços auto-selecionados a partir do formulário`,
-    null,
-    { services_count: totalCount, source: 'forms_submission', is_selected: true }
-  )
-
-  revalidatePath(`/providers/${providerId}`)
-  return { count: selectedServiceIds.length }
 }
 
 // Tipo para os dados do PDF (compatível com CatalogPrice do service-catalog)
@@ -513,10 +250,24 @@ export type ProposalPDFPrice = {
   updated_at: string | null
 }
 
+// Tipo para materiais
+export type ProposalMaterial = {
+  id: string
+  material_name: string
+  category: string | null
+  price_without_vat: number
+  vat_rate: number
+  is_active: boolean | null
+}
+
 /**
- * Generate PDF data for selected services (returns format compatible with generateCatalogPricePDFHTML)
+ * Generate PDF data for selected services
+ * Selection is now passed from client state, not from DB
  */
-export async function generateProposalPDFData(providerId: string): Promise<{
+export async function generateProposalPDFData(
+  providerId: string,
+  selectedServiceIds: string[]
+): Promise<{
   error?: string
   data?: {
     provider: {
@@ -525,9 +276,14 @@ export async function generateProposalPDFData(providerId: string): Promise<{
       email: string
     }
     prices: ProposalPDFPrice[]
+    materials?: ProposalMaterial[]
   }
 }> {
   const supabase = createAdminClient()
+
+  if (selectedServiceIds.length === 0) {
+    return { error: 'Nenhum serviço selecionado para gerar PDF' }
+  }
 
   // Get provider info
   const { data: provider, error: provError } = await supabase
@@ -540,63 +296,39 @@ export async function generateProposalPDFData(providerId: string): Promise<{
     return { error: 'Prestador não encontrado' }
   }
 
-  // Get all selected services with ALL their price fields
-  const { data: selectedPrices, error: pricesError } = await supabase
-    .from('provider_prices')
-    .select(
-      `
-      id,
-      reference_price_id,
-      custom_price_without_vat,
-      is_selected_for_proposal,
-      service_prices (
-        id,
-        service_name,
-        cluster,
-        service_group,
-        unit_description,
-        typology,
-        vat_rate,
-        launch_date,
-        price_base,
-        price_new_visit,
-        price_extra_night,
-        price_hour_no_materials,
-        price_hour_with_materials,
-        price_cleaning,
-        price_cleaning_treatments,
-        price_cleaning_imper,
-        price_cleaning_imper_treatments,
-        is_active,
-        created_at,
-        updated_at
-      )
-    `
-    )
-    .eq('provider_id', providerId)
-    .eq('is_selected_for_proposal', true)
+  // Get selected reference prices with all fields
+  const { data: referencePrices, error: refError } = await supabase
+    .from('service_prices')
+    .select('*')
+    .in('id', selectedServiceIds)
 
-  if (pricesError) {
-    console.error('Error fetching selected prices:', pricesError)
-    return { error: 'Erro ao buscar preços selecionados' }
+  if (refError || !referencePrices) {
+    console.error('Error fetching reference prices:', refError)
+    return { error: 'Erro ao buscar preços de referência' }
   }
 
-  if (!selectedPrices || selectedPrices.length === 0) {
-    return { error: 'Nenhum serviço selecionado para gerar PDF' }
+  // Get custom prices for selected services
+  const { data: customPrices } = await supabase
+    .from('provider_custom_prices')
+    .select('reference_price_id, custom_price_without_vat')
+    .eq('provider_id', providerId)
+    .in('reference_price_id', selectedServiceIds)
+
+  // Create map of custom prices
+  const customPriceMap = new Map<string, number>()
+  if (customPrices) {
+    for (const cp of customPrices) {
+      customPriceMap.set(cp.reference_price_id, cp.custom_price_without_vat)
+    }
   }
 
   // Transform to ProposalPDFPrice format, applying custom prices where set
-  const prices: ProposalPDFPrice[] = []
-
-  for (const priceRecord of selectedPrices) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const refPrice = (priceRecord as any).service_prices
-    if (!refPrice) continue
-
+  const prices: ProposalPDFPrice[] = referencePrices.map((refPrice) => {
     // Apply custom price to price_base if set
-    const finalPriceBase = priceRecord.custom_price_without_vat ?? refPrice.price_base
+    const customPrice = customPriceMap.get(refPrice.id)
+    const finalPriceBase = customPrice ?? refPrice.price_base
 
-    prices.push({
+    return {
       id: refPrice.id,
       service_name: refPrice.service_name,
       cluster: refPrice.cluster || 'Outros',
@@ -617,7 +349,27 @@ export async function generateProposalPDFData(providerId: string): Promise<{
       is_active: refPrice.is_active,
       created_at: refPrice.created_at,
       updated_at: refPrice.updated_at,
-    })
+    }
+  })
+
+  // Check if any selected service is a Canalizador service (by service_group)
+  const hasCanalizador = referencePrices.some(
+    (p) => p.service_group?.toLowerCase().includes('canalizador') ||
+           p.service_name?.toLowerCase().includes('canalizador')
+  )
+
+  // Fetch materials if Canalizador is selected
+  let materials: ProposalMaterial[] | undefined
+  if (hasCanalizador) {
+    const { data: materialsData } = await supabase
+      .from('material_catalog')
+      .select('id, material_name, category, price_without_vat, vat_rate, is_active')
+      .eq('is_active', true)
+      .order('material_name')
+
+    if (materialsData && materialsData.length > 0) {
+      materials = materialsData
+    }
   }
 
   return {
@@ -628,6 +380,7 @@ export async function generateProposalPDFData(providerId: string): Promise<{
         email: provider.email || '',
       },
       prices,
+      materials,
     },
   }
 }

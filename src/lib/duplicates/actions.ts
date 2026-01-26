@@ -209,7 +209,7 @@ export async function getProvidersForMerge(providerAId: string, providerBId: str
         notes:notes(count),
         history:history_log(count),
         onboarding_card:onboarding_cards(id),
-        prices:provider_prices(count)
+        prices:provider_custom_prices(count)
       `)
       .eq('id', providerAId)
       .single(),
@@ -221,7 +221,7 @@ export async function getProvidersForMerge(providerAId: string, providerBId: str
         notes:notes(count),
         history:history_log(count),
         onboarding_card:onboarding_cards(id),
-        prices:provider_prices(count)
+        prices:provider_custom_prices(count)
       `)
       .eq('id', providerBId)
       .single(),
@@ -383,9 +383,9 @@ export async function mergeProviders(
       .update({ provider_id: providerAId })
       .eq('provider_id', providerBId)
 
-    // Provider prices
+    // Provider custom prices
     await admin
-      .from('provider_prices')
+      .from('provider_custom_prices')
       .update({ provider_id: providerAId })
       .eq('provider_id', providerBId)
 
@@ -662,7 +662,7 @@ export async function quickMergeExactDuplicates(): Promise<QuickMergeResult> {
         admin.from('application_history').update({ provider_id: op.targetId }).eq('provider_id', op.sourceId),
         admin.from('alerts').update({ provider_id: op.targetId }).eq('provider_id', op.sourceId),
         admin.from('provider_documents').update({ provider_id: op.targetId }).eq('provider_id', op.sourceId),
-        admin.from('provider_prices').update({ provider_id: op.targetId }).eq('provider_id', op.sourceId),
+        admin.from('provider_custom_prices').update({ provider_id: op.targetId }).eq('provider_id', op.sourceId),
         admin.from('provider_price_snapshots').update({ provider_id: op.targetId }).eq('provider_id', op.sourceId),
         admin.from('provider_services').update({ provider_id: op.targetId }).eq('provider_id', op.sourceId),
         admin.from('priority_progress_log').update({ provider_id: op.targetId }).eq('provider_id', op.sourceId),
