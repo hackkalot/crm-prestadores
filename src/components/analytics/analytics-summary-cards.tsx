@@ -12,10 +12,10 @@ import {
   TrendingDown,
   Minus,
   FileText,
-  Send,
-  CheckCircle2,
+  CalendarClock,
   Percent,
-  Receipt,
+  Users,
+  Star,
   Euro,
   HelpCircle,
 } from 'lucide-react'
@@ -32,18 +32,6 @@ function formatCurrency(value: number): string {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value)
-}
-
-function formatCurrencyWithDecimals(value: number): { integer: string; decimal: string } {
-  const formatted = new Intl.NumberFormat('pt-PT', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)
-  const parts = formatted.split(',')
-  return {
-    integer: parts[0],
-    decimal: parts[1] || '00',
-  }
 }
 
 function TrendIndicator({ value, inverted = false }: { value: number; inverted?: boolean }) {
@@ -68,12 +56,26 @@ function TrendIndicator({ value, inverted = false }: { value: number; inverted?:
 export function AnalyticsSummaryCards({ data }: AnalyticsSummaryCardsProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-      {/* Pedidos de Serviço (service_requests reais) */}
+      {/* Card 1: Pedidos Submetidos (created_at) */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Pedidos de Serviço</p>
+              <div className="flex items-center gap-1">
+                <p className="text-sm text-muted-foreground">Pedidos Submetidos</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[220px]">
+                      <p className="text-sm">
+                        Pedidos criados no período (por <code>created_at</code>)
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <p className="text-3xl font-bold">{data.totalServiceRequests.toLocaleString('pt-PT')}</p>
               <div className="flex items-center gap-2">
                 <TrendIndicator value={data.serviceRequestsTrend} />
@@ -81,6 +83,9 @@ export function AnalyticsSummaryCards({ data }: AnalyticsSummaryCardsProps) {
                   (ant: {data.totalServiceRequestsPrevPeriod.toLocaleString('pt-PT')})
                 </span>
               </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Média: <span className="font-medium">{data.avgRequestsPerDaySubmitted}</span>/dia
+              </p>
             </div>
             <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-950">
               <FileText className="h-5 w-5 text-blue-600" />
@@ -89,49 +94,45 @@ export function AnalyticsSummaryCards({ data }: AnalyticsSummaryCardsProps) {
         </CardContent>
       </Card>
 
-      {/* Pedidos Enviados (oferecidos aos prestadores) */}
+      {/* Card 2: Pedidos Agendados (scheduled_to) */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Pedidos Enviados</p>
-              <p className="text-3xl font-bold">{data.totalSentRequests.toLocaleString('pt-PT')}</p>
+              <div className="flex items-center gap-1">
+                <p className="text-sm text-muted-foreground">Pedidos Agendados</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[220px]">
+                      <p className="text-sm">
+                        Pedidos agendados para o período (por <code>scheduled_to</code>)
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <p className="text-3xl font-bold">{data.totalScheduledRequests.toLocaleString('pt-PT')}</p>
               <div className="flex items-center gap-2">
-                <TrendIndicator value={data.sentRequestsTrend} />
+                <TrendIndicator value={data.scheduledRequestsTrend} />
                 <span className="text-xs text-muted-foreground">
-                  (ant: {data.totalSentRequestsPrevPeriod.toLocaleString('pt-PT')})
+                  (ant: {data.totalScheduledRequestsPrevPeriod.toLocaleString('pt-PT')})
                 </span>
               </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Média: <span className="font-medium">{data.avgRequestsPerDayScheduled}</span>/dia
+              </p>
             </div>
             <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-950">
-              <Send className="h-5 w-5 text-indigo-600" />
+              <CalendarClock className="h-5 w-5 text-indigo-600" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Pedidos Aceites (realmente alocados) */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Pedidos Aceites</p>
-              <p className="text-3xl font-bold">{data.totalAcceptedRequests.toLocaleString('pt-PT')}</p>
-              <div className="flex items-center gap-2">
-                <TrendIndicator value={data.acceptedRequestsTrend} />
-                <span className="text-xs text-muted-foreground">
-                  (ant: {data.totalAcceptedRequestsPrevPeriod.toLocaleString('pt-PT')})
-                </span>
-              </div>
-            </div>
-            <div className="p-2 rounded-lg bg-green-100 dark:bg-green-950">
-              <CheckCircle2 className="h-5 w-5 text-green-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Taxa de Aceitação */}
+      {/* Card 3: Taxa de Aceitação */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-start justify-between">
@@ -152,57 +153,104 @@ export function AnalyticsSummaryCards({ data }: AnalyticsSummaryCardsProps) {
         </CardContent>
       </Card>
 
-      {/* Ticket Médio */}
+      {/* Card 4: Prestadores Ativos */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <div className="flex items-center gap-1">
-                <p className="text-sm text-muted-foreground">Ticket Médio</p>
+                <p className="text-sm text-muted-foreground">Prestadores Ativos</p>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="max-w-[280px]">
+                    <TooltipContent side="top" className="max-w-[250px]">
                       <p className="text-sm">
-                        <strong>Teórico:</strong> Revenue ÷ Pedidos de Serviço
+                        Prestadores únicos com serviços atribuídos no período
                       </p>
-                      <p className="text-sm mt-1">
-                        <strong>Faturação:</strong> {formatCurrency(data.avgTicketBilling)} ({data.billingProcessesCount.toLocaleString('pt-PT')} processos)
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        A diferença existe porque nem todos os pedidos têm processo de faturação associado.
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Total na rede: {data.totalProvidersInNetwork} prestadores
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <p className="text-3xl font-bold">
-                {formatCurrencyWithDecimals(data.avgTicket).integer}
-                <span className="text-lg">,{formatCurrencyWithDecimals(data.avgTicket).decimal} €</span>
-              </p>
+              <p className="text-3xl font-bold">{data.activeProvidersInPeriod}</p>
               <div className="flex items-center gap-2">
-                <TrendIndicator value={data.avgTicketTrend} />
+                <TrendIndicator value={data.activeProvidersTrend} />
                 <span className="text-xs text-muted-foreground">
-                  (ant: {formatCurrency(data.avgTicketPrevPeriod)})
+                  (ant: {data.activeProvidersInPeriodPrev})
                 </span>
               </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                de {data.totalProvidersInNetwork} na rede
+              </p>
             </div>
-            <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-950">
-              <Receipt className="h-5 w-5 text-amber-600" />
+            <div className="p-2 rounded-lg bg-green-100 dark:bg-green-950">
+              <Users className="h-5 w-5 text-green-600" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Revenue Total */}
+      {/* Card 5: Satisfação (Rating) */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <div className="flex items-center gap-1">
-                <p className="text-sm text-muted-foreground">Revenue Total</p>
+                <p className="text-sm text-muted-foreground">Satisfação</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[220px]">
+                      <p className="text-sm">
+                        Rating médio dos serviços avaliados no período
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {data.totalRatingsCount} avaliações
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="flex items-baseline gap-1">
+                <p className="text-3xl font-bold">{data.avgRating || '-'}</p>
+                {data.avgRating > 0 && <Star className="h-5 w-5 text-amber-500 fill-amber-500" />}
+              </div>
+              <div className="flex items-center gap-2">
+                {data.avgRating > 0 ? (
+                  <>
+                    <TrendIndicator value={data.avgRatingTrend} />
+                    <span className="text-xs text-muted-foreground">
+                      (ant: {data.avgRatingPrevPeriod})
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-xs text-muted-foreground">Sem avaliações</span>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {data.totalRatingsCount} avaliações
+              </p>
+            </div>
+            <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-950">
+              <Star className="h-5 w-5 text-amber-600" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Card 6: Receita Total (placeholder até P&L) */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1">
+                <p className="text-sm text-muted-foreground">Receita Total</p>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -210,13 +258,13 @@ export function AnalyticsSummaryCards({ data }: AnalyticsSummaryCardsProps) {
                     </TooltipTrigger>
                     <TooltipContent side="top" className="max-w-[280px]">
                       <p className="text-sm">
-                        <strong>Teórico:</strong> Soma de paid_amount dos pedidos
+                        Receita teórica (soma de <code>paid_amount</code>)
                       </p>
                       <p className="text-sm mt-1">
-                        <strong>Faturação:</strong> {formatCurrency(data.totalRevenueBilling)} ({data.billingProcessesCount.toLocaleString('pt-PT')} processos)
+                        <strong>Faturação real:</strong> {formatCurrency(data.totalRevenueBilling)}
                       </p>
                       <p className="text-xs text-muted-foreground mt-2">
-                        A diferença existe porque nem todos os pedidos têm processo de faturação associado.
+                        Ticket médio: {formatCurrency(data.avgTicket)}
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -229,6 +277,9 @@ export function AnalyticsSummaryCards({ data }: AnalyticsSummaryCardsProps) {
                   (ant: {formatCurrency(data.totalRevenuePrevMonth)})
                 </span>
               </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Ticket médio: {formatCurrency(data.avgTicket)}
+              </p>
             </div>
             <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-950">
               <Euro className="h-5 w-5 text-emerald-600" />

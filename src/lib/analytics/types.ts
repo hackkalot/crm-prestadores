@@ -15,10 +15,17 @@ export interface AnalyticsFilters {
 // ==================
 
 export interface OperationalSummary {
-  // Service Requests (pedidos reais criados)
+  // Service Requests (pedidos reais criados by created_at)
   totalServiceRequests: number
   totalServiceRequestsPrevPeriod: number
   serviceRequestsTrend: number // percentage change
+  avgRequestsPerDaySubmitted: number // average SRs/day submitted
+
+  // Pedidos Agendados (by scheduled_to)
+  totalScheduledRequests: number
+  totalScheduledRequestsPrevPeriod: number
+  scheduledRequestsTrend: number // percentage change
+  avgRequestsPerDayScheduled: number // average SRs/day scheduled
 
   // Pedidos Enviados (oferecidos aos prestadores)
   totalSentRequests: number
@@ -42,6 +49,18 @@ export interface OperationalSummary {
   networkAcceptanceRate: number
   networkAcceptanceRatePrevMonth: number
   acceptanceTrend: number
+
+  // Prestadores Ativos (unique assigned_provider_id in period)
+  activeProvidersInPeriod: number
+  activeProvidersInPeriodPrev: number
+  activeProvidersTrend: number
+  totalProvidersInNetwork: number // total providers for context
+
+  // Rating Médio
+  avgRating: number
+  avgRatingPrevPeriod: number
+  avgRatingTrend: number
+  totalRatingsCount: number
 
   // Ticket Médio (teórico: Revenue / Service Requests)
   avgTicket: number
@@ -298,6 +317,15 @@ export interface ComplaintMetrics {
   processesWithComplaints: number
   complaintRate: number
   complaintsByService: { service: string; count: number }[]
+}
+
+// Service requests by status
+export interface ServicesByStatusItem {
+  status: string
+  label: string
+  count: number
+  percentage: number
+  color: string
 }
 
 // ==================

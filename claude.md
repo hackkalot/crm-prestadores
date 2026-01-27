@@ -104,6 +104,28 @@ Os tipos sao gerados para `src/types/database.ts` e devem ser regenerados sempre
 - ✅ Prestar atenção aos tipos das colunas (ex: `assigned_provider_id` é `string`, não `number`)
 - ✅ Verificar nomes exactos das colunas (ex: `assigned_provider_id` vs `provider_id`)
 
+### 10. **SEMPRE adicionar novas páginas à tabela `pages` para permissões**
+- ❌ **NUNCA** criar uma nova página sem a adicionar ao sistema de permissões
+- ✅ **OBRIGATÓRIO**: Quando criar uma nova página/rota, criar uma migration para:
+  1. Inserir na tabela `pages` com key, name, path, section, display_order
+  2. Adicionar permissões em `role_permissions` para cada role
+- ✅ Sem isto, os utilizadores não terão acesso à página (fica invisível no sidebar)
+- ✅ A gestão de acessos é feita em `/admin/gestao-sistema` na tab "Acessos"
+
+```sql
+-- Exemplo de migration para nova página
+INSERT INTO pages (key, name, path, section, display_order) VALUES
+  ('nova_pagina', 'Nova Página', '/nova-pagina', 'onboarding', 5)
+ON CONFLICT (key) DO NOTHING;
+
+-- Dar acesso a todos os roles (ajustar conforme necessário)
+INSERT INTO role_permissions (role_id, page_id, can_access)
+SELECT r.id, p.id, TRUE
+FROM roles r, pages p
+WHERE p.key = 'nova_pagina'
+ON CONFLICT (role_id, page_id) DO UPDATE SET can_access = EXCLUDED.can_access;
+```
+
 ```typescript
 // ❌ ERRADO - inventar coluna
 .from('service_requests').select('provider_id')  // provider_id NÃO EXISTE!

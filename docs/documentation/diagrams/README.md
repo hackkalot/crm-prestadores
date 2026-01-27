@@ -11,7 +11,6 @@ Esta pasta contém diagramas visuais do CRM Prestadores organizados por categori
 | [architecture/](./architecture/) | Diagramas C4 (contexto, containers, componentes) |
 | [flows/](./flows/) | Fluxos de negócio e processos |
 | [security/](./security/) | Diagramas de segurança e autenticação |
-| [data/](./data/) | Modelos de dados e relações |
 
 ---
 
@@ -32,9 +31,8 @@ Esta pasta contém diagramas visuais do CRM Prestadores organizados por categori
 
 ### Segurança
 - [Fluxo de Autenticação](./security/auth-flow.md)
-
-### Dados
-- [Diagrama ER Simplificado](./data/er-diagram.md)
+- [Row Level Security (RLS)](./security/rls-policies.md)
+- [Prevenção de Ataques](./security/attack-prevention.md)
 
 ---
 

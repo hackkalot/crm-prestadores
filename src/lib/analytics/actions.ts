@@ -1,7 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
-import { SLA_THRESHOLDS, RESPONSE_TIME_BUCKETS } from './constants'
+import { SLA_THRESHOLDS, RESPONSE_TIME_BUCKETS, SERVICE_REQUEST_STATUS_LABELS, SERVICE_REQUEST_STATUS_COLORS } from './constants'
 import type {
   AnalyticsFilters,
   OperationalSummary,
@@ -28,6 +28,7 @@ import type {
   ConcentrationMetrics,
   NetworkSaturationMetrics,
   CoverageGapItem,
+  ServicesByStatusItem,
 } from './types'
 
 // ==================
@@ -171,69 +172,96 @@ export async function getOperationalSummary(
     ? getPreviousPeriodRange(currentFrom, currentTo)
     : getPreviousMonthRange()
 
-  // Build service requests query with filters (for count)
-  let currentServiceRequestsCountQuery = adminClient
+  // Calculate number of days in each period for avg/day calculation
+  const currentFromDate = new Date(currentFrom)
+  const currentToDate = new Date(currentTo)
+  const currentPeriodDays = Math.max(1, Math.ceil((currentToDate.getTime() - currentFromDate.getTime()) / (1000 * 60 * 60 * 24)) + 1)
+
+  // Build queries for service requests by created_at (current)
+  let currentSRCountQuery = adminClient
     .from('service_requests')
     .select('id', { count: 'exact', head: true })
     .gte('created_at', currentFrom)
     .lte('created_at', currentTo)
 
-  let prevServiceRequestsCountQuery = adminClient
+  let prevSRCountQuery = adminClient
     .from('service_requests')
     .select('id', { count: 'exact', head: true })
     .gte('created_at', prevFrom)
     .lte('created_at', prevTo)
 
-  // Build service requests query for revenue (paid_amount)
-  let currentServiceRequestsRevenueQuery = adminClient
+  // Build queries for service requests by scheduled_to
+  let currentScheduledQuery = adminClient
     .from('service_requests')
-    .select('paid_amount')
+    .select('id', { count: 'exact', head: true })
+    .gte('scheduled_to', currentFrom)
+    .lte('scheduled_to', currentTo)
+
+  let prevScheduledQuery = adminClient
+    .from('service_requests')
+    .select('id', { count: 'exact', head: true })
+    .gte('scheduled_to', prevFrom)
+    .lte('scheduled_to', prevTo)
+
+  // Build queries for service requests data (revenue, ratings, providers)
+  let currentSRDataQuery = adminClient
+    .from('service_requests')
+    .select('paid_amount, service_rating, assigned_provider_id')
     .gte('created_at', currentFrom)
     .lte('created_at', currentTo)
 
-  let prevServiceRequestsRevenueQuery = adminClient
+  let prevSRDataQuery = adminClient
     .from('service_requests')
-    .select('paid_amount')
+    .select('paid_amount, service_rating, assigned_provider_id')
     .gte('created_at', prevFrom)
     .lte('created_at', prevTo)
 
-  // Apply district filter to service requests
+  // Apply filters to all service request queries
   if (filters.district) {
-    currentServiceRequestsCountQuery = currentServiceRequestsCountQuery.eq('client_district', filters.district)
-    prevServiceRequestsCountQuery = prevServiceRequestsCountQuery.eq('client_district', filters.district)
-    currentServiceRequestsRevenueQuery = currentServiceRequestsRevenueQuery.eq('client_district', filters.district)
-    prevServiceRequestsRevenueQuery = prevServiceRequestsRevenueQuery.eq('client_district', filters.district)
+    currentSRCountQuery = currentSRCountQuery.eq('client_district', filters.district)
+    prevSRCountQuery = prevSRCountQuery.eq('client_district', filters.district)
+    currentScheduledQuery = currentScheduledQuery.eq('client_district', filters.district)
+    prevScheduledQuery = prevScheduledQuery.eq('client_district', filters.district)
+    currentSRDataQuery = currentSRDataQuery.eq('client_district', filters.district)
+    prevSRDataQuery = prevSRDataQuery.eq('client_district', filters.district)
   }
-  // Apply category filter to service requests
   if (filters.category) {
-    currentServiceRequestsCountQuery = currentServiceRequestsCountQuery.eq('category', filters.category)
-    prevServiceRequestsCountQuery = prevServiceRequestsCountQuery.eq('category', filters.category)
-    currentServiceRequestsRevenueQuery = currentServiceRequestsRevenueQuery.eq('category', filters.category)
-    prevServiceRequestsRevenueQuery = prevServiceRequestsRevenueQuery.eq('category', filters.category)
+    currentSRCountQuery = currentSRCountQuery.eq('category', filters.category)
+    prevSRCountQuery = prevSRCountQuery.eq('category', filters.category)
+    currentScheduledQuery = currentScheduledQuery.eq('category', filters.category)
+    prevScheduledQuery = prevScheduledQuery.eq('category', filters.category)
+    currentSRDataQuery = currentSRDataQuery.eq('category', filters.category)
+    prevSRDataQuery = prevSRDataQuery.eq('category', filters.category)
   }
-  // Apply service filter to service requests
   if (filters.service) {
-    currentServiceRequestsCountQuery = currentServiceRequestsCountQuery.eq('service', filters.service)
-    prevServiceRequestsCountQuery = prevServiceRequestsCountQuery.eq('service', filters.service)
-    currentServiceRequestsRevenueQuery = currentServiceRequestsRevenueQuery.eq('service', filters.service)
-    prevServiceRequestsRevenueQuery = prevServiceRequestsRevenueQuery.eq('service', filters.service)
+    currentSRCountQuery = currentSRCountQuery.eq('service', filters.service)
+    prevSRCountQuery = prevSRCountQuery.eq('service', filters.service)
+    currentScheduledQuery = currentScheduledQuery.eq('service', filters.service)
+    prevScheduledQuery = prevScheduledQuery.eq('service', filters.service)
+    currentSRDataQuery = currentSRDataQuery.eq('service', filters.service)
+    prevSRDataQuery = prevSRDataQuery.eq('service', filters.service)
   }
 
   // Get all data in parallel
   const [
     { count: currentServiceRequestsCount },
     { count: prevServiceRequestsCount },
-    { data: currentServiceRequestsRevenue },
-    { data: prevServiceRequestsRevenue },
+    { count: currentScheduledCount },
+    { count: prevScheduledCount },
+    { data: currentServiceRequestsData },
+    { data: prevServiceRequestsData },
     { data: currentAllocation },
     { data: prevAllocation },
     { data: currentBilling },
     { data: prevBilling },
+    { count: totalProvidersCount },
   ] = await Promise.all([
-    currentServiceRequestsCountQuery,
-    prevServiceRequestsCountQuery,
-    currentServiceRequestsRevenueQuery,
-    prevServiceRequestsRevenueQuery,
+    currentSRCountQuery,
+    prevSRCountQuery,
+    currentScheduledQuery,
+    prevScheduledQuery,
+    currentSRDataQuery,
+    prevSRDataQuery,
     adminClient
       .from('allocation_history')
       .select('*')
@@ -254,6 +282,10 @@ export async function getOperationalSummary(
       .select('total_invoice_value')
       .gte('document_date', prevFrom)
       .lte('document_date', prevTo),
+    adminClient
+      .from('providers')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'ativo'),
   ])
 
   // Calculate allocation metrics (current)
@@ -285,14 +317,36 @@ export async function getOperationalSummary(
       : 0
 
   // Calculate revenue from service_requests (teórico - paid_amount)
-  const totalRevenueTheoreticCurrent = currentServiceRequestsRevenue?.reduce(
+  const totalRevenueTheoreticCurrent = currentServiceRequestsData?.reduce(
     (sum, r) => sum + (r.paid_amount || 0),
     0
   ) || 0
-  const totalRevenueTheoreticPrev = prevServiceRequestsRevenue?.reduce(
+  const totalRevenueTheoreticPrev = prevServiceRequestsData?.reduce(
     (sum, r) => sum + (r.paid_amount || 0),
     0
   ) || 0
+
+  // Calculate ratings
+  const currentRatings = currentServiceRequestsData?.filter(r => r.service_rating && r.service_rating > 0) || []
+  const prevRatings = prevServiceRequestsData?.filter(r => r.service_rating && r.service_rating > 0) || []
+  const avgRatingCurrent = currentRatings.length > 0
+    ? currentRatings.reduce((sum, r) => sum + (r.service_rating || 0), 0) / currentRatings.length
+    : 0
+  const avgRatingPrev = prevRatings.length > 0
+    ? prevRatings.reduce((sum, r) => sum + (r.service_rating || 0), 0) / prevRatings.length
+    : 0
+
+  // Calculate active providers (unique assigned_provider_id)
+  const currentActiveProviderIds = new Set(
+    currentServiceRequestsData
+      ?.map(r => r.assigned_provider_id)
+      .filter(Boolean) || []
+  )
+  const prevActiveProviderIds = new Set(
+    prevServiceRequestsData
+      ?.map(r => r.assigned_provider_id)
+      .filter(Boolean) || []
+  )
 
   // Calculate revenue from billing_processes (real - total_invoice_value)
   const totalRevenueBillingCurrent = currentBilling?.reduce(
@@ -325,24 +379,33 @@ export async function getOperationalSummary(
     return expirationRate > SLA_THRESHOLDS.EXPIRATION_RATE.CRITICAL
   }) || []
 
-  // Total active providers (with any activity)
-  const activeProviders = currentAllocation?.filter(
+  // Total active providers (with any activity in allocation)
+  const activeProvidersFromAllocation = currentAllocation?.filter(
     (r) => (r.requests_received || 0) > 0
   ) || []
 
   // Service requests counts
   const serviceRequestsCurrent = currentServiceRequestsCount || 0
   const serviceRequestsPrev = prevServiceRequestsCount || 0
+  const scheduledCurrent = currentScheduledCount || 0
+  const scheduledPrev = prevScheduledCount || 0
 
   // Rename for clarity: totalAllocatedCurrent = sent, totalAcceptedCurrent = accepted
   const totalSentCurrent = totalAllocatedCurrent
   const totalSentPrev = totalAllocatedPrev
 
   return {
-    // Service Requests (pedidos reais criados)
+    // Service Requests (pedidos reais criados by created_at)
     totalServiceRequests: serviceRequestsCurrent,
     totalServiceRequestsPrevPeriod: serviceRequestsPrev,
     serviceRequestsTrend: calculateTrend(serviceRequestsCurrent, serviceRequestsPrev),
+    avgRequestsPerDaySubmitted: Math.round((serviceRequestsCurrent / currentPeriodDays) * 10) / 10,
+
+    // Pedidos Agendados (by scheduled_to)
+    totalScheduledRequests: scheduledCurrent,
+    totalScheduledRequestsPrevPeriod: scheduledPrev,
+    scheduledRequestsTrend: calculateTrend(scheduledCurrent, scheduledPrev),
+    avgRequestsPerDayScheduled: Math.round((scheduledCurrent / currentPeriodDays) * 10) / 10,
 
     // Pedidos Enviados (oferecidos aos prestadores)
     totalSentRequests: totalSentCurrent,
@@ -370,6 +433,18 @@ export async function getOperationalSummary(
       networkAcceptanceRatePrev
     ),
 
+    // Prestadores Ativos (unique assigned_provider_id in service_requests)
+    activeProvidersInPeriod: currentActiveProviderIds.size,
+    activeProvidersInPeriodPrev: prevActiveProviderIds.size,
+    activeProvidersTrend: calculateTrend(currentActiveProviderIds.size, prevActiveProviderIds.size),
+    totalProvidersInNetwork: totalProvidersCount || 0,
+
+    // Rating Médio
+    avgRating: Math.round(avgRatingCurrent * 10) / 10,
+    avgRatingPrevPeriod: Math.round(avgRatingPrev * 10) / 10,
+    avgRatingTrend: calculateTrend(avgRatingCurrent, avgRatingPrev),
+    totalRatingsCount: currentRatings.length,
+
     // Ticket Médio Teórico (Revenue / Service Requests)
     avgTicket: avgTicketCurrent,
     avgTicketPrevPeriod: avgTicketPrev,
@@ -384,7 +459,7 @@ export async function getOperationalSummary(
 
     // At Risk
     atRiskProvidersCount: atRiskProviders.length,
-    totalActiveProviders: activeProviders.length,
+    totalActiveProviders: activeProvidersFromAllocation.length,
 
     // Revenue Teórico (da tabela service_requests)
     totalRevenue: totalRevenueTheoreticCurrent,
@@ -396,6 +471,93 @@ export async function getOperationalSummary(
     totalRevenueBillingPrevMonth: totalRevenueBillingPrev,
     revenueBillingTrend: calculateTrend(totalRevenueBillingCurrent, totalRevenueBillingPrev),
   }
+}
+
+// ==================
+// Services by Status
+// ==================
+
+export async function getServicesByStatus(
+  filters: AnalyticsFilters
+): Promise<ServicesByStatusItem[]> {
+  const adminClient = createAdminClient()
+  const { from: currentFrom, to: currentTo } = getDateRange(filters)
+
+  // Build query for service requests
+  let query = adminClient
+    .from('service_requests')
+    .select('status')
+    .gte('created_at', currentFrom)
+    .lte('created_at', currentTo)
+
+  // Apply filters
+  if (filters.district) {
+    query = query.eq('client_district', filters.district)
+  }
+  if (filters.category) {
+    query = query.eq('category', filters.category)
+  }
+  if (filters.service) {
+    query = query.eq('service', filters.service)
+  }
+
+  const { data } = await query
+
+  if (!data || data.length === 0) return []
+
+  // Count by status
+  const statusCounts = new Map<string, number>()
+  for (const item of data) {
+    const status = item.status || 'desconhecido'
+    statusCounts.set(status, (statusCounts.get(status) || 0) + 1)
+  }
+
+  const total = data.length
+
+  // Define order for statuses (active first, then completed, then cancelled)
+  // Using actual database values with proper formatting
+  const statusOrder = [
+    'Novo pedido',
+    'Atribuir prestador',
+    'Prestador atribuído',
+    'Em curso',
+    'Concluído',
+    'Cancelado',
+    'Cancelado (backoffice)',
+    'Cancelado (Edição de RR)',
+    'Cancelado (concluído sem sucesso)',
+    'Expirado',
+  ]
+
+  // Convert to array and sort by predefined order
+  const result: ServicesByStatusItem[] = []
+  for (const status of statusOrder) {
+    const count = statusCounts.get(status)
+    if (count && count > 0) {
+      result.push({
+        status,
+        label: SERVICE_REQUEST_STATUS_LABELS[status] || status,
+        count,
+        percentage: Math.round((count / total) * 100),
+        color: SERVICE_REQUEST_STATUS_COLORS[status] || '#94a3b8',
+      })
+    }
+  }
+
+  // Add any statuses not in the predefined order
+  for (const [status, count] of statusCounts) {
+    if (!statusOrder.includes(status) && count > 0) {
+      result.push({
+        status,
+        label: SERVICE_REQUEST_STATUS_LABELS[status] || status,
+        count,
+        percentage: Math.round((count / total) * 100),
+        color: SERVICE_REQUEST_STATUS_COLORS[status] || '#94a3b8',
+      })
+    }
+  }
+
+  return result
 }
 
 // ==================

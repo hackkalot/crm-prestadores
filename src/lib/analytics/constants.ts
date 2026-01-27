@@ -65,6 +65,68 @@ export const BILLING_STATUSES = {
   ARQUIVADO: 'arquivado',
 } as const
 
+// Service request statuses (from database enum)
+export const SERVICE_REQUEST_STATUSES = {
+  NOVO_PEDIDO: 'Novo Pedido',
+  ATRIBUIR_PRESTADOR: 'Atribuir Prestador',
+  AGENDADO: 'Agendado',
+  EM_EXECUCAO: 'Em Execução',
+  CONCLUIDO: 'Concluído',
+  CANCELADO_CLIENTE: 'Cancelado Cliente',
+  CANCELADO_BACKOFFICE: 'Cancelado Backoffice',
+  CANCELADO_PRESTADOR: 'Cancelado Prestador',
+} as const
+
+// Map database status values to display labels
+// Note: Database uses formatted strings with accents and spaces
+export const SERVICE_REQUEST_STATUS_LABELS: Record<string, string> = {
+  // Actual database values
+  'Novo pedido': 'Novo Pedido',
+  'Atribuir prestador': 'Atribuir Prestador',
+  'Prestador atribuído': 'Prestador Atribuído',
+  'Em curso': 'Em Curso',
+  'Concluído': 'Concluído',
+  'Cancelado': 'Cancelado',
+  'Cancelado (backoffice)': 'Canc. (Backoffice)',
+  'Cancelado (Edição de RR)': 'Canc. (Edição RR)',
+  'Cancelado (concluído sem sucesso)': 'Canc. (Sem Sucesso)',
+  'Expirado': 'Expirado',
+  // Legacy snake_case values (just in case)
+  'novo_pedido': 'Novo Pedido',
+  'atribuir_prestador': 'Atribuir Prestador',
+  'agendado': 'Agendado',
+  'em_execucao': 'Em Execução',
+  'concluido': 'Concluído',
+  'cancelado_cliente': 'Canc. Cliente',
+  'cancelado_backoffice': 'Canc. Backoffice',
+  'cancelado_prestador': 'Canc. Prestador',
+}
+
+// Colors for service request statuses
+// Note: Database uses formatted strings with accents and spaces
+export const SERVICE_REQUEST_STATUS_COLORS: Record<string, string> = {
+  // Actual database values
+  'Novo pedido': '#3b82f6',                    // blue-500
+  'Atribuir prestador': '#8b5cf6',             // violet-500
+  'Prestador atribuído': '#06b6d4',            // cyan-500
+  'Em curso': '#f59e0b',                       // amber-500
+  'Concluído': '#22c55e',                      // green-500
+  'Cancelado': '#ef4444',                      // red-500
+  'Cancelado (backoffice)': '#dc2626',         // red-600
+  'Cancelado (Edição de RR)': '#f97316',       // orange-500
+  'Cancelado (concluído sem sucesso)': '#b91c1c', // red-700
+  'Expirado': '#6b7280',                       // gray-500
+  // Legacy snake_case values (just in case)
+  'novo_pedido': '#3b82f6',       // blue-500
+  'atribuir_prestador': '#8b5cf6', // violet-500
+  'agendado': '#06b6d4',           // cyan-500
+  'em_execucao': '#f59e0b',        // amber-500
+  'concluido': '#22c55e',          // green-500
+  'cancelado_cliente': '#ef4444',  // red-500
+  'cancelado_backoffice': '#dc2626', // red-600
+  'cancelado_prestador': '#b91c1c',  // red-700
+}
+
 // Date presets for filters
 export const DATE_PRESETS = [
   { label: '7 dias', days: 7 },

@@ -22,6 +22,7 @@ import { CompletionByCategoryChart } from '@/components/analytics/quality/comple
 import { RatingByCategoryChart } from '@/components/analytics/quality/rating-by-category-chart'
 import { CompletionTrendChart } from '@/components/analytics/quality/completion-trend-chart'
 import { LowRatingAlerts } from '@/components/analytics/quality/low-rating-alerts'
+import { ServicesByStatusChart } from '@/components/analytics/overview/services-by-status-chart'
 import { LastSyncBadge } from '@/components/sync/last-sync-badge'
 import {
   getOperationalSummary,
@@ -44,6 +45,7 @@ import {
   getNetworkSaturation,
   getCoverageGaps,
   getAnalyticsFilterOptions,
+  getServicesByStatus,
 } from '@/lib/analytics/actions'
 import { getLastSyncInfoBatch, type LastSyncInfo } from '@/lib/sync/logs-actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
@@ -104,6 +106,7 @@ export default async function AnalyticsPage({
   const [
     filterOptions,
     summary,
+    servicesByStatus,
     networkHealth,
     responseTime,
     atRiskProviders,
@@ -125,6 +128,7 @@ export default async function AnalyticsPage({
   ] = await Promise.all([
     getAnalyticsFilterOptions(),
     fetchOverviewData ? getOperationalSummary(filters) : Promise.resolve(null),
+    fetchOverviewData ? getServicesByStatus(filters) : Promise.resolve(null),
     fetchOperationalData ? getNetworkHealthData(filters) : Promise.resolve(null),
     fetchOperationalData ? getResponseTimeDistribution(filters) : Promise.resolve(null),
     fetchOperationalData ? getAtRiskProviders(filters) : Promise.resolve(null),
@@ -173,6 +177,18 @@ export default async function AnalyticsPage({
           <div className="space-y-8">
             {/* Summary Cards */}
             <AnalyticsSummaryCards data={summary} />
+
+            {/* Gráficos Overview: Serviços por Estado + Ticket Médio */}
+            <section>
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-indigo-500" />
+                Visão Geral de Pedidos
+              </h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {servicesByStatus && <ServicesByStatusChart data={servicesByStatus} />}
+                {ticketTrend && <TicketTrendChart data={ticketTrend} />}
+              </div>
+            </section>
 
             {/* Secção 1: Saúde Operacional */}
             <section>

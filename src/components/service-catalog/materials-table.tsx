@@ -362,7 +362,7 @@ export function CatalogMaterialsTable({ materials: initialMaterials, categories:
       const ws = XLSX.utils.json_to_sheet(exportData)
       const wb = XLSX.utils.book_new()
       XLSX.utils.book_append_sheet(wb, ws, 'Materiais')
-      XLSX.writeFile(wb, `materiais_canalizador_${new Date().toISOString().split('T')[0]}.xlsx`)
+      XLSX.writeFile(wb, `materiais_canalizador_agua_${new Date().toISOString().split('T')[0]}.xlsx`)
       toast.success('Ficheiro exportado')
     } catch (error) {
       console.error('Error exporting:', error)
@@ -377,7 +377,7 @@ export function CatalogMaterialsTable({ materials: initialMaterials, categories:
           <div className="flex items-center gap-2">
             <Package className="h-5 w-5 text-muted-foreground" />
             <div>
-              <CardTitle>Materiais de Canalizador</CardTitle>
+              <CardTitle>Materiais de Canalizador Água</CardTitle>
               <CardDescription>
                 {totalItems} materiais no catálogo
               </CardDescription>

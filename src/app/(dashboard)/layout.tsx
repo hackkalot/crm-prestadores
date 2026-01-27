@@ -1,4 +1,6 @@
 import { Sidebar } from '@/components/layout/sidebar'
+import { MobileSidebar } from '@/components/layout/mobile-sidebar'
+import { MobileSidebarProvider } from '@/components/layout/mobile-sidebar-context'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getUserAccessiblePages } from '@/lib/permissions/actions'
@@ -47,15 +49,29 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen">
-      <Sidebar
-        user={userData}
-        pendingUsersCount={pendingUsersCount}
-        accessiblePages={accessiblePages}
-      />
-      <main className="flex-1 overflow-auto bg-background">
-        {children}
-      </main>
-    </div>
+    <MobileSidebarProvider>
+      <div className="flex h-screen">
+        {/* Desktop sidebar - hidden on mobile */}
+        <div className="hidden lg:flex">
+          <Sidebar
+            user={userData}
+            pendingUsersCount={pendingUsersCount}
+            accessiblePages={accessiblePages}
+          />
+        </div>
+
+        {/* Mobile sidebar drawer */}
+        <MobileSidebar
+          user={userData}
+          pendingUsersCount={pendingUsersCount}
+          accessiblePages={accessiblePages}
+        />
+
+        {/* Main content */}
+        <main className="flex-1 overflow-auto bg-background">
+          {children}
+        </main>
+      </div>
+    </MobileSidebarProvider>
   )
 }
