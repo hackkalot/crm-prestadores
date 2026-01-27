@@ -142,10 +142,10 @@ export async function submitServicesForm(
 
     const adminClient = createAdminClient()
 
-    // Obter dados do provider para fallback de campos editáveis
+    // Obter dados do provider para fallback de campos editáveis e RM para alerta
     const { data: provider } = await adminClient
       .from('providers')
-      .select('name, email, phone, nif')
+      .select('name, email, phone, nif, relationship_owner_id')
       .eq('id', providerId)
       .single()
 
@@ -254,6 +254,24 @@ export async function submitServicesForm(
     if (logError) {
       console.error('Error creating history log:', logError)
       // Don't throw - this is not critical
+    }
+
+    // Criar alerta para o RM do prestador (se existir)
+    if (provider?.relationship_owner_id) {
+      const providerName = data.provider_name || provider.name || 'Prestador'
+      const { error: alertError } = await adminClient.from('alerts').insert({
+        provider_id: providerId,
+        user_id: provider.relationship_owner_id,
+        alert_type: 'forms_submission',
+        title: 'Formulário de Serviços Submetido',
+        message: `${providerName} submeteu o formulário de serviços com ${data.selected_services.length} serviços e ${data.coverage_municipalities.length} concelhos.`,
+        trigger_at: new Date().toISOString(),
+      })
+
+      if (alertError) {
+        console.error('Error creating alert for RM:', alertError)
+        // Don't throw - this is not critical
+      }
     }
 
     return { success: true }

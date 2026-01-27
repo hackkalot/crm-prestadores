@@ -68,11 +68,22 @@ export function SidebarSection({
   const originContext = isMounted ? getOriginContext() : null
 
   // Check if path matches (exact match or sub-path with /)
+  // But prioritize more specific matches (longer paths)
   const isPathMatch = (itemHref: string) => {
     if (pathname === itemHref) return true
     // Only match sub-paths if they start with href + "/"
     // This prevents /kpis matching /kpis-operacionais
-    return pathname.startsWith(itemHref + '/')
+    if (!pathname.startsWith(itemHref + '/')) return false
+
+    // Check if there's a more specific item that matches
+    // e.g., /onboarding should not match when /onboarding/submissoes exists and matches
+    const hasMoreSpecificMatch = visibleItems.some(other =>
+      other.href !== itemHref &&
+      other.href.startsWith(itemHref + '/') &&
+      (pathname === other.href || pathname.startsWith(other.href + '/'))
+    )
+
+    return !hasMoreSpecificMatch
   }
 
   // Check if any item in this section is active

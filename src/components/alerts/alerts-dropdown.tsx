@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import { Bell, Clock, AlertTriangle, CheckCheck, ExternalLink } from 'lucide-react'
+import { Bell, Clock, AlertTriangle, CheckCheck, ExternalLink, FileText } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { markAlertAsRead, markAllAlertsAsRead, type Alert } from '@/lib/alerts/actions'
@@ -21,9 +21,10 @@ interface AlertsDropdownProps {
   unreadCount: number
 }
 
-const alertTypeConfig: Record<string, { icon: React.ElementType; color: string }> = {
+const alertTypeConfig: Record<string, { icon: React.ElementType; color: string; tab?: string; linkText?: string }> = {
   deadline_approaching: { icon: Clock, color: 'text-amber-500' },
   task_stalled: { icon: AlertTriangle, color: 'text-red-500' },
+  forms_submission: { icon: FileText, color: 'text-green-500', tab: 'submissoes', linkText: 'Ver submissão' },
 }
 
 export function AlertsDropdown({ alerts, unreadCount }: AlertsDropdownProps) {
@@ -146,11 +147,11 @@ export function AlertsDropdown({ alerts, unreadCount }: AlertsDropdownProps) {
                         </span>
                         {alert.provider_id && (
                           <Link
-                            href={`/providers/${alert.provider_id}?tab=onboarding`}
+                            href={`/providers/${alert.provider_id}?tab=${config.tab || 'onboarding'}`}
                             className="text-xs text-primary hover:underline inline-flex items-center gap-1"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            Ver tarefa
+                            {config.linkText || 'Ver tarefa'}
                             <ExternalLink className="h-3 w-3" />
                           </Link>
                         )}

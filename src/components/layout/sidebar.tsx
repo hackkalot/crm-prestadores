@@ -29,6 +29,7 @@ import {
   TrendingUp,
   FileBarChart,
   Map,
+  ClipboardList,
 } from 'lucide-react'
 
 // Define sections with their items
@@ -43,6 +44,7 @@ const SIDEBAR_SECTIONS: Array<{
     items: [
       { key: 'candidaturas', name: 'Candidaturas', href: '/candidaturas', icon: Users, contextTab: 'candidatura', originKey: 'candidaturas' },
       { key: 'onboarding', name: 'Onboarding', href: '/onboarding', icon: Kanban, contextTab: 'onboarding', originKey: 'onboarding' },
+      { key: 'submissoes', name: 'Submissões', href: '/onboarding/submissoes', icon: ClipboardList },
       { key: 'kpis', name: "KPI's", href: '/kpis', icon: BarChart3 },
       { key: 'agenda', name: 'Agenda', href: '/agenda', icon: Calendar },
     ],
