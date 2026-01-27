@@ -29,6 +29,8 @@ import type {
   NetworkSaturationMetrics,
   CoverageGapItem,
   ServicesByStatusItem,
+  NetworkKPIs,
+  ProviderMetricItem,
 } from './types'
 
 // ==================
@@ -2094,4 +2096,304 @@ export async function getCoverageGaps(
       }
       return b.totalRequests - a.totalRequests
     })
+}
+
+// ==================
+// Network (Prestadores) KPIs
+// ==================
+
+export async function getNetworkKPIs(
+  filters: AnalyticsFilters
+): Promise<NetworkKPIs> {
+  const adminClient = createAdminClient()
+  const hasDateFilter = filters.dateFrom || filters.dateTo
+  const { from: currentFrom, to: currentTo } = getDateRange(filters)
+
+  // Calculate previous period
+  const { from: prevFrom, to: prevTo } = hasDateFilter
+    ? getPreviousPeriodRange(currentFrom, currentTo)
+    : getPreviousMonthRange()
+
+  // Build current period query - select all needed fields
+  let currentQuery = adminClient
+    .from('service_requests')
+    .select('assigned_provider_id, technician_rating, service_rating, cancellation_reason, reschedule_bo, net_additional_charges')
+    .gte('created_at', currentFrom)
+    .lte('created_at', currentTo)
+
+  let prevQuery = adminClient
+    .from('service_requests')
+    .select('assigned_provider_id, technician_rating, service_rating, cancellation_reason, reschedule_bo, net_additional_charges')
+    .gte('created_at', prevFrom)
+    .lte('created_at', prevTo)
+
+  // Apply filters
+  if (filters.district) {
+    currentQuery = currentQuery.eq('client_district', filters.district)
+    prevQuery = prevQuery.eq('client_district', filters.district)
+  }
+  if (filters.category) {
+    currentQuery = currentQuery.eq('category', filters.category)
+    prevQuery = prevQuery.eq('category', filters.category)
+  }
+  if (filters.service) {
+    currentQuery = currentQuery.eq('service', filters.service)
+    prevQuery = prevQuery.eq('service', filters.service)
+  }
+
+  const [{ data: currentData }, { data: prevData }] = await Promise.all([
+    currentQuery,
+    prevQuery,
+  ])
+
+  const current = currentData || []
+  const prev = prevData || []
+
+  // 1. Nº médio serviços por prestador
+  const currentProviderIds = new Set(current.map(r => r.assigned_provider_id).filter(Boolean))
+  const prevProviderIds = new Set(prev.map(r => r.assigned_provider_id).filter(Boolean))
+
+  const currentServicesWithProvider = current.filter(r => r.assigned_provider_id).length
+  const prevServicesWithProvider = prev.filter(r => r.assigned_provider_id).length
+
+  const avgServicesPerProvider = currentProviderIds.size > 0
+    ? Math.round((currentServicesWithProvider / currentProviderIds.size) * 10) / 10
+    : 0
+  const avgServicesPerProviderPrev = prevProviderIds.size > 0
+    ? Math.round((prevServicesWithProvider / prevProviderIds.size) * 10) / 10
+    : 0
+
+  // 2. Rating médio do técnico (technician_rating)
+  const currentTechRatings = current.filter(r => r.technician_rating && r.technician_rating > 0)
+  const prevTechRatings = prev.filter(r => r.technician_rating && r.technician_rating > 0)
+
+  const avgTechnicianRating = currentTechRatings.length > 0
+    ? Math.round((currentTechRatings.reduce((sum, r) => sum + (r.technician_rating || 0), 0) / currentTechRatings.length) * 10) / 10
+    : 0
+  const avgTechnicianRatingPrev = prevTechRatings.length > 0
+    ? Math.round((prevTechRatings.reduce((sum, r) => sum + (r.technician_rating || 0), 0) / prevTechRatings.length) * 10) / 10
+    : 0
+
+  // 2b. Rating médio do serviço (service_rating)
+  const currentServiceRatings = current.filter(r => r.service_rating && r.service_rating > 0)
+  const prevServiceRatings = prev.filter(r => r.service_rating && r.service_rating > 0)
+
+  const avgServiceRating = currentServiceRatings.length > 0
+    ? Math.round((currentServiceRatings.reduce((sum, r) => sum + (r.service_rating || 0), 0) / currentServiceRatings.length) * 10) / 10
+    : 0
+  const avgServiceRatingPrev = prevServiceRatings.length > 0
+    ? Math.round((prevServiceRatings.reduce((sum, r) => sum + (r.service_rating || 0), 0) / prevServiceRatings.length) * 10) / 10
+    : 0
+
+  // 3. Taxa de cancelamento por indisponibilidade de prestadores
+  // cancellation_reason = "Indisponibilidade de prestadores"
+  const currentProviderCancellations = current.filter(
+    r => r.cancellation_reason?.toLowerCase().includes('indisponibilidade de prestadores')
+  ).length
+  const prevProviderCancellations = prev.filter(
+    r => r.cancellation_reason?.toLowerCase().includes('indisponibilidade de prestadores')
+  ).length
+
+  const currentTotalCancellations = current.filter(r => r.cancellation_reason).length
+  const prevTotalCancellations = prev.filter(r => r.cancellation_reason).length
+
+  const providerCancellationRate = current.length > 0
+    ? Math.round((currentProviderCancellations / current.length) * 1000) / 10
+    : 0
+  const providerCancellationRatePrev = prev.length > 0
+    ? Math.round((prevProviderCancellations / prev.length) * 1000) / 10
+    : 0
+
+  // 4. Número de reagendamentos (reschedule_bo = true)
+  const rescheduleCount = current.filter(r => r.reschedule_bo === true).length
+  const rescheduleCountPrev = prev.filter(r => r.reschedule_bo === true).length
+  const rescheduleRate = current.length > 0
+    ? Math.round((rescheduleCount / current.length) * 1000) / 10
+    : 0
+
+  // 5. Serviços com custos adicionais (net_additional_charges > 0)
+  const additionalChargesCount = current.filter(r => (r.net_additional_charges || 0) > 0).length
+  const additionalChargesCountPrev = prev.filter(r => (r.net_additional_charges || 0) > 0).length
+  const additionalChargesRate = current.length > 0
+    ? Math.round((additionalChargesCount / current.length) * 1000) / 10
+    : 0
+  const totalAdditionalChargesValue = current.reduce(
+    (sum, r) => sum + (r.net_additional_charges && r.net_additional_charges > 0 ? r.net_additional_charges : 0),
+    0
+  )
+
+  return {
+    // 1. Nº médio serviços por prestador
+    avgServicesPerProvider,
+    avgServicesPerProviderPrev,
+    avgServicesPerProviderTrend: calculateTrend(avgServicesPerProvider, avgServicesPerProviderPrev),
+    totalServices: currentServicesWithProvider,
+    uniqueProviders: currentProviderIds.size,
+
+    // 2. Rating médio do técnico
+    avgTechnicianRating,
+    avgTechnicianRatingPrev,
+    avgTechnicianRatingTrend: calculateTrend(avgTechnicianRating, avgTechnicianRatingPrev),
+    totalTechnicianRatings: currentTechRatings.length,
+
+    // 2b. Rating médio do serviço
+    avgServiceRating,
+    avgServiceRatingPrev,
+    avgServiceRatingTrend: calculateTrend(avgServiceRating, avgServiceRatingPrev),
+    totalServiceRatings: currentServiceRatings.length,
+
+    // 3. Taxa de cancelamento por indisponibilidade de prestadores
+    providerCancellationRate,
+    providerCancellationRatePrev,
+    providerCancellationRateTrend: calculateTrend(providerCancellationRate, providerCancellationRatePrev),
+    providerCancellationCount: currentProviderCancellations,
+    totalCancellations: currentTotalCancellations,
+
+    // 4. Número de reagendamentos
+    rescheduleCount,
+    rescheduleCountPrev,
+    rescheduleCountTrend: calculateTrend(rescheduleCount, rescheduleCountPrev),
+    rescheduleRate,
+
+    // 5. Serviços com custos adicionais
+    additionalChargesCount,
+    additionalChargesCountPrev,
+    additionalChargesCountTrend: calculateTrend(additionalChargesCount, additionalChargesCountPrev),
+    additionalChargesRate,
+    totalAdditionalChargesValue,
+  }
+}
+
+// ==================
+// Provider Charts (Rede tab)
+// ==================
+
+/**
+ * Reagendamentos por prestador
+ * Conta service_requests onde reschedule_bo = true, agrupado por prestador
+ */
+export async function getReschedulesByProvider(
+  filters: AnalyticsFilters,
+  limit: number = 10
+): Promise<ProviderMetricItem[]> {
+  const adminClient = createAdminClient()
+  const { from, to } = getDateRange(filters)
+
+  // Get all reschedules with provider info
+  let query = adminClient
+    .from('service_requests')
+    .select('assigned_provider_id, assigned_provider_name, reschedule_bo')
+    .gte('created_at', from)
+    .lte('created_at', to)
+    .eq('reschedule_bo', true)
+    .not('assigned_provider_id', 'is', null)
+    .not('assigned_provider_name', 'is', null)
+
+  // Apply filters
+  if (filters.district) {
+    query = query.eq('client_district', filters.district)
+  }
+  if (filters.category) {
+    query = query.eq('category', filters.category)
+  }
+  if (filters.service) {
+    query = query.eq('service', filters.service)
+  }
+
+  const { data } = await query
+
+  if (!data || data.length === 0) return []
+
+  // Aggregate by provider
+  const byProvider = new Map<string, { id: number; name: string; count: number }>()
+
+  for (const r of data) {
+    const key = r.assigned_provider_id!
+    const current = byProvider.get(key) || {
+      id: parseInt(r.assigned_provider_id!),
+      name: r.assigned_provider_name!,
+      count: 0,
+    }
+    current.count++
+    byProvider.set(key, current)
+  }
+
+  const totalReschedules = data.length
+
+  // Sort by count descending and limit
+  const sorted = Array.from(byProvider.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit)
+
+  return sorted.map((p) => ({
+    backofficeProviderId: p.id,
+    providerName: p.name,
+    count: p.count,
+    percentage: totalReschedules > 0 ? Math.round((p.count / totalReschedules) * 100) : 0,
+  }))
+}
+
+/**
+ * Visitas adicionais por prestador
+ * Soma number_additional_visits > 0, agrupado por prestador
+ */
+export async function getAdditionalVisitsByProvider(
+  filters: AnalyticsFilters,
+  limit: number = 10
+): Promise<ProviderMetricItem[]> {
+  const adminClient = createAdminClient()
+  const { from, to } = getDateRange(filters)
+
+  // Get all service requests with additional visits
+  let query = adminClient
+    .from('service_requests')
+    .select('assigned_provider_id, assigned_provider_name, number_additional_visits')
+    .gte('created_at', from)
+    .lte('created_at', to)
+    .gt('number_additional_visits', 0)
+    .not('assigned_provider_id', 'is', null)
+    .not('assigned_provider_name', 'is', null)
+
+  // Apply filters
+  if (filters.district) {
+    query = query.eq('client_district', filters.district)
+  }
+  if (filters.category) {
+    query = query.eq('category', filters.category)
+  }
+  if (filters.service) {
+    query = query.eq('service', filters.service)
+  }
+
+  const { data } = await query
+
+  if (!data || data.length === 0) return []
+
+  // Aggregate by provider - summing the number of additional visits
+  const byProvider = new Map<string, { id: number; name: string; count: number }>()
+
+  for (const r of data) {
+    const key = r.assigned_provider_id!
+    const current = byProvider.get(key) || {
+      id: parseInt(r.assigned_provider_id!),
+      name: r.assigned_provider_name!,
+      count: 0,
+    }
+    current.count += (r.number_additional_visits || 0)
+    byProvider.set(key, current)
+  }
+
+  const totalVisits = Array.from(byProvider.values()).reduce((sum, p) => sum + p.count, 0)
+
+  // Sort by count descending and limit
+  const sorted = Array.from(byProvider.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit)
+
+  return sorted.map((p) => ({
+    backofficeProviderId: p.id,
+    providerName: p.name,
+    count: p.count,
+    percentage: totalVisits > 0 ? Math.round((p.count / totalVisits) * 100) : 0,
+  }))
 }

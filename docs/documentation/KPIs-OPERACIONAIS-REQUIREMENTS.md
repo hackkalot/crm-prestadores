@@ -10,7 +10,7 @@
 | # | Tab | Estado | Notas |
 |---|-----|--------|-------|
 | 1 | Overview Geral | ✅ Concluído | Cards + Gráficos implementados |
-| 2 | Prestadores | 🟡 Parcial | Faltam vários componentes |
+| 2 | Prestadores (Rede) | ✅ Concluído | 5 KPI cards implementados |
 | 3 | Clientes | ❌ Por fazer | **Nova tab** |
 | 4 | Operacionais | ❌ Por fazer | Depende de email Francisco + Collab |
 | 5 | Reclamações | ❌ Por fazer | Depende de integração Zendesk |
@@ -70,29 +70,31 @@
 
 ---
 
-## Tab 2: Prestadores
+## Tab 2: Prestadores (Rede)
 
 ### Cards KPI
 
 | Card | Fonte | Estado | Componente |
 |------|-------|--------|------------|
-| Nº médio serviços por prestador | BO COUNT / prestadores únicos | ❌ Falta | Novo |
-| Rating médio do prestador | BO `SERVICE_RATING` | 🟡 Parcial | Existe em alerts |
-| Taxa de cancelamento | BO `allocation_history.CANCELLATION_REASON` | ❌ Falta | Novo |
-| Número de reagendamentos | BO `service_requests.RESCHEDULE_BO` | ❌ Falta | Novo |
-| Serviços com custos adicionais | BO `service_requests.NET_ADDITIONAL_CHARGES` | ❌ Falta | Novo |
+| Nº médio serviços por prestador | BO `service_requests` COUNT / unique `assigned_provider_id` | ✅ Implementado | `NetworkSummaryCards` |
+| Ratings (Técnico + Serviço) | BO `technician_rating` + `service_rating` | ✅ Implementado | `NetworkSummaryCards` - lado a lado |
+| Taxa de cancelamento (indisponibilidade) | BO `cancellation_reason` = "Indisponibilidade de prestadores" / total | ✅ Implementado | `NetworkSummaryCards` |
+| Número de reagendamentos | BO `service_requests.reschedule_bo = true` | ✅ Implementado | `NetworkSummaryCards` |
+| Serviços com custos adicionais | BO `service_requests.net_additional_charges > 0` | ✅ Implementado | `NetworkSummaryCards` |
 
 ### Gráficos
 
 | Gráfico | Tipo | Fonte | Estado | Componente |
 |---------|------|-------|--------|------------|
-| Saúde da Rede | Pie chart | CRM + BO | ✅ Existe | `SlaHealthIndicators` |
-| Aceites vs Rejeitados vs Cancelados | Barras verticais | BO `allocation_history` | 🟡 Parcial | `AcceptanceTrendChart` (falta cancelados) |
-| Issues detetados | Cards | BO | ✅ Existe | `CriticalIssuesSummary` |
-| Serviços concluídos | Barras verticais | BO `service_requests` | ✅ Existe | `CompletionTrendChart` |
-| Reagendamentos por prestador | Barras horizontais | BO `RESCHEDULE_BO` | ❌ Falta | Novo |
-| Visitas adicionais por prestador | Barras horizontais | BO `ADDITIONAL_VISITS` | ❌ Falta | Novo |
-| Concentração de Receita | Card + tabela | BO (precisa P&L) | 🟡 Parcial | `ConcentrationCard` |
+| Saúde da Rede | Pie chart | CRM + BO | ✅ Implementado | `SlaHealthIndicators` |
+| Aceites vs Rejeitados vs Cancelados | Barras verticais | BO `allocation_history` | ✅ Implementado | `AcceptanceTrendChart` |
+| Issues detetados | Cards | BO | ✅ Implementado | `CriticalIssuesSummary` |
+| Serviços concluídos | Barras verticais | BO `service_requests` | ✅ Implementado | `CompletionTrendChart` |
+| Reagendamentos por prestador | Barras horizontais | BO `reschedule_bo` | ✅ Implementado | `ReschedulesByProviderChart` |
+| Visitas adicionais por prestador | Barras horizontais | BO `number_additional_visits` | ✅ Implementado | `AdditionalVisitsByProviderChart` |
+| Distribuição de Volume | Pie chart | BO | ✅ Implementado | `VolumeDistributionChart` |
+| Concentração de Receita | Card + tabela | BO `billing_processes` | ✅ Implementado | `ConcentrationCard` |
+| Ranking de Prestadores | Tabela interativa | BO | ✅ Implementado | `UnifiedRankingCard` |
 
 ---
 

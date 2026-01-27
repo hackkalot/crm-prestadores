@@ -329,6 +329,62 @@ export interface ServicesByStatusItem {
 }
 
 // ==================
+// Network (Prestadores) KPIs
+// ==================
+
+export interface NetworkKPIs {
+  // Nº médio serviços por prestador
+  avgServicesPerProvider: number
+  avgServicesPerProviderPrev: number
+  avgServicesPerProviderTrend: number
+  totalServices: number
+  uniqueProviders: number
+
+  // Rating médio do técnico (technician_rating)
+  avgTechnicianRating: number
+  avgTechnicianRatingPrev: number
+  avgTechnicianRatingTrend: number
+  totalTechnicianRatings: number
+
+  // Rating médio do serviço (service_rating)
+  avgServiceRating: number
+  avgServiceRatingPrev: number
+  avgServiceRatingTrend: number
+  totalServiceRatings: number
+
+  // Taxa de cancelamento por indisponibilidade de prestadores
+  providerCancellationRate: number
+  providerCancellationRatePrev: number
+  providerCancellationRateTrend: number
+  providerCancellationCount: number
+  totalCancellations: number
+
+  // Número de reagendamentos
+  rescheduleCount: number
+  rescheduleCountPrev: number
+  rescheduleCountTrend: number
+  rescheduleRate: number
+
+  // Serviços com custos adicionais
+  additionalChargesCount: number
+  additionalChargesCountPrev: number
+  additionalChargesCountTrend: number
+  additionalChargesRate: number
+  totalAdditionalChargesValue: number
+}
+
+// ==================
+// Provider Metrics Charts (Rede tab)
+// ==================
+
+export interface ProviderMetricItem {
+  backofficeProviderId: number
+  providerName: string
+  count: number
+  percentage: number
+}
+
+// ==================
 // Filter Options
 // ==================
 

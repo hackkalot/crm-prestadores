@@ -12,6 +12,9 @@ import { CriticalIssuesSummary } from '@/components/analytics/operational/critic
 import { AcceptanceTrendChart } from '@/components/analytics/network/acceptance-trend-chart'
 import { UnifiedRankingCard } from '@/components/analytics/network/unified-ranking-card'
 import { VolumeDistributionChart } from '@/components/analytics/network/volume-distribution-chart'
+import { NetworkSummaryCards } from '@/components/analytics/network/network-summary-cards'
+import { ReschedulesByProviderChart } from '@/components/analytics/network/reschedules-by-provider-chart'
+import { AdditionalVisitsByProviderChart } from '@/components/analytics/network/additional-visits-by-provider-chart'
 import { RevenueByCategoryChart } from '@/components/analytics/financial/revenue-by-category-chart'
 import { TicketTrendChart } from '@/components/analytics/financial/ticket-trend-chart'
 import { TicketByCategoryChart } from '@/components/analytics/financial/ticket-by-category-chart'
@@ -46,6 +49,9 @@ import {
   getCoverageGaps,
   getAnalyticsFilterOptions,
   getServicesByStatus,
+  getNetworkKPIs,
+  getReschedulesByProvider,
+  getAdditionalVisitsByProvider,
 } from '@/lib/analytics/actions'
 import { getLastSyncInfoBatch, type LastSyncInfo } from '@/lib/sync/logs-actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
@@ -115,6 +121,10 @@ export default async function AnalyticsPage({
     acceptanceTrend,
     providerRanking,
     volumeDistribution,
+    networkKPIs,
+    reschedulesByProvider,
+    additionalVisitsByProvider,
+    completionTrend,
     revenueByCategory,
     ticketTrend,
     ticketByCategory,
@@ -123,30 +133,32 @@ export default async function AnalyticsPage({
     ratingTrend,
     completionByCategory,
     ratingByCategory,
-    completionTrend,
     lowRatingProviders,
   ] = await Promise.all([
     getAnalyticsFilterOptions(),
     fetchOverviewData ? getOperationalSummary(filters) : Promise.resolve(null),
     fetchOverviewData ? getServicesByStatus(filters) : Promise.resolve(null),
-    fetchOperationalData ? getNetworkHealthData(filters) : Promise.resolve(null),
+    fetchOperationalData || fetchNetworkData ? getNetworkHealthData(filters) : Promise.resolve(null),
     fetchOperationalData ? getResponseTimeDistribution(filters) : Promise.resolve(null),
-    fetchOperationalData ? getAtRiskProviders(filters) : Promise.resolve(null),
-    fetchOperationalData ? getNetworkSaturation(filters) : Promise.resolve(null),
-    fetchOperationalData ? getCoverageGaps(filters) : Promise.resolve(null),
+    fetchOperationalData || fetchNetworkData ? getAtRiskProviders(filters) : Promise.resolve(null),
+    fetchOperationalData || fetchNetworkData ? getNetworkSaturation(filters) : Promise.resolve(null),
+    fetchOperationalData || fetchNetworkData ? getCoverageGaps(filters) : Promise.resolve(null),
     fetchNetworkData ? getAcceptanceTrend(filters) : Promise.resolve(null),
     fetchNetworkData ? getProviderRanking(filters, rankingMetric, 10, 'desc') : Promise.resolve(null),
     fetchNetworkData ? getVolumeDistribution(filters, 10) : Promise.resolve(null),
+    fetchNetworkData ? getNetworkKPIs(filters) : Promise.resolve(null),
+    fetchNetworkData ? getReschedulesByProvider(filters, 10) : Promise.resolve(null),
+    fetchNetworkData ? getAdditionalVisitsByProvider(filters, 10) : Promise.resolve(null),
+    fetchNetworkData || fetchQualityData ? getCompletionTrend(filters) : Promise.resolve(null),
     fetchFinancialData ? getRevenueByCategory(filters, 8) : Promise.resolve(null),
     fetchFinancialData ? getTicketTrend(filters) : Promise.resolve(null),
     fetchFinancialData ? getTicketByCategory(filters, 8) : Promise.resolve(null),
     fetchFinancialData ? getPaymentStatusBreakdown(filters) : Promise.resolve(null),
-    fetchFinancialData ? getConcentrationMetrics(filters) : Promise.resolve(null),
+    fetchFinancialData || fetchNetworkData ? getConcentrationMetrics(filters) : Promise.resolve(null),
     fetchQualityData ? getRatingTrend(filters) : Promise.resolve(null),
     fetchQualityData ? getCompletionByCategory(filters) : Promise.resolve(null),
     fetchQualityData ? getRatingByCategory(filters) : Promise.resolve(null),
-    fetchQualityData ? getCompletionTrend(filters) : Promise.resolve(null),
-    fetchQualityData ? getLowRatingProviders(filters) : Promise.resolve(null),
+    fetchQualityData || fetchNetworkData ? getLowRatingProviders(filters) : Promise.resolve(null),
   ])
 
   return (
@@ -283,10 +295,39 @@ export default async function AnalyticsPage({
 
         {currentTab === 'network' && (
           <div className="space-y-6">
+            {/* KPI Cards */}
+            {networkKPIs && <NetworkSummaryCards data={networkKPIs} />}
+
+            {/* Saúde da Rede + Issues */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {networkHealth && <SlaHealthIndicators data={networkHealth} />}
+              <CriticalIssuesSummary
+                atRiskProviders={atRiskProviders || undefined}
+                coverageGaps={coverageGaps || undefined}
+                lowRatingProviders={lowRatingProviders || undefined}
+                networkSaturation={networkSaturation || undefined}
+              />
+            </div>
+
+            {/* Aceites vs Rejeitados + Serviços Concluídos */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {acceptanceTrend && <AcceptanceTrendChart data={acceptanceTrend} />}
-              {volumeDistribution && <VolumeDistributionChart data={volumeDistribution} />}
+              {completionTrend && <CompletionTrendChart data={completionTrend} />}
             </div>
+
+            {/* Reagendamentos + Visitas Adicionais por prestador */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {reschedulesByProvider && <ReschedulesByProviderChart data={reschedulesByProvider} />}
+              {additionalVisitsByProvider && <AdditionalVisitsByProviderChart data={additionalVisitsByProvider} />}
+            </div>
+
+            {/* Volume Distribution + Concentration */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {volumeDistribution && <VolumeDistributionChart data={volumeDistribution} />}
+              {concentration && <ConcentrationCard data={concentration} />}
+            </div>
+
+            {/* Ranking de Prestadores */}
             {providerRanking && (
               <UnifiedRankingCard data={providerRanking} currentMetric={rankingMetric} />
             )}
