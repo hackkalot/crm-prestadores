@@ -391,6 +391,236 @@ export type Database = {
           },
         ]
       }
+      clients: {
+        Row: {
+          active_overall_recurrencies: number | null
+          active_requests: number | null
+          airship: string | null
+          bo_generated: boolean | null
+          cancellation_reason: string | null
+          cancelled_requests: number | null
+          city: string | null
+          client_mgm_promocode: string | null
+          client_status: string | null
+          completed_requests: number | null
+          contact_id: string | null
+          created_at: string | null
+          current_wallet_amount: number | null
+          customer_balance: number | null
+          device_platform_customer_registration: string | null
+          email: string | null
+          expired_requests: number | null
+          first_request: string | null
+          id: string
+          last_login: string | null
+          last_request: string | null
+          last_update: string | null
+          last_wallet_payment: string | null
+          marketing_consent: boolean | null
+          marketing_consent_timestamp: string | null
+          name: string | null
+          number_mgm_promocode_usage: number | null
+          number_of_wallet_payments: number | null
+          phone: string | null
+          registration: string | null
+          service_address_line_1: string | null
+          service_address_line_2: string | null
+          status_updated_at: string | null
+          status_updated_by: string | null
+          surname: string | null
+          synced_at: string | null
+          total_discounts: number | null
+          total_mgm_benefits: number | null
+          total_overall_recurrencies: number | null
+          total_payments: number | null
+          total_recurrent_sr: number | null
+          total_recurrent_sr_active: number | null
+          total_requests: number | null
+          total_wallet_benefits: number | null
+          total_wallet_payments: number | null
+          updated_at: string | null
+          updated_by: string | null
+          user_id: string
+          vat: string | null
+          wallet_is_active: boolean | null
+          wallet_removed_value: number | null
+          wallet_total_injected_value: number | null
+          zip_code: string | null
+        }
+        Insert: {
+          active_overall_recurrencies?: number | null
+          active_requests?: number | null
+          airship?: string | null
+          bo_generated?: boolean | null
+          cancellation_reason?: string | null
+          cancelled_requests?: number | null
+          city?: string | null
+          client_mgm_promocode?: string | null
+          client_status?: string | null
+          completed_requests?: number | null
+          contact_id?: string | null
+          created_at?: string | null
+          current_wallet_amount?: number | null
+          customer_balance?: number | null
+          device_platform_customer_registration?: string | null
+          email?: string | null
+          expired_requests?: number | null
+          first_request?: string | null
+          id?: string
+          last_login?: string | null
+          last_request?: string | null
+          last_update?: string | null
+          last_wallet_payment?: string | null
+          marketing_consent?: boolean | null
+          marketing_consent_timestamp?: string | null
+          name?: string | null
+          number_mgm_promocode_usage?: number | null
+          number_of_wallet_payments?: number | null
+          phone?: string | null
+          registration?: string | null
+          service_address_line_1?: string | null
+          service_address_line_2?: string | null
+          status_updated_at?: string | null
+          status_updated_by?: string | null
+          surname?: string | null
+          synced_at?: string | null
+          total_discounts?: number | null
+          total_mgm_benefits?: number | null
+          total_overall_recurrencies?: number | null
+          total_payments?: number | null
+          total_recurrent_sr?: number | null
+          total_recurrent_sr_active?: number | null
+          total_requests?: number | null
+          total_wallet_benefits?: number | null
+          total_wallet_payments?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+          user_id: string
+          vat?: string | null
+          wallet_is_active?: boolean | null
+          wallet_removed_value?: number | null
+          wallet_total_injected_value?: number | null
+          zip_code?: string | null
+        }
+        Update: {
+          active_overall_recurrencies?: number | null
+          active_requests?: number | null
+          airship?: string | null
+          bo_generated?: boolean | null
+          cancellation_reason?: string | null
+          cancelled_requests?: number | null
+          city?: string | null
+          client_mgm_promocode?: string | null
+          client_status?: string | null
+          completed_requests?: number | null
+          contact_id?: string | null
+          created_at?: string | null
+          current_wallet_amount?: number | null
+          customer_balance?: number | null
+          device_platform_customer_registration?: string | null
+          email?: string | null
+          expired_requests?: number | null
+          first_request?: string | null
+          id?: string
+          last_login?: string | null
+          last_request?: string | null
+          last_update?: string | null
+          last_wallet_payment?: string | null
+          marketing_consent?: boolean | null
+          marketing_consent_timestamp?: string | null
+          name?: string | null
+          number_mgm_promocode_usage?: number | null
+          number_of_wallet_payments?: number | null
+          phone?: string | null
+          registration?: string | null
+          service_address_line_1?: string | null
+          service_address_line_2?: string | null
+          status_updated_at?: string | null
+          status_updated_by?: string | null
+          surname?: string | null
+          synced_at?: string | null
+          total_discounts?: number | null
+          total_mgm_benefits?: number | null
+          total_overall_recurrencies?: number | null
+          total_payments?: number | null
+          total_recurrent_sr?: number | null
+          total_recurrent_sr_active?: number | null
+          total_requests?: number | null
+          total_wallet_benefits?: number | null
+          total_wallet_payments?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+          user_id?: string
+          vat?: string | null
+          wallet_is_active?: boolean | null
+          wallet_removed_value?: number | null
+          wallet_total_injected_value?: number | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
+      clients_sync_logs: {
+        Row: {
+          created_at: string | null
+          duration_seconds: number | null
+          error_message: string | null
+          error_stack: string | null
+          excel_file_path: string | null
+          excel_file_size_kb: number | null
+          id: string
+          records_inserted: number | null
+          records_processed: number | null
+          records_updated: number | null
+          status: string
+          triggered_at: string
+          triggered_by: string | null
+          triggered_by_system: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_sync_logs_triggered_by_fkey"
+            columns: ["triggered_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_templates: {
         Row: {
           body: string
@@ -1523,6 +1753,137 @@ export type Database = {
           },
         ]
       }
+      recurrences: {
+        Row: {
+          address_district: string | null
+          address_street: string | null
+          address_town: string | null
+          client_name: string | null
+          created_at: string | null
+          flag_edit_payment: boolean | null
+          flag_edit_schedule: boolean | null
+          id: string
+          inactivation_comment: string | null
+          inactivation_date: string | null
+          inactivation_reason: string | null
+          recurrence_code: string
+          recurrence_status: string | null
+          recurrence_type: string | null
+          service: string | null
+          source: string | null
+          submission_date: string | null
+          synced_at: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address_district?: string | null
+          address_street?: string | null
+          address_town?: string | null
+          client_name?: string | null
+          created_at?: string | null
+          flag_edit_payment?: boolean | null
+          flag_edit_schedule?: boolean | null
+          id?: string
+          inactivation_comment?: string | null
+          inactivation_date?: string | null
+          inactivation_reason?: string | null
+          recurrence_code: string
+          recurrence_status?: string | null
+          recurrence_type?: string | null
+          service?: string | null
+          source?: string | null
+          submission_date?: string | null
+          synced_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address_district?: string | null
+          address_street?: string | null
+          address_town?: string | null
+          client_name?: string | null
+          created_at?: string | null
+          flag_edit_payment?: boolean | null
+          flag_edit_schedule?: boolean | null
+          id?: string
+          inactivation_comment?: string | null
+          inactivation_date?: string | null
+          inactivation_reason?: string | null
+          recurrence_code?: string
+          recurrence_status?: string | null
+          recurrence_type?: string | null
+          service?: string | null
+          source?: string | null
+          submission_date?: string | null
+          synced_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      recurrences_sync_logs: {
+        Row: {
+          created_at: string | null
+          duration_seconds: number | null
+          error_message: string | null
+          error_stack: string | null
+          excel_file_path: string | null
+          excel_file_size_kb: number | null
+          id: string
+          records_inserted: number | null
+          records_processed: number | null
+          records_updated: number | null
+          status: string
+          triggered_at: string
+          triggered_by: string | null
+          triggered_by_system: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recurrences_sync_logs_triggered_by_fkey"
+            columns: ["triggered_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           can_access: boolean | null
@@ -2385,6 +2746,122 @@ export type Database = {
             columns: ["stage_id"]
             isOneToOne: false
             referencedRelation: "stage_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          assigned_provider: string | null
+          created_at: string | null
+          created_by: string | null
+          creation_date: string | null
+          deadline: string | null
+          finished_by: string | null
+          finishing_date: string | null
+          given_to: string | null
+          id: string
+          scheduled_to: string | null
+          sr: string | null
+          status: string | null
+          synced_at: string | null
+          task_id: string
+          task_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_provider?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          creation_date?: string | null
+          deadline?: string | null
+          finished_by?: string | null
+          finishing_date?: string | null
+          given_to?: string | null
+          id?: string
+          scheduled_to?: string | null
+          sr?: string | null
+          status?: string | null
+          synced_at?: string | null
+          task_id: string
+          task_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_provider?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          creation_date?: string | null
+          deadline?: string | null
+          finished_by?: string | null
+          finishing_date?: string | null
+          given_to?: string | null
+          id?: string
+          scheduled_to?: string | null
+          sr?: string | null
+          status?: string | null
+          synced_at?: string | null
+          task_id?: string
+          task_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      tasks_sync_logs: {
+        Row: {
+          created_at: string | null
+          duration_seconds: number | null
+          error_message: string | null
+          error_stack: string | null
+          excel_file_path: string | null
+          excel_file_size_kb: number | null
+          id: string
+          records_inserted: number | null
+          records_processed: number | null
+          records_updated: number | null
+          status: string
+          triggered_at: string | null
+          triggered_by: string | null
+          triggered_by_system: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string | null
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          error_stack?: string | null
+          excel_file_path?: string | null
+          excel_file_size_kb?: number | null
+          id?: string
+          records_inserted?: number | null
+          records_processed?: number | null
+          records_updated?: number | null
+          status?: string
+          triggered_at?: string | null
+          triggered_by?: string | null
+          triggered_by_system?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_sync_logs_triggered_by_fkey"
+            columns: ["triggered_by"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]

@@ -481,8 +481,359 @@ export async function getAllocationSyncStats(): Promise<AllocationSyncStats> {
   }
 }
 
+// Clients Sync Logs
+
+export interface ClientsSyncLog {
+  id: string
+  triggered_by: string | null
+  triggered_by_system: string | null
+  triggered_at: string
+  status: 'success' | 'error' | 'in_progress' | 'pending'
+  duration_seconds: number | null
+  records_processed: number
+  records_inserted: number
+  records_updated: number
+  excel_file_path: string | null
+  excel_file_size_kb: number | null
+  error_message: string | null
+  error_stack: string | null
+  created_at: string
+  updated_at: string
+  user: {
+    name: string
+    email: string
+  } | null
+}
+
+/**
+ * Get all clients sync logs with user details
+ */
+export async function getClientsSyncLogs(): Promise<ClientsSyncLog[]> {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from('clients_sync_logs')
+    .select(`
+      *,
+      user:users!clients_sync_logs_triggered_by_fkey (
+        name,
+        email
+      )
+    `)
+    .order('triggered_at', { ascending: false })
+    .limit(100)
+
+  if (error) {
+    console.error('Error fetching clients sync logs:', error)
+    return []
+  }
+
+  return data as unknown as ClientsSyncLog[]
+}
+
+export interface ClientsSyncStats {
+  total: number
+  success: number
+  error: number
+  in_progress: number
+  lastSync: {
+    triggered_at: string
+    status: string
+    records_processed: number
+  } | null
+  avgDuration: number
+  totalRecordsProcessed: number
+}
+
+/**
+ * Get clients sync stats summary
+ */
+export async function getClientsSyncStats(): Promise<ClientsSyncStats> {
+  const supabase = createAdminClient()
+
+  const { data: statusCounts } = await supabase
+    .from('clients_sync_logs')
+    .select('status')
+
+  const stats = {
+    total: statusCounts?.length || 0,
+    success: statusCounts?.filter(l => l.status === 'success').length || 0,
+    error: statusCounts?.filter(l => l.status === 'error').length || 0,
+    in_progress: statusCounts?.filter(l => l.status === 'in_progress').length || 0,
+  }
+
+  const { data: lastSyncData } = await supabase
+    .from('clients_sync_logs')
+    .select('triggered_at, status, records_processed')
+    .order('triggered_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  const lastSync = lastSyncData as { triggered_at: string; status: string; records_processed: number } | null
+
+  const { data: successfulSyncs } = await supabase
+    .from('clients_sync_logs')
+    .select('duration_seconds')
+    .eq('status', 'success')
+    .not('duration_seconds', 'is', null)
+
+  const avgDuration = successfulSyncs && successfulSyncs.length > 0
+    ? Math.round(
+        successfulSyncs.reduce((sum, log) => sum + (log.duration_seconds || 0), 0) /
+        successfulSyncs.length
+      )
+    : 0
+
+  const { data: totalRecordsClients } = await supabase
+    .from('clients_sync_logs')
+    .select('records_processed')
+
+  const totalProcessedClients = totalRecordsClients?.reduce((sum, log) => sum + (log.records_processed || 0), 0) || 0
+
+  return {
+    ...stats,
+    lastSync: lastSync || null,
+    avgDuration,
+    totalRecordsProcessed: totalProcessedClients,
+  }
+}
+
+// Recurrences Sync Logs
+
+export interface RecurrencesSyncLog {
+  id: string
+  triggered_by: string | null
+  triggered_by_system: string | null
+  triggered_at: string
+  status: 'success' | 'error' | 'in_progress' | 'pending'
+  duration_seconds: number | null
+  records_processed: number
+  records_inserted: number
+  records_updated: number
+  excel_file_path: string | null
+  excel_file_size_kb: number | null
+  error_message: string | null
+  error_stack: string | null
+  created_at: string
+  updated_at: string
+  user: {
+    name: string
+    email: string
+  } | null
+}
+
+/**
+ * Get all recurrences sync logs with user details
+ */
+export async function getRecurrencesSyncLogs(): Promise<RecurrencesSyncLog[]> {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from('recurrences_sync_logs')
+    .select(`
+      *,
+      user:users!recurrences_sync_logs_triggered_by_fkey (
+        name,
+        email
+      )
+    `)
+    .order('triggered_at', { ascending: false })
+    .limit(100)
+
+  if (error) {
+    console.error('Error fetching recurrences sync logs:', error)
+    return []
+  }
+
+  return data as unknown as RecurrencesSyncLog[]
+}
+
+export interface RecurrencesSyncStats {
+  total: number
+  success: number
+  error: number
+  in_progress: number
+  lastSync: {
+    triggered_at: string
+    status: string
+    records_processed: number
+  } | null
+  avgDuration: number
+  totalRecordsProcessed: number
+}
+
+/**
+ * Get recurrences sync stats summary
+ */
+export async function getRecurrencesSyncStats(): Promise<RecurrencesSyncStats> {
+  const supabase = createAdminClient()
+
+  const { data: statusCounts } = await supabase
+    .from('recurrences_sync_logs')
+    .select('status')
+
+  const stats = {
+    total: statusCounts?.length || 0,
+    success: statusCounts?.filter(l => l.status === 'success').length || 0,
+    error: statusCounts?.filter(l => l.status === 'error').length || 0,
+    in_progress: statusCounts?.filter(l => l.status === 'in_progress').length || 0,
+  }
+
+  const { data: lastSyncData } = await supabase
+    .from('recurrences_sync_logs')
+    .select('triggered_at, status, records_processed')
+    .order('triggered_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  const lastSync = lastSyncData as { triggered_at: string; status: string; records_processed: number } | null
+
+  const { data: successfulSyncs } = await supabase
+    .from('recurrences_sync_logs')
+    .select('duration_seconds')
+    .eq('status', 'success')
+    .not('duration_seconds', 'is', null)
+
+  const avgDuration = successfulSyncs && successfulSyncs.length > 0
+    ? Math.round(
+        successfulSyncs.reduce((sum, log) => sum + (log.duration_seconds || 0), 0) /
+        successfulSyncs.length
+      )
+    : 0
+
+  const { data: totalRecordsRecurrences } = await supabase
+    .from('recurrences_sync_logs')
+    .select('records_processed')
+
+  const totalProcessedRecurrences = totalRecordsRecurrences?.reduce((sum, log) => sum + (log.records_processed || 0), 0) || 0
+
+  return {
+    ...stats,
+    lastSync: lastSync || null,
+    avgDuration,
+    totalRecordsProcessed: totalProcessedRecurrences,
+  }
+}
+
+// Tasks Sync Logs
+
+export interface TasksSyncLog {
+  id: string
+  triggered_by: string | null
+  triggered_by_system: string | null
+  triggered_at: string
+  status: 'success' | 'error' | 'in_progress' | 'pending'
+  duration_seconds: number | null
+  records_processed: number
+  records_inserted: number
+  records_updated: number
+  excel_file_path: string | null
+  excel_file_size_kb: number | null
+  error_message: string | null
+  error_stack: string | null
+  created_at: string
+  updated_at: string
+  user: {
+    name: string
+    email: string
+  } | null
+}
+
+/**
+ * Get all tasks sync logs with user details
+ */
+export async function getTasksSyncLogs(): Promise<TasksSyncLog[]> {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from('tasks_sync_logs')
+    .select(`
+      *,
+      user:users!tasks_sync_logs_triggered_by_fkey (
+        name,
+        email
+      )
+    `)
+    .order('triggered_at', { ascending: false })
+    .limit(100)
+
+  if (error) {
+    console.error('Error fetching tasks sync logs:', error)
+    return []
+  }
+
+  return data as unknown as TasksSyncLog[]
+}
+
+export interface TasksSyncStats {
+  total: number
+  success: number
+  error: number
+  in_progress: number
+  lastSync: {
+    triggered_at: string
+    status: string
+    records_processed: number
+  } | null
+  avgDuration: number
+  totalRecordsProcessed: number
+}
+
+/**
+ * Get tasks sync stats summary
+ */
+export async function getTasksSyncStats(): Promise<TasksSyncStats> {
+  const supabase = createAdminClient()
+
+  const { data: statusCounts } = await supabase
+    .from('tasks_sync_logs')
+    .select('status')
+
+  const stats = {
+    total: statusCounts?.length || 0,
+    success: statusCounts?.filter(l => l.status === 'success').length || 0,
+    error: statusCounts?.filter(l => l.status === 'error').length || 0,
+    in_progress: statusCounts?.filter(l => l.status === 'in_progress').length || 0,
+  }
+
+  const { data: lastSyncData } = await supabase
+    .from('tasks_sync_logs')
+    .select('triggered_at, status, records_processed')
+    .order('triggered_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  const lastSync = lastSyncData as { triggered_at: string; status: string; records_processed: number } | null
+
+  const { data: successfulSyncs } = await supabase
+    .from('tasks_sync_logs')
+    .select('duration_seconds')
+    .eq('status', 'success')
+    .not('duration_seconds', 'is', null)
+
+  const avgDuration = successfulSyncs && successfulSyncs.length > 0
+    ? Math.round(
+        successfulSyncs.reduce((sum, log) => sum + (log.duration_seconds || 0), 0) /
+        successfulSyncs.length
+      )
+    : 0
+
+  const { data: totalRecordsTasks } = await supabase
+    .from('tasks_sync_logs')
+    .select('records_processed')
+
+  const totalProcessedTasks = totalRecordsTasks?.reduce((sum, log) => sum + (log.records_processed || 0), 0) || 0
+
+  return {
+    ...stats,
+    lastSync: lastSync || null,
+    avgDuration,
+    totalRecordsProcessed: totalProcessedTasks,
+  }
+}
+
 // Types for sync info
-export type SyncType = 'service_requests' | 'billing' | 'providers' | 'allocations'
+export type SyncType = 'service_requests' | 'billing' | 'providers' | 'allocations' | 'clients' | 'recurrences' | 'tasks'
 
 export interface LastSyncInfo {
   type: SyncType
@@ -501,6 +852,9 @@ export async function getLastSuccessfulSync(type: SyncType): Promise<LastSyncInf
     billing: 'billing_sync_logs',
     providers: 'provider_sync_logs',
     allocations: 'allocation_sync_logs',
+    clients: 'clients_sync_logs',
+    recurrences: 'recurrences_sync_logs',
+    tasks: 'tasks_sync_logs',
   }
 
   const table = tableMap[type]

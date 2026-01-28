@@ -406,3 +406,206 @@ export interface PeriodComparison {
   change: number
   changePercent: number
 }
+
+// ==================
+// Clients
+// ==================
+
+export interface ClientsSummary {
+  totalClients: number
+  totalClientsPrev: number
+  totalClientsTrend: number
+  activeClients: number // last_request within 6 months
+  activeClientsPercentage: number
+  activeClientsPrev: number
+  activeClientsTrend: number
+  avgPaymentPerClient: number
+  avgPaymentPerClientPrev: number
+  avgPaymentPerClientTrend: number
+  totalRecurrenciesActive: number
+  clientsWithRecurrencies: number
+  clientsWithRecurrenciesPercentage: number
+  totalRecurrenciesActivePrev: number
+  totalRecurrenciesActiveTrend: number
+  walletsActive: number
+  walletsActivePercentage: number
+  walletsActivePrev: number
+  walletsActiveTrend: number
+  avgWalletBalance: number
+}
+
+export interface ClientRegistrationTrendPoint {
+  period: string // YYYY-MM
+  periodLabel: string
+  newClients: number
+  cumulativeTotal: number
+}
+
+export interface ClientStatusItem {
+  status: string
+  count: number
+  percentage: number
+}
+
+export interface ClientRequestBucket {
+  bucket: string // '0', '1', '2-5', '6-10', '11-20', '21+'
+  count: number
+  percentage: number
+}
+
+export interface ClientPlatformItem {
+  platform: string
+  count: number
+  percentage: number
+}
+
+export interface TopClient {
+  rank: number
+  name: string
+  city: string | null
+  totalRequests: number
+  completedRequests: number
+  totalPayments: number
+}
+
+export interface ClientCityItem {
+  city: string
+  count: number
+  percentage: number
+}
+
+// ==================
+// Recurrences
+// ==================
+
+export interface RecurrencesSummary {
+  totalRecurrences: number
+  totalRecurrencesPrev: number
+  totalRecurrencesTrend: number
+  activeRecurrences: number
+  activeRecurrencesPrev: number
+  activeRecurrencesTrend: number
+  activePercentage: number
+  inactivationRate: number
+  inactivationRatePrev: number
+  inactivationRateTrend: number
+  inactivatedCount: number
+  distinctServices: number
+  distinctServicesPrev: number
+  distinctServicesTrend: number
+  topService: string | null
+  distinctDistricts: number
+  distinctDistrictsPrev: number
+  distinctDistrictsTrend: number
+  topDistrict: string | null
+}
+
+export interface RecurrenceTrendPoint {
+  period: string
+  periodLabel: string
+  newRecurrences: number
+  cumulativeTotal: number
+}
+
+export interface RecurrenceStatusItem {
+  status: string
+  count: number
+  percentage: number
+}
+
+export interface RecurrenceServiceItem {
+  service: string
+  count: number
+  percentage: number
+}
+
+export interface RecurrenceTypeItem {
+  type: string
+  count: number
+  percentage: number
+}
+
+export interface InactivationReasonItem {
+  reason: string
+  count: number
+  percentage: number
+}
+
+export interface RecurrenceDistrictItem {
+  district: string
+  count: number
+  percentage: number
+}
+
+// ==================
+// Tasks (Backoffice)
+// ==================
+
+export interface TasksSummary {
+  totalTasks: number
+  totalTasksPrev: number
+  totalTasksTrend: number
+  completedTasks: number
+  completedTasksPrev: number
+  completedTasksTrend: number
+  completedPercentage: number
+  pendingTasks: number
+  pendingTasksPrev: number
+  pendingTasksTrend: number
+  avgCompletionDays: number | null
+  avgCompletionDaysPrev: number | null
+  avgCompletionDaysTrend: number
+  distinctAssignees: number
+  distinctAssigneesPrev: number
+  distinctAssigneesTrend: number
+  topAssignee: string | null
+}
+
+export interface TaskTrendPoint {
+  period: string
+  periodLabel: string
+  newTasks: number
+  completedTasks: number
+  cumulativeCreated: number
+  cumulativeCompleted: number
+  openBacklog: number
+}
+
+export interface TaskStatusItem {
+  status: string
+  count: number
+  percentage: number
+}
+
+export interface TaskTypeItem {
+  taskType: string
+  count: number
+  percentage: number
+}
+
+export interface TaskAssigneeItem {
+  assignee: string
+  total: number
+  completed: number
+  pending: number
+  completionRate: number
+}
+
+export interface TaskCompletionTimeItem {
+  taskType: string
+  avgDays: number
+  count: number
+}
+
+export interface TaskProviderItem {
+  provider: string
+  count: number
+  percentage: number
+}
+
+export interface TaskDeadlineComplianceItem {
+  bucket: string
+  count: number
+  percentage: number
+  color: string
+}

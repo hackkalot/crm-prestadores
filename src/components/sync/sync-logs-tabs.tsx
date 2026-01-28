@@ -8,7 +8,9 @@ import { Badge } from '@/components/ui/badge'
 import { CheckCircle, XCircle, Clock, Download, Timer, Database, FileText, Users, Receipt, GitBranch } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { pt } from 'date-fns/locale'
-import type { SyncLog, SyncStats, ProviderSyncLog, ProviderSyncStats, BillingSyncLog, BillingSyncStats, AllocationSyncLog, AllocationSyncStats } from '@/lib/sync/logs-actions'
+import type { SyncLog, SyncStats, ProviderSyncLog, ProviderSyncStats, BillingSyncLog, BillingSyncStats, AllocationSyncLog, AllocationSyncStats, ClientsSyncLog, ClientsSyncStats, RecurrencesSyncLog, RecurrencesSyncStats, TasksSyncLog, TasksSyncStats } from '@/lib/sync/logs-actions'
+import { Repeat, ClipboardList } from 'lucide-react'
+import { UserCircle } from 'lucide-react'
 import { SyncCoverageHeatmap } from '@/components/sync/sync-coverage-heatmap'
 
 interface SyncLogsTabsProps {
@@ -21,6 +23,12 @@ interface SyncLogsTabsProps {
   billingStats: BillingSyncStats
   allocationLogs: AllocationSyncLog[]
   allocationStats: AllocationSyncStats
+  clientsLogs: ClientsSyncLog[]
+  clientsStats: ClientsSyncStats
+  recurrencesLogs: RecurrencesSyncLog[]
+  recurrencesStats: RecurrencesSyncStats
+  tasksLogs: TasksSyncLog[]
+  tasksStats: TasksSyncStats
 }
 
 export function SyncLogsTabs({
@@ -33,6 +41,12 @@ export function SyncLogsTabs({
   billingStats,
   allocationLogs,
   allocationStats,
+  clientsLogs,
+  clientsStats,
+  recurrencesLogs,
+  recurrencesStats,
+  tasksLogs,
+  tasksStats,
 }: SyncLogsTabsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -42,7 +56,10 @@ export function SyncLogsTabs({
   const hasProviderInProgress = providerLogs.some(log => log.status === 'in_progress')
   const hasBillingInProgress = billingLogs.some(log => log.status === 'in_progress')
   const hasAllocationInProgress = allocationLogs.some(log => log.status === 'in_progress')
-  const hasInProgress = hasServiceInProgress || hasProviderInProgress || hasBillingInProgress || hasAllocationInProgress
+  const hasClientsInProgress = clientsLogs.some(log => log.status === 'in_progress')
+  const hasRecurrencesInProgress = recurrencesLogs.some(log => log.status === 'in_progress')
+  const hasTasksInProgress = tasksLogs.some(log => log.status === 'in_progress')
+  const hasInProgress = hasServiceInProgress || hasProviderInProgress || hasBillingInProgress || hasAllocationInProgress || hasClientsInProgress || hasRecurrencesInProgress || hasTasksInProgress
 
   // Auto-refresh when there's an in_progress sync
   useEffect(() => {
@@ -101,6 +118,27 @@ export function SyncLogsTabs({
             <Clock className="h-3 w-3 animate-spin text-blue-500" />
           )}
         </TabsTrigger>
+        <TabsTrigger value="clients" className="flex items-center gap-2">
+          <UserCircle className="h-4 w-4" />
+          Clientes
+          {hasClientsInProgress && (
+            <Clock className="h-3 w-3 animate-spin text-blue-500" />
+          )}
+        </TabsTrigger>
+        <TabsTrigger value="recurrences" className="flex items-center gap-2">
+          <Repeat className="h-4 w-4" />
+          Recorrencias
+          {hasRecurrencesInProgress && (
+            <Clock className="h-3 w-3 animate-spin text-blue-500" />
+          )}
+        </TabsTrigger>
+        <TabsTrigger value="tasks" className="flex items-center gap-2">
+          <ClipboardList className="h-4 w-4" />
+          Tarefas
+          {hasTasksInProgress && (
+            <Clock className="h-3 w-3 animate-spin text-blue-500" />
+          )}
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="pedidos">
@@ -117,6 +155,18 @@ export function SyncLogsTabs({
 
       <TabsContent value="allocation">
         <AllocationLogsContent logs={allocationLogs} stats={allocationStats} hasInProgress={hasAllocationInProgress} />
+      </TabsContent>
+
+      <TabsContent value="clients">
+        <ClientsLogsContent logs={clientsLogs} stats={clientsStats} hasInProgress={hasClientsInProgress} />
+      </TabsContent>
+
+      <TabsContent value="recurrences">
+        <RecurrencesLogsContent logs={recurrencesLogs} stats={recurrencesStats} hasInProgress={hasRecurrencesInProgress} />
+      </TabsContent>
+
+      <TabsContent value="tasks">
+        <TasksLogsContent logs={tasksLogs} stats={tasksStats} hasInProgress={hasTasksInProgress} />
       </TabsContent>
     </Tabs>
   )
@@ -720,6 +770,471 @@ function AllocationLogsContent({ logs, stats, hasInProgress }: { logs: Allocatio
                         ) : (
                           <span className="text-xs text-muted-foreground">-</span>
                         )}
+                      </td>
+                      <td className="p-2 text-right">
+                        <div className="flex flex-col items-end">
+                          <span className="font-medium">{log.records_processed || 0}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {log.records_inserted > 0 && `${log.records_inserted} novos`}
+                            {log.records_inserted > 0 && log.records_updated > 0 && ', '}
+                            {log.records_updated > 0 && `${log.records_updated} atualizados`}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-2 text-right">
+                        <DurationDisplay duration={log.duration_seconds} status={log.status} />
+                      </td>
+                      <td className="p-2">
+                        {log.excel_file_size_kb && (
+                          <span className="text-xs text-muted-foreground">
+                            {log.excel_file_size_kb} KB
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-2">
+                        {log.error_message && (
+                          <span className="text-xs text-destructive" title={log.error_stack || undefined}>
+                            {log.error_message.substring(0, 50)}...
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+// Clients Logs Content
+function ClientsLogsContent({ logs, stats, hasInProgress }: { logs: ClientsSyncLog[]; stats: ClientsSyncStats; hasInProgress: boolean }) {
+  return (
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Syncs</CardTitle>
+            <Database className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total}</div>
+            <p className="text-xs text-muted-foreground">
+              {stats.success} sucesso, {stats.error} erros
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Clientes Processados</CardTitle>
+            <UserCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalRecordsProcessed.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              Total de todos os syncs
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Duração Média</CardTitle>
+            <Timer className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.avgDuration}s</div>
+            <p className="text-xs text-muted-foreground">
+              Syncs bem-sucedidos
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Ultimo Sync</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {stats.lastSync ? (
+                <Badge variant={stats.lastSync.status === 'success' ? 'success' : stats.lastSync.status === 'in_progress' ? 'secondary' : 'destructive'}>
+                  {stats.lastSync.status === 'in_progress' ? 'Em progresso' : stats.lastSync.status}
+                </Badge>
+              ) : (
+                'N/A'
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.lastSync
+                ? formatDistanceToNow(new Date(stats.lastSync.triggered_at), { addSuffix: true, locale: pt })
+                : 'Nenhum sync ainda'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Logs Table */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Histórico de Sincronizações - Clientes</CardTitle>
+              <CardDescription>Últimas 100 sincronizações de clientes</CardDescription>
+            </div>
+            {hasInProgress && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Clock className="h-3 w-3 animate-spin" />
+                <span>A atualizar automaticamente...</span>
+              </div>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {logs.length === 0 ? (
+            <div className="p-8 text-center text-muted-foreground">
+              Nenhum sync de clientes realizado ainda
+            </div>
+          ) : (
+            <div className="overflow-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-2 font-medium">Status</th>
+                    <th className="text-left p-2 font-medium">Data/Hora</th>
+                    <th className="text-left p-2 font-medium">Utilizador</th>
+                    <th className="text-right p-2 font-medium">Registos</th>
+                    <th className="text-right p-2 font-medium">Duração</th>
+                    <th className="text-left p-2 font-medium">Ficheiro</th>
+                    <th className="text-left p-2 font-medium">Erro</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {logs.map((log) => (
+                    <tr key={log.id} className={`border-b hover:bg-muted/50 ${log.status === 'in_progress' ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>
+                      <td className="p-2">
+                        <StatusBadge status={log.status} />
+                      </td>
+                      <td className="p-2">
+                        <DateDisplay date={log.triggered_at} />
+                      </td>
+                      <td className="p-2">
+                        <UserDisplay user={log.user} />
+                      </td>
+                      <td className="p-2 text-right">
+                        <div className="flex flex-col items-end">
+                          <span className="font-medium">{log.records_processed || 0}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {log.records_inserted > 0 && `${log.records_inserted} novos`}
+                            {log.records_inserted > 0 && log.records_updated > 0 && ', '}
+                            {log.records_updated > 0 && `${log.records_updated} atualizados`}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-2 text-right">
+                        <DurationDisplay duration={log.duration_seconds} status={log.status} />
+                      </td>
+                      <td className="p-2">
+                        {log.excel_file_size_kb && (
+                          <span className="text-xs text-muted-foreground">
+                            {log.excel_file_size_kb} KB
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-2">
+                        {log.error_message && (
+                          <span className="text-xs text-destructive" title={log.error_stack || undefined}>
+                            {log.error_message.substring(0, 50)}...
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+// Recurrences Logs Content
+function RecurrencesLogsContent({ logs, stats, hasInProgress }: { logs: RecurrencesSyncLog[]; stats: RecurrencesSyncStats; hasInProgress: boolean }) {
+  return (
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Syncs</CardTitle>
+            <Database className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total}</div>
+            <p className="text-xs text-muted-foreground">
+              {stats.success} sucesso, {stats.error} erros
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Recorrencias Processadas</CardTitle>
+            <Repeat className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalRecordsProcessed.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              Total de todos os syncs
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Duração média</CardTitle>
+            <Timer className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.avgDuration}s</div>
+            <p className="text-xs text-muted-foreground">
+              Syncs bem-sucedidos
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Último Sync</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {stats.lastSync ? (
+                <Badge variant={stats.lastSync.status === 'success' ? 'success' : stats.lastSync.status === 'in_progress' ? 'secondary' : 'destructive'}>
+                  {stats.lastSync.status === 'in_progress' ? 'Em progresso' : stats.lastSync.status}
+                </Badge>
+              ) : (
+                'N/A'
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.lastSync
+                ? formatDistanceToNow(new Date(stats.lastSync.triggered_at), { addSuffix: true, locale: pt })
+                : 'Nenhum sync ainda'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Logs Table */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Historico de Sincronizações - Recorrências</CardTitle>
+              <CardDescription>Ultimas 100 sincronizações de recorrências</CardDescription>
+            </div>
+            {hasInProgress && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Clock className="h-3 w-3 animate-spin" />
+                <span>A atualizar automaticamente...</span>
+              </div>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {logs.length === 0 ? (
+            <div className="p-8 text-center text-muted-foreground">
+              Nenhum sync de recorrências realizado ainda
+            </div>
+          ) : (
+            <div className="overflow-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-2 font-medium">Status</th>
+                    <th className="text-left p-2 font-medium">Data/Hora</th>
+                    <th className="text-left p-2 font-medium">Utilizador</th>
+                    <th className="text-right p-2 font-medium">Registos</th>
+                    <th className="text-right p-2 font-medium">Duração</th>
+                    <th className="text-left p-2 font-medium">Ficheiro</th>
+                    <th className="text-left p-2 font-medium">Erro</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {logs.map((log) => (
+                    <tr key={log.id} className={`border-b hover:bg-muted/50 ${log.status === 'in_progress' ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>
+                      <td className="p-2">
+                        <StatusBadge status={log.status} />
+                      </td>
+                      <td className="p-2">
+                        <DateDisplay date={log.triggered_at} />
+                      </td>
+                      <td className="p-2">
+                        <UserDisplay user={log.user} />
+                      </td>
+                      <td className="p-2 text-right">
+                        <div className="flex flex-col items-end">
+                          <span className="font-medium">{log.records_processed || 0}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {log.records_inserted > 0 && `${log.records_inserted} novos`}
+                            {log.records_inserted > 0 && log.records_updated > 0 && ', '}
+                            {log.records_updated > 0 && `${log.records_updated} atualizados`}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-2 text-right">
+                        <DurationDisplay duration={log.duration_seconds} status={log.status} />
+                      </td>
+                      <td className="p-2">
+                        {log.excel_file_size_kb && (
+                          <span className="text-xs text-muted-foreground">
+                            {log.excel_file_size_kb} KB
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-2">
+                        {log.error_message && (
+                          <span className="text-xs text-destructive" title={log.error_stack || undefined}>
+                            {log.error_message.substring(0, 50)}...
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+// Tasks Logs Content
+function TasksLogsContent({ logs, stats, hasInProgress }: { logs: TasksSyncLog[]; stats: TasksSyncStats; hasInProgress: boolean }) {
+  return (
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Syncs</CardTitle>
+            <Database className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total}</div>
+            <p className="text-xs text-muted-foreground">
+              {stats.success} sucesso, {stats.error} erros
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tarefas Processadas</CardTitle>
+            <ClipboardList className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalRecordsProcessed.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              Total de todos os syncs
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Duração média</CardTitle>
+            <Timer className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.avgDuration}s</div>
+            <p className="text-xs text-muted-foreground">
+              Syncs bem-sucedidos
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Último Sync</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {stats.lastSync ? (
+                <Badge variant={stats.lastSync.status === 'success' ? 'success' : stats.lastSync.status === 'in_progress' ? 'secondary' : 'destructive'}>
+                  {stats.lastSync.status === 'in_progress' ? 'Em progresso' : stats.lastSync.status}
+                </Badge>
+              ) : (
+                'N/A'
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.lastSync
+                ? formatDistanceToNow(new Date(stats.lastSync.triggered_at), { addSuffix: true, locale: pt })
+                : 'Nenhum sync ainda'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Logs Table */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Historico de Sincronizações - Tarefas</CardTitle>
+              <CardDescription>Ultimas 100 sincronizações de tarefas</CardDescription>
+            </div>
+            {hasInProgress && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Clock className="h-3 w-3 animate-spin" />
+                <span>A atualizar automaticamente...</span>
+              </div>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {logs.length === 0 ? (
+            <div className="p-8 text-center text-muted-foreground">
+              Nenhum sync de tarefas realizado ainda
+            </div>
+          ) : (
+            <div className="overflow-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-2 font-medium">Status</th>
+                    <th className="text-left p-2 font-medium">Data/Hora</th>
+                    <th className="text-left p-2 font-medium">Utilizador</th>
+                    <th className="text-right p-2 font-medium">Registos</th>
+                    <th className="text-right p-2 font-medium">Duração</th>
+                    <th className="text-left p-2 font-medium">Ficheiro</th>
+                    <th className="text-left p-2 font-medium">Erro</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {logs.map((log) => (
+                    <tr key={log.id} className={`border-b hover:bg-muted/50 ${log.status === 'in_progress' ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>
+                      <td className="p-2">
+                        <StatusBadge status={log.status} />
+                      </td>
+                      <td className="p-2">
+                        <DateDisplay date={log.triggered_at} />
+                      </td>
+                      <td className="p-2">
+                        <UserDisplay user={log.user} />
                       </td>
                       <td className="p-2 text-right">
                         <div className="flex flex-col items-end">

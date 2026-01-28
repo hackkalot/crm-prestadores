@@ -1,7 +1,24 @@
 # KPIs Operacionais - Requisitos e Acompanhamento
 
-> **Página**: `/kpis-operacionais` (substituir a actual `/analytics`)
-> **Última actualização**: 27 Janeiro 2026
+> **Página**: `/analytics`
+> **Última actualização**: 29 Janeiro 2026
+> **Fonte de requisitos**: `data/Dados operacionais_20012026.xlsx` (equipa OPS)
+
+---
+
+## Análise do Ficheiro "Dados operacionais_20012026.xlsx"
+
+O ficheiro da equipa operacional define **7 temas** de dados com diferentes fontes e periodicidades:
+
+| # | Tema | Fonte | Periodicidade | Estado CRM |
+|---|------|-------|---------------|------------|
+| 1 | Chamadas (Inbound/Outbound) | Collab | Mensal | ❌ Não integrado |
+| 2 | Canais escritos (Tickets) | Zendesk | Mensal | ❌ Não integrado |
+| 3 | Tarefas | BO | Semanal | 🟡 Parcial (CRM tasks) |
+| 4 | Faturação | BO | Semanal | ✅ Integrado (`billing_processes`) |
+| 5 | Reclamações (faturas) | BO | Semanal | 🟡 Parcial |
+| 6 | Recorrências | BO | Semanal | ✅ Integrado (`recurrences`) |
+| 7 | Serviços | BO | Semanal | ✅ Integrado (`service_requests`) |
 
 ---
 
@@ -10,13 +27,14 @@
 | # | Tab | Estado | Notas |
 |---|-----|--------|-------|
 | 1 | Overview Geral | ✅ Concluído | Cards + Gráficos implementados |
-| 2 | Prestadores (Rede) | ✅ Concluído | 5 KPI cards implementados |
-| 3 | Clientes | ❌ Por fazer | **Nova tab** |
-| 4 | Operacionais | ❌ Por fazer | Depende de email Francisco + Collab |
-| 5 | Reclamações | ❌ Por fazer | Depende de integração Zendesk |
-| 6 | Faturação | 🟡 Parcial | Faltam alguns componentes |
+| 2 | Prestadores (Rede) | ✅ Concluído | 5 KPI cards + 9 gráficos |
+| 3 | Clientes | ✅ Concluído | 5 KPI cards + 6 gráficos |
+| 4 | Operacionais | ❌ Por fazer | Depende de Collab + BO Tarefas |
+| 5 | Reclamações | ❌ Por fazer | Depende de Zendesk |
+| 6 | Faturação | 🟡 Parcial | Precisa breakdown reclamações |
+| 7 | Recorrências | ✅ Concluído | 5 KPI cards + 6 gráficos |
 
-**Total: 6 tabs**
+**Total: 7 tabs** (adicionada tab Recorrências)
 
 ---
 
@@ -25,7 +43,8 @@
 | Filtro | Estado | Notas |
 |--------|--------|-------|
 | Intervalo de datas (range picker) | ✅ Existe | `AnalyticsFilters` |
-| Presets rápidos (7d, 30d, 90d, etc.) | ✅ Existe | Inclui "semana passada" |
+| Presets rápidos (7d, 30d, 90d, etc.) | ✅ Existe | Inclui "Todo o período (desde 2023)" |
+| Períodos de alocação (meses) | ✅ Existe | Labels formatados como "Janeiro 2026" |
 | Escolha `created_at` vs `scheduled_to` | ❌ Falta | Novo requisito |
 | Filtro de serviço (multi-select) | ✅ Existe | |
 | Filtro de categoria (multi-select) | ✅ Existe | |
@@ -70,9 +89,26 @@
 
 ---
 
-## Tab 2: Prestadores (Rede)
+## Tab 2: Prestadores (Rede) / Serviços
 
-### Cards KPI
+### Fonte de Requisitos
+> `Dados operacionais_20012026.xlsx` - Tema: Serviços
+
+### Métricas Requeridas pelo Excel
+
+| Métrica | Detalhe | Estado |
+|---------|---------|--------|
+| Serviços em curso | Total de SRs com status "em curso" | ✅ Implementado (`ServicesByStatusChart`) |
+| Nº serviços por concelho | Agrupado por localização | ✅ Implementado (`NetworkMapboxMap` em `/rede`) |
+| Nº tipo de serviços | Por categoria/serviço | ✅ Implementado (gráficos Overview) |
+| Nº serviços/prestador | Volume por prestador | ✅ Implementado (`VolumeDistributionChart`, `UnifiedRankingCard`) |
+| Piloto contacto com motivo | Serviços onde foi ativado piloto | ❌ Falta - verificar campo no BO |
+| Visitas adicionais agendadas | `number_additional_visits > 0` | ✅ Implementado (`AdditionalVisitsByProviderChart`) |
+| Taxa cancelamento por tipologia | Por tipo de serviço + motivos | 🟡 Parcial - tem total, falta breakdown |
+| Reagendamentos (backoffice) | `reschedule_bo = true` | ✅ Implementado (`ReschedulesByProviderChart`) |
+| Custos adicionais por prestador/serviço | `net_additional_charges > 0` | ✅ Implementado (KPI card, falta gráfico) |
+
+### Cards KPI ✅ Implementados
 
 | Card | Fonte | Estado | Componente |
 |------|-------|--------|------------|
@@ -82,7 +118,7 @@
 | Número de reagendamentos | BO `service_requests.reschedule_bo = true` | ✅ Implementado | `NetworkSummaryCards` |
 | Serviços com custos adicionais | BO `service_requests.net_additional_charges > 0` | ✅ Implementado | `NetworkSummaryCards` |
 
-### Gráficos
+### Gráficos ✅ Implementados
 
 | Gráfico | Tipo | Fonte | Estado | Componente |
 |---------|------|-------|--------|------------|
@@ -96,102 +132,273 @@
 | Concentração de Receita | Card + tabela | BO `billing_processes` | ✅ Implementado | `ConcentrationCard` |
 | Ranking de Prestadores | Tabela interativa | BO | ✅ Implementado | `UnifiedRankingCard` |
 
----
-
-## Tab 3: Clientes (NOVA)
-
-### Cards KPI
-
-| Card | Fonte | Estado | Componente |
-|------|-------|--------|------------|
-| Nr total de clientes registados | BO `/Clientes` export | ❌ Falta | Novo - precisa tabela `clients` |
-| Nr clientes ativos (últimos 6 meses) | BO `service_requests` unique `user` where `created_at` >= 6 meses | ❌ Falta | Novo |
-
-### Gráficos
+### Gráficos ❌ Em Falta
 
 | Gráfico | Tipo | Fonte | Estado | Componente |
 |---------|------|-------|--------|------------|
-| Evolução clientes registados | Linha | BO `clients` | ❌ Falta | Novo |
-| Clientes novos vs recorrentes | Barras/Pie | BO `service_requests` | ❌ Falta | Novo |
-| Top clientes por volume | Tabela ranking | BO `service_requests` | ❌ Falta | Novo |
+| Taxa cancelamento por tipo de serviço | Barras | BO | ❌ Falta | Novo |
+| Cancelamentos por motivo | Barras/Pie | BO `cancellation_reason` | ❌ Falta | Novo |
+| Custos adicionais por serviço | Barras | BO | ❌ Falta | Novo |
 
-**Dependência**: Precisa nova tabela `clients` ou coluna identificadora em `service_requests`
+### Métricas Agendamentos/Reagendamentos
+
+> `Dados operacionais_20012026.xlsx` - Tema: Agendamentos/reagendamentos
+
+| Métrica | Detalhe | Estado |
+|---------|---------|--------|
+| Serviços com atraso por prestador | Analisar volume com atenção ao nº serviços/mês | ❌ Falta |
+| Serviços reagendados por prestador | Com contexto do volume total | ✅ Implementado |
+| Serviços cancelados por prestador | Com contexto do volume total | 🟡 Parcial (só indisponibilidade) |
+
+---
+
+## Tab 3: Clientes ✅ CONCLUÍDO
+
+### Fonte de Dados
+> Tabela `clients` (54 colunas) - sincronizada semanalmente via GitHub Actions (`sync-clients.yml`)
+
+### Cards KPI ✅ Implementados
+
+| # | Card | Valor Principal | Info Secundária | Estado | Componente |
+|---|------|-----------------|-----------------|--------|------------|
+| 1 | **Total Clientes** | COUNT total | Ativos (% do total) | ✅ | `ClientsSummaryCards` |
+| 2 | **Clientes Ativos** | COUNT com `last_request` nos últimos 6 meses | % do total | ✅ | `ClientsSummaryCards` |
+| 3 | **Ticket Médio/Cliente** | `SUM(total_payments) / COUNT(clientes com pagamentos)` | - | ✅ | `ClientsSummaryCards` |
+| 4 | **Recorrências Ativas** | SUM(`active_overall_recurrencies`) | Nº clientes com recorrências (%) | ✅ | `ClientsSummaryCards` |
+| 5 | **Wallets Ativas** | COUNT `wallet_is_active = true` | Saldo médio | ✅ | `ClientsSummaryCards` |
+
+### Gráficos ✅ Implementados
+
+| Gráfico | Tipo | Fonte | Estado | Componente |
+|---------|------|-------|--------|------------|
+| Evolução de Registos | Barras + Linha (ComposedChart) | `clients.registration` agrupado por mês | ✅ | `ClientRegistrationTrendChart` |
+| Clientes por Status | Donut (PieChart) | `clients.client_status` | ✅ | `ClientStatusChart` |
+| Distribuição de Pedidos | Barras horizontais | `clients.total_requests` (buckets: 0, 1, 2-5, 6-10, 11-20, 21+) | ✅ | `ClientRequestDistributionChart` |
+| Plataforma de Registo | Donut (PieChart) | `clients.device_platform_customer_registration` | ✅ | `ClientPlatformChart` |
+| Top Clientes por Volume | Tabela ranking | `clients` ORDER BY `total_requests` DESC LIMIT 10 | ✅ | `TopClientsTable` |
+| Clientes por Cidade | Barras horizontais | `clients.city` GROUP BY, top 15 | ✅ | `ClientsByCityChart` |
+
+### Server Actions
+
+| Função | Retorno | Ficheiro |
+|--------|---------|----------|
+| `getClientsSummary()` | `ClientsSummary` | `clients-actions.ts` |
+| `getClientRegistrationTrend()` | `ClientRegistrationTrendPoint[]` | `clients-actions.ts` |
+| `getClientStatusDistribution()` | `ClientStatusItem[]` | `clients-actions.ts` |
+| `getClientRequestDistribution()` | `ClientRequestBucket[]` | `clients-actions.ts` |
+| `getClientPlatformDistribution()` | `ClientPlatformItem[]` | `clients-actions.ts` |
+| `getTopClients(limit)` | `TopClient[]` | `clients-actions.ts` |
+| `getClientsByCity(limit)` | `ClientCityItem[]` | `clients-actions.ts` |
+
+### Notas
+- Filtros de data aplicam-se usando o campo `registration` (data de registo)
+- Default "Mês atual" aplica-se automaticamente ao abrir a página
+- Cards KPI incluem comparação com período anterior e trends
+- O gráfico de Evolução de Registos usa granularidade dinâmica (dia/semana/mês)
+- Clientes ativos = `last_request` nos últimos 6 meses
 
 ---
 
 ## Tab 4: Operacionais
 
 ### Fonte de Requisitos
-> Ver email do Francisco com subject: "Informação Operacional para Dashboard no CRM - Proposta"
+> `Dados operacionais_20012026.xlsx` - Temas: Chamadas, Tarefas
 
-### Cards KPI
+### 4.1 Chamadas (Collab)
 
-| Card | Fonte | Estado | Componente |
-|------|-------|--------|------------|
-| (A definir com email Francisco) | Collab + CRM | ❌ Falta | - |
+| Métrica | Detalhe | Fonte | Periodicidade | Estado |
+|---------|---------|-------|---------------|--------|
+| **Inbound Clientes** | Volume por hora, matriz seg-dom por intervalo horário, tempo médio de espera | Collab - "Detalhe de Chamadas" | Mensal | ❌ Não integrado |
+| **Inbound Prestadores** | Volume por hora, matriz seg-dom por intervalo horário, tempo médio de espera | Collab - "Detalhe de Chamadas Prestadores" | Mensal | ❌ Não integrado |
+| **Outbound por operador** | Chamadas realizadas/atendidas/abandonadas por colaborador | Collab - "Agent Summary Report" | Mensal | ❌ Não integrado |
 
-### Gráficos
+### 4.2 Tarefas (BO)
+
+| Métrica | Detalhe | Fonte | Periodicidade | Estado |
+|---------|---------|-------|---------------|--------|
+| Nº tarefas por tipologia | Agrupado por tipo de tarefa | BO - "TaskList" | Semanal | ❌ Precisa scrapper |
+| Tempo médio tratamento por tipologia | Por tipo de tarefa | BO - "TaskList" | Semanal | ❌ Precisa scrapper |
+| Tarefas criadas vs concluídas/colaborador | Por utilizador OPS | BO - "TaskList" | Semanal | ❌ Precisa scrapper |
+
+### Gráficos Propostos
 
 | Gráfico | Tipo | Fonte | Estado | Componente |
 |---------|------|-------|--------|------------|
-| Chamadas inbound | Barras | Collab export | ❌ Falta | Precisa integração Collab |
-| Chamadas outbound | Barras | Collab export | ❌ Falta | Precisa integração Collab |
-| Tarefas OPS por utilizador | Barras | CRM | ❌ Falta | Novo |
+| Chamadas inbound por hora (heatmap) | Heatmap seg-dom | Collab | ❌ Falta | Novo - precisa dados |
+| Chamadas outbound por operador | Barras horizontais | Collab | ❌ Falta | Novo - precisa dados |
+| Tarefas por tipologia | Barras/Pie | BO TaskList | ❌ Falta | Novo - precisa scrapper |
+| Tarefas criadas vs concluídas | Barras agrupadas | BO TaskList | ❌ Falta | Novo - precisa scrapper |
 
 **Dependências**:
-- Integração com Collab (chamadas)
-- Email do Francisco com requisitos detalhados
+- Integração/Export Collab (chamadas)
+- Scrapper BO TaskList (tarefas backoffice)
 
 ---
 
-## Tab 5: Reclamações
+## Tab 5: Reclamações / Tickets
 
-### Cards KPI
+### Fonte de Requisitos
+> `Dados operacionais_20012026.xlsx` - Tema: Canais escritos (Zendesk)
+
+### Métricas Requeridas
+
+| Métrica | Detalhe | Fonte | Periodicidade | Estado |
+|---------|---------|-------|---------------|--------|
+| **Tipo de ticket** | Por tipo de serviço e data criação | Zendesk - "Tipo_de_ticket_por_Criação" | Mensal | ❌ Não integrado |
+| **Tickets por canal** | Email, chat, telefone, etc. | Zendesk - "#_tickets_por_canal" | Mensal | ❌ Não integrado |
+| **Tickets por serviço** | Por tipo de serviço FIXO | Zendesk - "#_de_tickets_por_tipo_de_serviço" | Mensal | ❌ Não integrado |
+
+### Cards KPI Propostos
 
 | Card | Fonte | Estado | Componente |
 |------|-------|--------|------------|
-| Tickets por serviço | Zendesk | ❌ Falta | Precisa integração |
-| Tickets por prestador | Zendesk | ❌ Falta | Precisa integração |
-| Motivo mais frequente | Zendesk | ❌ Falta | Precisa integração |
-| Ranking prestadores + tickets | Zendesk | ❌ Falta | Precisa integração |
-| Tickets por canal | Zendesk | ❌ Falta | Precisa integração |
+| Total tickets no período | Zendesk | ❌ Falta | Novo |
+| Tickets por tipo de serviço | Zendesk | ❌ Falta | Novo |
+| Tickets por canal | Zendesk | ❌ Falta | Novo |
+| Ranking prestadores + tickets | Zendesk | ❌ Falta | Novo |
 
-**Dependência**: Integração com Zendesk (a ver com Mariana)
+### Gráficos Propostos
+
+| Gráfico | Tipo | Fonte | Estado | Componente |
+|---------|------|-------|--------|------------|
+| Tickets por tipo de serviço | Barras/Pie | Zendesk | ❌ Falta | Novo |
+| Tickets por canal | Pie chart | Zendesk | ❌ Falta | Novo |
+| Evolução tickets mensal | Linha | Zendesk | ❌ Falta | Novo |
+
+**Dependência**: Integração com Zendesk API ou imports CSV
 
 ---
 
 ## Tab 6: Faturação
 
+### Fonte de Requisitos
+> `Dados operacionais_20012026.xlsx` - Temas: Faturação, Reclamações (faturas)
+
+### Métricas Requeridas
+
+| Métrica | Detalhe | Fonte | Periodicidade | Estado |
+|---------|---------|-------|---------------|--------|
+| **Estados de faturação** | Visão do prestador com diferentes estados | BO - "ProviderBillingProcesses" | Semanal | ✅ Integrado |
+| **Faturas com reclamação** | Volume por prestador | BO - "ProviderBillingProcesses" | Semanal | 🟡 Parcial |
+
 ### Cards KPI
 
 | Card | Fonte | Estado | Componente |
 |------|-------|--------|------------|
-| Estado da Faturação (por status) | BO `billing` | ✅ Existe | `PaymentStatusChart` |
-| Faturas pendentes por prestador | BO `billing` | ❌ Falta | Novo |
-| Faturas com reclamações por prestador | BO `billing` | ❌ Falta | Novo |
-| Faturas por receber (diferentes estados) | BO `billing` | 🟡 Parcial | Tem estados mas não breakdown |
+| Estado da Faturação (por status) | BO `billing_processes` | ✅ Existe | `PaymentStatusChart` |
+| Faturas pendentes por prestador | BO `billing_processes` | ❌ Falta | Novo |
+| Faturas com reclamações por prestador | BO `billing_processes` | ❌ Falta | Novo |
+| Faturas por receber (diferentes estados) | BO `billing_processes` | 🟡 Parcial | Tem estados mas não breakdown |
 
 ### Gráficos
 
 | Gráfico | Tipo | Fonte | Estado | Componente |
 |---------|------|-------|--------|------------|
-| Faturação por período | Barras horizontais | BO `billing` | ❌ Falta | Novo |
-| Evolução faturação (mensal/trimestral) | Linha | BO `billing` | ❌ Falta | Novo |
+| Faturação por período | Barras horizontais | BO `billing_processes` | ❌ Falta | Novo |
+| Evolução faturação (mensal/trimestral) | Linha | BO `billing_processes` | ❌ Falta | Novo |
+| Faturas com reclamação por prestador | Barras horizontais | BO `billing_processes` | ❌ Falta | Novo |
+
+---
+
+## Tab 7: Recorrências ✅ CONCLUÍDO
+
+### Fonte de Dados
+> Tabela `recurrences` (18 colunas) - sincronizada semanalmente via GitHub Actions (`sync-recurrences.yml`)
+> Scrapper: `export-recurrences-data.ts` → Excel do BO "ServiceRequestRecurrencies"
+> Data field para filtros: `submission_date` (formato DD-MM-YYYY HH:mm no Excel)
+
+### Métricas Requeridas
+
+| Métrica | Detalhe | Fonte | Periodicidade | Estado |
+|---------|---------|-------|---------------|--------|
+| **Recorrências ativas vs inativas** | Total e filtro por estado (`Ativa`/`Inativa`) | BO - "Recurrence" | Semanal | ✅ Implementado |
+| **Recorrências por concelho** | Agrupado por `address_district` | BO - "Recurrence" | Semanal | ✅ Implementado |
+| **Recorrências por tipo de serviço** | Agrupado por `service` | BO - "Recurrence" | Semanal | ✅ Implementado |
+| **Recorrências por periodicidade** | Agrupado por `recurrence_type` | BO - "Recurrence" | Semanal | ✅ Implementado |
+
+### Métricas Futuras (fase 2)
+
+| Métrica | Detalhe | Fonte |
+|---------|---------|-------|
+| Prestadores alocados por recorrência | Qual prestador faz cada recorrência | BO |
+| Dia da semana e hora | Quando ocorre cada recorrência | BO |
+
+### Cards KPI ✅ Implementados
+
+| # | Card | Valor Principal | Info Secundária | Estado | Componente |
+|---|------|-----------------|-----------------|--------|------------|
+| 1 | **Total Recorrências** | COUNT total no período | Trend vs período anterior | ✅ | `RecurrencesSummaryCards` |
+| 2 | **Recorrências Ativas** | COUNT com `recurrence_status = 'Ativa'` | % do total + trend | ✅ | `RecurrencesSummaryCards` |
+| 3 | **Taxa de Inativação** | % inativas / total | Trend invertido (subida = negativo) | ✅ | `RecurrencesSummaryCards` |
+| 4 | **Serviços Distintos** | COUNT DISTINCT `service` | Top serviço + trend | ✅ | `RecurrencesSummaryCards` |
+| 5 | **Concelhos** | COUNT DISTINCT `address_district` | Top concelho + trend | ✅ | `RecurrencesSummaryCards` |
+
+### Gráficos ✅ Implementados
+
+| Gráfico | Tipo | Fonte | Estado | Componente |
+|---------|------|-------|--------|------------|
+| Evolução de Recorrências | Barras + Área (ComposedChart) | `recurrences.submission_date` agrupado por dia/semana/mês | ✅ | `RecurrenceTrendChart` |
+| Status de Recorrências | Donut (PieChart) | `recurrences.recurrence_status` (Ativa/Inativa) | ✅ | `RecurrenceStatusChart` |
+| Tipo de Recorrência | Donut (PieChart) | `recurrences.recurrence_type` (periodicidade) | ✅ | `RecurrenceTypeChart` |
+| Top Serviços | Barras horizontais | `recurrences.service` top 10 | ✅ | `RecurrencesByServiceChart` |
+| Motivos de Inativação | Barras horizontais (vermelho) | `recurrences.inactivation_reason` top 10 | ✅ | `InactivationReasonsChart` |
+| Top Concelhos | Barras horizontais (roxo) | `recurrences.address_district` top 15 | ✅ | `RecurrencesByDistrictChart` |
+
+### Server Actions
+
+| Função | Retorno | Ficheiro |
+|--------|---------|----------|
+| `getRecurrencesSummary(filters)` | `RecurrencesSummary` | `recurrences-actions.ts` |
+| `getRecurrenceTrend(filters)` | `RecurrenceTrendPoint[]` | `recurrences-actions.ts` |
+| `getRecurrenceStatusDistribution(filters)` | `RecurrenceStatusItem[]` | `recurrences-actions.ts` |
+| `getRecurrencesByService(limit, filters)` | `RecurrenceServiceItem[]` | `recurrences-actions.ts` |
+| `getRecurrenceTypeDistribution(filters)` | `RecurrenceTypeItem[]` | `recurrences-actions.ts` |
+| `getInactivationReasons(limit, filters)` | `InactivationReasonItem[]` | `recurrences-actions.ts` |
+| `getRecurrencesByDistrict(limit, filters)` | `RecurrenceDistrictItem[]` | `recurrences-actions.ts` |
+
+### Notas
+- Filtros de data aplicam-se usando `submission_date`
+- Default "Mês atual" aplica-se automaticamente ao abrir a página
+- Cards KPI incluem comparação com período anterior e trends
+- Gráfico de evolução usa granularidade dinâmica (dia ≤31d, semana ≤90d, mês >90d)
+- Status aceites: `Ativa`/`Active` (case-insensitive)
+- Scrapper navega primeiro para `/Login`, autentica, e depois vai para `/ServiceRequestRecurrencies`
+- Datas no Excel vêm como texto `DD-MM-YYYY HH:mm` (não serial numbers)
 
 ---
 
 ## Fontes de Dados
 
-| Fonte | Tabela/Export | Estado | Notas |
-|-------|---------------|--------|-------|
-| CRM | `providers` | ✅ Integrado | |
-| CRM | `onboarding_tasks` | ✅ Integrado | |
-| BO | `service_requests` | ✅ Integrado | Sync via GitHub Actions |
-| BO | `allocation_history` | ✅ Integrado | Sync via GitHub Actions |
-| BO | `billing` | ✅ Integrado | Sync via GitHub Actions |
-| BO | `clients` (novo) | ❌ Falta | Precisa nova tabela + scrapper |
-| Zendesk | tickets | ❌ Não integrado | Precisa integração API |
-| Collab | chamadas | ❌ Não integrado | Precisa integração/export |
+### Integradas ✅
+
+| Fonte | Tabela/Export | Periodicidade | Scrapper/Integração |
+|-------|---------------|---------------|---------------------|
+| CRM | `providers` | Tempo real | Nativo |
+| CRM | `onboarding_tasks` | Tempo real | Nativo |
+| BO | `service_requests` | Semanal (seg 06:00) | GitHub Actions |
+| BO | `allocation_history` | Semanal (seg 07:30) | GitHub Actions |
+| BO | `billing_processes` | Semanal (seg 06:30) | GitHub Actions |
+| BO | `backoffice_providers` | Semanal (seg 07:00) | GitHub Actions |
+| BO | `clients` | Semanal | GitHub Actions |
+| BO | `recurrences` | Semanal (seg 08:30) | GitHub Actions |
+
+### Não Integradas ❌
+
+| Fonte | Export BO | Periodicidade | Prioridade | Notas |
+|-------|-----------|---------------|------------|-------|
+| BO | TaskList | Semanal | 🟡 Média | Tarefas do backoffice (não CRM) |
+| Zendesk | Tickets | Mensal | 🔴 Alta | Reclamações/tickets |
+| Collab | Chamadas | Mensal | 🟢 Baixa | Pode usar imports manuais |
+
+### Reports Externos (imports manuais possíveis)
+
+| Report | Fonte | Ficheiro Exemplo |
+|--------|-------|------------------|
+| Detalhe de Chamadas | Collab | "Detalhe de Chamadas" (sheet Clientes + Prestadores) |
+| Agent Summary Report | Collab | "Agent Summary Report" |
+| Tipo de ticket | Zendesk | "Tipo_de_ticket_por_Criação..." |
+| Tickets por canal | Zendesk | "#_tickets_por_canal..." |
+| Tickets por serviço | Zendesk | "#_de_tickets_por_tipo_de_serviço..." |
 
 ---
 
@@ -210,42 +417,58 @@ Componentes existentes em `/src/components/analytics/` que podem ser reutilizado
 | `ConcentrationCard` | Prestadores | Precisa ajustar para receita real |
 | `PaymentStatusChart` | Faturação | ✅ Pode usar directamente |
 | `UnifiedRankingCard` | Overview/Prestadores | ✅ Pode usar directamente |
+| `RecurrencesSummaryCards` | Recorrências | ✅ 5 KPI cards com trends |
+| `RecurrenceTrendChart` | Recorrências | ✅ ComposedChart barras + área |
+| `RecurrenceStatusChart` | Recorrências | ✅ Donut Ativa/Inativa |
+| `RecurrenceTypeChart` | Recorrências | ✅ Donut periodicidade |
+| `RecurrencesByServiceChart` | Recorrências | ✅ Barras horizontais top serviços |
+| `InactivationReasonsChart` | Recorrências | ✅ Barras horizontais motivos |
+| `RecurrencesByDistrictChart` | Recorrências | ✅ Barras horizontais top concelhos |
 
 ---
 
 ## Plano de Implementação
 
-### Fase 1: Overview Geral ⬅️ **ACTUAL**
-- [ ] Renomear/mover página de `/analytics` para `/kpis-operacionais`
-- [ ] Adicionar card: Nr pedidos agendados (`scheduled_to`)
-- [ ] Adicionar card: Average SRs/dia submetidos
-- [ ] Adicionar card: Average SRs/dia agendados
-- [ ] Adicionar card: Nº prestadores ativos no período
-- [ ] Adicionar card: Satisfação média (Rating)
-- [ ] Adicionar gráfico: Serviços por estado (barras horizontais)
-- [ ] Adicionar filtro: escolha `created_at` vs `scheduled_to`
+### Fase 1: Overview Geral ✅ CONCLUÍDO
+- [x] Cards KPI (6 cards)
+- [x] Gráficos (serviços por estado, ticket trend)
 
-### Fase 2: Prestadores
-- [ ] Adicionar cards em falta
-- [ ] Adicionar gráficos: reagendamentos, visitas adicionais
-- [ ] Ajustar `AcceptanceTrendChart` para incluir cancelados
+### Fase 2: Prestadores (Rede) ✅ CONCLUÍDO
+- [x] 5 KPI cards (`NetworkSummaryCards`)
+- [x] 9 gráficos implementados
+- [ ] Gráfico: Taxa cancelamento por tipo de serviço
+- [ ] Gráfico: Cancelamentos por motivo
+- [ ] Gráfico: Custos adicionais por serviço
 
-### Fase 3: Clientes
-- [ ] Criar tabela `clients` no Supabase
-- [ ] Criar scrapper para BO `/Clientes`
+### Fase 3: Clientes ✅ CONCLUÍDO
+- [x] Criar scrapper BO `/Clientes` (GitHub Actions)
+- [x] Criar tabela `clients` no Supabase (54 colunas)
+- [x] Implementar 5 KPI cards (`ClientsSummaryCards`)
+- [x] Implementar 6 gráficos (registos, status, pedidos, plataforma, top clientes, cidades)
+
+### Fase 4: Faturação 🟡 PARCIAL
+- [x] Estados de faturação (`PaymentStatusChart`)
+- [ ] Breakdown reclamações por prestador
+- [ ] Gráfico temporal faturação
+
+### Fase 5: Operacionais ❌ POR FAZER
+- [ ] Decidir: integração Collab vs imports manuais
+- [ ] Criar scrapper BO TaskList (tarefas backoffice)
+- [ ] Implementar heatmap chamadas
+- [ ] Implementar tarefas por utilizador
+
+### Fase 6: Reclamações/Tickets ❌ POR FAZER
+- [ ] Decidir: integração Zendesk API vs imports manuais
 - [ ] Implementar cards e gráficos
 
-### Fase 4: Faturação
-- [ ] Adicionar breakdown por prestador
-- [ ] Adicionar gráfico temporal
-
-### Fase 5: Operacionais
-- [ ] Aguardar email Francisco
-- [ ] Integrar Collab (se disponível)
-
-### Fase 6: Reclamações
-- [ ] Integrar Zendesk (com Mariana)
-- [ ] Implementar cards e gráficos
+### Fase 7: Recorrências ✅ CONCLUÍDO
+- [x] Criar scrapper BO Recurrence (`export-recurrences-data.ts`)
+- [x] Criar tabela `recurrences` no Supabase (18 colunas)
+- [x] GitHub Actions workflow (`sync-recurrences.yml`, segundas 08:30)
+- [x] Implementar 5 KPI cards (`RecurrencesSummaryCards`)
+- [x] Implementar 6 gráficos (evolução, status, tipo, serviços, inativação, concelhos)
+- [x] Corrigir parsing de datas DD-MM-YYYY HH:mm (Excel exporta texto, não serial numbers)
+- [x] Corrigir login do scrapper (navegar para `/Login` antes da página alvo)
 
 ---
 
@@ -259,6 +482,35 @@ Componentes existentes em `/src/components/analytics/` que podem ser reutilizado
 
 ---
 
+## Resumo de Gaps (Excel vs Implementado)
+
+### O que FALTA para cobrir o Excel
+
+| Tema Excel | O que Falta | Prioridade | Dependência |
+|------------|-------------|------------|-------------|
+| **Chamadas** | Tudo (heatmap, outbound por operador) | 🟢 Baixa | Collab exports |
+| **Canais escritos** | Tudo (tickets por tipo/canal/serviço) | 🔴 Alta | Zendesk |
+| **Tarefas** | Tarefas BO (não CRM) por tipologia/colaborador | 🟡 Média | Scrapper TaskList |
+| **Faturação** | Reclamações por prestador | 🟡 Média | Já tem dados |
+| **Recorrências** | ~~Tudo (nova tab)~~ | ✅ Concluído | Scrapper + tab implementados |
+| **Serviços** | Cancel. por tipo, custos adicionais por serviço | 🟢 Baixa | Já tem dados |
+| **Agendamentos** | Serviços com atraso por prestador | 🟡 Média | Já tem dados |
+
+### O que JÁ ESTÁ IMPLEMENTADO
+
+| Tema Excel | Cobertura |
+|------------|-----------|
+| Serviços em curso | ✅ `ServicesByStatusChart` |
+| Serviços por concelho | ✅ `/rede` mapa |
+| Serviços por tipo | ✅ Gráficos Overview |
+| Serviços/prestador | ✅ `VolumeDistributionChart`, `UnifiedRankingCard` |
+| Visitas adicionais | ✅ `AdditionalVisitsByProviderChart` |
+| Reagendamentos | ✅ `ReschedulesByProviderChart`, KPI card |
+| Custos adicionais | ✅ KPI card (total) |
+| Estados faturação | ✅ `PaymentStatusChart` |
+
+---
+
 ## Notas de Implementação
 
 - Seguir o mesmo padrão visual da página Analytics existente
@@ -266,3 +518,12 @@ Componentes existentes em `/src/components/analytics/` que podem ser reutilizado
 - Usar Recharts para gráficos
 - Server Actions para fetch de dados
 - Cores semânticas: verde (OK), âmbar (warning), vermelho (critical)
+
+---
+
+## Próximos Passos Recomendados
+
+1. **Tab Recorrências** - Implementar nova tab com dados da tabela `recurrences` (scrapper já existe)
+2. **Gráficos Tab 2 (Rede)** - Adicionar os 3 gráficos em falta (cancel. por tipo, por motivo, custos adicionais)
+3. **Tab Tarefas/Operacionais** - Implementar gráficos com dados da tabela `tasks` (scrapper já existe)
+4. **Zendesk** - Decidir integração API vs imports CSV manuais

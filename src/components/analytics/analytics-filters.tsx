@@ -23,6 +23,23 @@ import type { DateRange } from 'react-day-picker'
 import { DATE_PRESETS } from '@/lib/analytics/constants'
 import type { AnalyticsFilterOptions } from '@/lib/analytics/types'
 
+// Format period as month name + year (e.g., "Janeiro 2026")
+function formatPeriodLabel(from: string, to: string): string {
+  const fromDate = new Date(from)
+  const toDate = new Date(to)
+
+  // If same month, show just "Mês Ano"
+  if (fromDate.getFullYear() === toDate.getFullYear() && fromDate.getMonth() === toDate.getMonth()) {
+    return format(fromDate, 'MMMM yyyy', { locale: pt })
+      .replace(/^./, (c) => c.toUpperCase())
+  }
+
+  // Different months: "Mês Ano - Mês Ano"
+  const fromLabel = format(fromDate, 'MMMM yyyy', { locale: pt }).replace(/^./, (c) => c.toUpperCase())
+  const toLabel = format(toDate, 'MMMM yyyy', { locale: pt }).replace(/^./, (c) => c.toUpperCase())
+  return `${fromLabel} - ${toLabel}`
+}
+
 interface AnalyticsFiltersProps {
   filterOptions: AnalyticsFilterOptions
 }
@@ -74,8 +91,13 @@ export function AnalyticsFilters({ filterOptions }: AnalyticsFiltersProps) {
 
   const handlePresetSelect = (preset: string) => {
     if (preset === 'all') {
-      setDateRange(undefined)
-      updateParams({ dateFrom: null, dateTo: null })
+      const from = new Date(2023, 0, 1)
+      const to = new Date()
+      setDateRange({ from, to })
+      updateParams({
+        dateFrom: format(from, 'yyyy-MM-dd'),
+        dateTo: format(to, 'yyyy-MM-dd'),
+      })
     } else {
       const days = parseInt(preset, 10)
       const to = new Date()
@@ -92,8 +114,13 @@ export function AnalyticsFilters({ filterOptions }: AnalyticsFiltersProps) {
 
   const handlePeriodSelect = (periodKey: string) => {
     if (periodKey === 'all') {
-      setDateRange(undefined)
-      updateParams({ dateFrom: null, dateTo: null })
+      const from = new Date(2023, 0, 1)
+      const to = new Date()
+      setDateRange({ from, to })
+      updateParams({
+        dateFrom: format(from, 'yyyy-MM-dd'),
+        dateTo: format(to, 'yyyy-MM-dd'),
+      })
     } else {
       const period = filterOptions.periods.find(
         (p) => `${p.from}_${p.to}` === periodKey
@@ -150,9 +177,15 @@ export function AnalyticsFilters({ filterOptions }: AnalyticsFiltersProps) {
   const getCurrentPeriodLabel = () => {
     if (!dateFrom || !dateTo) return 'Mês atual'
 
-    // Check if matches a preset
     const from = new Date(dateFrom)
     const to = new Date(dateTo)
+
+    // Check if it's "all time" (starts from 2023)
+    if (from.getFullYear() === 2023 && from.getMonth() === 0 && from.getDate() === 1) {
+      return 'Todo o período'
+    }
+
+    // Check if matches a preset
     const daysDiff = Math.round(
       (to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)
     )
@@ -165,7 +198,7 @@ export function AnalyticsFilters({ filterOptions }: AnalyticsFiltersProps) {
       (p) => p.from === dateFrom && p.to === dateTo
     )
     if (period) {
-      return `${format(new Date(period.from), 'dd/MM/yyyy')} - ${format(new Date(period.to), 'dd/MM/yyyy')}`
+      return formatPeriodLabel(period.from, period.to)
     }
 
     // Custom range
@@ -220,8 +253,7 @@ export function AnalyticsFilters({ filterOptions }: AnalyticsFiltersProps) {
                       key={`${period.from}_${period.to}`}
                       value={`${period.from}_${period.to}`}
                     >
-                      {format(new Date(period.from), 'dd/MM/yyyy')} -{' '}
-                      {format(new Date(period.to), 'dd/MM/yyyy')}
+                      {formatPeriodLabel(period.from, period.to)}
                     </SelectItem>
                   ))}
                 </SelectContent>

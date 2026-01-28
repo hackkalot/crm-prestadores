@@ -177,4 +177,7 @@ export const ANALYTICS_TABS = [
   { value: 'network', label: 'Rede' },
   { value: 'financial', label: 'Financeiro' },
   { value: 'quality', label: 'Qualidade' },
+  { value: 'clients', label: 'Clientes' },
+  { value: 'recurrences', label: 'Recorrências' },
+  { value: 'tasks', label: 'Tarefas' },
 ] as const
