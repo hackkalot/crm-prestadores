@@ -62,7 +62,7 @@ const SIDEBAR_SECTIONS: Array<{
     items: [
       { key: 'prestadores', name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil', originKey: 'prestadores' },
       { key: 'rede', name: 'Rede', href: '/rede', icon: Map },
-      { key: 'kpis_operacionais', name: "KPI's Operacionais", href: '/kpis-operacionais', icon: TrendingUp },
+      { key: 'kpis_operacionais', name: "KPI's Operacionais", href: '/analytics?context=kpis', icon: TrendingUp },
       { key: 'pedidos', name: 'Pedidos', href: '/pedidos', icon: FileText, originKey: 'pedidos' },
       { key: 'alocacoes', name: 'Alocações', href: '/alocacoes', icon: GitBranch, originKey: 'alocacoes' },
       { key: 'faturacao', name: 'Faturação', href: '/faturacao', icon: Receipt, originKey: 'faturacao' },

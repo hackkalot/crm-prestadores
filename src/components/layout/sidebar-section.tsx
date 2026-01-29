@@ -37,6 +37,7 @@ export function SidebarSection({
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const currentTab = searchParams.get('tab')
+  const contextParam = searchParams.get('context')
   const isMounted = useMounted()
 
   // Filter items based on permissions
@@ -69,7 +70,16 @@ export function SidebarSection({
 
   // Check if path matches (exact match or sub-path with /)
   // But prioritize more specific matches (longer paths)
-  const isPathMatch = (itemHref: string) => {
+  const isPathMatch = (itemHref: string, itemKey: string) => {
+    // Special case: /analytics?context=kpis should highlight kpis_operacionais, not analytics
+    if (pathname === '/analytics' && contextParam === 'kpis') {
+      return itemKey === 'kpis_operacionais'
+    }
+    // When on /analytics without context=kpis, only analytics should be active
+    if (pathname === '/analytics' && !contextParam) {
+      return itemKey === 'analytics'
+    }
+
     if (pathname === itemHref) return true
     // Only match sub-paths if they start with href + "/"
     // This prevents /kpis matching /kpis-operacionais
@@ -88,7 +98,7 @@ export function SidebarSection({
 
   // Check if any item in this section is active
   const hasActiveItem = visibleItems.some(item => {
-    const isActiveByPath = isPathMatch(item.href)
+    const isActiveByPath = isPathMatch(item.href, item.key)
     const isActiveByTab = isProviderPage && item.contextTab && currentTab === item.contextTab
     const isActiveByOrigin = isMounted && (isProviderPage || isPedidoPage) &&
       item.originKey && originContext === item.originKey
@@ -120,7 +130,7 @@ export function SidebarSection({
       {!isCollapsed && (
         <div className="space-y-1">
           {visibleItems.map((item) => {
-            const isActiveByPath = isPathMatch(item.href)
+            const isActiveByPath = isPathMatch(item.href, item.key)
             const isActiveByTab = isProviderPage && item.contextTab && currentTab === item.contextTab
             const isActiveByOrigin = isMounted && (isProviderPage || isPedidoPage) &&
               item.originKey && originContext === item.originKey

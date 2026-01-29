@@ -9,8 +9,19 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from 'recharts'
 import type { TaskCompletionTimeItem } from '@/lib/analytics/types'
+
+// Gradient colors from dark to light (cyan)
+const COLORS = [
+  '#06b6d4', // cyan-500
+  '#22d3ee', // cyan-400
+  '#67e8f9', // cyan-300
+  '#a5f3fc', // cyan-200
+  '#cffafe', // cyan-100
+  '#ecfeff', // cyan-50
+]
 
 interface TaskCompletionTimeChartProps {
   data: TaskCompletionTimeItem[]
@@ -33,18 +44,16 @@ export function TaskCompletionTimeChart({ data }: TaskCompletionTimeChartProps) 
     )
   }
 
-  const chartHeight = Math.max(250, data.length * 32)
-
   return (
-    <Card>
+    <Card className="flex flex-col h-full">
       <CardHeader>
         <CardTitle className="text-base">Tempo de Conclusão por Tipo</CardTitle>
         <CardDescription>
           Média de dias para concluir cada tipo de tarefa
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div style={{ height: chartHeight }}>
+      <CardContent className="flex-1 min-h-0">
+        <div className="h-full min-h-[250px]">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             <BarChart
               data={data}
@@ -88,10 +97,16 @@ export function TaskCompletionTimeChart({ data }: TaskCompletionTimeChartProps) 
               />
               <Bar
                 dataKey="avgDays"
-                fill="#06b6d4"
                 radius={[0, 4, 4, 0]}
                 name="Dias médios"
-              />
+              >
+                {data.map((_, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[Math.min(index, COLORS.length - 1)]}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

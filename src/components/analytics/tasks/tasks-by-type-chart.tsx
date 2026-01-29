@@ -9,8 +9,19 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from 'recharts'
 import type { TaskTypeItem } from '@/lib/analytics/types'
+
+// Gradient colors from dark to light (violet)
+const COLORS = [
+  '#8b5cf6', // violet-500
+  '#a78bfa', // violet-400
+  '#c4b5fd', // violet-300
+  '#ddd6fe', // violet-200
+  '#ede9fe', // violet-100
+  '#f5f3ff', // violet-50
+]
 
 interface TasksByTypeChartProps {
   data: TaskTypeItem[]
@@ -84,10 +95,16 @@ export function TasksByTypeChart({ data }: TasksByTypeChartProps) {
               />
               <Bar
                 dataKey="count"
-                fill="#8b5cf6"
                 radius={[0, 4, 4, 0]}
                 name="Tarefas"
-              />
+              >
+                {data.map((_, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[Math.min(index, COLORS.length - 1)]}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -170,12 +170,17 @@ export const RANKING_METRICS = [
   },
 ] as const
 
-// Analytics tab definitions
+// Analytics tab definitions (página /analytics - só overview e financeiro)
 export const ANALYTICS_TABS = [
+  { value: 'overview', label: 'Visão Geral' },
+  { value: 'financial', label: 'Financeiro' },
+] as const
+
+// KPIs Operacionais tab definitions (página /kpis-operacionais - todas as tabs)
+export const KPIS_OPERACIONAIS_TABS = [
   { value: 'overview', label: 'Visão Geral' },
   { value: 'operational', label: 'Operacional' },
   { value: 'network', label: 'Rede' },
-  { value: 'financial', label: 'Financeiro' },
   { value: 'quality', label: 'Qualidade' },
   { value: 'clients', label: 'Clientes' },
   { value: 'recurrences', label: 'Recorrências' },

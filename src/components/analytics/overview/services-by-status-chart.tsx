@@ -132,7 +132,7 @@ export function ServicesByStatusChart({ data }: ServicesByStatusChartProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             {chartType === 'bar' ? (
               <BarChart

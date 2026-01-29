@@ -1,108 +1,57 @@
 import { Suspense } from 'react'
 import { Header } from '@/components/layout/header'
-import { AnalyticsSummaryCards } from '@/components/analytics/analytics-summary-cards'
 import { AnalyticsFilters } from '@/components/analytics/analytics-filters'
-import { AnalyticsTabs } from '@/components/analytics/analytics-tabs'
-import { SlaHealthIndicators } from '@/components/analytics/operational/sla-health-indicators'
-import { ResponseTimeDistributionChart } from '@/components/analytics/operational/response-time-distribution'
-import { AtRiskProvidersTable } from '@/components/analytics/operational/at-risk-providers-table'
-import { NetworkSaturationCard } from '@/components/analytics/operational/network-saturation-card'
-import { CoverageGapsTable } from '@/components/analytics/operational/coverage-gaps-table'
-import { CriticalIssuesSummary } from '@/components/analytics/operational/critical-issues-summary'
-import { AcceptanceTrendChart } from '@/components/analytics/network/acceptance-trend-chart'
-import { UnifiedRankingCard } from '@/components/analytics/network/unified-ranking-card'
-import { VolumeDistributionChart } from '@/components/analytics/network/volume-distribution-chart'
-import { NetworkSummaryCards } from '@/components/analytics/network/network-summary-cards'
-import { ReschedulesByProviderChart } from '@/components/analytics/network/reschedules-by-provider-chart'
-import { AdditionalVisitsByProviderChart } from '@/components/analytics/network/additional-visits-by-provider-chart'
-import { RevenueByCategoryChart } from '@/components/analytics/financial/revenue-by-category-chart'
-import { TicketTrendChart } from '@/components/analytics/financial/ticket-trend-chart'
-import { TicketByCategoryChart } from '@/components/analytics/financial/ticket-by-category-chart'
-import { PaymentStatusChart } from '@/components/analytics/financial/payment-status-chart'
-import { ConcentrationCard } from '@/components/analytics/financial/concentration-card'
-import { RatingTrendChart } from '@/components/analytics/quality/rating-trend-chart'
-import { CompletionByCategoryChart } from '@/components/analytics/quality/completion-by-category-chart'
-import { RatingByCategoryChart } from '@/components/analytics/quality/rating-by-category-chart'
-import { CompletionTrendChart } from '@/components/analytics/quality/completion-trend-chart'
-import { LowRatingAlerts } from '@/components/analytics/quality/low-rating-alerts'
-import { ServicesByStatusChart } from '@/components/analytics/overview/services-by-status-chart'
-import { ClientsSummaryCards } from '@/components/analytics/clients/clients-summary-cards'
-import { ClientRegistrationTrendChart } from '@/components/analytics/clients/client-registration-trend-chart'
-import { ClientStatusChart } from '@/components/analytics/clients/client-status-chart'
-import { ClientRequestDistributionChart } from '@/components/analytics/clients/client-request-distribution-chart'
-import { ClientPlatformChart } from '@/components/analytics/clients/client-platform-chart'
-import { TopClientsTable } from '@/components/analytics/clients/top-clients-table'
-import { ClientsByCityChart } from '@/components/analytics/clients/clients-by-city-chart'
-import { RecurrencesSummaryCards } from '@/components/analytics/recurrences/recurrences-summary-cards'
-import { RecurrenceTrendChart } from '@/components/analytics/recurrences/recurrence-trend-chart'
-import { RecurrenceStatusChart } from '@/components/analytics/recurrences/recurrence-status-chart'
-import { RecurrencesByServiceChart } from '@/components/analytics/recurrences/recurrences-by-service-chart'
-import { RecurrenceTypeChart } from '@/components/analytics/recurrences/recurrence-type-chart'
-import { InactivationReasonsChart } from '@/components/analytics/recurrences/inactivation-reasons-chart'
-import { RecurrencesByDistrictChart } from '@/components/analytics/recurrences/recurrences-by-district-chart'
-import { TasksSummaryCards } from '@/components/analytics/tasks/tasks-summary-cards'
-import { TaskTrendChart } from '@/components/analytics/tasks/task-trend-chart'
-import { TaskStatusChart } from '@/components/analytics/tasks/task-status-chart'
-import { TasksByTypeChart } from '@/components/analytics/tasks/tasks-by-type-chart'
-import { TasksByAssigneeChart } from '@/components/analytics/tasks/tasks-by-assignee-chart'
-import { TaskCompletionTimeChart } from '@/components/analytics/tasks/task-completion-time-chart'
-import { TasksByProviderChart } from '@/components/analytics/tasks/tasks-by-provider-chart'
-import { TaskDeadlineChart } from '@/components/analytics/tasks/task-deadline-chart'
+import { AnalyticsContent } from '@/components/analytics/analytics-content'
 import { LastSyncBadge } from '@/components/sync/last-sync-badge'
+import { ANALYTICS_TABS, KPIS_OPERACIONAIS_TABS } from '@/lib/analytics/constants'
 import {
-  getOperationalSummary,
-  getNetworkHealthData,
-  getResponseTimeDistribution,
-  getAtRiskProviders,
-  getAcceptanceTrend,
-  getProviderRanking,
-  getVolumeDistribution,
-  getRevenueByCategory,
-  getTicketTrend,
-  getTicketByCategory,
-  getPaymentStatusBreakdown,
-  getRatingTrend,
-  getCompletionByCategory,
-  getRatingByCategory,
-  getCompletionTrend,
-  getLowRatingProviders,
-  getConcentrationMetrics,
-  getNetworkSaturation,
-  getCoverageGaps,
-  getAnalyticsFilterOptions,
-  getServicesByStatus,
-  getNetworkKPIs,
-  getReschedulesByProvider,
-  getAdditionalVisitsByProvider,
-} from '@/lib/analytics/actions'
-import {
-  getClientsSummary,
-  getClientRegistrationTrend,
-  getClientStatusDistribution,
-  getClientRequestDistribution,
-  getClientPlatformDistribution,
-  getTopClients,
-  getClientsByCity,
-} from '@/lib/analytics/clients-actions'
-import {
-  getRecurrencesSummary,
-  getRecurrenceTrend,
-  getRecurrenceStatusDistribution,
-  getRecurrencesByService,
-  getRecurrenceTypeDistribution,
-  getInactivationReasons,
-  getRecurrencesByDistrict,
-} from '@/lib/analytics/recurrences-actions'
-import {
-  getTasksSummary,
-  getTaskTrend,
-  getTaskStatusDistribution,
-  getTasksByType,
-  getTasksByAssignee,
-  getTaskCompletionTime,
-  getTasksByProvider,
-  getTaskDeadlineCompliance,
-} from '@/lib/analytics/tasks-actions'
+  getCachedOperationalSummary,
+  getCachedNetworkHealthData,
+  getCachedResponseTimeDistribution,
+  getCachedAtRiskProviders,
+  getCachedAcceptanceTrend,
+  getCachedProviderRanking,
+  getCachedVolumeDistribution,
+  getCachedRevenueByCategory,
+  getCachedTicketTrend,
+  getCachedTicketByCategory,
+  getCachedPaymentStatusBreakdown,
+  getCachedRatingTrend,
+  getCachedCompletionByCategory,
+  getCachedRatingByCategory,
+  getCachedCompletionTrend,
+  getCachedLowRatingProviders,
+  getCachedConcentrationMetrics,
+  getCachedNetworkSaturation,
+  getCachedCoverageGaps,
+  getCachedAnalyticsFilterOptions,
+  getCachedServicesByStatus,
+  getCachedNetworkKPIs,
+  getCachedReschedulesByProvider,
+  getCachedAdditionalVisitsByProvider,
+  getCachedClientsSummary,
+  getCachedClientRegistrationTrend,
+  getCachedClientStatusDistribution,
+  getCachedClientRequestDistribution,
+  getCachedClientPlatformDistribution,
+  getCachedTopClients,
+  getCachedClientsByCity,
+  getCachedRecurrencesSummary,
+  getCachedRecurrenceTrend,
+  getCachedRecurrenceStatusDistribution,
+  getCachedRecurrencesByService,
+  getCachedRecurrenceTypeDistribution,
+  getCachedInactivationReasons,
+  getCachedRecurrencesByDistrict,
+  getCachedTasksSummary,
+  getCachedTaskTrend,
+  getCachedTaskStatusDistribution,
+  getCachedTasksByType,
+  getCachedTasksByAssignee,
+  getCachedTaskCompletionTime,
+  getCachedTasksByProvider,
+  getCachedTaskDeadlineCompliance,
+} from '@/lib/analytics/cached-actions'
 import { getLastSyncInfoBatch, type LastSyncInfo } from '@/lib/sync/logs-actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
 import type { AnalyticsFilters as AnalyticsFiltersType, RankingMetric } from '@/lib/analytics/types'
@@ -137,8 +86,14 @@ export default async function AnalyticsPage({
 }: {
   searchParams: SearchParams
 }) {
-  await requirePageAccess('analytics')
   const params = await searchParams
+
+  // Determine context: 'kpis' shows KPIs Operacionais tabs, default shows Analytics tabs
+  const context = typeof params.context === 'string' ? params.context : 'analytics'
+  const isKpisContext = context === 'kpis'
+
+  // Check permissions based on context
+  await requirePageAccess(isKpisContext ? 'kpis_operacionais' : 'analytics')
 
   const filters: AnalyticsFiltersType = {
     dateFrom: typeof params.dateFrom === 'string' ? params.dateFrom : undefined,
@@ -148,20 +103,10 @@ export default async function AnalyticsPage({
     service: typeof params.service === 'string' ? params.service : undefined,
   }
 
-  const currentTab = typeof params.tab === 'string' ? params.tab : 'overview'
+  const defaultTab = typeof params.tab === 'string' ? params.tab : 'overview'
   const rankingMetric = (typeof params.rankingMetric === 'string' ? params.rankingMetric : 'volume') as RankingMetric
 
-  // Fetch data based on current tab to optimize loading
-  const fetchOverviewData = currentTab === 'overview'
-  const fetchOperationalData = currentTab === 'overview' || currentTab === 'operational'
-  const fetchNetworkData = currentTab === 'overview' || currentTab === 'network'
-  const fetchFinancialData = currentTab === 'overview' || currentTab === 'financial'
-  const fetchQualityData = currentTab === 'overview' || currentTab === 'quality'
-  const fetchClientsData = currentTab === 'clients'
-  const fetchRecurrencesData = currentTab === 'recurrences'
-  const fetchTasksData = currentTab === 'tasks'
-
-  // Fetch all needed data in parallel
+  // Fetch ALL data upfront in parallel - enables instant client-side tab switching
   const [
     filterOptions,
     summary,
@@ -210,59 +155,70 @@ export default async function AnalyticsPage({
     tasksByProvider,
     taskDeadlineCompliance,
   ] = await Promise.all([
-    getAnalyticsFilterOptions(),
-    fetchOverviewData ? getOperationalSummary(filters) : Promise.resolve(null),
-    fetchOverviewData ? getServicesByStatus(filters) : Promise.resolve(null),
-    fetchOperationalData || fetchNetworkData ? getNetworkHealthData(filters) : Promise.resolve(null),
-    fetchOperationalData ? getResponseTimeDistribution(filters) : Promise.resolve(null),
-    fetchOperationalData || fetchNetworkData ? getAtRiskProviders(filters) : Promise.resolve(null),
-    fetchOperationalData || fetchNetworkData ? getNetworkSaturation(filters) : Promise.resolve(null),
-    fetchOperationalData || fetchNetworkData ? getCoverageGaps(filters) : Promise.resolve(null),
-    fetchNetworkData ? getAcceptanceTrend(filters) : Promise.resolve(null),
-    fetchNetworkData ? getProviderRanking(filters, rankingMetric, 10, 'desc') : Promise.resolve(null),
-    fetchNetworkData ? getVolumeDistribution(filters, 10) : Promise.resolve(null),
-    fetchNetworkData ? getNetworkKPIs(filters) : Promise.resolve(null),
-    fetchNetworkData ? getReschedulesByProvider(filters, 10) : Promise.resolve(null),
-    fetchNetworkData ? getAdditionalVisitsByProvider(filters, 10) : Promise.resolve(null),
-    fetchNetworkData || fetchQualityData ? getCompletionTrend(filters) : Promise.resolve(null),
-    fetchFinancialData ? getRevenueByCategory(filters, 8) : Promise.resolve(null),
-    fetchFinancialData ? getTicketTrend(filters) : Promise.resolve(null),
-    fetchFinancialData ? getTicketByCategory(filters, 8) : Promise.resolve(null),
-    fetchFinancialData ? getPaymentStatusBreakdown(filters) : Promise.resolve(null),
-    fetchFinancialData || fetchNetworkData ? getConcentrationMetrics(filters) : Promise.resolve(null),
-    fetchQualityData ? getRatingTrend(filters) : Promise.resolve(null),
-    fetchQualityData ? getCompletionByCategory(filters) : Promise.resolve(null),
-    fetchQualityData ? getRatingByCategory(filters) : Promise.resolve(null),
-    fetchQualityData || fetchNetworkData ? getLowRatingProviders(filters) : Promise.resolve(null),
-    fetchClientsData ? getClientsSummary(filters) : Promise.resolve(null),
-    fetchClientsData ? getClientRegistrationTrend(filters) : Promise.resolve(null),
-    fetchClientsData ? getClientStatusDistribution(filters) : Promise.resolve(null),
-    fetchClientsData ? getClientRequestDistribution(filters) : Promise.resolve(null),
-    fetchClientsData ? getClientPlatformDistribution(filters) : Promise.resolve(null),
-    fetchClientsData ? getTopClients(10, filters) : Promise.resolve(null),
-    fetchClientsData ? getClientsByCity(15, filters) : Promise.resolve(null),
-    fetchRecurrencesData ? getRecurrencesSummary(filters) : Promise.resolve(null),
-    fetchRecurrencesData ? getRecurrenceTrend(filters) : Promise.resolve(null),
-    fetchRecurrencesData ? getRecurrenceStatusDistribution(filters) : Promise.resolve(null),
-    fetchRecurrencesData ? getRecurrencesByService(10, filters) : Promise.resolve(null),
-    fetchRecurrencesData ? getRecurrenceTypeDistribution(filters) : Promise.resolve(null),
-    fetchRecurrencesData ? getInactivationReasons(10, filters) : Promise.resolve(null),
-    fetchRecurrencesData ? getRecurrencesByDistrict(15, filters) : Promise.resolve(null),
-    fetchTasksData ? getTasksSummary(filters) : Promise.resolve(null),
-    fetchTasksData ? getTaskTrend(filters) : Promise.resolve(null),
-    fetchTasksData ? getTaskStatusDistribution(filters) : Promise.resolve(null),
-    fetchTasksData ? getTasksByType(10, filters) : Promise.resolve(null),
-    fetchTasksData ? getTasksByAssignee(10, filters) : Promise.resolve(null),
-    fetchTasksData ? getTaskCompletionTime(10, filters) : Promise.resolve(null),
-    fetchTasksData ? getTasksByProvider(15, filters) : Promise.resolve(null),
-    fetchTasksData ? getTaskDeadlineCompliance(filters) : Promise.resolve(null),
+    getCachedAnalyticsFilterOptions(),
+    // Overview + Operational + Network + Financial + Quality data
+    getCachedOperationalSummary(filters),
+    getCachedServicesByStatus(filters),
+    getCachedNetworkHealthData(filters),
+    getCachedResponseTimeDistribution(filters),
+    getCachedAtRiskProviders(filters),
+    getCachedNetworkSaturation(filters),
+    getCachedCoverageGaps(filters),
+    getCachedAcceptanceTrend(filters),
+    getCachedProviderRanking(filters, rankingMetric, 10, 'desc'),
+    getCachedVolumeDistribution(filters, 10),
+    getCachedNetworkKPIs(filters),
+    getCachedReschedulesByProvider(filters, 10),
+    getCachedAdditionalVisitsByProvider(filters, 10),
+    getCachedCompletionTrend(filters),
+    getCachedRevenueByCategory(filters, 8),
+    getCachedTicketTrend(filters),
+    getCachedTicketByCategory(filters, 8),
+    getCachedPaymentStatusBreakdown(filters),
+    getCachedConcentrationMetrics(filters),
+    getCachedRatingTrend(filters),
+    getCachedCompletionByCategory(filters),
+    getCachedRatingByCategory(filters),
+    getCachedLowRatingProviders(filters),
+    // Clients data
+    getCachedClientsSummary(filters),
+    getCachedClientRegistrationTrend(filters),
+    getCachedClientStatusDistribution(filters),
+    getCachedClientRequestDistribution(filters),
+    getCachedClientPlatformDistribution(filters),
+    getCachedTopClients(10, filters),
+    getCachedClientsByCity(15, filters),
+    // Recurrences data
+    getCachedRecurrencesSummary(filters),
+    getCachedRecurrenceTrend(filters),
+    getCachedRecurrenceStatusDistribution(filters),
+    getCachedRecurrencesByService(10, filters),
+    getCachedRecurrenceTypeDistribution(filters),
+    getCachedInactivationReasons(10, filters),
+    getCachedRecurrencesByDistrict(15, filters),
+    // Tasks data
+    getCachedTasksSummary(filters),
+    getCachedTaskTrend(filters),
+    getCachedTaskStatusDistribution(filters),
+    getCachedTasksByType(10, filters),
+    getCachedTasksByAssignee(10, filters),
+    getCachedTaskCompletionTime(10, filters),
+    getCachedTasksByProvider(15, filters),
+    getCachedTaskDeadlineCompliance(filters),
   ])
+
+  // Select tabs based on context
+  const tabs = isKpisContext ? KPIS_OPERACIONAIS_TABS : ANALYTICS_TABS
+  const pageTitle = isKpisContext ? "KPI's Operacionais" : 'Analytics'
+  const pageDescription = isKpisContext
+    ? 'Dashboard operacional e metricas da rede'
+    : 'Dashboard operacional e metricas da rede'
 
   return (
     <div className="flex flex-col h-full">
       <Header
-        title="Analytics"
-        description="Dashboard operacional e metricas da rede"
+        title={pageTitle}
+        description={pageDescription}
         syncInfo={
           <Suspense fallback={null}>
             <SyncInfoSection />
@@ -276,271 +232,59 @@ export default async function AnalyticsPage({
           <AnalyticsFilters filterOptions={filterOptions} />
         </Suspense>
 
-        {/* Tabs */}
-        <Suspense fallback={<div className="h-10 animate-pulse bg-muted rounded-lg" />}>
-          <AnalyticsTabs defaultValue={currentTab} />
-        </Suspense>
-
-        {/* Tab Content */}
-        {currentTab === 'overview' && summary && (
-          <div className="space-y-8">
-            {/* Summary Cards */}
-            <AnalyticsSummaryCards data={summary} />
-
-            {/* Gráficos Overview: Serviços por Estado + Ticket Médio */}
-            <section>
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-indigo-500" />
-                Visão Geral de Pedidos
-              </h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {servicesByStatus && <ServicesByStatusChart data={servicesByStatus} />}
-                {ticketTrend && <TicketTrendChart data={ticketTrend} />}
-              </div>
-            </section>
-
-            {/* Secção 1: Saúde Operacional */}
-            <section>
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-blue-500" />
-                Saúde Operacional
-              </h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {networkHealth && <SlaHealthIndicators data={networkHealth} />}
-                <CriticalIssuesSummary
-                  atRiskProviders={atRiskProviders || undefined}
-                  coverageGaps={coverageGaps || undefined}
-                  lowRatingProviders={lowRatingProviders || undefined}
-                  networkSaturation={networkSaturation || undefined}
-                />
-              </div>
-            </section>
-
-            {/* Secção 2: Performance da Rede */}
-            <section>
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-green-500" />
-                Performance da Rede
-              </h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {acceptanceTrend && <AcceptanceTrendChart data={acceptanceTrend} />}
-                {completionTrend && <CompletionTrendChart data={completionTrend} />}
-              </div>
-            </section>
-
-            {/* Secção 3: Visão Financeira */}
-            <section>
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-amber-500" />
-                Visão Financeira
-              </h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {revenueByCategory && <RevenueByCategoryChart data={revenueByCategory} />}
-                {concentration && <ConcentrationCard data={concentration} />}
-              </div>
-            </section>
-
-            {/* Secção 4: Qualidade */}
-            <section>
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-purple-500" />
-                Qualidade de Serviço
-              </h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {ratingTrend && <RatingTrendChart data={ratingTrend} />}
-                {ratingByCategory && <RatingByCategoryChart data={ratingByCategory} />}
-              </div>
-            </section>
-
-            {/* Alertas Críticos */}
-            {((atRiskProviders && atRiskProviders.length > 0) || (lowRatingProviders && lowRatingProviders.length > 0)) && (
-              <section>
-                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-red-500" />
-                  Alertas
-                </h2>
-                <div className="space-y-6">
-                  {atRiskProviders && atRiskProviders.length > 0 && (
-                    <AtRiskProvidersTable data={atRiskProviders.slice(0, 5)} />
-                  )}
-                  {lowRatingProviders && lowRatingProviders.length > 0 && (
-                    <LowRatingAlerts data={lowRatingProviders.slice(0, 5)} />
-                  )}
-                </div>
-              </section>
-            )}
-          </div>
-        )}
-
-        {currentTab === 'operational' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {networkHealth && <SlaHealthIndicators data={networkHealth} />}
-              {responseTime && <ResponseTimeDistributionChart data={responseTime} />}
-            </div>
-
-            {/* Network Saturation Analysis */}
-            {networkSaturation && <NetworkSaturationCard data={networkSaturation} />}
-
-            {/* At Risk Providers */}
-            {atRiskProviders && <AtRiskProvidersTable data={atRiskProviders} />}
-
-            {/* Coverage Gaps */}
-            {coverageGaps && <CoverageGapsTable data={coverageGaps} />}
-          </div>
-        )}
-
-        {currentTab === 'network' && (
-          <div className="space-y-6">
-            {/* KPI Cards */}
-            {networkKPIs && <NetworkSummaryCards data={networkKPIs} />}
-
-            {/* Saúde da Rede + Issues */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {networkHealth && <SlaHealthIndicators data={networkHealth} />}
-              <CriticalIssuesSummary
-                atRiskProviders={atRiskProviders || undefined}
-                coverageGaps={coverageGaps || undefined}
-                lowRatingProviders={lowRatingProviders || undefined}
-                networkSaturation={networkSaturation || undefined}
-              />
-            </div>
-
-            {/* Aceites vs Rejeitados + Serviços Concluídos */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {acceptanceTrend && <AcceptanceTrendChart data={acceptanceTrend} />}
-              {completionTrend && <CompletionTrendChart data={completionTrend} />}
-            </div>
-
-            {/* Reagendamentos + Visitas Adicionais por prestador */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {reschedulesByProvider && <ReschedulesByProviderChart data={reschedulesByProvider} />}
-              {additionalVisitsByProvider && <AdditionalVisitsByProviderChart data={additionalVisitsByProvider} />}
-            </div>
-
-            {/* Volume Distribution + Concentration */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {volumeDistribution && <VolumeDistributionChart data={volumeDistribution} />}
-              {concentration && <ConcentrationCard data={concentration} />}
-            </div>
-
-            {/* Ranking de Prestadores */}
-            {providerRanking && (
-              <UnifiedRankingCard data={providerRanking} currentMetric={rankingMetric} />
-            )}
-          </div>
-        )}
-
-        {currentTab === 'financial' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {revenueByCategory && <RevenueByCategoryChart data={revenueByCategory} />}
-              {ticketTrend && <TicketTrendChart data={ticketTrend} />}
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {ticketByCategory && <TicketByCategoryChart data={ticketByCategory} />}
-              {concentration && <ConcentrationCard data={concentration} />}
-            </div>
-
-            {paymentStatus && <PaymentStatusChart data={paymentStatus} />}
-          </div>
-        )}
-
-        {currentTab === 'quality' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {ratingTrend && <RatingTrendChart data={ratingTrend} />}
-              {ratingByCategory && <RatingByCategoryChart data={ratingByCategory} />}
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {completionTrend && <CompletionTrendChart data={completionTrend} />}
-              {completionByCategory && <CompletionByCategoryChart data={completionByCategory} />}
-            </div>
-
-            {/* Low Rating Alerts */}
-            {lowRatingProviders && <LowRatingAlerts data={lowRatingProviders} />}
-          </div>
-        )}
-
-        {currentTab === 'clients' && (
-          <div className="space-y-6">
-            {/* KPI Cards */}
-            {clientsSummary && <ClientsSummaryCards data={clientsSummary} />}
-
-            {/* Evolução de Registos (full width) */}
-            {clientRegistrationTrend && <ClientRegistrationTrendChart data={clientRegistrationTrend} />}
-
-            {/* Status + Plataforma */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {clientStatusDistribution && <ClientStatusChart data={clientStatusDistribution} />}
-              {clientPlatformDistribution && <ClientPlatformChart data={clientPlatformDistribution} />}
-            </div>
-
-            {/* Distribuição de Pedidos + Clientes por Cidade */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {clientRequestDistribution && <ClientRequestDistributionChart data={clientRequestDistribution} />}
-              {clientsByCity && <ClientsByCityChart data={clientsByCity} />}
-            </div>
-
-            {/* Top Clientes (full width) */}
-            {topClients && <TopClientsTable data={topClients} />}
-          </div>
-        )}
-
-        {currentTab === 'recurrences' && (
-          <div className="space-y-6">
-            {/* KPI Cards */}
-            {recurrencesSummary && <RecurrencesSummaryCards data={recurrencesSummary} />}
-
-            {/* Evolução de Recorrências (full width) */}
-            {recurrenceTrend && <RecurrenceTrendChart data={recurrenceTrend} />}
-
-            {/* Status + Tipo de Recorrência */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {recurrenceStatusDistribution && <RecurrenceStatusChart data={recurrenceStatusDistribution} />}
-              {recurrenceTypeDistribution && <RecurrenceTypeChart data={recurrenceTypeDistribution} />}
-            </div>
-
-            {/* Serviços + Motivos de Inativação */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {recurrencesByService && <RecurrencesByServiceChart data={recurrencesByService} />}
-              {inactivationReasons && <InactivationReasonsChart data={inactivationReasons} />}
-            </div>
-
-            {/* Concelhos (full width) */}
-            {recurrencesByDistrict && <RecurrencesByDistrictChart data={recurrencesByDistrict} />}
-          </div>
-        )}
-
-        {currentTab === 'tasks' && (
-          <div className="space-y-6">
-            {/* KPI Cards */}
-            {tasksSummary && <TasksSummaryCards data={tasksSummary} />}
-
-            {/* Evolução de Tarefas (full width) */}
-            {taskTrend && <TaskTrendChart data={taskTrend} />}
-
-            {/* Status + Tipo de Tarefa */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {taskStatusDistribution && <TaskStatusChart data={taskStatusDistribution} />}
-              {tasksByType && <TasksByTypeChart data={tasksByType} />}
-            </div>
-
-            {/* Colaboradores + Cumprimento de Prazos */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {tasksByAssignee && <TasksByAssigneeChart data={tasksByAssignee} />}
-              {taskDeadlineCompliance && <TaskDeadlineChart data={taskDeadlineCompliance} />}
-            </div>
-
-            {/* Tempo de Conclusão + Tarefas por Prestador */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {taskCompletionTime && <TaskCompletionTimeChart data={taskCompletionTime} />}
-              {tasksByProvider && <TasksByProviderChart data={tasksByProvider} />}
-            </div>
-          </div>
-        )}
+        {/* Tabs + Content - Client-side for instant switching */}
+        <AnalyticsContent
+          defaultTab={defaultTab}
+          rankingMetric={rankingMetric}
+          tabs={tabs}
+          data={{
+            summary,
+            servicesByStatus,
+            networkHealth,
+            responseTime,
+            atRiskProviders,
+            networkSaturation,
+            coverageGaps,
+            acceptanceTrend,
+            providerRanking,
+            volumeDistribution,
+            networkKPIs,
+            reschedulesByProvider,
+            additionalVisitsByProvider,
+            completionTrend,
+            revenueByCategory,
+            ticketTrend,
+            ticketByCategory,
+            paymentStatus,
+            concentration,
+            ratingTrend,
+            completionByCategory,
+            ratingByCategory,
+            lowRatingProviders,
+            clientsSummary,
+            clientRegistrationTrend,
+            clientStatusDistribution,
+            clientRequestDistribution,
+            clientPlatformDistribution,
+            topClients,
+            clientsByCity,
+            recurrencesSummary,
+            recurrenceTrend,
+            recurrenceStatusDistribution,
+            recurrencesByService,
+            recurrenceTypeDistribution,
+            inactivationReasons,
+            recurrencesByDistrict,
+            tasksSummary,
+            taskTrend,
+            taskStatusDistribution,
+            tasksByType,
+            tasksByAssignee,
+            taskCompletionTime,
+            tasksByProvider,
+            taskDeadlineCompliance,
+          }}
+        />
       </div>
     </div>
   )
