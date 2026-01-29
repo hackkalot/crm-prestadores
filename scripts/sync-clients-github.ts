@@ -330,8 +330,17 @@ async function main() {
     const validRecords = allClientsData.filter(r => r.user_id && r.user_id !== '')
     console.log(`   Valid records (with user_id): ${validRecords.length}/${allClientsData.length}`)
 
+    // Deduplicate by user_id (keep the last occurrence - most recent data)
+    const deduplicatedRecords = Array.from(
+      validRecords.reduce((map, record) => {
+        map.set(record.user_id, record)
+        return map
+      }, new Map<string, typeof validRecords[0]>()).values()
+    )
+    console.log(`   Deduplicated: ${validRecords.length} -> ${deduplicatedRecords.length} unique clients`)
+
     // Count inserts vs updates
-    for (const record of validRecords) {
+    for (const record of deduplicatedRecords) {
       if (existingUserIds.has(record.user_id)) {
         updated++
       } else {
@@ -342,10 +351,10 @@ async function main() {
     // Process in batches using upsert
     const BATCH_SIZE = 500
 
-    for (let i = 0; i < validRecords.length; i += BATCH_SIZE) {
-      const batch = validRecords.slice(i, i + BATCH_SIZE)
+    for (let i = 0; i < deduplicatedRecords.length; i += BATCH_SIZE) {
+      const batch = deduplicatedRecords.slice(i, i + BATCH_SIZE)
       const batchNum = Math.floor(i / BATCH_SIZE) + 1
-      const totalBatches = Math.ceil(validRecords.length / BATCH_SIZE)
+      const totalBatches = Math.ceil(deduplicatedRecords.length / BATCH_SIZE)
 
       console.log(`   Upserting batch ${batchNum}/${totalBatches} (${batch.length} records)...`)
 
