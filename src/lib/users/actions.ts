@@ -18,6 +18,9 @@ export type User = {
   rejection_reason: string | null
   created_at: string
   updated_at: string
+  // 2FA fields
+  two_factor_enabled: boolean
+  two_factor_method: 'email' | 'totp' | null
 }
 
 export type UserWithApprover = User & {

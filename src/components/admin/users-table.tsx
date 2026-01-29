@@ -40,7 +40,17 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
+  ShieldCheck,
+  ShieldOff,
+  Mail,
+  Smartphone,
 } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { formatDistanceToNow } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import type { UserWithApprover } from '@/lib/users/actions'
@@ -132,6 +142,7 @@ export function UsersTable({ users, roles }: UsersTableProps) {
             <TableRow>
               <TableHead>Utilizador</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>2FA</TableHead>
               <TableHead>Estado</TableHead>
               <TableHead>Registado</TableHead>
               <TableHead className="text-right">Ações</TableHead>
@@ -160,6 +171,42 @@ export function UsersTable({ users, roles }: UsersTableProps) {
                         </Badge>
                       )
                     })()}
+                  </TableCell>
+                  <TableCell>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center justify-center">
+                            {user.two_factor_enabled ? (
+                              <div className="flex items-center gap-1">
+                                <ShieldCheck className="h-4 w-4 text-green-600" />
+                                {user.two_factor_method === 'totp' ? (
+                                  <Smartphone className="h-3 w-3 text-muted-foreground" />
+                                ) : user.two_factor_method === 'email' ? (
+                                  <Mail className="h-3 w-3 text-muted-foreground" />
+                                ) : null}
+                              </div>
+                            ) : (
+                              <ShieldOff className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {user.two_factor_enabled ? (
+                            <p>
+                              2FA ativo via{' '}
+                              {user.two_factor_method === 'totp'
+                                ? 'App Autenticadora'
+                                : user.two_factor_method === 'email'
+                                ? 'Email'
+                                : 'desconhecido'}
+                            </p>
+                          ) : (
+                            <p>2FA não configurado</p>
+                          )}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </TableCell>
                   <TableCell>
                     <div className="space-y-1">
