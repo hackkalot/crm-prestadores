@@ -681,6 +681,39 @@ export type Database = {
           },
         ]
       }
+      forms_rate_limits: {
+        Row: {
+          attempts: number | null
+          blocked_until: string | null
+          created_at: string | null
+          first_attempt_at: string | null
+          id: string
+          identifier: string
+          identifier_type: string
+          last_attempt_at: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          blocked_until?: string | null
+          created_at?: string | null
+          first_attempt_at?: string | null
+          id?: string
+          identifier: string
+          identifier_type: string
+          last_attempt_at?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          blocked_until?: string | null
+          created_at?: string | null
+          first_attempt_at?: string | null
+          id?: string
+          identifier?: string
+          identifier_type?: string
+          last_attempt_at?: string | null
+        }
+        Relationships: []
+      }
       history_log: {
         Row: {
           card_id: string | null
@@ -1549,6 +1582,8 @@ export type Database = {
           forms_response_id: string | null
           forms_submitted_at: string | null
           forms_token: string | null
+          forms_token_created_at: string | null
+          forms_token_expires_at: string | null
           has_activity_declaration: boolean | null
           has_admin_team: boolean | null
           has_computer: boolean | null
@@ -1628,6 +1663,8 @@ export type Database = {
           forms_response_id?: string | null
           forms_submitted_at?: string | null
           forms_token?: string | null
+          forms_token_created_at?: string | null
+          forms_token_expires_at?: string | null
           has_activity_declaration?: boolean | null
           has_admin_team?: boolean | null
           has_computer?: boolean | null
@@ -1707,6 +1744,8 @@ export type Database = {
           forms_response_id?: string | null
           forms_submitted_at?: string | null
           forms_token?: string | null
+          forms_token_created_at?: string | null
+          forms_token_expires_at?: string | null
           has_activity_declaration?: boolean | null
           has_admin_team?: boolean | null
           has_computer?: boolean | null
@@ -2875,6 +2914,97 @@ export type Database = {
           },
         ]
       }
+      two_factor_codes: {
+        Row: {
+          attempts: number | null
+          code_hash: string
+          code_type: string
+          created_at: string | null
+          expires_at: string
+          id: string
+          ip_address: string | null
+          method: string
+          user_agent: string | null
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          code_hash: string
+          code_type: string
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          ip_address?: string | null
+          method: string
+          user_agent?: string | null
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          code_hash?: string
+          code_type?: string
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          method?: string
+          user_agent?: string | null
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "two_factor_codes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      two_factor_sessions: {
+        Row: {
+          created_at: string | null
+          expires_at: string
+          id: string
+          ip_address: string | null
+          session_token: string
+          user_agent: string | null
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          ip_address?: string | null
+          session_token: string
+          user_agent?: string | null
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          session_token?: string
+          user_agent?: string | null
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "two_factor_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           approval_status:
@@ -2882,14 +3012,22 @@ export type Database = {
             | null
           approved_at: string | null
           approved_by: string | null
+          backup_codes_hash: string[] | null
           created_at: string | null
           email: string
           id: string
+          last_two_factor_at: string | null
           name: string
           rejected_at: string | null
           rejected_by: string | null
           rejection_reason: string | null
           role: Database["public"]["Enums"]["user_role"] | null
+          totp_confirmed_at: string | null
+          totp_secret_encrypted: string | null
+          two_factor_attempts: number | null
+          two_factor_enabled: boolean | null
+          two_factor_locked_until: string | null
+          two_factor_method: string | null
           updated_at: string | null
         }
         Insert: {
@@ -2898,14 +3036,22 @@ export type Database = {
             | null
           approved_at?: string | null
           approved_by?: string | null
+          backup_codes_hash?: string[] | null
           created_at?: string | null
           email: string
           id?: string
+          last_two_factor_at?: string | null
           name: string
           rejected_at?: string | null
           rejected_by?: string | null
           rejection_reason?: string | null
           role?: Database["public"]["Enums"]["user_role"] | null
+          totp_confirmed_at?: string | null
+          totp_secret_encrypted?: string | null
+          two_factor_attempts?: number | null
+          two_factor_enabled?: boolean | null
+          two_factor_locked_until?: string | null
+          two_factor_method?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -2914,14 +3060,22 @@ export type Database = {
             | null
           approved_at?: string | null
           approved_by?: string | null
+          backup_codes_hash?: string[] | null
           created_at?: string | null
           email?: string
           id?: string
+          last_two_factor_at?: string | null
           name?: string
           rejected_at?: string | null
           rejected_by?: string | null
           rejection_reason?: string | null
           role?: Database["public"]["Enums"]["user_role"] | null
+          totp_confirmed_at?: string | null
+          totp_secret_encrypted?: string | null
+          two_factor_attempts?: number | null
+          two_factor_enabled?: boolean | null
+          two_factor_locked_until?: string | null
+          two_factor_method?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -2963,6 +3117,8 @@ export type Database = {
         Args: { p_page_key: string; p_user_id: string }
         Returns: boolean
       }
+      cleanup_expired_2fa: { Args: never; Returns: undefined }
+      cleanup_old_rate_limits: { Args: never; Returns: undefined }
       get_provider_coverage_by_service: {
         Args: { period_months?: number }
         Returns: {

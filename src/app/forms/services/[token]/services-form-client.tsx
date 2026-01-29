@@ -184,17 +184,24 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
     }
   }
 
+  const scrollToTop = () => {
+    // Use setTimeout to ensure scroll happens after React re-renders
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 50)
+  }
+
   const handleNext = () => {
     if (currentStep < STEPS.length) {
       setCurrentStep(currentStep + 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollToTop()
     }
   }
 
   const handlePrevious = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollToTop()
     }
   }
 
@@ -235,10 +242,10 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
 
     if (result.success) {
       setIsSuccess(true)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollToTop()
     } else {
       setSubmitError(result.error || 'Erro ao submeter formulário')
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollToTop()
     }
 
     setIsSubmitting(false)
@@ -359,7 +366,10 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
               return (
                 <button
                   key={step.id}
-                  onClick={() => setCurrentStep(step.id)}
+                  onClick={() => {
+                    setCurrentStep(step.id)
+                    scrollToTop()
+                  }}
                   disabled={isSubmitting}
                   className={cn(
                     'flex items-center gap-2 px-4 py-2 rounded-lg border transition-all',

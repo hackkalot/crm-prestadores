@@ -2,9 +2,134 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
+import { headers } from 'next/headers'
+import crypto from 'crypto'
 import type { Database } from '@/types/database'
 
 type ProviderFormsData = Database['public']['Tables']['provider_forms_data']['Insert']
+
+// =============================================================================
+// SECURITY CONSTANTS
+// =============================================================================
+
+// Token expires 30 minutes after form submission (window for feedback)
+const TOKEN_FEEDBACK_WINDOW_MINUTES = 30
+
+// Rate limiting: max attempts per window
+const RATE_LIMIT_MAX_ATTEMPTS = 10
+const RATE_LIMIT_WINDOW_MINUTES = 15
+const RATE_LIMIT_BLOCK_MINUTES = 60
+
+// =============================================================================
+// RATE LIMITING
+// =============================================================================
+
+/**
+ * Check and update rate limit for an identifier (IP or token)
+ * Returns true if request should be blocked
+ */
+async function checkRateLimit(
+  identifier: string,
+  identifierType: 'ip' | 'token'
+): Promise<{ blocked: boolean; remainingAttempts?: number }> {
+  const adminClient = createAdminClient()
+  const now = new Date()
+  const windowStart = new Date(now.getTime() - RATE_LIMIT_WINDOW_MINUTES * 60 * 1000)
+
+  // Get existing rate limit record
+  const { data: existing } = await adminClient
+    .from('forms_rate_limits')
+    .select('*')
+    .eq('identifier', identifier)
+    .eq('identifier_type', identifierType)
+    .single()
+
+  if (existing) {
+    // Check if currently blocked
+    if (existing.blocked_until && new Date(existing.blocked_until) > now) {
+      return { blocked: true }
+    }
+
+    // Check if within rate limit window
+    if (new Date(existing.first_attempt_at) > windowStart) {
+      const newAttempts = (existing.attempts || 0) + 1
+
+      if (newAttempts >= RATE_LIMIT_MAX_ATTEMPTS) {
+        // Block the identifier
+        const blockedUntil = new Date(now.getTime() + RATE_LIMIT_BLOCK_MINUTES * 60 * 1000)
+        await adminClient
+          .from('forms_rate_limits')
+          .update({
+            attempts: newAttempts,
+            last_attempt_at: now.toISOString(),
+            blocked_until: blockedUntil.toISOString(),
+          })
+          .eq('id', existing.id)
+
+        return { blocked: true }
+      }
+
+      // Update attempt count
+      await adminClient
+        .from('forms_rate_limits')
+        .update({
+          attempts: newAttempts,
+          last_attempt_at: now.toISOString(),
+        })
+        .eq('id', existing.id)
+
+      return { blocked: false, remainingAttempts: RATE_LIMIT_MAX_ATTEMPTS - newAttempts }
+    } else {
+      // Window expired, reset counter
+      await adminClient
+        .from('forms_rate_limits')
+        .update({
+          attempts: 1,
+          first_attempt_at: now.toISOString(),
+          last_attempt_at: now.toISOString(),
+          blocked_until: null,
+        })
+        .eq('id', existing.id)
+
+      return { blocked: false, remainingAttempts: RATE_LIMIT_MAX_ATTEMPTS - 1 }
+    }
+  } else {
+    // Create new rate limit record
+    await adminClient.from('forms_rate_limits').insert({
+      identifier,
+      identifier_type: identifierType,
+      attempts: 1,
+      first_attempt_at: now.toISOString(),
+      last_attempt_at: now.toISOString(),
+    })
+
+    return { blocked: false, remainingAttempts: RATE_LIMIT_MAX_ATTEMPTS - 1 }
+  }
+}
+
+/**
+ * Get client IP from headers
+ */
+async function getClientIP(): Promise<string> {
+  const headersList = await headers()
+  return (
+    headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    headersList.get('x-real-ip') ||
+    'unknown'
+  )
+}
+
+// =============================================================================
+// SECURE TOKEN GENERATION
+// =============================================================================
+
+/**
+ * Generate a cryptographically secure token
+ * Format: random_bytes(32) as hex = 64 characters
+ */
+function generateSecureToken(): string {
+  return crypto.randomBytes(32).toString('hex')
+}
 
 export interface FormsSubmissionData {
   // Dados do Prestador (editáveis)
@@ -39,7 +164,10 @@ export interface FormsSubmissionData {
 }
 
 /**
- * Gerar token único para acesso ao forms
+ * Gerar token único e seguro para acesso ao forms
+ * - Token criptograficamente seguro (32 bytes random)
+ * - Invalida token anterior automaticamente
+ * - Guarda timestamp de criação para auditoria
  */
 export async function generateFormsToken(providerId: string): Promise<{ success: boolean; token?: string; error?: string }> {
   try {
@@ -50,14 +178,19 @@ export async function generateFormsToken(providerId: string): Promise<{ success:
       return { success: false, error: 'Não autenticado' }
     }
 
-    // Gerar token simples (em produção, usar algo mais seguro como JWT)
-    const token = Buffer.from(`${providerId}:${Date.now()}`).toString('base64url')
+    // Gerar token criptograficamente seguro
+    const token = generateSecureToken()
 
-    // Guardar token no provider
+    // Guardar novo token no provider (substitui o anterior automaticamente)
+    // forms_token_expires_at é null inicialmente - só é definido após submissão
     const adminClient = createAdminClient()
     const { error } = await adminClient
       .from('providers')
-      .update({ forms_token: token })
+      .update({
+        forms_token: token,
+        forms_token_created_at: new Date().toISOString(),
+        forms_token_expires_at: null, // Reset expiration - will be set after submission
+      })
       .eq('id', providerId)
 
     if (error) throw error
@@ -71,26 +204,65 @@ export async function generateFormsToken(providerId: string): Promise<{ success:
 
 /**
  * Validar token e obter provider_id
+ * - Verifica rate limiting por IP
+ * - Verifica se token existe
+ * - Verifica se token não expirou
+ * - Permite acesso durante janela de feedback após submissão
  */
-export async function validateFormsToken(token: string): Promise<{ valid: boolean; providerId?: string; error?: string }> {
+export async function validateFormsToken(
+  token: string,
+  options: { skipRateLimit?: boolean; allowExpiredForFeedback?: boolean } = {}
+): Promise<{ valid: boolean; providerId?: string; error?: string; isInFeedbackWindow?: boolean }> {
   try {
+    // Rate limiting check (unless skipped for internal calls)
+    if (!options.skipRateLimit) {
+      const clientIP = await getClientIP()
+      const rateLimit = await checkRateLimit(clientIP, 'ip')
+
+      if (rateLimit.blocked) {
+        return { valid: false, error: 'Demasiadas tentativas. Tente novamente mais tarde.' }
+      }
+    }
+
+    // Validate token format (should be 64 hex characters for new tokens)
+    // Also accept legacy base64url tokens for backwards compatibility
+    if (!token || token.length < 10) {
+      return { valid: false, error: 'Token inválido' }
+    }
+
     const adminClient = createAdminClient()
 
     const { data, error } = await adminClient
       .from('providers')
-      .select('id, name, forms_submitted_at')
+      .select('id, name, forms_submitted_at, forms_token_expires_at, forms_token_created_at')
       .eq('forms_token', token)
       .single()
 
     if (error || !data) {
-      return { valid: false, error: 'Token inválido' }
+      return { valid: false, error: 'Token inválido ou expirado' }
     }
 
-    // if (data.forms_submitted_at) {
-    //   return { valid: false, error: 'Forms já submetido' }
-    // }
+    const now = new Date()
 
-    return { valid: true, providerId: data.id }
+    // Check if token has expired
+    if (data.forms_token_expires_at) {
+      const expiresAt = new Date(data.forms_token_expires_at)
+
+      if (now > expiresAt) {
+        // Token expired
+        if (options.allowExpiredForFeedback) {
+          // For feedback submission, we allow a grace period check
+          return { valid: false, error: 'O prazo para enviar feedback expirou' }
+        }
+        return { valid: false, error: 'Este link expirou. Solicite um novo link.' }
+      }
+
+      // Token is within feedback window (form already submitted)
+      return { valid: true, providerId: data.id, isInFeedbackWindow: true }
+    }
+
+    // Token has no expiration - form not yet submitted
+    return { valid: true, providerId: data.id, isInFeedbackWindow: false }
   } catch (error) {
     console.error('Error validating token:', error)
     return { valid: false, error: 'Erro ao validar token' }
@@ -99,17 +271,24 @@ export async function validateFormsToken(token: string): Promise<{ valid: boolea
 
 /**
  * Obter dados do prestador pelo token
+ * Returns minimal data needed for the form - no sensitive information
  */
 export async function getProviderByToken(token: string) {
-  const { valid, providerId, error } = await validateFormsToken(token)
+  const { valid, providerId, error, isInFeedbackWindow } = await validateFormsToken(token)
 
   if (!valid || !providerId) {
     return { success: false, error }
   }
 
+  // If in feedback window, form already submitted - don't allow re-access to form
+  if (isInFeedbackWindow) {
+    return { success: false, error: 'O formulário já foi submetido.' }
+  }
+
   try {
     const adminClient = createAdminClient()
 
+    // Only return non-sensitive fields needed for the form
     const { data, error: fetchError } = await adminClient
       .from('providers')
       .select('id, name, email, phone, nif, services')
@@ -127,6 +306,8 @@ export async function getProviderByToken(token: string) {
 
 /**
  * Submit forms de serviços
+ * - Validates token and rate limits
+ * - Sets token expiration after submission (feedback window)
  */
 export async function submitServicesForm(
   token: string,
@@ -134,10 +315,15 @@ export async function submitServicesForm(
   ipAddress?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { valid, providerId, error: validationError } = await validateFormsToken(token)
+    const { valid, providerId, error: validationError, isInFeedbackWindow } = await validateFormsToken(token)
 
     if (!valid || !providerId) {
       return { success: false, error: validationError || 'Token inválido' }
+    }
+
+    // Don't allow re-submission if already in feedback window
+    if (isInFeedbackWindow) {
+      return { success: false, error: 'O formulário já foi submetido.' }
     }
 
     const adminClient = createAdminClient()
@@ -188,11 +374,15 @@ export async function submitServicesForm(
 
     if (formsError) throw formsError
 
+    // Calculate token expiration (feedback window)
+    const feedbackWindowExpiry = new Date(Date.now() + TOKEN_FEEDBACK_WINDOW_MINUTES * 60 * 1000)
+
     // Atualizar providers com TODOS os dados do forms (override completo)
     // provider_forms_data fica como snapshot read-only, providers é a versão editável
     const providerUpdate: Record<string, unknown> = {
       forms_submitted_at: new Date().toISOString(),
       forms_response_id: token,
+      forms_token_expires_at: feedbackWindowExpiry.toISOString(), // Token expires after feedback window
       // Dados editáveis do prestador
       name: data.provider_name || provider?.name,
       email: data.provider_email || provider?.email,
@@ -492,16 +682,24 @@ export interface ProviderFeedback {
 
 /**
  * Submit provider feedback after form submission
+ * - Only allowed during feedback window (token must be valid and in feedback state)
+ * - Invalidates token completely after feedback is submitted
  */
 export async function submitProviderFeedback(
   token: string,
   feedback: ProviderFeedback
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { valid, providerId, error: validationError } = await validateFormsToken(token)
+    // Validate token - must be in feedback window
+    const { valid, providerId, error: validationError, isInFeedbackWindow } = await validateFormsToken(token)
 
     if (!valid || !providerId) {
       return { success: false, error: validationError || 'Token inválido' }
+    }
+
+    // Feedback can only be submitted after form submission (during feedback window)
+    if (!isInFeedbackWindow) {
+      return { success: false, error: 'O formulário ainda não foi submetido' }
     }
 
     const adminClient = createAdminClient()
@@ -509,7 +707,7 @@ export async function submitProviderFeedback(
     // Get the latest submission for this provider
     const { data: latestSubmission } = await adminClient
       .from('provider_forms_data')
-      .select('id, submission_number')
+      .select('id, submission_number, feedback')
       .eq('provider_id', providerId)
       .order('submission_number', { ascending: false })
       .limit(1)
@@ -517,6 +715,15 @@ export async function submitProviderFeedback(
 
     if (!latestSubmission) {
       return { success: false, error: 'Nenhuma submissão encontrada' }
+    }
+
+    // Check if feedback was already submitted
+    if (latestSubmission.feedback && !feedback.skipped) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const existingFeedback = latestSubmission.feedback as any
+      if (existingFeedback.submitted_at && !existingFeedback.skipped) {
+        return { success: false, error: 'O feedback já foi enviado' }
+      }
     }
 
     // Add submitted_at timestamp
@@ -538,6 +745,14 @@ export async function submitProviderFeedback(
       console.error('Error saving feedback:', updateError)
       return { success: false, error: 'Erro ao guardar feedback' }
     }
+
+    // Invalidate token completely after feedback (set expiration to now)
+    await adminClient
+      .from('providers')
+      .update({
+        forms_token_expires_at: new Date().toISOString(),
+      })
+      .eq('id', providerId)
 
     return { success: true }
   } catch (error) {

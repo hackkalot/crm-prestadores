@@ -12,7 +12,8 @@ import { CatalogStatsCards } from '@/components/service-catalog/catalog-stats'
 import { CatalogPricesTable } from '@/components/service-catalog/prices-table'
 import { CatalogMaterialsTable } from '@/components/service-catalog/materials-table'
 import { EmailTemplatesSettings } from '@/components/settings/email-templates-settings'
-import { Settings, ListTodo, History, Network, MapPin, Euro, Mail } from 'lucide-react'
+import { TwoFactorSettings } from '@/components/auth/two-factor-settings'
+import { Settings, ListTodo, History, Network, MapPin, Euro, Mail, Shield } from 'lucide-react'
 import type { CatalogPrice, CatalogMaterial, CatalogStats } from '@/lib/service-catalog/actions'
 import type { TaskDefinitionWithStage, Setting, SettingsLog } from '@/lib/settings/actions'
 import type { CoverageSettings as CoverageSettingsType } from '@/lib/settings/coverage-actions'
@@ -82,6 +83,10 @@ export function ConfiguracoesTabs({
           <History className="h-4 w-4" />
           Histórico
         </TabsTrigger>
+        <TabsTrigger value="security" className="gap-2">
+          <Shield className="h-4 w-4" />
+          Segurança
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="tasks" className="space-y-4">
@@ -136,6 +141,16 @@ export function ConfiguracoesTabs({
 
       <TabsContent value="history" className="space-y-4">
         <SettingsLogList logs={logs} />
+      </TabsContent>
+
+      <TabsContent value="security" className="space-y-4">
+        <div className="rounded-lg border bg-card p-4">
+          <h2 className="text-lg font-medium mb-2">Segurança da Conta</h2>
+          <p className="text-muted-foreground text-sm mb-4">
+            Configure a autenticação em dois passos para proteger a sua conta.
+          </p>
+        </div>
+        <TwoFactorSettings />
       </TabsContent>
     </Tabs>
   )

@@ -28,6 +28,10 @@ Antes de ler este documento, familiarize-se com os termos técnicos utilizados:
 | **Backup** | Cópia de segurança dos dados | É como ter uma "cópia de reserva" de documentos importantes |
 | **CDN** | Rede que distribui conteúdo globalmente | É como ter "armazéns" espalhados pelo mundo para entregar mais rápido |
 | **DDoS** | Ataque que tenta sobrecarregar um serviço | É como uma "multidão" a tentar entrar numa loja ao mesmo tempo |
+| **2FA** | Two-Factor Authentication - autenticação com dois factores | É como precisar de chave E código para abrir um cofre |
+| **TOTP** | Time-based One-Time Password - código que muda a cada 30s | É como um código que muda automaticamente a cada momento |
+| **OTP** | One-Time Password - código de uso único | É como um bilhete que só pode ser usado uma vez |
+| **Backup Codes** | Códigos de recuperação para emergências | São como "chaves suplentes" para quando perdes o telemóvel |
 
 ---
 
@@ -44,6 +48,8 @@ Antes de ler este documento, familiarize-se com os termos técnicos utilizados:
 - [Controlo de Acessos](#controlo-de-acessos)
 - [Autenticação e Autorização](#autenticação-e-autorização)
   - [Segurança de Cookies e JWT](#segurança-de-cookies-e-jwt)
+- [Autenticação de Dois Factores (2FA)](#autenticação-de-dois-factores-2fa)
+- [Sistema de Tokens para Formulários Externos](#sistema-de-tokens-para-formulários-externos)
 - [Validação de Dados](#validação-de-dados)
 - [Backups e Continuidade](#backups-e-continuidade-de-negócio)
 - [Nota Sobre Desenvolvimento com IA](#nota-sobre-desenvolvimento-com-ia)
@@ -61,11 +67,14 @@ Antes de ler este documento, familiarize-se com os termos técnicos utilizados:
 │  ├─ Dados armazenados na União Europeia (Frankfurt)             │
 │  ├─ Encriptação em trânsito (TLS 1.3) e repouso (AES-256)       │
 │  ├─ Autenticação obrigatória para acesso                        │
+│  ├─ Autenticação de Dois Factores (2FA) - Email OTP e TOTP      │
 │  ├─ Row Level Security por role (admin/manager/viewer)          │
 │  ├─ Protecção contra SQL Injection (queries parametrizadas)     │
 │  ├─ Secrets encriptadas no Vercel (acesso restrito)             │
 │  ├─ Código versionado no GitHub (apenas 1 admin)                │
 │  ├─ Histórico de alterações auditável                           │
+│  ├─ Tokens seguros para formulários externos (256-bit)          │
+│  ├─ Rate limiting contra ataques de força bruta                 │
 │  └─ Conformidade RGPD (dados EU, direitos dos titulares)        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -90,8 +99,17 @@ O sistema implementa segurança em múltiplas camadas (defense in depth), onde c
 │ 2. APPLICATION LAYER - MIDDLEWARE                               │
 │    - Verifica sessão válida (JWT)                               │
 │    - Redireciona para /login se não autenticado                 │
-│    - Permite rotas públicas (/login, /api/webhooks)             │
+│    - Permite rotas públicas (/login, /verificar-2fa, /api/...)  │
 │    - CSRF protection (Next.js built-in)                         │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 2.5. APPLICATION LAYER - 2FA                                    │
+│    - Verifica se utilizador tem 2FA activo                      │
+│    - Redireciona para /verificar-2fa se necessário              │
+│    - Rate limiting: 5 tentativas, lockout 30 min                │
+│    - Suporta Email OTP e TOTP (Authenticator Apps)              │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -422,7 +440,9 @@ O sistema processa dados pessoais de cidadãos da União Europeia, pelo que est�
 │  ✅ Acesso restrito (apenas 1 administrador)                    │
 │  ✅ Histórico de alterações (tabela history_log)                │
 │  ✅ Logs de acesso a dados sensíveis                            │
-│  ✅ Tokens de formulário com expiração                          │
+│  ✅ Tokens de formulário com expiração (30 min após submissão)  │
+│  ✅ Rate limiting em endpoints públicos (10 req/15min)          │
+│  ✅ Registo de IP em submissões externas                        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -578,18 +598,27 @@ Ver detalhes em [03-BASE-DADOS.md](./03-BASE-DADOS.md#rls-para-tabelas-de-permis
 ### Fluxo de Autenticação
 
 ```
-┌──────────┐     ┌───────────┐     ┌───────────┐     ┌──────────┐
-│  Login   │────>│ Supabase  │────>│ Middleware│────>│ Dashboard│
-│  Form    │     │   Auth    │     │  (check)  │     │  Layout  │
-└──────────┘     └───────────┘     └───────────┘     └──────────┘
-                       │
-                       ▼
-                 ┌───────────┐
-                 │  Cookies  │
-                 │ (session) │
-                 │   (JWT)   │
-                 └───────────┘
+┌──────────┐     ┌───────────┐     ┌──────────┐     ┌───────────┐     ┌──────────┐
+│  Login   │────>│ Supabase  │────>│   2FA    │────>│ Middleware│────>│ Dashboard│
+│  Form    │     │   Auth    │     │  Check   │     │  (check)  │     │  Layout  │
+└──────────┘     └───────────┘     └──────────┘     └───────────┘     └──────────┘
+                       │                 │
+                       ▼                 ▼
+                 ┌───────────┐     ┌───────────┐
+                 │  Cookies  │     │ Verificar │
+                 │ (session) │     │    2FA    │
+                 │   (JWT)   │     │  (se act) │
+                 └───────────┘     └───────────┘
 ```
+
+**Com 2FA activo**, o fluxo inclui um passo adicional:
+1. Utilizador submete credenciais (email + password)
+2. Supabase valida e cria sessão temporária
+3. Sistema detecta 2FA activo → termina sessão
+4. Redirect para `/verificar-2fa`
+5. Utilizador introduz código (email/app/backup)
+6. Código válido → sessão restabelecida
+7. Redirect para dashboard
 
 ### Segurança de Cookies e JWT
 
@@ -665,6 +694,443 @@ export async function updateProvider(id: string, data: Partial<Provider>) {
   return { success: true }
 }
 ```
+
+---
+
+## Autenticação de Dois Factores (2FA)
+
+O CRM implementa um sistema completo de **Autenticação de Dois Factores (2FA)** para proteger contas de utilizadores internos. Esta camada adicional de segurança requer que os utilizadores confirmem a sua identidade com um segundo factor além da password.
+
+### Métodos Suportados
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              MÉTODOS DE AUTENTICAÇÃO 2FA                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  📧 EMAIL OTP                                                   │
+│  ├─ Código de 6 dígitos enviado por email                       │
+│  ├─ Expira em 10 minutos                                        │
+│  └─ Ideal para quem não usa apps de autenticação                │
+│                                                                 │
+│  📱 TOTP (Authenticator App)                                    │
+│  ├─ Microsoft Authenticator, Google Authenticator, Authy, etc.  │
+│  ├─ Código de 6 dígitos gerado localmente                       │
+│  ├─ Muda a cada 30 segundos                                     │
+│  └─ Mais seguro que email (não depende de rede)                 │
+│                                                                 │
+│  🔑 CÓDIGOS DE RECUPERAÇÃO (Backup)                             │
+│  ├─ 10 códigos únicos de 8 caracteres                           │
+│  ├─ Cada código só pode ser usado uma vez                       │
+│  └─ Para recuperação em caso de perda do dispositivo            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Fluxo de Autenticação com 2FA
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  FLUXO DE LOGIN COM 2FA                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. Utilizador faz login com email + password                   │
+│     ├─ Credenciais validadas pelo Supabase Auth                 │
+│     └─ Sistema verifica se 2FA está activo                      │
+│                                                                 │
+│  2. Se 2FA activo:                                              │
+│     ├─ Sessão Supabase é terminada (ainda não autenticado)      │
+│     ├─ Redireccionamento para /verificar-2fa                    │
+│     └─ Se método=email: código enviado automaticamente          │
+│                                                                 │
+│  3. Utilizador introduz código de verificação                   │
+│     ├─ 6 dígitos do email/app OU código de recuperação          │
+│     ├─ Rate limiting: máx 5 tentativas                          │
+│     └─ Bloqueio de 30 min após 5 falhas                         │
+│                                                                 │
+│  4. Código válido:                                              │
+│     ├─ Token de sessão temporário gerado (5 min validade)       │
+│     ├─ Sessão Supabase restabelecida                            │
+│     └─ Redirect para página solicitada                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Arquitectura Técnica
+
+#### Tabelas de Base de Dados
+
+| Tabela | Descrição |
+|--------|-----------|
+| `users` (colunas 2FA) | Configuração 2FA do utilizador |
+| `two_factor_codes` | Códigos OTP temporários (email) |
+| `two_factor_sessions` | Tokens de sessão pós-verificação |
+
+#### Colunas 2FA na tabela `users`
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `two_factor_enabled` | BOOLEAN | 2FA activo/inactivo |
+| `two_factor_method` | TEXT | 'email' ou 'totp' |
+| `totp_secret_encrypted` | TEXT | Segredo TOTP encriptado (AES-256-CBC) |
+| `totp_confirmed_at` | TIMESTAMPTZ | Quando TOTP foi confirmado |
+| `backup_codes_hash` | TEXT[] | Array de hashes SHA-256 dos códigos de recuperação |
+| `two_factor_attempts` | INTEGER | Contador de tentativas falhadas |
+| `two_factor_locked_until` | TIMESTAMPTZ | Timestamp de desbloqueio |
+| `last_two_factor_at` | TIMESTAMPTZ | Última verificação 2FA bem sucedida |
+
+### Segurança Criptográfica
+
+#### Encriptação de Segredos TOTP
+
+Os segredos TOTP são encriptados com **AES-256-CBC** antes de serem guardados:
+
+```typescript
+import crypto from 'crypto'
+
+function encrypt(text: string): string {
+  const iv = crypto.randomBytes(16)  // Initialization Vector único
+  const cipher = crypto.createCipheriv('aes-256-cbc', ENCRYPTION_KEY, iv)
+  let encrypted = cipher.update(text, 'utf8', 'hex')
+  encrypted += cipher.final('hex')
+  return `${iv.toString('hex')}:${encrypted}`  // IV:Ciphertext
+}
+```
+
+**Porque AES-256-CBC?**
+- Standard de encriptação usado por governos e instituições financeiras
+- 256 bits = 2^256 combinações possíveis
+- IV único por encriptação previne ataques de padrão
+
+#### Hashing de Códigos
+
+Códigos OTP e de recuperação são **hasheados com SHA-256** antes de serem guardados:
+
+```typescript
+function hashCode(code: string): string {
+  return crypto.createHash('sha256').update(code).digest('hex')
+}
+```
+
+**Porquê hash em vez de encriptar?**
+- Não precisamos de recuperar o código original
+- Verificamos comparando hashes
+- Mesmo que a BD seja comprometida, os códigos são irrecuperáveis
+
+### Geração de Tokens TOTP
+
+Os tokens TOTP seguem o standard **RFC 6238** (TOTP) usado por Google Authenticator e Microsoft Authenticator:
+
+```typescript
+import { generateSecret, generateURI, verifySync } from 'otplib'
+
+// Gerar segredo (20 bytes = 160 bits, Base32 encoded)
+const secret = generateSecret()
+
+// Gerar URI para QR Code
+const otpauthUrl = generateURI({
+  issuer: 'FIXO CRM',
+  label: user.email,
+  secret,
+})
+
+// Verificar código (window de 30 segundos)
+const result = verifySync({ token: code, secret })
+const isValid = result.valid
+```
+
+### Códigos de Recuperação (Backup Codes)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              CÓDIGOS DE RECUPERAÇÃO                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Formato: 8 caracteres hexadecimais (ex: A1B2C3D4)              │
+│  Quantidade: 10 códigos únicos                                  │
+│  Uso: Cada código só pode ser usado UMA vez                     │
+│  Armazenamento: Hash SHA-256 (irreversível)                     │
+│                                                                 │
+│  Casos de uso:                                                  │
+│  ├─ Perda do telemóvel                                          │
+│  ├─ App de autenticação apagada/corrompida                      │
+│  └─ Acesso de emergência sem segundo factor                     │
+│                                                                 │
+│  ⚠️ Mostrados APENAS uma vez durante a configuração             │
+│  ⚠️ Utilizador deve guardar em local seguro                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Rate Limiting e Lockout
+
+Para prevenir ataques de força bruta:
+
+| Parâmetro | Valor | Descrição |
+|-----------|-------|-----------|
+| `MAX_ATTEMPTS` | 5 | Tentativas máximas antes de lockout |
+| `LOCKOUT_MINUTES` | 30 | Duração do bloqueio |
+| `CODE_EXPIRY_MINUTES` | 10 | Validade de códigos email |
+| `SESSION_EXPIRY_MINUTES` | 5 | Validade do token pós-2FA |
+
+```typescript
+if (newAttempts >= MAX_ATTEMPTS) {
+  // Bloquear conta
+  updateData.two_factor_locked_until = new Date(
+    Date.now() + LOCKOUT_MINUTES * 60 * 1000
+  ).toISOString()
+  updateData.two_factor_attempts = 0  // Reset para próximo ciclo
+}
+```
+
+### Configuração pelo Utilizador
+
+Os utilizadores podem gerir 2FA nas suas definições:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              OPÇÕES DE CONFIGURAÇÃO 2FA                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ✅ Activar 2FA                                                 │
+│     ├─ Escolher método (Email ou Authenticator App)             │
+│     ├─ Verificar com código                                     │
+│     └─ Receber códigos de recuperação (guardar!)                │
+│                                                                 │
+│  🔄 Regenerar Códigos de Recuperação                            │
+│     ├─ Requer verificação com código actual                     │
+│     └─ Gera novos 10 códigos (invalida anteriores)              │
+│                                                                 │
+│  ❌ Desactivar 2FA                                              │
+│     ├─ Requer verificação com código ou backup code             │
+│     └─ Remove toda a configuração 2FA                           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Boas Práticas Implementadas
+
+| Prática | Implementação |
+|---------|---------------|
+| **Segredos encriptados** | AES-256-CBC com IV único |
+| **Códigos hasheados** | SHA-256 (irreversível) |
+| **TOTP standard** | RFC 6238 (compatível com apps standard) |
+| **Rate limiting** | 5 tentativas, 30 min lockout |
+| **Códigos de recuperação** | 10 códigos únicos, uso único |
+| **Sessões temporárias** | Token pós-2FA expira em 5 min |
+| **Auditoria** | `last_two_factor_at` registado |
+
+### Ficheiros Relevantes
+
+| Ficheiro | Descrição |
+|----------|-----------|
+| `src/lib/auth/two-factor.ts` | Lógica completa de 2FA |
+| `src/lib/auth/actions.ts` | Fluxo de login com 2FA |
+| `src/app/(auth)/verificar-2fa/page.tsx` | Página de verificação |
+| `src/components/auth/two-factor-settings.tsx` | UI de configuração |
+
+### Migrations de Base de Dados
+
+```sql
+-- Migration: 20260129160000_add_two_factor_auth.sql
+
+-- Colunas na tabela users
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS two_factor_enabled BOOLEAN DEFAULT false,
+  ADD COLUMN IF NOT EXISTS two_factor_method TEXT
+    CHECK (two_factor_method IN ('email', 'totp', null)),
+  ADD COLUMN IF NOT EXISTS totp_secret_encrypted TEXT,
+  ADD COLUMN IF NOT EXISTS totp_confirmed_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS backup_codes_hash TEXT[],
+  ADD COLUMN IF NOT EXISTS two_factor_attempts INTEGER DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS two_factor_locked_until TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS last_two_factor_at TIMESTAMPTZ;
+
+-- Tabela para códigos temporários (email OTP)
+CREATE TABLE IF NOT EXISTS two_factor_codes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  code_hash TEXT NOT NULL,  -- SHA-256 do código
+  code_type TEXT NOT NULL CHECK (code_type IN ('setup', 'login')),
+  method TEXT NOT NULL CHECK (method IN ('email', 'totp')),
+  expires_at TIMESTAMPTZ NOT NULL,
+  verified_at TIMESTAMPTZ,
+  attempts INTEGER DEFAULT 0,
+  ip_address TEXT,
+  user_agent TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabela para sessões pós-2FA
+CREATE TABLE IF NOT EXISTS two_factor_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  session_token TEXT NOT NULL UNIQUE,
+  expires_at TIMESTAMPTZ NOT NULL,
+  ip_address TEXT,
+  user_agent TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+---
+
+## Sistema de Tokens para Formulários Externos
+
+O CRM permite enviar formulários públicos a prestadores (ex: formulário de serviços). Estes formulários são acedidos via um **token único** sem necessidade de login. Esta secção documenta as medidas de segurança implementadas.
+
+### Arquitectura de Segurança dos Tokens
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│            FLUXO DE ACESSO A FORMULÁRIO EXTERNO                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. RM gera token no CRM                                        │
+│     ├─ Token criptograficamente seguro (32 bytes random)        │
+│     ├─ Guardado na tabela providers (forms_token)               │
+│     └─ Timestamp de criação registado (auditoria)               │
+│                                                                 │
+│  2. Prestador acede via link                                    │
+│     https://crm.../forms/services/{token}                       │
+│                                                                 │
+│  3. Sistema valida acesso                                       │
+│     ├─ Rate limiting por IP (max 10 tentativas/15min)           │
+│     ├─ Verifica se token existe                                 │
+│     ├─ Verifica se token não expirou                            │
+│     └─ Bloqueia se forma já foi submetido                       │
+│                                                                 │
+│  4. Após submissão                                              │
+│     ├─ Token expira após janela de feedback (30 min)            │
+│     └─ Dados guardados com IP e timestamp                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Geração Segura de Tokens
+
+Os tokens são gerados usando `crypto.randomBytes()` do Node.js:
+
+```typescript
+import crypto from 'crypto'
+
+// Gera 32 bytes random = 64 caracteres hex
+// Entropia: 256 bits (computacionalmente impossível de adivinhar)
+function generateSecureToken(): string {
+  return crypto.randomBytes(32).toString('hex')
+}
+```
+
+**Porque 32 bytes?**
+- 256 bits de entropia
+- Mais combinações possíveis que átomos no universo (2^256)
+- Mesmo com 1 trilião de tentativas por segundo, levaria mais tempo que a idade do universo
+
+### Rate Limiting
+
+Para prevenir ataques de força bruta, o sistema implementa rate limiting:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    RATE LIMITING                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Configuração:                                                  │
+│  ├─ Máximo 10 tentativas por 15 minutos (por IP)                │
+│  ├─ Após limite: bloqueio de 60 minutos                         │
+│  └─ Registos limpos após 24 horas                               │
+│                                                                 │
+│  Tabela: forms_rate_limits                                      │
+│  ├─ identifier (IP ou token)                                    │
+│  ├─ attempts (contador)                                         │
+│  ├─ first_attempt_at / last_attempt_at                          │
+│  └─ blocked_until (timestamp de desbloqueio)                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Exemplo de ataque bloqueado:**
+
+```
+Tentativa 1-10:  ✅ Aceites (mas token inválido = erro)
+Tentativa 11:    ❌ BLOQUEADO - "Demasiadas tentativas"
+                    Bloqueio activo durante 60 minutos
+```
+
+### Expiração de Tokens
+
+Os tokens têm um ciclo de vida controlado:
+
+| Estado | Descrição | Expiração |
+|--------|-----------|-----------|
+| **Novo** | Token gerado, formulário não submetido | Sem expiração (até ser usado) |
+| **Submetido** | Formulário preenchido e enviado | Expira em 30 minutos |
+| **Expirado** | Janela de feedback fechada | Token inválido permanentemente |
+
+**Janela de Feedback:**
+
+Após submeter o formulário, o prestador tem 30 minutos para enviar feedback opcional (NPS, comentários). Após esse período, o token é invalidado.
+
+### Campos de Segurança na Tabela `providers`
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `forms_token` | TEXT | Token actual (64 caracteres hex) |
+| `forms_token_created_at` | TIMESTAMPTZ | Quando o token foi gerado |
+| `forms_token_expires_at` | TIMESTAMPTZ | Quando o token expira (null = não submetido) |
+
+### Protecção RLS
+
+A tabela `forms_rate_limits` está protegida por RLS - apenas o `service_role` pode ler/escrever:
+
+```sql
+-- Política RLS para rate limits
+CREATE POLICY "Service role can manage rate limits"
+  ON forms_rate_limits FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+```
+
+Isto significa que:
+- O browser **não consegue** consultar ou manipular rate limits
+- Apenas o servidor (via adminClient) pode gerir esta tabela
+- Um atacante não consegue "limpar" o seu rate limit
+
+### Auditoria e Logging
+
+Todas as submissões são registadas:
+
+```typescript
+// Na submissão do formulário
+const formsData = {
+  provider_id: providerId,
+  submission_number: nextSubmissionNumber,  // Histórico numerado
+  // ... dados do formulário ...
+  submitted_at: new Date().toISOString(),
+  submitted_ip: ipAddress || null,  // IP do prestador
+}
+
+// Entrada no histórico geral
+await adminClient.from('history_log').insert({
+  provider_id: providerId,
+  event_type: 'forms_submission',
+  description: `Formulário de serviços submetido...`,
+  new_value: { /* snapshot dos dados */ },
+})
+```
+
+### Boas Práticas Seguidas
+
+| Prática | Implementação |
+|---------|---------------|
+| **Tokens criptograficamente seguros** | `crypto.randomBytes(32)` |
+| **Rate limiting** | 10 req/15min, bloqueio 60min |
+| **Expiração de tokens** | 30 min após submissão |
+| **Registo de IP** | Guardado em `submitted_ip` |
+| **Histórico imutável** | `provider_forms_data` com `submission_number` |
+| **RLS nas tabelas de segurança** | `forms_rate_limits` só acessível por service_role |
+| **Invalidação após uso** | Token não pode ser reutilizado após feedback |
 
 ---
 
@@ -762,4 +1228,4 @@ O código gerado segue exactamente os mesmos padrões de segurança que qualquer
 
 ---
 
-*Última actualização: Janeiro 2026*
+*Última actualização: 29 Janeiro 2026*

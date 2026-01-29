@@ -1,8 +1,14 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { z } from 'zod'
+import { checkUserHas2FA, sendLoginVerificationCode, validateTwoFactorSession } from './two-factor'
+
+// Cookie name for 2FA pending state
+const PENDING_2FA_COOKIE = '2fa_pending'
 
 const loginSchema = z.object({
   email: z.string().email('Email invalido'),
@@ -18,6 +24,9 @@ const registerSchema = z.object({
 export type AuthState = {
   error?: string
   success?: boolean
+  requires2FA?: boolean
+  userId?: string
+  twoFactorMethod?: 'email' | 'totp'
 }
 
 export type UserRole = 'admin' | 'user'
@@ -68,9 +77,62 @@ export async function login(prevState: AuthState, formData: FormData): Promise<A
       await supabase.auth.signOut()
       return { error: 'O teu registo foi rejeitado. Contacta o administrador.' }
     }
+
+    // Check if user has 2FA enabled
+    const twoFactor = await checkUserHas2FA(authData.user.id)
+
+    if (twoFactor.enabled && twoFactor.method) {
+      // Set 2FA pending cookie instead of signing out
+      // This keeps the session alive but marks it as pending 2FA verification
+      // Store both userId and method in the cookie value
+      const cookieStore = await cookies()
+      cookieStore.set(PENDING_2FA_COOKIE, `${authData.user.id}:${twoFactor.method}`, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 10, // 10 minutes to complete 2FA
+        path: '/',
+      })
+
+      // Send verification code for email method
+      if (twoFactor.method === 'email') {
+        await sendLoginVerificationCode(authData.user.id)
+      }
+
+      // Return 2FA required state - client will redirect to verification page
+      return {
+        requires2FA: true,
+        userId: authData.user.id,
+        twoFactorMethod: twoFactor.method,
+      }
+    }
   }
 
   redirect('/candidaturas')
+}
+
+/**
+ * Complete login after 2FA verification
+ * Called with the session token from 2FA verification
+ */
+export async function completeLoginWith2FA(
+  sessionToken: string,
+  returnTo: string = '/candidaturas'
+): Promise<AuthState> {
+  // Validate the 2FA session token
+  const { valid, userId } = await validateTwoFactorSession(sessionToken)
+
+  if (!valid || !userId) {
+    return { error: 'Sessão de verificação expirada. Faça login novamente.' }
+  }
+
+  // Clear the 2FA pending cookie - session is now fully verified
+  const cookieStore = await cookies()
+  cookieStore.delete(PENDING_2FA_COOKIE)
+
+  // Session is already active (we didn't sign out during 2FA check)
+  // Just redirect to the target page
+  redirect(returnTo)
 }
 
 export async function register(prevState: AuthState, formData: FormData): Promise<AuthState> {
