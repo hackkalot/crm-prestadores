@@ -7,6 +7,12 @@ import type { Database } from '@/types/database'
 
 type ProviderUpdate = Database['public']['Tables']['providers']['Update']
 
+// Type for secondary contacts
+export interface SecondaryContact {
+  value: string
+  label?: string
+}
+
 /**
  * Update provider profile fields
  */
@@ -311,6 +317,130 @@ export async function updateProviderFormsFields(
       description: `Campos alterados: ${changedFields.join(', ')}`,
       old_value: oldValue,
       new_value: newValue,
+      created_by: user.id,
+    })
+  }
+
+  revalidatePath(`/providers/${providerId}`)
+  return {}
+}
+
+/**
+ * Update provider secondary contacts (phones and emails)
+ */
+export async function updateProviderSecondaryContacts(
+  providerId: string,
+  data: {
+    secondary_phones?: SecondaryContact[]
+    secondary_emails?: SecondaryContact[]
+  }
+): Promise<{ error?: string }> {
+  const supabase = await createClient()
+
+  // Verify authentication
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Não autenticado' }
+  }
+
+  const adminClient = createAdminClient()
+
+  // Get current values for comparison
+  const { data: currentProvider } = await adminClient
+    .from('providers')
+    .select('secondary_phones, secondary_emails')
+    .eq('id', providerId)
+    .single()
+
+  // Update providers table
+  const { error: updateError } = await adminClient
+    .from('providers')
+    .update({
+      ...data,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', providerId)
+
+  if (updateError) {
+    console.error('Error updating secondary contacts:', updateError)
+    return { error: 'Erro ao atualizar contactos' }
+  }
+
+  // Log the change
+  const changedFields: string[] = []
+  if (data.secondary_phones !== undefined) changedFields.push('Telemóveis secundários')
+  if (data.secondary_emails !== undefined) changedFields.push('Emails secundários')
+
+  if (changedFields.length > 0) {
+    await adminClient.from('history_log').insert({
+      provider_id: providerId,
+      event_type: 'field_change',
+      description: `Contactos alterados: ${changedFields.join(', ')}`,
+      old_value: {
+        secondary_phones: currentProvider?.secondary_phones,
+        secondary_emails: currentProvider?.secondary_emails,
+      },
+      new_value: data,
+      created_by: user.id,
+    })
+  }
+
+  revalidatePath(`/providers/${providerId}`)
+  return {}
+}
+
+/**
+ * Update provider raw services (text list from candidatura)
+ */
+export async function updateProviderRawServices(
+  providerId: string,
+  services: string[]
+): Promise<{ error?: string }> {
+  const supabase = await createClient()
+
+  // Verify authentication
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Não autenticado' }
+  }
+
+  const adminClient = createAdminClient()
+
+  // Get current values for comparison
+  const { data: currentProvider } = await adminClient
+    .from('providers')
+    .select('services')
+    .eq('id', providerId)
+    .single()
+
+  const oldServices = (currentProvider?.services as string[]) || []
+
+  // Update providers table
+  const { error: updateError } = await adminClient
+    .from('providers')
+    .update({
+      services: services,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', providerId)
+
+  if (updateError) {
+    console.error('Error updating raw services:', updateError)
+    return { error: 'Erro ao atualizar serviços' }
+  }
+
+  // Log the change if services changed
+  if (JSON.stringify(oldServices.sort()) !== JSON.stringify(services.sort())) {
+    await adminClient.from('history_log').insert({
+      provider_id: providerId,
+      event_type: 'field_change',
+      description: `Serviços (texto) alterados`,
+      old_value: { services: oldServices, count: oldServices.length },
+      new_value: { services: services, count: services.length },
       created_by: user.id,
     })
   }

@@ -46,6 +46,8 @@ import {
   Pencil,
   Check,
   X as XIcon,
+  Plus,
+  Trash2,
 } from 'lucide-react'
 import { formatDateTime } from '@/lib/utils'
 import {
@@ -54,7 +56,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { updateProviderProfile, updateProviderFormsFields } from '@/lib/providers/profile-actions'
+import {
+  updateProviderProfile,
+  updateProviderFormsFields,
+  updateProviderSecondaryContacts,
+  updateProviderRawServices,
+  type SecondaryContact,
+} from '@/lib/providers/profile-actions'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { EditCoverageServicesDialog } from '@/components/providers/edit-coverage-services-dialog'
@@ -112,7 +120,12 @@ interface PerfilTabProps {
     work_hours_end?: string | null
     has_computer?: boolean | null
     own_equipment?: string[] | null
+    // Secondary contacts
+    secondary_phones?: SecondaryContact[] | null
+    secondary_emails?: SecondaryContact[] | null
   }
+  // Raw services (text, not UUIDs) - for candidatura phase
+  rawServices?: string[] | null
   selectedServicesDetails?: Record<string, Record<string, Array<{
     id: string
     service_name: string
@@ -346,10 +359,21 @@ function StatCard({ label, value, icon: Icon, variant = 'default' }: {
   )
 }
 
-export function PerfilTab({ provider, selectedServicesDetails, allServicesData }: PerfilTabProps) {
+export function PerfilTab({ provider, rawServices, selectedServicesDetails, allServicesData }: PerfilTabProps) {
   const router = useRouter()
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [editingCard, setEditingCard] = useState<'documentation' | 'resources' | 'availability' | 'coverage' | null>(null)
+  const [editingCard, setEditingCard] = useState<'documentation' | 'resources' | 'availability' | 'coverage' | 'contacts' | 'rawServices' | null>(null)
+
+  // Secondary contacts state
+  const [secondaryPhones, setSecondaryPhones] = useState<SecondaryContact[]>(
+    (provider.secondary_phones as SecondaryContact[]) || []
+  )
+  const [secondaryEmails, setSecondaryEmails] = useState<SecondaryContact[]>(
+    (provider.secondary_emails as SecondaryContact[]) || []
+  )
+
+  // Raw services state (text list from candidatura)
+  const [editingRawServices, setEditingRawServices] = useState<string[]>(rawServices || [])
   const [editingData, setEditingData] = useState<any>(null)
   const [isSaving, setIsSaving] = useState(false)
   const hasBackofficeData = !!provider.backoffice_provider_id
@@ -368,7 +392,7 @@ export function PerfilTab({ provider, selectedServicesDetails, allServicesData }
     }
   }
 
-  const handleEditCard = (card: 'documentation' | 'resources' | 'availability' | 'coverage') => {
+  const handleEditCard = (card: 'documentation' | 'resources' | 'availability' | 'coverage' | 'contacts' | 'rawServices') => {
     setEditingCard(card)
 
     // Initialize editing data based on card type - now from provider directly
@@ -396,6 +420,11 @@ export function PerfilTab({ provider, selectedServicesDetails, allServicesData }
     } else if (card === 'coverage') {
       setEditDialogOpen(true)
       return
+    } else if (card === 'contacts') {
+      setSecondaryPhones((provider.secondary_phones as SecondaryContact[]) || [])
+      setSecondaryEmails((provider.secondary_emails as SecondaryContact[]) || [])
+    } else if (card === 'rawServices') {
+      setEditingRawServices(rawServices || [])
     }
   }
 
@@ -412,6 +441,31 @@ export function PerfilTab({ provider, selectedServicesDetails, allServicesData }
     if (editingCard === 'coverage') {
       // Coverage uses the existing dialog
       setEditDialogOpen(false)
+    } else if (editingCard === 'contacts') {
+      // Update secondary contacts
+      const result = await updateProviderSecondaryContacts(provider.id, {
+        secondary_phones: secondaryPhones,
+        secondary_emails: secondaryEmails,
+      })
+
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Contactos atualizados com sucesso')
+        setEditingCard(null)
+        router.refresh()
+      }
+    } else if (editingCard === 'rawServices') {
+      // Update raw services (text list)
+      const result = await updateProviderRawServices(provider.id, editingRawServices)
+
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Serviços atualizados com sucesso')
+        setEditingCard(null)
+        router.refresh()
+      }
     } else {
       // Update provider forms fields directly
       const result = await updateProviderFormsFields(provider.id, editingData)
@@ -471,6 +525,210 @@ export function PerfilTab({ provider, selectedServicesDetails, allServicesData }
             <EditableField label="LinkedIn" value={provider.linkedin_url} icon={Linkedin} field="linkedin_url" onSave={handleFieldSave} />
             <EditableField label="Twitter" value={provider.twitter_url} icon={Twitter} field="twitter_url" onSave={handleFieldSave} />
           </div>
+        </CardContent>
+      </Card>
+
+      {/* CONTACTOS SECUNDÁRIOS */}
+      <Card className="group relative">
+        {editingCard === 'contacts' ? (
+          <div className="absolute top-4 right-4 flex gap-2 z-10">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCancelEdit}
+              disabled={isSaving}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleSaveCard}
+              disabled={isSaving}
+            >
+              {isSaving ? 'A guardar...' : 'Guardar'}
+            </Button>
+          </div>
+        ) : (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+            onClick={() => handleEditCard('contacts')}
+          >
+            <Pencil className="h-4 w-4 mr-2" />
+            Editar
+          </Button>
+        )}
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Phone className="h-5 w-5" />
+            Contactos
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {editingCard === 'contacts' ? (
+            <>
+              {/* Edit mode */}
+              <div className="space-y-4">
+                {/* Secondary Phones */}
+                <div>
+                  <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Phone className="h-4 w-4" />
+                    Telemóveis Secundários
+                  </p>
+                  <div className="space-y-2">
+                    {secondaryPhones.map((phone, idx) => (
+                      <div key={idx} className="flex gap-2 items-center">
+                        <Input
+                          type="tel"
+                          placeholder="Número"
+                          value={phone.value}
+                          onChange={(e) => {
+                            const updated = [...secondaryPhones]
+                            updated[idx] = { ...updated[idx], value: e.target.value }
+                            setSecondaryPhones(updated)
+                          }}
+                          className="flex-1"
+                        />
+                        <Input
+                          placeholder="Label (opcional)"
+                          value={phone.label || ''}
+                          onChange={(e) => {
+                            const updated = [...secondaryPhones]
+                            updated[idx] = { ...updated[idx], label: e.target.value }
+                            setSecondaryPhones(updated)
+                          }}
+                          className="w-32"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSecondaryPhones(secondaryPhones.filter((_, i) => i !== idx))}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSecondaryPhones([...secondaryPhones, { value: '', label: '' }])}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Adicionar Telemóvel
+                    </Button>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Secondary Emails */}
+                <div>
+                  <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Emails Secundários
+                  </p>
+                  <div className="space-y-2">
+                    {secondaryEmails.map((email, idx) => (
+                      <div key={idx} className="flex gap-2 items-center">
+                        <Input
+                          type="email"
+                          placeholder="Email"
+                          value={email.value}
+                          onChange={(e) => {
+                            const updated = [...secondaryEmails]
+                            updated[idx] = { ...updated[idx], value: e.target.value }
+                            setSecondaryEmails(updated)
+                          }}
+                          className="flex-1"
+                        />
+                        <Input
+                          placeholder="Label (opcional)"
+                          value={email.label || ''}
+                          onChange={(e) => {
+                            const updated = [...secondaryEmails]
+                            updated[idx] = { ...updated[idx], label: e.target.value }
+                            setSecondaryEmails(updated)
+                          }}
+                          className="w-32"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSecondaryEmails(secondaryEmails.filter((_, i) => i !== idx))}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSecondaryEmails([...secondaryEmails, { value: '', label: '' }])}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Adicionar Email
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Display mode */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Primary + Secondary Phones */}
+                <div>
+                  <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-muted-foreground" />
+                    Telemóveis
+                  </p>
+                  <div className="space-y-1">
+                    {provider.phone && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">{provider.phone}</span>
+                        <Badge variant="secondary" className="text-xs">Principal</Badge>
+                      </div>
+                    )}
+                    {((provider.secondary_phones as SecondaryContact[]) || []).map((phone, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-sm">{phone.value}</span>
+                        {phone.label && <Badge variant="outline" className="text-xs">{phone.label}</Badge>}
+                      </div>
+                    ))}
+                    {!provider.phone && ((provider.secondary_phones as SecondaryContact[]) || []).length === 0 && (
+                      <p className="text-sm text-muted-foreground">Sem telemóveis</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Primary + Secondary Emails */}
+                <div>
+                  <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    Emails
+                  </p>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm">{provider.email}</span>
+                      <Badge variant="secondary" className="text-xs">Principal</Badge>
+                    </div>
+                    {((provider.secondary_emails as SecondaryContact[]) || []).map((email, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-sm">{email.value}</span>
+                        {email.label && <Badge variant="outline" className="text-xs">{email.label}</Badge>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 
@@ -1176,8 +1434,9 @@ export function PerfilTab({ provider, selectedServicesDetails, allServicesData }
         </Card>
       )}
 
-      {/* SERVIÇOS - Mostrar sempre que tenha dados de forms (permite adicionar manualmente) */}
-      {hasFormsData && (
+      {/* SERVIÇOS - Mostrar sempre (texto livre da candidatura OU serviços normalizados) */}
+      {/* Se tem forms_submitted_at, mostra serviços normalizados. Senão, mostra texto livre editável */}
+      {hasFormsData ? (
         <Card className="group relative">
           <Button
             variant="ghost"
@@ -1254,6 +1513,91 @@ export function PerfilTab({ provider, selectedServicesDetails, allServicesData }
                   <Pencil className="h-4 w-4 mr-2" />
                   Adicionar Serviços
                 </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ) : (rawServices && rawServices.length > 0) && (
+        /* Raw services from candidatura (text list, editable) */
+        <Card className="group relative">
+          {editingCard === 'rawServices' ? (
+            <div className="absolute top-4 right-4 flex gap-2 z-10">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCancelEdit}
+                disabled={isSaving}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleSaveCard}
+                disabled={isSaving}
+              >
+                {isSaving ? 'A guardar...' : 'Guardar'}
+              </Button>
+            </div>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              onClick={() => handleEditCard('rawServices')}
+            >
+              <Pencil className="h-4 w-4 mr-2" />
+              Editar
+            </Button>
+          )}
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Briefcase className="h-5 w-5" />
+              Serviços (Candidatura)
+              <Badge variant="outline" className="ml-2 text-xs">Texto livre</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {editingCard === 'rawServices' ? (
+              <div className="space-y-3">
+                {editingRawServices.map((service, idx) => (
+                  <div key={idx} className="flex gap-2 items-center">
+                    <Input
+                      value={service}
+                      onChange={(e) => {
+                        const updated = [...editingRawServices]
+                        updated[idx] = e.target.value
+                        setEditingRawServices(updated)
+                      }}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setEditingRawServices(editingRawServices.filter((_, i) => i !== idx))}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEditingRawServices([...editingRawServices, ''])}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Adicionar Serviço
+                </Button>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {rawServices.map((service, idx) => (
+                  <Badge key={idx} variant="secondary" className="text-sm py-1 px-3">
+                    {service}
+                  </Badge>
+                ))}
               </div>
             )}
           </CardContent>

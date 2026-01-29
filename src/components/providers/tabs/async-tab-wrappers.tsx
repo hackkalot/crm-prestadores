@@ -88,47 +88,36 @@ export async function PerfilTabAsync({
   // We only need to fetch services data for display and editing
   let selectedServicesDetails = null
   let allServicesData = null
+  let rawServices: string[] | null = null
 
   const { createAdminClient } = await import('@/lib/supabase/admin')
   const adminClient = createAdminClient()
 
-  // Fetch ALL services for the edit dialog
-  const { data: allServices } = await adminClient
-    .from('service_prices')
-    .select('id, service_name, cluster, service_group, unit_description, typology')
-    .eq('is_active', true)
-    .order('cluster')
-    .order('service_group')
-    .order('service_name')
+  // UUID regex to detect if services are UUIDs or text
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-  if (allServices) {
-    // Group all services by cluster and service_group
-    allServicesData = allServices.reduce((acc: any, service: any) => {
-      if (!acc[service.cluster]) {
-        acc[service.cluster] = {}
-      }
-      const group = service.service_group || 'Outros'
-      if (!acc[service.cluster][group]) {
-        acc[service.cluster][group] = []
-      }
-      acc[service.cluster][group].push(service)
-      return acc
-    }, {})
+  // Check if services are UUIDs or raw text
+  const hasUUIDServices = provider.services?.some((s: string) => UUID_REGEX.test(s))
+
+  // If forms not submitted, services are likely raw text from candidatura
+  if (!provider.forms_submitted_at && provider.services && provider.services.length > 0) {
+    // Filter out any UUIDs, keep only text services
+    rawServices = provider.services.filter((s: string) => !UUID_REGEX.test(s))
   }
 
-  // Fetch service details for the selected services (from provider.services)
-  if (provider.services && provider.services.length > 0) {
-    const { data: servicesData } = await adminClient
+  // Fetch ALL services for the edit dialog (only if forms submitted)
+  if (provider.forms_submitted_at) {
+    const { data: allServices } = await adminClient
       .from('service_prices')
       .select('id, service_name, cluster, service_group, unit_description, typology')
-      .in('id', provider.services)
+      .eq('is_active', true)
       .order('cluster')
       .order('service_group')
       .order('service_name')
 
-    if (servicesData) {
-      // Group services by cluster and service_group
-      selectedServicesDetails = servicesData.reduce((acc: any, service: any) => {
+    if (allServices) {
+      // Group all services by cluster and service_group
+      allServicesData = allServices.reduce((acc: any, service: any) => {
         if (!acc[service.cluster]) {
           acc[service.cluster] = {}
         }
@@ -140,11 +129,42 @@ export async function PerfilTabAsync({
         return acc
       }, {})
     }
+
+    // Fetch service details for the selected services (from provider.services) - only UUIDs
+    if (hasUUIDServices && provider.services && provider.services.length > 0) {
+      const uuidServices = provider.services.filter((s: string) => UUID_REGEX.test(s))
+
+      if (uuidServices.length > 0) {
+        const { data: servicesData } = await adminClient
+          .from('service_prices')
+          .select('id, service_name, cluster, service_group, unit_description, typology')
+          .in('id', uuidServices)
+          .order('cluster')
+          .order('service_group')
+          .order('service_name')
+
+        if (servicesData) {
+          // Group services by cluster and service_group
+          selectedServicesDetails = servicesData.reduce((acc: any, service: any) => {
+            if (!acc[service.cluster]) {
+              acc[service.cluster] = {}
+            }
+            const group = service.service_group || 'Outros'
+            if (!acc[service.cluster][group]) {
+              acc[service.cluster][group] = []
+            }
+            acc[service.cluster][group].push(service)
+            return acc
+          }, {})
+        }
+      }
+    }
   }
 
   return (
     <PerfilTab
       provider={provider}
+      rawServices={rawServices}
       selectedServicesDetails={selectedServicesDetails}
       allServicesData={allServicesData}
     />

@@ -1568,6 +1568,8 @@ export type Database = {
           requests_expired: number | null
           requests_received: number | null
           requests_rejected: number | null
+          secondary_emails: Json | null
+          secondary_phones: Json | null
           service_rating: number | null
           services: string[] | null
           status: Database["public"]["Enums"]["provider_status"] | null
@@ -1645,6 +1647,8 @@ export type Database = {
           requests_expired?: number | null
           requests_received?: number | null
           requests_rejected?: number | null
+          secondary_emails?: Json | null
+          secondary_phones?: Json | null
           service_rating?: number | null
           services?: string[] | null
           status?: Database["public"]["Enums"]["provider_status"] | null
@@ -1722,6 +1726,8 @@ export type Database = {
           requests_expired?: number | null
           requests_received?: number | null
           requests_rejected?: number | null
+          secondary_emails?: Json | null
+          secondary_phones?: Json | null
           service_rating?: number | null
           services?: string[] | null
           status?: Database["public"]["Enums"]["provider_status"] | null
