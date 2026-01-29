@@ -475,3 +475,73 @@ export async function updateProviderFormsData(
 
   return {}
 }
+
+// Feedback type definition
+export interface ProviderFeedback {
+  nps_score?: number // 0-10
+  ratings?: {
+    ease_of_use?: number // 1-5
+    clarity?: number // 1-5
+    time_spent?: number // 1-5
+  }
+  time_perception?: 'quick' | 'adequate' | 'long'
+  comment?: string
+  submitted_at?: string
+  skipped?: boolean
+}
+
+/**
+ * Submit provider feedback after form submission
+ */
+export async function submitProviderFeedback(
+  token: string,
+  feedback: ProviderFeedback
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { valid, providerId, error: validationError } = await validateFormsToken(token)
+
+    if (!valid || !providerId) {
+      return { success: false, error: validationError || 'Token inválido' }
+    }
+
+    const adminClient = createAdminClient()
+
+    // Get the latest submission for this provider
+    const { data: latestSubmission } = await adminClient
+      .from('provider_forms_data')
+      .select('id, submission_number')
+      .eq('provider_id', providerId)
+      .order('submission_number', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (!latestSubmission) {
+      return { success: false, error: 'Nenhuma submissão encontrada' }
+    }
+
+    // Add submitted_at timestamp
+    const feedbackWithTimestamp: ProviderFeedback = {
+      ...feedback,
+      submitted_at: new Date().toISOString(),
+    }
+
+    // Update the latest submission with feedback
+    const { error: updateError } = await adminClient
+      .from('provider_forms_data')
+      .update({
+        feedback: feedbackWithTimestamp,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', latestSubmission.id)
+
+    if (updateError) {
+      console.error('Error saving feedback:', updateError)
+      return { success: false, error: 'Erro ao guardar feedback' }
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error submitting feedback:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'Erro ao submeter feedback' }
+  }
+}

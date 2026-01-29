@@ -3,6 +3,8 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 
+import type { ProviderFeedback } from '@/lib/forms/services-actions'
+
 // Type for a single submission with provider info
 export interface AggregatedSubmission {
   id: string
@@ -27,6 +29,7 @@ export interface AggregatedSubmission {
   coverage_municipalities: string[] | null
   submitted_at: string | null
   submitted_ip: string | null
+  feedback: ProviderFeedback | null
 }
 
 // Type for service details
@@ -108,6 +111,7 @@ export async function getAllSubmissionsAggregated(
       coverage_municipalities,
       submitted_at,
       submitted_ip,
+      feedback,
       providers!inner (
         id,
         name,
@@ -183,6 +187,7 @@ export async function getAllSubmissionsAggregated(
       coverage_municipalities: item.coverage_municipalities,
       submitted_at: item.submitted_at,
       submitted_ip: item.submitted_ip,
+      feedback: item.feedback as ProviderFeedback | null,
     }
   })
 

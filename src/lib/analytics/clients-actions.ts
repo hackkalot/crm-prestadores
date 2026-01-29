@@ -122,11 +122,11 @@ function getPreviousPeriodRange(from: string, to: string): { from: string; to: s
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function computeClientMetrics(clients: any[]) {
+function computeClientMetrics(clients: any[], referenceDate: Date) {
   const totalClients = clients.length
 
-  // Active clients: last_request within 6 months
-  const sixMonthsAgo = new Date()
+  // Active clients: last_request within 6 months from referenceDate
+  const sixMonthsAgo = new Date(referenceDate)
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
   const sixMonthsAgoISO = sixMonthsAgo.toISOString()
 
@@ -145,11 +145,11 @@ function computeClientMetrics(clients: any[]) {
   const totalRecurrenciesActive = clients.reduce((sum, c) => sum + (c.active_overall_recurrencies || 0), 0)
   const clientsWithRecurrencies = clients.filter(c => (c.active_overall_recurrencies || 0) > 0).length
 
-  // Wallets
-  const walletsActive = clients.filter(c => c.wallet_is_active === true).length
-  const activeWallets = clients.filter(c => c.wallet_is_active === true && (c.current_wallet_amount || 0) > 0)
-  const avgWalletBalance = activeWallets.length > 0
-    ? Math.round(activeWallets.reduce((sum, c) => sum + (c.current_wallet_amount || 0), 0) / activeWallets.length)
+  // Wallets - count clients with positive wallet balance
+  const walletsWithBalance = clients.filter(c => (c.current_wallet_amount || 0) > 0)
+  const walletsActive = walletsWithBalance.length
+  const avgWalletBalance = walletsActive > 0
+    ? Math.round(walletsWithBalance.reduce((sum, c) => sum + (c.current_wallet_amount || 0), 0) / walletsActive)
     : 0
 
   return {
@@ -205,7 +205,11 @@ export async function getClientsSummary(filters?: AnalyticsFilters): Promise<Cli
     return { ...emptyClientsSummary }
   }
 
-  const current = computeClientMetrics(clients)
+  // Use the end date of the filter range as reference for "active" calculation
+  const effectiveRange = getClientDateRange(filters)
+  const currentReferenceDate = new Date(effectiveRange.to)
+
+  const current = computeClientMetrics(clients, currentReferenceDate)
 
   // Previous period (always computed using effective date range with defaults)
   let prevMetrics = {
@@ -216,16 +220,16 @@ export async function getClientsSummary(filters?: AnalyticsFilters): Promise<Cli
     walletsActive: 0,
   }
 
-  const effectiveRange = getClientDateRange(filters)
   const prevRange = getPreviousPeriodRange(effectiveRange.from, effectiveRange.to)
   const prevFilters: AnalyticsFilters = { ...filters, dateFrom: prevRange.from, dateTo: prevRange.to }
+  const prevReferenceDate = new Date(prevRange.to)
 
   let prevQuery = adminClient.from('clients').select(selectFields)
   prevQuery = applyClientDateFilters(prevQuery, prevFilters)
   const { data: prevClients } = await prevQuery
 
   if (prevClients && prevClients.length > 0) {
-    const prev = computeClientMetrics(prevClients)
+    const prev = computeClientMetrics(prevClients, prevReferenceDate)
     prevMetrics = {
       totalClients: prev.totalClients,
       activeClients: prev.activeClients,
@@ -303,14 +307,17 @@ export async function getClientRegistrationTrend(filters?: AnalyticsFilters): Pr
 }
 
 /**
- * Get client distribution by status
+ * Get client distribution by activity status
+ * Uses the same definition as the "Clientes Ativos" card:
+ * - Ativo: last_request within the last 6 months from filter end date
+ * - Inativo: last_request older than 6 months or null
  */
 export async function getClientStatusDistribution(filters?: AnalyticsFilters): Promise<ClientStatusItem[]> {
   const adminClient = createAdminClient()
 
   let query = adminClient
     .from('clients')
-    .select('client_status, registration')
+    .select('last_request, registration')
 
   query = applyClientDateFilters(query, filters)
 
@@ -319,20 +326,44 @@ export async function getClientStatusDistribution(filters?: AnalyticsFilters): P
   if (!clients || clients.length === 0) return []
 
   const total = clients.length
-  const byStatus = new Map<string, number>()
+
+  // Same definition as card: active = last_request within 6 months from filter end date
+  const effectiveRange = getClientDateRange(filters)
+  const referenceDate = new Date(effectiveRange.to)
+  const sixMonthsAgo = new Date(referenceDate)
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+  const sixMonthsAgoISO = sixMonthsAgo.toISOString()
+
+  let activeCount = 0
+  let inactiveCount = 0
 
   for (const client of clients) {
-    const status = client.client_status || 'Desconhecido'
-    byStatus.set(status, (byStatus.get(status) || 0) + 1)
+    if (client.last_request && client.last_request >= sixMonthsAgoISO) {
+      activeCount++
+    } else {
+      inactiveCount++
+    }
   }
 
-  return Array.from(byStatus.entries())
-    .map(([status, count]) => ({
-      status,
-      count,
-      percentage: Math.round((count / total) * 100),
-    }))
-    .sort((a, b) => b.count - a.count)
+  const result: ClientStatusItem[] = []
+
+  if (activeCount > 0) {
+    result.push({
+      status: 'Ativo',
+      count: activeCount,
+      percentage: Math.round((activeCount / total) * 100),
+    })
+  }
+
+  if (inactiveCount > 0) {
+    result.push({
+      status: 'Inativo',
+      count: inactiveCount,
+      percentage: Math.round((inactiveCount / total) * 100),
+    })
+  }
+
+  return result.sort((a, b) => b.count - a.count)
 }
 
 /**

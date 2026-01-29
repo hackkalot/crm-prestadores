@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ServicesSelector } from '@/components/forms/services-selector'
 import { CoverageSelector } from '@/components/forms/coverage-selector'
 import { submitServicesForm, type FormsSubmissionData } from '@/lib/forms/services-actions'
+import { FeedbackForm } from '@/components/forms/feedback-form'
 import {
   CheckCircle2,
   ChevronLeft,
@@ -96,6 +97,7 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [feedbackCompleted, setFeedbackCompleted] = useState(false)
 
   // Estados para inputs "Outro"
   const [otherPlatform, setOtherPlatform] = useState('')
@@ -259,34 +261,57 @@ export function ServicesFormClient({ token, provider, services }: ServicesFormCl
         </header>
 
         <div className="flex-1 flex items-center justify-center p-6">
-          <Card className="max-w-2xl w-full shadow-2xl">
-            <CardContent className="p-12">
-              <div className="flex flex-col items-center gap-6 text-center">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                  <CheckCircle2 className="h-10 w-10 text-green-600" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold mb-3">Formulário Submetido com Sucesso!</h1>
-                  <p className="text-lg text-muted-foreground mb-6">
-                    Obrigado por preencher o formulário de serviços, <strong>{provider.name}</strong>.
-                  </p>
-                  <p className="text-muted-foreground">
-                    A nossa equipa irá analisar as suas informações e entrará em contacto em breve.
-                  </p>
-                </div>
-                <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200 w-full">
-                  <p className="text-sm text-red-600">
-                    <strong>Resumo da submissão:</strong>
-                  </p>
-                  <div className="mt-2 space-y-1 text-sm text-red-600/80">
-                    <p>{formData.selected_services.length} serviços selecionados</p>
-                    <p>{formData.coverage_municipalities.length} concelhos de cobertura</p>
-                    <p>{formData.num_technicians} técnico{formData.num_technicians > 1 ? 's' : ''}</p>
+          <div className="max-w-2xl w-full space-y-6">
+            {/* Success Card */}
+            <Card className="shadow-2xl">
+              <CardContent className="p-12">
+                <div className="flex flex-col items-center gap-6 text-center">
+                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+                    <CheckCircle2 className="h-10 w-10 text-green-600" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold mb-3">Formulário Submetido com Sucesso!</h1>
+                    <p className="text-lg text-muted-foreground mb-6">
+                      Obrigado por preencher o formulário de serviços, <strong>{provider.name}</strong>.
+                    </p>
+                    <p className="text-muted-foreground">
+                      A nossa equipa irá analisar as suas informações e entrará em contacto em breve.
+                    </p>
+                  </div>
+                  <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200 w-full">
+                    <p className="text-sm text-red-600">
+                      <strong>Resumo da submissão:</strong>
+                    </p>
+                    <div className="mt-2 space-y-1 text-sm text-red-600/80">
+                      <p>{formData.selected_services.length} serviços selecionados</p>
+                      <p>{formData.coverage_municipalities.length} concelhos de cobertura</p>
+                      <p>{formData.num_technicians} técnico{formData.num_technicians > 1 ? 's' : ''}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {/* Feedback Form - shows after success, before completion */}
+            {!feedbackCompleted && (
+              <FeedbackForm
+                token={token}
+                onComplete={() => setFeedbackCompleted(true)}
+                onSkip={() => setFeedbackCompleted(true)}
+              />
+            )}
+
+            {/* Final message after feedback */}
+            {feedbackCompleted && (
+              <Card className="border-green-200 bg-green-50">
+                <CardContent className="p-6 text-center">
+                  <p className="text-green-700">
+                    Obrigado pelo seu feedback! Pode fechar esta página.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
       </div>
     )

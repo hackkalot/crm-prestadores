@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { formatDateTime } from '@/lib/utils'
-import { Link2, Copy, ChevronLeft, ChevronRight, Briefcase, MapPin } from 'lucide-react'
+import { Link2, Copy, ChevronLeft, ChevronRight, Briefcase, MapPin, Star, MessageSquare } from 'lucide-react'
+import type { ProviderFeedback } from '@/lib/forms/services-actions'
 import { generateFormsToken } from '@/lib/forms/services-actions'
 import { toast } from 'sonner'
 
@@ -36,6 +37,7 @@ interface FormSubmission {
   coverage_municipalities: string[] | null
   submitted_at: string | null
   submitted_ip: string | null
+  feedback?: ProviderFeedback | null
 }
 
 // Type for service details
@@ -206,6 +208,28 @@ const columns = [
     clickable: true,
     render: (data: FormSubmission) => `${data.coverage_municipalities?.length || 0} concelhos`
   },
+  {
+    key: 'feedback',
+    label: 'Feedback',
+    width: 150,
+    clickable: true,
+    render: (data: FormSubmission) => {
+      if (!data.feedback || data.feedback.skipped) return '-'
+      const parts: string[] = []
+      if (data.feedback.nps_score !== undefined) {
+        parts.push(`NPS: ${data.feedback.nps_score}`)
+      }
+      if (data.feedback.ratings) {
+        const avg = Math.round(
+          ((data.feedback.ratings.ease_of_use || 0) +
+            (data.feedback.ratings.clarity || 0) +
+            (data.feedback.ratings.time_spent || 0)) / 3
+        )
+        if (avg > 0) parts.push(`${avg}★`)
+      }
+      return parts.length > 0 ? parts.join(' | ') : '-'
+    }
+  },
 ]
 
 export function SubmissoesTab({ provider, submissions, allServicesMap }: SubmissoesTabProps) {
@@ -214,7 +238,7 @@ export function SubmissoesTab({ provider, submissions, allServicesMap }: Submiss
     Object.fromEntries(columns.map(col => [col.key, col.width]))
   )
   const [resizing, setResizing] = useState<string | null>(null)
-  const [dialogOpen, setDialogOpen] = useState<'services' | 'coverage' | null>(null)
+  const [dialogOpen, setDialogOpen] = useState<'services' | 'coverage' | 'feedback' | null>(null)
   const [selectedSubmission, setSelectedSubmission] = useState<FormSubmission | null>(null)
   const tableRef = useRef<HTMLDivElement>(null)
   const startXRef = useRef(0)
@@ -305,6 +329,9 @@ export function SubmissoesTab({ provider, submissions, allServicesMap }: Submiss
     } else if (columnKey === 'coverage_municipalities' && submission.coverage_municipalities?.length) {
       setSelectedSubmission(submission)
       setDialogOpen('coverage')
+    } else if (columnKey === 'feedback' && submission.feedback && !submission.feedback.skipped) {
+      setSelectedSubmission(submission)
+      setDialogOpen('feedback')
     }
   }
 
@@ -453,7 +480,8 @@ export function SubmissoesTab({ provider, submissions, allServicesMap }: Submiss
                       {columns.map((col, idx) => {
                         const isClickable = col.clickable && (
                           (col.key === 'selected_services' && submission.selected_services?.length) ||
-                          (col.key === 'coverage_municipalities' && submission.coverage_municipalities?.length)
+                          (col.key === 'coverage_municipalities' && submission.coverage_municipalities?.length) ||
+                          (col.key === 'feedback' && submission.feedback && !submission.feedback.skipped)
                         )
                         return (
                           <td
@@ -582,6 +610,144 @@ export function SubmissoesTab({ provider, submissions, allServicesMap }: Submiss
               </p>
             )}
           </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog para Feedback */}
+      <Dialog open={dialogOpen === 'feedback'} onOpenChange={(open) => {
+        if (!open) {
+          setDialogOpen(null)
+          setSelectedSubmission(null)
+        }
+      }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Feedback do Prestador
+              {selectedSubmission && (
+                <Badge variant="outline" className="ml-2">
+                  Submissão #{selectedSubmission.submission_number || 1}
+                </Badge>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedSubmission?.feedback && !selectedSubmission.feedback.skipped && (
+            <div className="space-y-4">
+              {/* NPS Score */}
+              {selectedSubmission.feedback.nps_score !== undefined && (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">NPS (Recomendação)</p>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-2xl font-bold ${
+                      selectedSubmission.feedback.nps_score >= 9 ? 'text-green-600' :
+                      selectedSubmission.feedback.nps_score >= 7 ? 'text-yellow-600' :
+                      'text-red-600'
+                    }`}>
+                      {selectedSubmission.feedback.nps_score}
+                    </span>
+                    <span className="text-sm text-muted-foreground">/ 10</span>
+                    <Badge variant={
+                      selectedSubmission.feedback.nps_score >= 9 ? 'success' :
+                      selectedSubmission.feedback.nps_score >= 7 ? 'warning' :
+                      'destructive'
+                    }>
+                      {selectedSubmission.feedback.nps_score >= 9 ? 'Promotor' :
+                       selectedSubmission.feedback.nps_score >= 7 ? 'Neutro' : 'Detrator'}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+
+              {/* Star Ratings */}
+              {selectedSubmission.feedback.ratings && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Avaliações</p>
+                  <div className="space-y-1.5">
+                    {selectedSubmission.feedback.ratings.ease_of_use !== undefined && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Facilidade de uso</span>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`h-4 w-4 ${
+                                star <= (selectedSubmission.feedback?.ratings?.ease_of_use || 0)
+                                  ? 'fill-yellow-400 text-yellow-400'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {selectedSubmission.feedback.ratings.clarity !== undefined && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Clareza das perguntas</span>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`h-4 w-4 ${
+                                star <= (selectedSubmission.feedback?.ratings?.clarity || 0)
+                                  ? 'fill-yellow-400 text-yellow-400'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {selectedSubmission.feedback.ratings.time_spent !== undefined && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Tempo adequado</span>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`h-4 w-4 ${
+                                star <= (selectedSubmission.feedback?.ratings?.time_spent || 0)
+                                  ? 'fill-yellow-400 text-yellow-400'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Time Perception */}
+              {selectedSubmission.feedback.time_perception && (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">Perceção de tempo</p>
+                  <Badge variant="outline">
+                    {selectedSubmission.feedback.time_perception === 'quick' ? 'Rápido' :
+                     selectedSubmission.feedback.time_perception === 'adequate' ? 'Adequado' : 'Demorado'}
+                  </Badge>
+                </div>
+              )}
+
+              {/* Comment */}
+              {selectedSubmission.feedback.comment && (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">Comentário</p>
+                  <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
+                    {selectedSubmission.feedback.comment}
+                  </p>
+                </div>
+              )}
+
+              {/* Submitted at */}
+              {selectedSubmission.feedback.submitted_at && (
+                <p className="text-xs text-muted-foreground pt-2 border-t">
+                  Feedback enviado em {formatDateTime(selectedSubmission.feedback.submitted_at)}
+                </p>
+              )}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

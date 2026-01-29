@@ -111,6 +111,11 @@ export async function runBillingScrapper(options: BillingScrapperOptions = {}): 
         log(`URL atual: ${currentUrl}`);
 
         if (currentUrl.includes('Login') || currentUrl.includes('login')) {
+            // Esperar que os campos de login estejam visiveis antes de interagir
+            log('Aguardando campos de login...');
+            await page.waitForSelector('input[type="text"], input[name="username"]', { visible: true, timeout: 30000 });
+            await page.waitForSelector('input[type="password"], input[name="password"]', { visible: true, timeout: 30000 });
+
             log('Preenchendo credenciais...');
             await page.type('input[type="text"], input[name="username"]', USERNAME);
             await page.type('input[type="password"], input[name="password"]', PASSWORD);

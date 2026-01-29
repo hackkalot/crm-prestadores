@@ -208,13 +208,13 @@ export function ClientsSummaryCards({ data }: ClientsSummaryCardsProps) {
         </CardContent>
       </Card>
 
-      {/* Card 5: Wallets Ativas */}
+      {/* Card 5: Wallets com Saldo */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <div className="flex items-center gap-1">
-                <p className="text-sm text-muted-foreground">Wallets Ativas</p>
+                <p className="text-sm text-muted-foreground">Wallets com Saldo</p>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -222,7 +222,7 @@ export function ClientsSummaryCards({ data }: ClientsSummaryCardsProps) {
                     </TooltipTrigger>
                     <TooltipContent side="top" className="max-w-[280px]">
                       <p className="text-sm">
-                        Clientes com wallet ativa
+                        Clientes com saldo positivo na wallet
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
                         Saldo médio: {formatCurrency(data.avgWalletBalance)}

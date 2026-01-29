@@ -1326,6 +1326,7 @@ export type Database = {
           certifications: string[] | null
           coverage_municipalities: string[] | null
           created_at: string | null
+          feedback: Json | null
           has_activity_declaration: boolean | null
           has_computer: boolean | null
           has_liability_insurance: boolean | null
@@ -1349,6 +1350,7 @@ export type Database = {
           certifications?: string[] | null
           coverage_municipalities?: string[] | null
           created_at?: string | null
+          feedback?: Json | null
           has_activity_declaration?: boolean | null
           has_computer?: boolean | null
           has_liability_insurance?: boolean | null
@@ -1372,6 +1374,7 @@ export type Database = {
           certifications?: string[] | null
           coverage_municipalities?: string[] | null
           created_at?: string | null
+          feedback?: Json | null
           has_activity_declaration?: boolean | null
           has_computer?: boolean | null
           has_liability_insurance?: boolean | null
