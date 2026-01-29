@@ -121,6 +121,7 @@ export function generateCatalogPricePDFHTML(
           font-size: 14px;
           color: rgba(255, 255, 255, 0.9);
           margin-top: 4px;
+          margin-bottom: 4px;
         }
 
         .header-separator {
@@ -204,6 +205,7 @@ export function generateCatalogPricePDFHTML(
           border: 1px solid #e5e7eb;
           border-bottom: none;
         }
+
 
         /* Tables */
         .table-wrapper {
@@ -303,23 +305,45 @@ export function generateCatalogPricePDFHTML(
             border-color: #dc2626 !important;
           }
 
+          /* Permitir quebras dentro de grupos grandes */
           .service-group {
-            page-break-inside: avoid;
+            page-break-inside: auto;
           }
 
+          /* Título do grupo não deve ficar sozinho - forçar quebra ANTES se necessário */
+          .service-group-title {
+            break-after: avoid;
+            page-break-after: avoid;
+            /* Fallback: se não couber com conteúdo, vai para próxima página */
+            orphans: 3;
+            widows: 3;
+          }
+
+          /* Tabelas podem quebrar entre linhas */
           table {
             page-break-inside: auto;
+          }
+
+          /* Header da tabela repete em cada página */
+          thead {
+            display: table-header-group;
           }
 
           tr {
             page-break-inside: avoid;
             page-break-after: auto;
           }
+
+          /* Primeira linha após header não deve separar do título */
+          tbody tr:first-child {
+            break-before: avoid;
+            page-break-before: avoid;
+          }
         }
 
         @page {
           size: A4;
-          margin: 5mm 0 0 0;
+          margin: 5mm 0 5mm 0;
         }
 
         @page :first {

@@ -18,6 +18,7 @@ import {
   getCatalogMaterialCategories,
 } from '@/lib/service-catalog/actions'
 import { getEmailTemplates } from '@/lib/email-templates/actions'
+import { getTemplatesForManagement, getTemplateClusters } from '@/lib/service-templates/actions'
 import { requirePageAccess } from '@/lib/permissions/guard'
 
 export default async function ConfiguracoesPage() {
@@ -39,6 +40,8 @@ export default async function ConfiguracoesPage() {
     catalogClusters,
     catalogMaterialCategories,
     emailTemplates,
+    serviceTemplates,
+    serviceTemplateClusters,
   ] = await Promise.all([
     getTaskDefinitions(),
     getSettings(),
@@ -53,6 +56,8 @@ export default async function ConfiguracoesPage() {
     getCatalogClusters(),
     getCatalogMaterialCategories(),
     getEmailTemplates(),
+    getTemplatesForManagement({ limit: 25 }),
+    getTemplateClusters(),
   ])
 
   return (
@@ -77,6 +82,8 @@ export default async function ConfiguracoesPage() {
             catalogClusters={catalogClusters}
             catalogMaterialCategories={catalogMaterialCategories}
             emailTemplates={emailTemplates}
+            serviceTemplates={serviceTemplates.data}
+            serviceTemplateClusters={serviceTemplateClusters}
           />
         </Suspense>
       </div>

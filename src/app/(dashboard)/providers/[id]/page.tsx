@@ -346,7 +346,7 @@ export default async function ProviderPage({ params, searchParams }: ProviderPag
               )}
             </TabsTrigger>
             <TabsTrigger value="precos">
-              Preços
+              Documentos
             </TabsTrigger>
             <TabsTrigger value="pedidos">
               Pedidos

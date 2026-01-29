@@ -218,7 +218,7 @@ export async function OnboardingTabAsync({
   )
 }
 
-// Async wrapper for Preços tab (now shows only proposal history)
+// Async wrapper for Documentos tab (preços + fichas de serviço)
 export async function PrecosTabAsync({
   providerId,
   provider,
@@ -226,8 +226,13 @@ export async function PrecosTabAsync({
   providerId: string
   provider: any
 }) {
-  // Only load snapshots - pricing selection is now in the onboarding task
-  const snapshots = await getPricingSnapshots(providerId)
+  const { getServiceSheetSnapshots } = await import('@/lib/service-templates/actions')
+
+  // Load both pricing and service sheet snapshots
+  const [snapshots, serviceSheetSnapshots] = await Promise.all([
+    getPricingSnapshots(providerId),
+    getServiceSheetSnapshots(providerId),
+  ])
 
   return (
     <PricingSelectionTab
@@ -235,6 +240,7 @@ export async function PrecosTabAsync({
       providerName={provider.name}
       hasFormsSubmitted={!!provider.forms_submitted_at}
       snapshots={snapshots}
+      serviceSheetSnapshots={serviceSheetSnapshots}
     />
   )
 }

@@ -13,11 +13,13 @@ import { CatalogPricesTable } from '@/components/service-catalog/prices-table'
 import { CatalogMaterialsTable } from '@/components/service-catalog/materials-table'
 import { EmailTemplatesSettings } from '@/components/settings/email-templates-settings'
 import { TwoFactorSettings } from '@/components/auth/two-factor-settings'
-import { Settings, ListTodo, History, Network, MapPin, Euro, Mail, Shield } from 'lucide-react'
+import { ServiceTemplatesTable } from '@/components/service-templates/templates-table'
+import { Settings, ListTodo, History, Network, MapPin, Euro, Mail, Shield, FileText } from 'lucide-react'
 import type { CatalogPrice, CatalogMaterial, CatalogStats } from '@/lib/service-catalog/actions'
 import type { TaskDefinitionWithStage, Setting, SettingsLog } from '@/lib/settings/actions'
 import type { CoverageSettings as CoverageSettingsType } from '@/lib/settings/coverage-actions'
 import type { EmailTemplateWithCreator } from '@/lib/email-templates/actions'
+import type { ServiceTemplate } from '@/lib/service-templates/actions'
 
 interface ConfiguracoesTabsProps {
   tasks: TaskDefinitionWithStage[]
@@ -33,6 +35,8 @@ interface ConfiguracoesTabsProps {
   catalogClusters: string[]
   catalogMaterialCategories: string[]
   emailTemplates: EmailTemplateWithCreator[]
+  serviceTemplates: ServiceTemplate[]
+  serviceTemplateClusters: string[]
 }
 
 export function ConfiguracoesTabs({
@@ -49,6 +53,8 @@ export function ConfiguracoesTabs({
   catalogClusters,
   catalogMaterialCategories,
   emailTemplates,
+  serviceTemplates,
+  serviceTemplateClusters,
 }: ConfiguracoesTabsProps) {
   const [activeTab, setActiveTab] = useState('tasks')
 
@@ -74,6 +80,10 @@ export function ConfiguracoesTabs({
         <TabsTrigger value="catalog" className="gap-2">
           <Euro className="h-4 w-4" />
           Catálogo Serviços
+        </TabsTrigger>
+        <TabsTrigger value="templates" className="gap-2">
+          <FileText className="h-4 w-4" />
+          Fichas Serviço
         </TabsTrigger>
         <TabsTrigger value="emails" className="gap-2">
           <Mail className="h-4 w-4" />
@@ -133,6 +143,20 @@ export function ConfiguracoesTabs({
           clusters={catalogClusters}
         />
         <CatalogMaterialsTable materials={catalogMaterials} categories={catalogMaterialCategories} />
+      </TabsContent>
+
+      <TabsContent value="templates" className="space-y-4">
+        <div className="rounded-lg border bg-card p-4">
+          <h2 className="text-lg font-medium mb-2">Fichas de Serviço</h2>
+          <p className="text-muted-foreground text-sm mb-4">
+            Configure os templates de fichas de serviço que são gerados no PDF de onboarding.
+            Cada template define o que inclui, o que não inclui e notas importantes para cada serviço.
+          </p>
+        </div>
+        <ServiceTemplatesTable
+          initialTemplates={serviceTemplates}
+          initialClusters={serviceTemplateClusters}
+        />
       </TabsContent>
 
       <TabsContent value="emails" className="space-y-4">

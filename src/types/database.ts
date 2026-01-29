@@ -1478,6 +1478,48 @@ export type Database = {
           },
         ]
       }
+      provider_service_sheet_snapshots: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          provider_id: string
+          snapshot_data: Json
+          snapshot_name: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          provider_id: string
+          snapshot_data: Json
+          snapshot_name?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          provider_id?: string
+          snapshot_data?: Json
+          snapshot_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_service_sheet_snapshots_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_service_sheet_snapshots_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_sync_logs: {
         Row: {
           created_at: string | null
@@ -2554,6 +2596,51 @@ export type Database = {
           id?: string
           service?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      service_templates: {
+        Row: {
+          cluster: string | null
+          content_markdown: string
+          file_name: string
+          folder_path: string
+          id: string
+          imported_at: string | null
+          is_active: boolean | null
+          sections: Json | null
+          service_group: string | null
+          service_name: string
+          updated_at: string | null
+          version: number | null
+        }
+        Insert: {
+          cluster?: string | null
+          content_markdown: string
+          file_name: string
+          folder_path: string
+          id?: string
+          imported_at?: string | null
+          is_active?: boolean | null
+          sections?: Json | null
+          service_group?: string | null
+          service_name: string
+          updated_at?: string | null
+          version?: number | null
+        }
+        Update: {
+          cluster?: string | null
+          content_markdown?: string
+          file_name?: string
+          folder_path?: string
+          id?: string
+          imported_at?: string | null
+          is_active?: boolean | null
+          sections?: Json | null
+          service_group?: string | null
+          service_name?: string
+          updated_at?: string | null
+          version?: number | null
         }
         Relationships: []
       }
