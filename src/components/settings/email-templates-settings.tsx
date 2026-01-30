@@ -41,7 +41,14 @@ import {
   Copy,
   Eye,
   Mail,
+  Info,
 } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import {
   createEmailTemplate,
   updateEmailTemplate,
@@ -49,6 +56,15 @@ import {
   toggleEmailTemplateActive,
 } from '@/lib/email-templates/actions'
 import type { EmailTemplateWithCreator } from '@/lib/email-templates/actions'
+
+// Available system tokens that are automatically replaced
+const SYSTEM_TOKENS = [
+  { token: 'nome_prestador', description: 'Nome do prestador' },
+  { token: 'email_prestador', description: 'Email do prestador' },
+  { token: 'telefone_prestador', description: 'Telefone do prestador' },
+  { token: 'nif_prestador', description: 'NIF do prestador' },
+  { token: 'forms_link', description: 'Link para o formulário de serviços' },
+] as const
 
 interface EmailTemplatesSettingsProps {
   templates: EmailTemplateWithCreator[]
@@ -60,7 +76,6 @@ interface FormData {
   description: string
   subject: string
   body: string
-  variables: string[]
   is_active: boolean
 }
 
@@ -70,7 +85,6 @@ const defaultFormData: FormData = {
   description: '',
   subject: '',
   body: '',
-  variables: [],
   is_active: true,
 }
 
@@ -83,7 +97,6 @@ export function EmailTemplatesSettings({ templates: initialTemplates }: EmailTem
   const [deletingTemplateId, setDeletingTemplateId] = useState<string | null>(null)
   const [previewTemplate, setPreviewTemplate] = useState<EmailTemplateWithCreator | null>(null)
   const [formData, setFormData] = useState<FormData>(defaultFormData)
-  const [newVariable, setNewVariable] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleOpenCreate = () => {
@@ -100,7 +113,6 @@ export function EmailTemplatesSettings({ templates: initialTemplates }: EmailTem
       description: template.description || '',
       subject: template.subject,
       body: template.body,
-      variables: (template.variables as string[]) || [],
       is_active: template.is_active ?? true,
     })
     setIsDialogOpen(true)
@@ -116,25 +128,16 @@ export function EmailTemplatesSettings({ templates: initialTemplates }: EmailTem
     setIsDeleteDialogOpen(true)
   }
 
-  const handleAddVariable = () => {
-    if (newVariable.trim() && !formData.variables.includes(newVariable.trim())) {
-      setFormData({
-        ...formData,
-        variables: [...formData.variables, newVariable.trim()],
-      })
-      setNewVariable('')
+  const handleInsertToken = (token: string, target: 'subject' | 'body') => {
+    const tokenStr = `{{${token}}}`
+    if (target === 'subject') {
+      setFormData({ ...formData, subject: formData.subject + tokenStr })
     }
-  }
-
-  const handleRemoveVariable = (variable: string) => {
-    setFormData({
-      ...formData,
-      variables: formData.variables.filter((v) => v !== variable),
-    })
-  }
-
-  const handleInsertSubjectVariable = (variable: string) => {
-    setFormData({ ...formData, subject: formData.subject + `{{${variable}}}` })
+    // For body, we'll copy to clipboard since RichTextEditor doesn't support direct insertion
+    if (target === 'body') {
+      navigator.clipboard.writeText(tokenStr)
+      toast.success(`Token copiado: ${tokenStr}`)
+    }
   }
 
   const handleSubmit = async () => {
@@ -153,7 +156,7 @@ export function EmailTemplatesSettings({ templates: initialTemplates }: EmailTem
           description: formData.description || null,
           subject: formData.subject,
           body: formData.body,
-          variables: formData.variables,
+          variables: SYSTEM_TOKENS.map(t => t.token),
           is_active: formData.is_active,
         })
 
@@ -172,7 +175,7 @@ export function EmailTemplatesSettings({ templates: initialTemplates }: EmailTem
           description: formData.description || null,
           subject: formData.subject,
           body: formData.body,
-          variables: formData.variables,
+          variables: SYSTEM_TOKENS.map(t => t.token),
           is_active: formData.is_active,
         })
 
@@ -387,57 +390,51 @@ export function EmailTemplatesSettings({ templates: initialTemplates }: EmailTem
               />
             </div>
 
+            {/* System Tokens */}
             <div className="space-y-2">
-              <Label>Variáveis</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={newVariable}
-                  onChange={(e) => setNewVariable(e.target.value)}
-                  placeholder="nome_prestador"
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddVariable())}
-                />
-                <Button type="button" variant="outline" onClick={handleAddVariable}>
-                  <Plus className="h-4 w-4" />
-                </Button>
+              <div className="flex items-center gap-2">
+                <Label>Tokens Disponíveis</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      <p>Clique num token para o inserir no assunto ou copiar para colar no corpo do email.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-              {formData.variables.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {formData.variables.map((v) => (
-                    <Badge
-                      key={v}
-                      variant="secondary"
-                      className="cursor-pointer"
-                      onClick={() => handleRemoveVariable(v)}
-                    >
-                      {v}
-                      <span className="ml-1 text-muted-foreground">&times;</span>
-                    </Badge>
+              <div className="rounded-lg border bg-muted/30 p-3">
+                <div className="flex flex-wrap gap-2">
+                  {SYSTEM_TOKENS.map((t) => (
+                    <TooltipProvider key={t.token}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge
+                            variant="outline"
+                            className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                            onClick={() => handleInsertToken(t.token, 'subject')}
+                          >
+                            {`{{${t.token}}}`}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{t.description}</p>
+                          <p className="text-xs text-muted-foreground mt-1">Clique para inserir no assunto</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   ))}
                 </div>
-              )}
-              <p className="text-xs text-muted-foreground">
-                Adicione variáveis que podem ser usadas no assunto e corpo do email
-              </p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Estes tokens são automaticamente substituídos pelos dados do prestador quando o email é enviado.
+                </p>
+              </div>
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="subject">Assunto *</Label>
-                {formData.variables.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {formData.variables.map((v) => (
-                      <Badge
-                        key={v}
-                        variant="outline"
-                        className="cursor-pointer text-xs hover:bg-primary hover:text-primary-foreground"
-                        onClick={() => handleInsertSubjectVariable(v)}
-                      >
-                        {`{{${v}}}`}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <Label htmlFor="subject">Assunto *</Label>
               <Input
                 id="subject"
                 value={formData.subject}
@@ -452,7 +449,7 @@ export function EmailTemplatesSettings({ templates: initialTemplates }: EmailTem
                 content={formData.body}
                 onChange={(content) => setFormData({ ...formData, body: content })}
                 placeholder="Escreva o conteúdo do email..."
-                variables={formData.variables}
+                variables={SYSTEM_TOKENS.map(t => t.token)}
                 minHeight="200px"
               />
             </div>

@@ -37,6 +37,7 @@ const SIDEBAR_SECTIONS: Array<{
   key: string
   label: string
   items: NavItem[]
+  defaultCollapsed?: boolean
 }> = [
   {
     key: 'onboarding',
@@ -56,10 +57,16 @@ const SIDEBAR_SECTIONS: Array<{
       { key: 'prestadores', name: 'Prestadores', href: '/prestadores', icon: UserCheck, contextTab: 'perfil', originKey: 'prestadores' },
       { key: 'rede', name: 'Rede', href: '/rede', icon: Map },
       { key: 'kpis_operacionais', name: "KPI's Operacionais", href: '/analytics?context=kpis', icon: TrendingUp },
+    ],
+  },
+  {
+    key: 'dados',
+    label: 'Dados',
+    defaultCollapsed: true,
+    items: [
       { key: 'pedidos', name: 'Pedidos', href: '/pedidos', icon: FileText, originKey: 'pedidos' },
       { key: 'alocacoes', name: 'Alocações', href: '/alocacoes', icon: GitBranch, originKey: 'alocacoes' },
       { key: 'faturacao', name: 'Faturação', href: '/faturacao', icon: Receipt, originKey: 'faturacao' },
-      { key: 'reports', name: 'Reports', href: '/reports', icon: FileBarChart },
     ],
   },
   {
@@ -67,6 +74,7 @@ const SIDEBAR_SECTIONS: Array<{
     label: 'Gestão',
     items: [
       { key: 'analytics', name: 'Analytics', href: '/analytics', icon: BarChart3 },
+      { key: 'reports', name: 'Reports', href: '/reports', icon: FileBarChart },
       { key: 'prioridades', name: 'Prioridades', href: '/prioridades', icon: Target },
     ],
   },
@@ -135,6 +143,7 @@ export function Sidebar({ user, pendingUsersCount = 0, accessiblePages = [] }: S
             label={section.label}
             items={section.items}
             accessiblePages={accessiblePages}
+            defaultCollapsed={section.defaultCollapsed}
           />
         ))}
 

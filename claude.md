@@ -123,6 +123,34 @@ Candidatura (novo) → Onboarding (em_onboarding) → Ativo (ativo)
 
 ---
 
+## Consultar Base de Dados (Quick Scripts)
+
+Para consultar a BD directamente, usar scripts em `scripts/db-queries/`:
+
+```bash
+# Executar um script existente
+npx tsx scripts/db-queries/_template.ts
+
+# Criar novo script baseado no template
+cp scripts/db-queries/_template.ts scripts/db-queries/minha-query.ts
+# Editar e executar
+npx tsx scripts/db-queries/minha-query.ts
+```
+
+O template já carrega as variáveis de ambiente e configura o cliente Supabase com service role (bypass RLS).
+
+**Exemplo de uso:**
+```typescript
+const { data } = await supabase
+  .from('pages')
+  .select('key, name, section')
+  .order('section')
+
+console.table(data)
+```
+
+---
+
 ## Quick Reference
 
 ```typescript
